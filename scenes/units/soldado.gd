@@ -262,6 +262,24 @@ func _on_ammo_depleted() -> void:
 	_set_mode(SoldierMode.MELEE)
 
 
+## Recarga pública (T034, FR-009): gasta munición recolectada vía
+## `EconomyManager.try_spend_ammo()` con el costo de una recarga completa
+## (`stats.deploy_ammo_cost`, `spec.md` Assumptions: "una recarga completa"
+## y `data-model.md`: costo de despliegue = costo de recarga, no hay campo
+## separado). Si hay fondos suficientes, repone `_current_ammo` a
+## `stats.max_ammo` y vuelve a modo `RIFLE` (`data-model.md`: "MELEE →
+## RIFLE: al recargar"). `_current_morale` NUNCA se toca aquí — persiste
+## entre recargas (`spec.md` Assumptions, `data-model.md` fila
+## `_current_morale`). Si `try_spend_ammo()` falla (fondos insuficientes),
+## `EconomyManager` ya emitió `deploy_or_reload_rejected` (FR-011) y este
+## soldado permanece en su modo actual sin más efecto.
+func reload() -> void:
+	if not EconomyManager.try_spend_ammo(stats.deploy_ammo_cost):
+		return
+	_current_ammo = stats.max_ammo
+	_set_mode(SoldierMode.RIFLE)
+
+
 func _set_mode(new_mode: SoldierMode) -> void:
 	if _mode == new_mode:
 		return
