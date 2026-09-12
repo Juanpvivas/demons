@@ -51,6 +51,12 @@ signal mode_changed(new_mode: SoldierMode)
 ## Se acumuló moral por una eliminación confirmada con fusil (FR-006).
 signal moral_changed(new_morale: float)
 
+## El soldado fue derrotado (`spec.md` Edge Case: pierde moral, libera
+## celda). Payload por contrato (`contracts/signals.md`): la celda que
+## ocupaba en el `BoardManager` del nivel, para que quien escuche (ej.
+## `BoardManager`) la libere.
+signal soldier_defeated(grid_cell: Vector2i)
+
 ## Modo de combate activo (`docs/ARCHITECTURE.md` §4.4).
 enum SoldierMode { RIFLE, MELEE }
 
@@ -68,6 +74,16 @@ var _current_morale: float = 0.0
 
 ## Modo de combate activo.
 var _mode: SoldierMode = SoldierMode.RIFLE
+
+## Salud actual, runtime. Inicializada desde `stats.max_health` en `_ready()`
+## (`data-model.md`, mismo patrón que `Enemigo._current_health`).
+var _current_health: int = 0
+
+## Celda ocupada en el `BoardManager` del nivel (`data-model.md`). Nunca se
+## asigna sola: quien despliega este soldado debe llamar `set_grid_cell()`
+## después de instanciarlo. Se reporta en `soldier_defeated` para que
+## `BoardManager` libere la celda correcta.
+var _grid_cell: Vector2i
 
 ## Objetivo activo de fusil — nunca más de uno a la vez (FR-002).
 var _current_target: Node2D = null
@@ -111,6 +127,7 @@ const _MODE_TINT: Dictionary = {
 func _ready() -> void:
 	assert(stats != null, "Soldado requiere un UnitStats asignado en 'stats'")
 	_current_ammo = stats.max_ammo
+	_current_health = stats.max_health
 
 	_deteccion_rango.body_entered.connect(_on_deteccion_rango_body_entered)
 	_deteccion_rango.body_exited.connect(_on_deteccion_rango_body_exited)
@@ -285,6 +302,37 @@ func _set_mode(new_mode: SoldierMode) -> void:
 		return
 	_mode = new_mode
 	mode_changed.emit(_mode)
+
+
+# --- Salud y derrota (T052) ------------------------------------------------
+
+## Setter público de `_grid_cell` — quien despliega este soldado (spawner del
+## nivel) debe llamarlo justo después de instanciarlo, para que
+## `soldier_defeated` reporte la celda correcta si más adelante es derrotado.
+func set_grid_cell(cell: Vector2i) -> void:
+	_grid_cell = cell
+
+
+## Aplica `amount` de daño y retorna `true` únicamente si esta llamada dejó
+## la salud en 0 o menos (mismo contrato que `Enemigo.take_damage()`, ver
+## cabecera de este archivo y de `enemigo.gd`). Al llegar a 0, el soldado
+## pierde toda su moral acumulada, reporta su derrota con
+## `soldier_defeated(_grid_cell)` (`contracts/signals.md`, `spec.md` Edge
+## Case) y se libera del árbol.
+func take_damage(amount: int) -> bool:
+	if _current_health <= 0:
+		return false
+	_current_health -= amount
+	if _current_health <= 0:
+		_die()
+		return true
+	return false
+
+
+func _die() -> void:
+	_current_morale = 0.0
+	soldier_defeated.emit(_grid_cell)
+	queue_free()
 
 
 # --- Moral (T024) ---------------------------------------------------------
