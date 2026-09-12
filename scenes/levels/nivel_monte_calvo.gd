@@ -123,6 +123,11 @@ var _wave_spawner := WaveSpawner.new()
 
 @onready var _tablero: TileMap = $Tablero
 
+## T043 (FR-013): zona que el jugador defiende — si un `Enemigo` la alcanza
+## sin ser detenido por ningún soldado, el propio `Enemigo` emite
+## `reached_defended_position` (ver `_on_posicion_defendida_body_entered()`).
+@onready var _posicion_defendida: Area2D = $PosicionDefendida
+
 
 func _ready() -> void:
 	# El soldado colocado a mano en la escena (T027, setup mínimo del nivel
@@ -141,6 +146,10 @@ func _ready() -> void:
 	add_child(_wave_spawner)
 	_wave_spawner.setup(enemy_scene, _ENEMY_POOL_INITIAL_SIZE, wave_spawn_position)
 	WaveManager.start_waves(waves)
+
+	# T043 (FR-013): conexión de señal solo en `_ready()`
+	# (`docs/ARCHITECTURE.md` §4.2).
+	_posicion_defendida.body_entered.connect(_on_posicion_defendida_body_entered)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -178,6 +187,23 @@ func _try_deploy_soldado(cell: Vector2i) -> void:
 	nuevo_soldado.global_position = _tablero.to_global(_tablero.map_to_local(cell))
 	add_child(nuevo_soldado)
 	_board_manager.occupy_cell(cell, nuevo_soldado)
+
+
+## T043 (FR-013): un cuerpo entró en la `Area2D` "PosicionDefendida". Filtra
+## por el mismo grupo (`Enemigo.ENEMY_GROUP`) que usa `soldado.gd` para
+## identificar enemigos en sus propias `Area2D` de detección
+## (`_on_deteccion_rango_body_entered()`/`_on_rango_melee_body_entered()`),
+## por consistencia con el patrón ya establecido en el proyecto — sin esta
+## guarda, cualquier otro `PhysicsBody2D` del nivel (ej. un `Soldado`
+## desplegado sobre esa celda) dispararía la derrota. Solo notifica al
+## propio `Enemigo`, que es quien emite `reached_defended_position`
+## (`contracts/signals.md`) — este nivel no decide victoria/derrota
+## directamente (eso es `GameStateManager`, T044, fuera del alcance de esta
+## tarea).
+func _on_posicion_defendida_body_entered(body: Node2D) -> void:
+	if not body.is_in_group(Enemigo.ENEMY_GROUP):
+		return
+	(body as Enemigo).notify_reached_defended_position()
 
 
 ## Convierte la posición de pantalla de un evento de input (mouse o touch,

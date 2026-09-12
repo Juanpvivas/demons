@@ -58,6 +58,16 @@ const _AMMO_PICKUP_SCENE: PackedScene = preload("res://scenes/levels/AmmoPickup.
 ## del alcance de esta tarea) pueda generar una pickup en ese punto.
 signal enemy_defeated(ammo_dropped: int, position: Vector2)
 
+## T043 (`contracts/signals.md`, FR-013): este enemigo alcanzó la "posición
+## defendida" sin haber sido detenido por ningún soldado. No la emite este
+## script por sí solo — la detección de la zona vive en el nivel
+## (`Nivel_MonteCalvo.tscn`/`nivel_monte_calvo.gd`, `Area2D`
+## "PosicionDefendida"), que llama a `notify_reached_defended_position()`
+## (ver más abajo) cuando detecta este cuerpo. `GameStateManager` es quien
+## debe escuchar esta señal para terminar la partida en derrota (T044, fuera
+## del alcance de esta tarea).
+signal reached_defended_position
+
 ## Molde de datos base/máximos de este enemigo — solo lectura, nunca mutado
 ## en runtime (`docs/ARCHITECTURE.md` §4.3).
 @export var stats: EnemyStats
@@ -151,6 +161,18 @@ func prepare_for_spawn(new_stats: EnemyStats, spawn_position: Vector2) -> void:
 ## posición global en `Y` es directamente esa métrica.
 func get_advance_progress() -> float:
 	return global_position.y
+
+
+## T043: notifica que este enemigo alcanzó la "posición defendida"
+## (`contracts/signals.md`, FR-013). Expuesto como método público en vez de
+## que el llamador externo emita `reached_defended_position` directamente
+## sobre esta instancia — mismo patrón ya usado en esta clase para
+## `take_damage()`/`set_pool()`/`prepare_for_spawn()`: la lógica de emisión
+## de las señales propias de `Enemigo` vive dentro de la clase dueña, nunca
+## en el nodo que detecta el evento (`Nivel_MonteCalvo.tscn`, `Area2D`
+## "PosicionDefendida", ver `nivel_monte_calvo.gd`).
+func notify_reached_defended_position() -> void:
+	reached_defended_position.emit()
 
 
 func _die() -> void:
