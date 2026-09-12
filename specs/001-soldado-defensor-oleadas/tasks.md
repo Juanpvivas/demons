@@ -51,10 +51,10 @@ Proyecto único Godot 4.7 (GDScript). Rutas relativas a `res://` — ver
 - [X] T008 [P] Crear autoload `EconomyManager` en `autoloads/economy_manager.gd`: `collected_ammo: int`, señales `ammo_pool_changed(new_amount)` y `ammo_pickup_spawned(pickup_id, position, amount)`, según `contracts/signals.md`
 - [X] T009 [P] Crear autoload `GameStateManager` en `autoloads/game_state_manager.gd`: `enum GameState {PLAYING, PAUSED, WON, LOST}`, señales `game_won`, `game_lost`, `game_state_changed(new_state)`
 - [X] T010 Registrar `EconomyManager` y `GameStateManager` como autoloads en `project.godot` (depende de T008, T009)
-- [ ] T011 [P] Crear `ObjectPool` genérico en `core/object_pool.gd` por `docs/ARCHITECTURE.md` §4.5 (no autoload; reutilizable por enemigos y proyectiles)
-- [ ] T012 [P] Crear `BoardManager` en `core/board_manager.gd` por `research.md` §5: `Dictionary[Vector2i, Node]` de celdas ocupadas, `is_cell_free(cell)`, `occupy_cell(cell, node)`, `free_cell(cell)`
+- [X] T011 [P] Crear `ObjectPool` genérico en `core/object_pool.gd` por `docs/ARCHITECTURE.md` §4.5 (no autoload; reutilizable por enemigos y proyectiles)
+- [X] T012 [P] Crear `BoardManager` en `core/board_manager.gd` por `research.md` §5: `Dictionary[Vector2i, Node]` de celdas ocupadas, `is_cell_free(cell)`, `occupy_cell(cell, node)`, `free_cell(cell)`
 - [X] T013 [P] Test GUT `test_economy_manager.gd` en `tests/unit/systems/test_economy_manager.gd`: sumar/gastar munición, emisión de `ammo_pool_changed` — cubre "consumo/recolección de munición" de `constitution.md` Principio II (depende de T008; DEBE fallar antes de completar T008)
-- [ ] T014 [P] Test GUT `test_board_manager.gd` en `tests/unit/systems/test_board_manager.gd`: `is_cell_free` refleja correctamente ocupación/liberación de celdas (depende de T012)
+- [X] T014 [P] Test GUT `test_board_manager.gd` en `tests/unit/systems/test_board_manager.gd`: `is_cell_free` refleja correctamente ocupación/liberación de celdas (depende de T012)
 
 **Checkpoint**: fundación lista — las user stories pueden empezar.
 
