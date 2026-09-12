@@ -43,6 +43,7 @@ Juego de defensa por carriles (estilo *Plants vs. Zombies*) inspirado en la hist
 - Uso dual, a elección del jugador:
   1. **Recargar** a un soldado ya desplegado en el tablero (le da más disparos antes de quedarse sin balas).
   2. **Desplegar** un soldado nuevo en una casilla libre.
+- **Confirmado** (spec `001-soldado-defensor-oleadas`, Assumptions; implementado y validado en T034): el costo en munición recolectada de una recarga completa es el mismo que el de desplegar un soldado nuevo de ese tipo (`UnitStats.deploy_ammo_cost` — no existe un campo separado de "costo de recarga").
 
 **Stat individual: Moral (por soldado, no es un recurso global)**
 - Cada soldado acumula su propia moral mientras tiene munición y sigue eliminando enemigos (los impactos que no eliminan al enemigo no otorgan moral).
@@ -129,3 +130,4 @@ Esta economía recrea la tensión histórica real: cada bala cuenta, y sobrevivi
 | 2026-09-11 | Reparado el archivo: contenía contenido duplicado/entreverado (versión vieja sin resolver + versión nueva, pegadas sin salto de línea entre ellas). Se recuperó la versión correcta sin pérdida de contenido. |
 | 2026-09-12 | Graduada la fórmula de daño de machete según moral desde el spec de feature `001-soldado-defensor-oleadas` (T017-T024, validado por `qa-validator`): `machete_base_damage + moral * machete_moral_multiplier`, lineal, con daño mínimo garantizado en moral=0. Se retira de "pendientes" en §10. |
 | 2026-09-12 | §6.1 y §10: graduada la decisión de recolección explícita por tap/click (no por proximidad) de la munición soltada por enemigos, implementada en T031/T032 de `001-soldado-defensor-oleadas` |
+| 2026-09-12 | §6.1: graduada la nota de que el costo de una recarga completa equivale al de desplegar un soldado nuevo (`UnitStats.deploy_ammo_cost`, sin campo separado) — decisión ya explícita en `spec.md` Assumptions de `001-soldado-defensor-oleadas`, confirmada al implementar `Soldado.reload()` (T034, validado por `qa-validator`) |
