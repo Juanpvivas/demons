@@ -10,9 +10,9 @@ extends Node
 ## pickups vía `add_ammo`, recarga/despliegue vía `try_spend_ammo`, FR-009/
 ## FR-010/FR-011). `deploy_or_reload_rejected` se emite aquí (no en
 ## `Soldado`) porque `EconomyManager` es la única fuente de verdad sobre si
-## hay fondos suficientes (`tasks.md` T033); `contracts/signals.md` la lista
-## en la tabla de `Soldado` por dónde se origina la intención del jugador,
-## pero quien decide y emite el rechazo es este autoload.
+## hay fondos suficientes (`tasks.md` T033) — así está documentada en la
+## tabla de `EconomyManager` de `contracts/signals.md`, aunque la intención
+## de recargar/desplegar se origine en `Soldado`.
 
 ## Pool global y compartido de munición recolectada (FR-008). Runtime,
 ## nunca un `Resource` — no es un valor base/máximo compartido entre

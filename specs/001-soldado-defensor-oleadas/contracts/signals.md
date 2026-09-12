@@ -16,7 +16,6 @@ señal es un punto de enganche obligatorio para HUD/audio/animación.
 | `mode_changed` | `new_mode: SoldierMode` | Al cambiar entre `RIFLE` y `MELEE` (en cualquier dirección, incluida recarga). | HUD, sistema de animación. |
 | `moral_changed` | `new_morale: float` | Cada vez que se acumula moral por eliminación (FR-006). | HUD (barra/indicador de moral). |
 | `soldier_defeated` | `grid_cell: Vector2i` | El soldado es derrotado (`spec.md` Edge Case: pierde moral, libera celda). | `BoardManager` (libera la celda), HUD, `GameStateManager` si aplica. |
-| `deploy_or_reload_rejected` | `reason: String` | Se intentó recargar/desplegar sin munición recolectada suficiente (FR-011). | HUD (mensaje al jugador). |
 
 ## `Enemigo` (`scenes/enemies/enemigo.gd`)
 
@@ -31,6 +30,7 @@ señal es un punto de enganche obligatorio para HUD/audio/animación.
 |---|---|---|---|
 | `ammo_pool_changed` | `new_amount: int` | Cualquier cambio al pool de munición recolectada (recolección, gasto en recarga/despliegue). | HUD (contador global, FR-015). |
 | `ammo_pickup_spawned` | `pickup_id`, `position: Vector2`, `amount: int` | Un enemigo derrotado generó una pickup recolectable en el tablero. | Sistema de recolección por tap/click (`research.md` §3). |
+| `deploy_or_reload_rejected` | `reason: String` | Emitida por `try_spend_ammo()` cuando `collected_ammo` es menor que el `amount` solicitado para recarga/despliegue (FR-011). | HUD (mensaje al jugador). |
 
 ## `WaveManager` (autoload)
 
