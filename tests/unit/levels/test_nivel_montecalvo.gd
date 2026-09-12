@@ -147,3 +147,185 @@ func test_enemigo_avanzando_en_mas_y_entra_en_rango_de_deteccion_y_es_eliminado_
 		is_instance_valid(enemigo),
 		"el enemigo del nivel debe quedar liberado del árbol tras ser derrotado"
 	)
+
+
+## --- Despliegue de un soldado nuevo en celda vacía (T035, `spec.md` User
+## Story 2, Acceptance Scenario 3; Edge Case "posición ya ocupada"; FR-001/
+## FR-010/FR-011) ---
+##
+## `_try_deploy_soldado(cell: Vector2i)` (`nivel_monte_calvo.gd`) es la
+## lógica de despliegue en sí (validar celda libre -> gastar munición ->
+## instanciar -> registrar ocupante); `_unhandled_input()` solo la envuelve
+## con la conversión de un evento de click/tap real a `Vector2i` de celda
+## (pantalla -> mundo -> celda).
+##
+## Se invoca `_try_deploy_soldado()` directamente vía `Object.call()` en vez
+## de simular un click/tap real con `Input.parse_input_event()` porque,
+## verificado empíricamente en este entorno (`--headless`, sin
+## `DisplayServer` real): el evento de mouse simulado NO llega a
+## `_unhandled_input()` con la posición de pantalla original que se le
+## asigna. El stretch de ventana configurado en el proyecto
+## (`window/stretch/mode="canvas_items"`, `aspect="expand"`) reescala la
+## posición del evento en un factor que depende del tamaño de ventana que
+## asume el runner headless (no de nada del propio nivel) ANTES de que
+## `_unhandled_input()` la reciba — ej. una posición enviada de (240,240)
+## llegó medida como (4320,4320) en una prueba exploratoria, un factor que
+## ni siquiera coincide con `get_viewport().canvas_transform` (que reporta
+## identidad). Simular el click de esa forma haría estos tests
+## frágiles/no deterministas (dependientes de configuración de ventana del
+## entorno de test, no del comportamiento del nivel) sin ejercitar más
+## lógica de negocio real que invocar el método de despliegue directamente.
+## Lo único que queda sin cubrir por esta decisión es
+## `_screen_to_world()`/`_world_to_cell()`, conversión de coordenadas pura
+## sin lógica de negocio, y el filtro de tipo de evento en
+## `_unhandled_input()`.
+##
+## Cada test fondea/restaura `EconomyManager.collected_ammo` (autoload
+## compartido entre archivos de test en el mismo proceso GUT), mismo patrón
+## que `tests/unit/units/test_soldado.gd`.
+
+# Celda libre del tablero (world center (144,144) con tile_size 96x96),
+# distinta de la celda del Soldado inicial colocado a mano (T027).
+const FREE_TEST_CELL := Vector2i(1, 1)
+
+# Celda del Soldado inicial (T027): global_position (576,500) con
+# tile_size 96x96 -> local_to_map floor(576/96)=6, floor(500/96)=5.
+const OCCUPIED_TEST_CELL := Vector2i(6, 5)
+
+
+func test_deploy_on_free_cell_with_enough_ammo_instantiates_soldado_spends_ammo_and_occupies_cell() -> void:
+	# Given: el nivel cargado y munición recolectada suficiente para el costo de despliegue
+	var level := _load_level()
+	var deploy_cost: int = level.soldado_deploy_stats.deploy_ammo_cost
+	var original_collected_ammo: int = EconomyManager.collected_ammo
+	EconomyManager.add_ammo(deploy_cost + 999) # fondeo generoso, cubre el costo exacto y de sobra
+
+	var board: BoardManager = level.get("_board_manager")
+	assert_true(
+		board.is_cell_free(FREE_TEST_CELL),
+		"precondición del test: la celda objetivo debe empezar libre"
+	)
+	var ammo_before_deploy: int = EconomyManager.collected_ammo
+	var children_before: int = level.get_child_count()
+
+	# When: el jugador despliega un soldado nuevo en una celda libre del tablero (Acceptance Scenario 3)
+	level.call("_try_deploy_soldado", FREE_TEST_CELL)
+
+	# Then: se gasta exactamente deploy_ammo_cost del pool global de munición recolectada
+	assert_eq(
+		EconomyManager.collected_ammo, ammo_before_deploy - deploy_cost,
+		"el despliegue exitoso debe descontar exactamente deploy_ammo_cost del pool global (FR-010)"
+	)
+
+	# Then: la celda queda ocupada
+	assert_false(
+		board.is_cell_free(FREE_TEST_CELL),
+		"tras un despliegue exitoso, BoardManager.is_cell_free() debe retornar false para esa celda"
+	)
+
+	# Then: se instanció exactamente un nuevo Soldado, centrado en la celda, con los stats de despliegue
+	assert_eq(
+		level.get_child_count(), children_before + 1,
+		"el despliegue exitoso debe agregar exactamente un nuevo nodo hijo (el Soldado nuevo) al nivel"
+	)
+	var tablero: TileMap = level.get_node("Tablero")
+	var expected_position: Vector2 = tablero.to_global(tablero.map_to_local(FREE_TEST_CELL))
+	var nuevo_soldado: Node = board.get_occupant(FREE_TEST_CELL)
+	assert_not_null(
+		nuevo_soldado,
+		"BoardManager debe registrar al nuevo Soldado como ocupante de la celda desplegada"
+	)
+	assert_true(
+		nuevo_soldado is Soldado,
+		"el nodo instanciado en la celda debe ser una instancia de Soldado.tscn (FR-001)"
+	)
+	assert_eq(
+		nuevo_soldado.global_position, expected_position,
+		"el nuevo Soldado debe instanciarse centrado en la celda desplegada"
+	)
+	assert_eq(
+		nuevo_soldado.stats, level.soldado_deploy_stats,
+		"el nuevo Soldado debe recibir soldado_deploy_stats como sus stats (munición inicial completa, Acceptance Scenario 3)"
+	)
+
+	# Cleanup: restaurar el pool global compartido entre tests/archivos.
+	EconomyManager.collected_ammo = original_collected_ammo
+
+
+func test_deploy_on_free_cell_without_enough_ammo_does_not_deploy_and_signals_rejection() -> void:
+	# Given: el nivel cargado con el pool global sin fondos suficientes (Acceptance Scenario 4)
+	var level := _load_level()
+	var original_collected_ammo: int = EconomyManager.collected_ammo
+	EconomyManager.collected_ammo = 0 # fondos insuficientes, sin importar el estado previo del pool
+	watch_signals(EconomyManager)
+
+	var board: BoardManager = level.get("_board_manager")
+	var children_before: int = level.get_child_count()
+
+	# When: el jugador intenta desplegar un soldado nuevo en una celda libre sin fondos suficientes
+	level.call("_try_deploy_soldado", FREE_TEST_CELL)
+
+	# Then: no se instancia ningún soldado nuevo ni se ocupa la celda
+	assert_eq(
+		level.get_child_count(), children_before,
+		"sin fondos suficientes no debe agregarse ningún nodo hijo nuevo al nivel"
+	)
+	assert_true(
+		board.is_cell_free(FREE_TEST_CELL),
+		"sin fondos suficientes la celda objetivo debe seguir libre"
+	)
+
+	# Then: el pool global no cambia
+	assert_eq(
+		EconomyManager.collected_ammo, 0,
+		"un intento de despliegue sin fondos suficientes no debe modificar el pool global"
+	)
+
+	# Then: el sistema informa al jugador de la restricción (FR-011)
+	assert_signal_emitted(
+		EconomyManager, "deploy_or_reload_rejected",
+		"un despliegue sin fondos suficientes debe emitir deploy_or_reload_rejected (FR-011, Acceptance Scenario 4)"
+	)
+
+	# Cleanup: restaurar el pool global compartido entre tests/archivos.
+	EconomyManager.collected_ammo = original_collected_ammo
+
+
+func test_deploy_on_already_occupied_cell_does_not_deploy_or_spend_ammo() -> void:
+	# Given: el nivel cargado (el Soldado inicial ya registrado como
+	# ocupante de su celda desde _ready(), T027/T035) y fondos de sobra
+	var level := _load_level()
+	var deploy_cost: int = level.soldado_deploy_stats.deploy_ammo_cost
+	var original_collected_ammo: int = EconomyManager.collected_ammo
+	EconomyManager.add_ammo(deploy_cost + 999)
+	watch_signals(EconomyManager)
+
+	var board: BoardManager = level.get("_board_manager")
+	assert_false(
+		board.is_cell_free(OCCUPIED_TEST_CELL),
+		"precondición del test: la celda del Soldado inicial debe registrarse como ocupada desde _ready()"
+	)
+	var ammo_before_deploy: int = EconomyManager.collected_ammo
+	var children_before: int = level.get_child_count()
+
+	# When: el jugador intenta desplegar sobre una celda ya ocupada (spec.md Edge Cases)
+	level.call("_try_deploy_soldado", OCCUPIED_TEST_CELL)
+
+	# Then: no se instancia ningún soldado nuevo
+	assert_eq(
+		level.get_child_count(), children_before,
+		"una celda ya ocupada no debe agregar ningún nodo hijo nuevo al nivel (Edge Case: posición ya ocupada)"
+	)
+
+	# Then: no se gasta munición del pool global (la validación de celda ocurre ANTES de intentar gastar)
+	assert_eq(
+		EconomyManager.collected_ammo, ammo_before_deploy,
+		"una celda ya ocupada no debe gastar munición del pool global"
+	)
+	assert_signal_not_emitted(
+		EconomyManager, "deploy_or_reload_rejected",
+		"una celda ya ocupada no debe siquiera intentar gastar munición, por lo que tampoco debe emitir deploy_or_reload_rejected"
+	)
+
+	# Cleanup: restaurar el pool global compartido entre tests/archivos.
+	EconomyManager.collected_ammo = original_collected_ammo
