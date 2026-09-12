@@ -265,6 +265,23 @@ cualquier instancia reciclada, sin duplicar esa lógica), pero implica que
 instancia recién instanciada con sus valores por defecto — no debe asumir
 que ya pasó por `on_pool_acquired()` antes.
 
+**Resuelto en T042 (`Enemigo`/`WaveSpawner`, `001-soldado-defensor-oleadas`)**:
+esta implementación concreta terminó **sin usar** los hooks
+`on_pool_acquired()`/`on_pool_released()` para reinicializar al enemigo.
+Motivo: `acquire()` no admite argumentos, así que el hook se ejecutaría
+antes de que el llamador (`WaveSpawner`) pudiera asignarle el `EnemyStats`
+correcto de la `WaveSpawnEntry` que se está por spawnear, dejando a la
+instancia con el `stats`/salud de su uso anterior. En su lugar, `Enemigo`
+expone un método explícito propio (`prepare_for_spawn(stats, position)`,
+sin ningún nombre ni firma especial reconocida por `ObjectPool`) que el
+dueño del pool llama manualmente justo después de `acquire()`, ya con los
+datos concretos del spawn en mano. Queda como guía para cualquier pool
+futuro cuyo `acquire()` necesite variar por-instancia: los hooks
+automáticos son la opción por defecto para reseteos sin parámetros; un
+método explícito llamado por el dueño después de `acquire()` es la opción
+correcta cuando la reinicialización necesita datos que no existen todavía
+en el momento en que el hook automático se dispara.
+
 Cuando sí hace falta liberar definitivamente un nodo (por ejemplo, al
 descargar el nivel o salir al menú, fuera del ciclo de vida del pool), se
 usa siempre `queue_free()` y nunca `free()` — `free()` libera el nodo de
@@ -378,3 +395,4 @@ sistema, se asumen desde este documento):
 | 2026-09-12 | §6: se agrega la limitación conocida de simular input real (clicks/taps) en modo `--headless` (el stretch de ventana del proyecto desalinea la posición que recibe el callback), y el patrón de testear el método interno de lógica de negocio directamente cuando la conversión de coordenadas está separada de él — observación no bloqueante de `qa-validator` confirmada empíricamente en T035 de `001-soldado-defensor-oleadas`, graduada aquí por aplicar a cualquier futuro test que necesite simular input real bajo `--headless` |
 | 2026-09-12 | §4.1: completada la descripción de `EconomyManager` con la señal `deploy_or_reload_rejected(reason)` (faltaba junto a `ammo_pool_changed`) y nota de que el ciclo recolección → gasto → feedback visual queda cerrado de punta a punta con `HUD.tscn`/`hud.gd` (T036 de `001-soldado-defensor-oleadas`, que además cierra la Fase 4/User Story 2 completa: "US1 + US2 funcionan juntas") |
 | 2026-09-12 | §4.1: completada la descripción de `WaveManager` (`start_waves`, `get_current_wave`, señal `all_waves_completed` faltante) tras su implementación en T039 de `001-soldado-defensor-oleadas` (validada por `qa-validator`, 25/25 tests de T037 en verde); se gradúa como convención explícita de proyecto el patrón "autoload orquestador no instancia ni temporiza, un spawner externo se lo notifica vía `notify_*()`", ya presente en `EconomyManager.notify_pickup_spawned` (T032) y ahora repetido en `WaveManager.notify_enemy_defeated` (T039) |
+| 2026-09-12 | §4.5: completada la nota sobre hooks de `ObjectPool` que ya nombraba a T026/T042 como caso relevante — tras la implementación real de T042 (`WaveSpawner`/`Enemigo`, validada por `qa-validator`), se documenta que esa implementación concreta no usó `on_pool_acquired()`/`on_pool_released()` sino un método explícito propio (`prepare_for_spawn()`) llamado por el dueño del pool justo después de `acquire()`, porque `acquire()` no admite argumentos y el hook automático se dispararía antes de tener los datos correctos del spawn. Se deja como guía para pools futuros con la misma necesidad. |
