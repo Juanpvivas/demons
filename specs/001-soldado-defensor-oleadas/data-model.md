@@ -83,7 +83,8 @@ Una oleada autorada (ver `research.md` §4). Instancias en
 | `stats` | `EnemyStats` (`@export`) | Solo lectura. |
 | `_current_health` | `int` | Runtime, inicializado desde `stats.max_health`. |
 
-**Señales emitidas**: `enemy_defeated(ammo_dropped: int)`,
+**Señales emitidas** (ver `contracts/signals.md` para firmas completas):
+`enemy_defeated(ammo_dropped: int, position: Vector2)`,
 `reached_defended_position()`.
 
 ### Munición recolectada (estado, no clase — vive en `EconomyManager`)
