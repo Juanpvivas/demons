@@ -285,6 +285,23 @@ sistema, se asumen desde este documento):
   consumo/recolección de munición, acumulación de moral, condiciones de
   victoria/derrota, generación de oleadas — toda lógica que no dependa de
   renderizado.
+- **Limitación conocida de `--headless` para simular input real:**
+  simular un evento de input crudo (`Input.parse_input_event()`) que
+  dependa de coordenadas de pantalla/viewport (ej. un click/tap que
+  `_unhandled_input()` convierte a posición de mundo) no es fiable en modo
+  `--headless` — el runner no aplica el mismo `canvas_transform`/stretch de
+  ventana (`window/stretch/mode="canvas_items"`, `aspect="expand"`) que una
+  ejecución real, por lo que la posición que llega al callback no coincide
+  con la enviada (confirmado empíricamente en `001-soldado-defensor-oleadas`/
+  T035, detalle completo en el comentario de cabecera de la sección de
+  tests correspondiente en `tests/unit/levels/test_nivel_montecalvo.gd`).
+  Cuando la lógica de negocio bajo prueba está separada de la conversión de
+  coordenadas (un método interno invocable directamente, ej.
+  `_try_deploy_soldado(cell)` en `nivel_monte_calvo.gd`), el patrón es
+  testear ese método directamente vía `Object.call()`/llamada normal en vez
+  de simular el evento crudo — deja sin cubrir solo la conversión de
+  coordenadas en sí (pantalla → mundo → celda) y el filtro de tipo de
+  evento, sin lógica de negocio real.
 
 ## 7. Consideraciones multiplataforma
 
@@ -324,3 +341,4 @@ sistema, se asumen desde este documento):
 | 2026-09-11 | §6 y §7 sincronizadas con la realidad del repo tras T002/T003 de `001-soldado-defensor-oleadas`: se confirma versión de GUT (v9.7.1) ya instalada, y se documenta como ejemplo concreto el par de acciones `InputMap` `select_cell`/`collect_pickup` (mouse+touch, sin tecla hardcodeada) — antes ambas secciones solo describían la convención en abstracto |
 | 2026-09-11 | §4.1: se agrega la convención de que los scripts de autoload no declaran `class_name` (se referencian por su nombre de singleton) — duda explícita de implementación surgida en T008/T009 (`EconomyManager`, `GameStateManager`) de `001-soldado-defensor-oleadas`, graduada aquí porque aplica a todo autoload futuro (ej. `WaveManager` en T039) |
 | 2026-09-11 | §2 y §4.5 sincronizadas con la realidad del repo tras T011/T012/T014 de `001-soldado-defensor-oleadas`: se documenta la API concreta de `ObjectPool` (`setup`/`acquire`/`release`/`available_count`/`in_use_count`/`clear` + hooks opcionales `on_pool_acquired`/`on_pool_released`, antes solo descrita en principio); se agrega `core/board_manager.gd` (`BoardManager`) como segundo ejemplo real (ya no hipotético) del patrón de utilidad no-autoload en `core/`; se agrega nota para T026/T042 sobre que `on_pool_released()` se invoca también sobre instancias recién creadas por el pool, antes de cualquier uso real (comportamiento intencional, observación no bloqueante de `qa-validator` en T011/T012) |
+| 2026-09-12 | §6: se agrega la limitación conocida de simular input real (clicks/taps) en modo `--headless` (el stretch de ventana del proyecto desalinea la posición que recibe el callback), y el patrón de testear el método interno de lógica de negocio directamente cuando la conversión de coordenadas está separada de él — observación no bloqueante de `qa-validator` confirmada empíricamente en T035 de `001-soldado-defensor-oleadas`, graduada aquí por aplicar a cualquier futuro test que necesite simular input real bajo `--headless` |
