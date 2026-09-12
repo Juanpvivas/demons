@@ -8,6 +8,16 @@
 class_name UnitStats
 extends Resource
 
+@export_group("Combate")
+
+## Vida total del soldado antes de ser derrotado (`spec.md` Edge Case: "si un
+## soldado en modo cuerpo a cuerpo es derrotado por los enemigos... el
+## soldado y su moral acumulada se pierden, liberando esa posición del
+## tablero"). Aplica sin importar el modo de combate activo (fusil o
+## machete) — es el límite de vida de la unidad, no de un arma en
+## particular.
+@export_range(1, 500, 1) var max_health: int = 30
+
 @export_group("Fusil")
 
 ## Munición máxima al desplegar o recargar el soldado (FR-003).
