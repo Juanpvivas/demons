@@ -1,12 +1,14 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/units/Soldado.tscn" id="1_soldado"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/EnemigoBase.tscn" id="2_enemigo"]
+[ext_resource type="Script" path="res://scenes/levels/nivel_monte_calvo.gd" id="3_nivel_monte_calvo"]
 
 [sub_resource type="TileSet" id="TileSet_tablero"]
 tile_size = Vector2i(96, 96)
 
 [node name="Nivel_MonteCalvo" type="Node2D"]
+script = ExtResource("3_nivel_monte_calvo")
 
 [node name="Tablero" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_tablero")
