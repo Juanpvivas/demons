@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WaveData" format=3]
+
+[ext_resource type="Script" path="res://resources/schemas/wave_data.gd" id="1_0upoc"]
+[ext_resource type="Script" path="res://resources/schemas/wave_spawn_entry.gd" id="2_ofvb6"]
+[ext_resource type="Resource" path="res://resources/enemies/enemigo_infanteria_base.tres" id="3_6kbl8"]
+
+[sub_resource type="Resource" id="Resource_cjlhs"]
+script = ExtResource("2_ofvb6")
+enemy_stats = ExtResource("3_6kbl8")
+count = 8
+spawn_interval = 1.1
+
+[resource]
+script = ExtResource("1_0upoc")
+wave_number = 5
+spawn_entries = Array[ExtResource("2_ofvb6")]([SubResource("Resource_cjlhs")])
