@@ -71,20 +71,20 @@ Proyecto único Godot 4.7 (GDScript). Rutas relativas a `res://` — ver
 > Escribir estos tests PRIMERO; deben FALLAR antes de implementar.
 
 - [X] T015 [P] [US1] Test `test_soldado.gd` en `tests/unit/units/test_soldado.gd`: daño de fusil por disparo, consumo de munición por disparo, transición automática RIFLE→MELEE al llegar a 0 munición, daño de machete = `machete_base_damage + moral * machete_moral_multiplier` (incluyendo caso moral=0 con daño base > 0), acumulación de moral **solo** por eliminación (no por impacto sin matar) — cubre "cálculo de daño" y "acumulación de moral" de `constitution.md` Principio II (depende de T004)
-- [ ] T016 [P] [US1] Test `test_enemigo.gd` en `tests/unit/enemies/test_enemigo.gd`: recepción de daño, muerte al llegar salud a 0, emisión de `enemy_defeated(ammo_dropped)` con el valor de `stats.ammo_drop` (depende de T005)
+- [X] T016 [P] [US1] Test `test_enemigo.gd` en `tests/unit/enemies/test_enemigo.gd`: recepción de daño, muerte al llegar salud a 0, emisión de `enemy_defeated(ammo_dropped)` con el valor de `stats.ammo_drop` (depende de T005)
 
 ### Implementation for User Story 1
 
 - [X] T017 [P] [US1] Crear `resources/units/soldado_base_stats.tres` instanciando `UnitStats` con valores iniciales de balance (depende de T004)
-- [ ] T018 [P] [US1] Crear `resources/enemies/enemigo_infanteria_base.tres` instanciando `EnemyStats` con valores iniciales de balance (depende de T005)
+- [X] T018 [P] [US1] Crear `resources/enemies/enemigo_infanteria_base.tres` instanciando `EnemyStats` con valores iniciales de balance (depende de T005)
 - [X] T019 [P] [US1] Crear `scenes/units/Soldado.tscn`: `StaticBody2D` raíz + `AnimatedSprite2D` + `Area2D` "DeteccionRango" + `Area2D` "RangoMelee" + `CollisionShape2D`, por `docs/ARCHITECTURE.md` §5
 - [X] T020 [US1] `scenes/units/soldado.gd`: estado runtime (`stats: UnitStats` exportado, `_current_ammo`, `_current_morale`, `_mode: SoldierMode`, `_current_target`), inicialización desde `stats` en `_ready()`, `@onready` a las `Area2D` hijas (depende de T017, T019)
 - [X] T021 [US1] `soldado.gd`: selección/seguimiento de objetivo vía `body_entered`/`body_exited` de "DeteccionRango" — lista de candidatos, prioridad = enemigo más avanzado, sin dividir fuego (FR-002), por `research.md` §1 (depende de T020)
 - [X] T022 [US1] `soldado.gd`: disparo automático a `_current_target` con cadencia `stats.fire_rate`, decremento de `_current_ammo`, emisión `ammo_depleted` al llegar a 0 (depende de T021)
 - [X] T023 [US1] `soldado.gd`: transición automática a `MELEE` al recibir `ammo_depleted`, emisión `mode_changed`, ataque contra enemigos en "RangoMelee" con el daño calculado en T015 (depende de T022)
 - [X] T024 [US1] `soldado.gd`: acumulación de moral (`_current_morale += stats.moral_per_kill`) al confirmar una eliminación propia, emisión `moral_changed` (depende de T023)
-- [ ] T025 [P] [US1] Crear `scenes/enemies/EnemigoBase.tscn`: `CharacterBody2D` raíz + `AnimatedSprite2D` + `CollisionShape2D`, por `docs/ARCHITECTURE.md` §5
-- [ ] T026 [US1] `scenes/enemies/enemigo.gd`: estado runtime (`stats: EnemyStats`, `_current_health`), avance con `move_and_slide()`, recepción de daño, muerte y emisión `enemy_defeated(ammo_dropped, position)` (depende de T018, T025)
+- [X] T025 [P] [US1] Crear `scenes/enemies/EnemigoBase.tscn`: `CharacterBody2D` raíz + `AnimatedSprite2D` + `CollisionShape2D`, por `docs/ARCHITECTURE.md` §5
+- [X] T026 [US1] `scenes/enemies/enemigo.gd`: estado runtime (`stats: EnemyStats`, `_current_health`), avance con `move_and_slide()`, recepción de daño, muerte y emisión `enemy_defeated(ammo_dropped, position)` (depende de T018, T025)
 - [ ] T027 [US1] Crear `scenes/levels/Nivel_MonteCalvo.tscn` mínimo (un `TileMap` simple, un soldado colocado a mano, spawn manual de un enemigo) — suficiente para el Independent Test de esta user story (depende de T020, T026)
 - [ ] T028 [US1] Conectar animaciones placeholder (disparo/machete/muerte) a `mode_changed`/`enemy_defeated` en `soldado.gd`/`enemigo.gd` — feedback visual mínimo por `constitution.md` Principio III (depende de T023, T026)
 
