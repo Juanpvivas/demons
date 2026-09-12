@@ -89,6 +89,15 @@ script del Node, no en un autoload y **no** escrito de vuelta al `Resource`
 de stats (ver regla en 4.3). Solo el recurso compartido (munición
 recolectada del jugador) es verdaderamente global.
 
+Los scripts de autoload **no declaran `class_name`**: se acceden en todo el
+proyecto por su nombre de singleton (registrado en Project Settings →
+Autoload, ej. `EconomyManager`), que Godot ya expone como global sin
+necesidad de una clase con nombre. Declarar `class_name` además sería
+redundante (dos identificadores globales para lo mismo) y expondría el
+script como tipo instanciable en el picker de "New Resource"/"New Script",
+lo cual no aplica a un singleton pensado para una única instancia viva
+gestionada por el motor.
+
 ### 4.2 Comunicación por señales
 
 Los nodos se comunican por señales, no por referencias directas ni por
@@ -286,3 +295,4 @@ sistema, se asumen desde este documento):
 | 2026-09-10 | Se agrega `addons/`, `core/` (lógica compartida no-autoload) y `resources/schemas/` (scripts base de Resource, separados de las instancias `.tres`); se subdivide `assets/` por dominio; se corrige la estructura de `tests/unit/` para reflejar la organización real de `scenes/` en vez de una carpeta `scripts/` inexistente. |
 | 2026-09-11 | Correcciones de revisión (`godot-code-review` + `resource-pattern`): raíz de `Soldado.tscn` cambiada de `CharacterBody2D` a `StaticBody2D` (unidad estacionaria); regla explícita de límite dato/estado entre `Resource` de stats y estado mutable por instancia; regla de `@onready` y conexión de señales en `_ready()`; `queue_free()` vs `free()` para limpieza fuera del pool; `@export_range`/`@export_group` para campos de balance; nueva sección 4.6 de convenciones C# |
 | 2026-09-11 | §6 y §7 sincronizadas con la realidad del repo tras T002/T003 de `001-soldado-defensor-oleadas`: se confirma versión de GUT (v9.7.1) ya instalada, y se documenta como ejemplo concreto el par de acciones `InputMap` `select_cell`/`collect_pickup` (mouse+touch, sin tecla hardcodeada) — antes ambas secciones solo describían la convención en abstracto |
+| 2026-09-11 | §4.1: se agrega la convención de que los scripts de autoload no declaran `class_name` (se referencian por su nombre de singleton) — duda explícita de implementación surgida en T008/T009 (`EconomyManager`, `GameStateManager`) de `001-soldado-defensor-oleadas`, graduada aquí porque aplica a todo autoload futuro (ej. `WaveManager` en T039) |
