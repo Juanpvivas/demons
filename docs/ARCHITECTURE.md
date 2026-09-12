@@ -84,10 +84,39 @@ atajo para evitar pasar referencias:
   recolección → gasto (recarga/despliegue) → feedback visual consumido por
   `HUD.tscn` (`scenes/ui/hud.gd`, `001-soldado-defensor-oleadas`/T036),
   cerrando de punta a punta el recurso compartido de esta sección.
-- **`WaveManager`**: controla la secuencia de oleadas del nivel activo,
-  emite `wave_started(wave_number)` y `wave_completed(wave_number)`.
+- **`WaveManager`**: controla la secuencia de oleadas del nivel activo.
+  Consume la secuencia de `WaveData` fijada por `start_waves(waves)` y
+  expone `get_current_wave()`. Emite `wave_started(wave_number)`,
+  `wave_completed(wave_number)` y `all_waves_completed()` (condición de
+  victoria, FR-012/SC-005). El `wave_number` de esas señales es siempre el
+  valor literal autorado en el `.tres` de esa oleada, nunca un índice
+  recalculado, para que lo que muestra el HUD coincida siempre con lo que
+  diseño fijó.
 - **`GameStateManager`**: controla condición de victoria/derrota y el
   estado general de la partida (en curso / pausada / terminada).
+
+**Convención: autoloads orquestadores no instancian ni temporizan, un
+spawner externo se lo notifica.** Un autoload que decide "cuándo" algo
+ocurre a nivel de juego (progreso de oleada, pool de munición) no es quien
+instancia las escenas físicas involucradas (`Enemigo`, `AmmoPickup`) ni
+quien corre el `Timer`/cola de spawn que las genera — eso vive en el nodo
+del nivel dueño de esa escena concreta (`Enemigo._die()`, `WaveSpawner` en
+`nivel_monte_calvo.gd`), que llama a un método público `notify_*()` del
+autoload para avisarle. Esto mantiene a los autoloads libres de lógica de
+instanciación de nodos (consistente con la separación de responsabilidad de
+4.5) y evita que el autoload necesite referencias directas a nodos de
+escena. Dos ejemplos concretos ya en el repo, mismo patrón:
+- `EconomyManager.notify_pickup_spawned(pickup_id, position, amount)`
+  (T032): `Enemigo._die()` instancia `AmmoPickup.tscn` y se lo notifica;
+  `EconomyManager` sigue siendo el único emisor de `ammo_pickup_spawned`
+  sin ser quien instancia la escena.
+- `WaveManager.notify_enemy_defeated()` (T039): `WaveManager` no instancia
+  enemigos ni corre ningún `Timer`/cola de `spawn_interval` — eso es
+  responsabilidad de `WaveSpawner` (T042), que llama a este método una vez
+  por cada enemigo derrotado de la oleada activa. `WaveManager` solo
+  necesita saber cuántos enemigos totales componen la oleada (suma de
+  `count` de sus `WaveSpawnEntry`) y cuántos fueron notificados como
+  derrotados.
 
 Cada `Soldado` y `Enemigo` mantiene su **propio estado local** (munición
 actual, moral acumulada, modo activo) — eso vive en variables propias del
@@ -348,3 +377,4 @@ sistema, se asumen desde este documento):
 | 2026-09-11 | §2 y §4.5 sincronizadas con la realidad del repo tras T011/T012/T014 de `001-soldado-defensor-oleadas`: se documenta la API concreta de `ObjectPool` (`setup`/`acquire`/`release`/`available_count`/`in_use_count`/`clear` + hooks opcionales `on_pool_acquired`/`on_pool_released`, antes solo descrita en principio); se agrega `core/board_manager.gd` (`BoardManager`) como segundo ejemplo real (ya no hipotético) del patrón de utilidad no-autoload en `core/`; se agrega nota para T026/T042 sobre que `on_pool_released()` se invoca también sobre instancias recién creadas por el pool, antes de cualquier uso real (comportamiento intencional, observación no bloqueante de `qa-validator` en T011/T012) |
 | 2026-09-12 | §6: se agrega la limitación conocida de simular input real (clicks/taps) en modo `--headless` (el stretch de ventana del proyecto desalinea la posición que recibe el callback), y el patrón de testear el método interno de lógica de negocio directamente cuando la conversión de coordenadas está separada de él — observación no bloqueante de `qa-validator` confirmada empíricamente en T035 de `001-soldado-defensor-oleadas`, graduada aquí por aplicar a cualquier futuro test que necesite simular input real bajo `--headless` |
 | 2026-09-12 | §4.1: completada la descripción de `EconomyManager` con la señal `deploy_or_reload_rejected(reason)` (faltaba junto a `ammo_pool_changed`) y nota de que el ciclo recolección → gasto → feedback visual queda cerrado de punta a punta con `HUD.tscn`/`hud.gd` (T036 de `001-soldado-defensor-oleadas`, que además cierra la Fase 4/User Story 2 completa: "US1 + US2 funcionan juntas") |
+| 2026-09-12 | §4.1: completada la descripción de `WaveManager` (`start_waves`, `get_current_wave`, señal `all_waves_completed` faltante) tras su implementación en T039 de `001-soldado-defensor-oleadas` (validada por `qa-validator`, 25/25 tests de T037 en verde); se gradúa como convención explícita de proyecto el patrón "autoload orquestador no instancia ni temporiza, un spawner externo se lo notifica vía `notify_*()`", ya presente en `EconomyManager.notify_pickup_spawned` (T032) y ahora repetido en `WaveManager.notify_enemy_defeated` (T039) |
