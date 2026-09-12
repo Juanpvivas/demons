@@ -47,7 +47,7 @@ Proyecto único Godot 4.7 (GDScript). Rutas relativas a `res://` — ver
 - [X] T004 [P] Crear `UnitStats` (`class_name UnitStats extends Resource`) en `resources/schemas/unit_stats.gd` con campos de `data-model.md` (`max_ammo`, `damage_per_shot`, `fire_rate`, `machete_base_damage`, `machete_moral_multiplier`, `moral_per_kill`, `deploy_ammo_cost`), todos `@export_range` por `docs/ARCHITECTURE.md` §4.3
 - [X] T005 [P] Crear `EnemyStats` (`class_name EnemyStats extends Resource`) en `resources/schemas/enemy_stats.gd` con `max_health`, `move_speed`, `melee_damage`, `ammo_drop`, todos `@export_range`
 - [X] T006 [P] Crear `WaveSpawnEntry` (`class_name WaveSpawnEntry extends Resource`) en `resources/schemas/wave_spawn_entry.gd` con `enemy_stats: EnemyStats`, `count`, `spawn_interval`
-- [ ] T007 Crear `WaveData` (`class_name WaveData extends Resource`) en `resources/schemas/wave_data.gd` con `wave_number`, `spawn_entries: Array[WaveSpawnEntry]` (depende de T006)
+- [X] T007 Crear `WaveData` (`class_name WaveData extends Resource`) en `resources/schemas/wave_data.gd` con `wave_number`, `spawn_entries: Array[WaveSpawnEntry]` (depende de T006)
 - [ ] T008 [P] Crear autoload `EconomyManager` en `autoloads/economy_manager.gd`: `collected_ammo: int`, señales `ammo_pool_changed(new_amount)` y `ammo_pickup_spawned(pickup_id, position, amount)`, según `contracts/signals.md`
 - [ ] T009 [P] Crear autoload `GameStateManager` en `autoloads/game_state_manager.gd`: `enum GameState {PLAYING, PAUSED, WON, LOST}`, señales `game_won`, `game_lost`, `game_state_changed(new_state)`
 - [ ] T010 Registrar `EconomyManager` y `GameStateManager` como autoloads en `project.godot` (depende de T008, T009)
