@@ -124,13 +124,13 @@ Proyecto único Godot 4.7 (GDScript). Rutas relativas a `res://` — ver
 
 ### Tests for User Story 3 (GUT) ⚠️
 
-- [ ] T037 [P] [US3] Test `test_wave_manager.gd` en `tests/unit/systems/test_wave_manager.gd`: secuencia de oleadas, emisión de `wave_started`/`wave_completed`/`all_waves_completed` — cubre "generación de oleadas" de `constitution.md` Principio II (depende de T007; DEBE fallar antes de implementar `wave_manager.gd`)
+- [X] T037 [P] [US3] Test `test_wave_manager.gd` en `tests/unit/systems/test_wave_manager.gd`: secuencia de oleadas, emisión de `wave_started`/`wave_completed`/`all_waves_completed` — cubre "generación de oleadas" de `constitution.md` Principio II (depende de T007; DEBE fallar antes de implementar `wave_manager.gd`)
 - [ ] T038 [P] [US3] Test `test_game_state_manager.gd` en `tests/unit/systems/test_game_state_manager.gd`: `game_lost` al recibir `reached_defended_position`, `game_won` al recibir `all_waves_completed` — cubre "condiciones de victoria/derrota" de `constitution.md` Principio II (depende de T009)
 
 ### Implementation for User Story 3
 
-- [ ] T039 [P] [US3] Crear autoload `WaveManager` en `autoloads/wave_manager.gd`: consume `Array[WaveData]`, emite `wave_started`/`wave_completed`/`all_waves_completed` (depende de T007)
-- [ ] T040 [US3] Registrar `WaveManager` como autoload en `project.godot` (depende de T039)
+- [X] T039 [P] [US3] Crear autoload `WaveManager` en `autoloads/wave_manager.gd`: consume `Array[WaveData]`, emite `wave_started`/`wave_completed`/`all_waves_completed` (depende de T007)
+- [X] T040 [US3] Registrar `WaveManager` como autoload en `project.godot` (depende de T039)
 - [ ] T041 [P] [US3] Crear 3 a 10 `resources/waves/nivel_montecalvo_oleada_0N.tres` con dificultad creciente en composición/cantidad, por `research.md` §4 — cubre SC-005 (depende de T007, T018)
 - [ ] T042 [US3] `nivel_monte_calvo.gd`: `WaveSpawner` (`Timer` + cola de spawns por `WaveSpawnEntry`), instanciando enemigos vía `ObjectPool` (depende de T011, T026, T039)
 - [ ] T043 [US3] `Nivel_MonteCalvo.tscn`: `Area2D` de "posición defendida" que, al detectar `body_entered` de un `Enemigo`, hace que este emita `reached_defended_position()` (depende de T026, T027)
