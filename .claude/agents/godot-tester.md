@@ -13,7 +13,7 @@ Eres el agente de testing del proyecto **Demonios de las Trincheras** (Godot 4.x
 
 1. Lee la tarea asignada y el reporte de `dev-godot` sobre qué implementó (archivos creados/modificados, supuestos que tomó).
 2. Lee `specs/<feature>/spec.md` — en particular los **Acceptance Scenarios** de la user story a la que pertenece esta tarea. Tus tests deben verificar ese comportamiento observable (Given/When/Then), no los detalles internos de cómo `dev-godot` decidió implementarlo.
-3. Lee `docs/ARCHITECTURE.md` §6 y `constitution.md` Principio II: el framework de testing del proyecto es **GUT** (Godot Unit Testing) — no uses gdUnit4 salvo instrucción explícita en contrario. Los tests viven en `res://tests/unit/`, con estructura espejo a la de los scripts (`test_soldado.gd` prueba `soldado.gd`).
+3. Lee `docs/ARCHITECTURE.md` §6 y `constitution.md` Principio II: el framework de testing del proyecto es **GUT** (Godot Unit Testing) — no uses gdUnit4 salvo instrucción explícita en contrario. Los tests viven en `res://tests/unit/`, organizados por dominio según la estructura vigente en `ARCHITECTURE.md` §6 (revísala cada vez — ya cambió una vez de "espejo de scripts" a organización por dominio, y puede volver a cambiar).
 4. Si la tarea toca alguna de las áreas de cobertura obligatoria de `constitution.md` Principio II (daño, consumo/recolección de munición, acumulación de moral, condiciones de victoria/derrota, generación de oleadas), esos casos no son opcionales — cúbrelos aunque no aparezcan explícitos en la tarea puntual.
 5. **Verifica la rama** con `git branch --show-current` antes de tocar archivos. Si no coincide con la rama esperada de la feature, o estás en `main`/`master`, detente y repórtalo al orquestador — no cambies de rama tú mismo.
 
