@@ -77,8 +77,13 @@ Uso mínimo y deliberado — solo para estado verdaderamente global, no como
 atajo para evitar pasar referencias:
 
 - **`EconomyManager`**: dueño del pool global de munición recolectada.
-  Expone `ammo_pool_changed(new_amount)`. Ningún otro nodo debe mantener su
-  propia copia de este número.
+  Expone `ammo_pool_changed(new_amount)` (cualquier cambio al pool, por
+  recolección o gasto) y `deploy_or_reload_rejected(reason)` (al intentar
+  gastar más munición de la disponible vía `try_spend_ammo()`). Ningún otro
+  nodo debe mantener su propia copia de este número. Ciclo completo
+  recolección → gasto (recarga/despliegue) → feedback visual consumido por
+  `HUD.tscn` (`scenes/ui/hud.gd`, `001-soldado-defensor-oleadas`/T036),
+  cerrando de punta a punta el recurso compartido de esta sección.
 - **`WaveManager`**: controla la secuencia de oleadas del nivel activo,
   emite `wave_started(wave_number)` y `wave_completed(wave_number)`.
 - **`GameStateManager`**: controla condición de victoria/derrota y el
@@ -342,3 +347,4 @@ sistema, se asumen desde este documento):
 | 2026-09-11 | §4.1: se agrega la convención de que los scripts de autoload no declaran `class_name` (se referencian por su nombre de singleton) — duda explícita de implementación surgida en T008/T009 (`EconomyManager`, `GameStateManager`) de `001-soldado-defensor-oleadas`, graduada aquí porque aplica a todo autoload futuro (ej. `WaveManager` en T039) |
 | 2026-09-11 | §2 y §4.5 sincronizadas con la realidad del repo tras T011/T012/T014 de `001-soldado-defensor-oleadas`: se documenta la API concreta de `ObjectPool` (`setup`/`acquire`/`release`/`available_count`/`in_use_count`/`clear` + hooks opcionales `on_pool_acquired`/`on_pool_released`, antes solo descrita en principio); se agrega `core/board_manager.gd` (`BoardManager`) como segundo ejemplo real (ya no hipotético) del patrón de utilidad no-autoload en `core/`; se agrega nota para T026/T042 sobre que `on_pool_released()` se invoca también sobre instancias recién creadas por el pool, antes de cualquier uso real (comportamiento intencional, observación no bloqueante de `qa-validator` en T011/T012) |
 | 2026-09-12 | §6: se agrega la limitación conocida de simular input real (clicks/taps) en modo `--headless` (el stretch de ventana del proyecto desalinea la posición que recibe el callback), y el patrón de testear el método interno de lógica de negocio directamente cuando la conversión de coordenadas está separada de él — observación no bloqueante de `qa-validator` confirmada empíricamente en T035 de `001-soldado-defensor-oleadas`, graduada aquí por aplicar a cualquier futuro test que necesite simular input real bajo `--headless` |
+| 2026-09-12 | §4.1: completada la descripción de `EconomyManager` con la señal `deploy_or_reload_rejected(reason)` (faltaba junto a `ammo_pool_changed`) y nota de que el ciclo recolección → gasto → feedback visual queda cerrado de punta a punta con `HUD.tscn`/`hud.gd` (T036 de `001-soldado-defensor-oleadas`, que además cierra la Fase 4/User Story 2 completa: "US1 + US2 funcionan juntas") |
