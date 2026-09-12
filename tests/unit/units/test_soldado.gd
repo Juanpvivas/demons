@@ -46,10 +46,47 @@ extends GutTest
 ## `collected_ammo` al final para no filtrar estado hacia otros tests que
 ## compartan el mismo autoload en este proceso de GUT (mismo patrón que
 ## `tests/unit/systems/test_autoloads_registration.gd`).
+##
+## T051: agrega cobertura del Edge Case de derrota de `spec.md` ("¿Qué ocurre
+## si un soldado en modo cuerpo a cuerpo es derrotado por los enemigos antes
+## de que el jugador pueda recargarlo? El soldado y su moral acumulada se
+## pierden, liberando esa posición del tablero") y su contrato en
+## `contracts/signals.md` (`soldier_defeated(grid_cell: Vector2i)`).
+## `soldado.gd` TODAVÍA NO implementa `_current_health`, `take_damage()`,
+## `_grid_cell`/su setter, ni la emisión de `soldier_defeated` — todo eso es
+## T052 (`tasks.md`); el ataque activo de un `Enemigo` real contra un
+## `Soldado` en "RangoMelee" es, a su vez, T053. Todos los tests de esta
+## sección DEBEN fallar hasta que ambas tareas existan.
+##
+## Se usa `Object.call()` para invocar `take_damage()`/`set_grid_cell()` sobre
+## `_soldado` (mismo motivo ya documentado arriba para `reload()`): estos
+## métodos no existen todavía en la clase base declarada (`Node`), y una
+## llamada directa no compilaría.
+##
+## SUPUESTO no confirmado con `dev-godot` (T052 no especifica el nombre del
+## setter público de `_grid_cell`, solo que debe existir): se asume
+## `set_grid_cell(cell: Vector2i) -> void`, seleccionado por ser el nombre más
+## idiomático para un setter público en este proyecto (ver `BoardManager`:
+## `occupy_cell`, `free_cell`, `get_occupant` — todos verbo + `cell`). Si
+## T052 elige otro nombre, los tests que dependen de él fallarán por ese
+## motivo específico (método inexistente), no por lógica incorrecta — avisar
+## si ese es el caso.
+##
+## Los últimos dos tests de esta sección usan un `Enemigo` REAL
+## (`EnemigoBase.tscn`, vía `_spawn_real_enemy()`) en vez de
+## `enemigo_double.gd`, porque la conducta de "atacar activamente" que
+## ejercitan es responsabilidad de `enemigo.gd` (T053), no del double. Usan
+## `move_speed` mínimo (`MOVE_SPEED_SLOW_ENEMY`) y lo posicionan cerca del
+## borde de entrada de "RangoMelee" (`MELEE_TOP_OFFSET`) para maximizar el
+## tiempo de permanencia en rango, sin asumir ninguna cadencia de ataque
+## específica de T053 (deliberadamente no especificada por `tasks.md`, que
+## solo exige "documentar el supuesto de implementación elegido").
 
 const SOLDADO_SCENE_PATH := "res://scenes/units/Soldado.tscn"
 const SOLDADO_SCRIPT_PATH := "res://scenes/units/soldado.gd"
 const UNIT_STATS_SCRIPT_PATH := "res://resources/schemas/unit_stats.gd"
+const ENEMY_SCENE_PATH := "res://scenes/enemies/EnemigoBase.tscn"
+const ENEMY_STATS_SCRIPT_PATH := "res://resources/schemas/enemy_stats.gd"
 const EnemigoDouble := preload("res://tests/unit/units/enemigo_double.gd")
 
 # Posiciones relativas al soldado que caen dentro de las formas de colisión
@@ -67,10 +104,25 @@ const RIFLE_ONLY_OFFSET := Vector2(0, -150)
 const RIFLE_ONLY_OFFSET_B := Vector2(40, -150)
 const MELEE_OFFSET := Vector2(0, -40)
 
+# T051: offset casi en el borde superior de "RangoMelee" (rango local
+# y:[-64,0], ver comentario de cabecera de este bloque) — maximiza el tiempo
+# que un `Enemigo` real, avanzando lentamente en +Y, permanece DENTRO de
+# "RangoMelee" antes de cruzarlo por completo y salir por el otro lado.
+const MELEE_TOP_OFFSET := Vector2(0, -60)
+
 # Cuántos frames de física esperar para que una Area2D detecte overlap y
 # el soldado dispare/ataque al menos una vez con el cooldown configurado.
 const FRAMES_TO_DETECT := 5
 const FRAMES_TO_FIRE_SEVERAL_SHOTS := 40
+
+# T051: ventana generosa para que un `Enemigo` real, atacando con una
+# cadencia todavía no definida (implementación de T053, fuera del alcance de
+# este test), alcance a golpear al soldado al menos una vez mientras
+# permanece dentro de "RangoMelee". A `MOVE_SPEED_SLOW_ENEMY` (mínimo
+# permitido por `EnemyStats.move_speed`), el enemigo tarda ~6.4s (~384
+# frames) en atravesar por completo la franja de 64px de "RangoMelee" desde
+# `MELEE_TOP_OFFSET` — 400 frames cubre ese cruce completo con margen.
+const FRAMES_TO_DEFEAT_SOLDIER := 400
 
 # Stats por defecto compartidos por la mayoría de los tests; cada test que
 # necesite un valor distinto (típicamente max_ammo) pasa overrides a
@@ -81,6 +133,12 @@ const DEFAULT_FIRE_RATE := 10.0 # cooldown de 0.1s: varios tiros caben en pocos 
 const DEFAULT_MACHETE_BASE_DAMAGE := 3
 const DEFAULT_MACHETE_MORAL_MULTIPLIER := 2.0
 const DEFAULT_MORAL_PER_KILL := 1.0
+const DEFAULT_MAX_HEALTH := 30
+
+# T051: velocidad mínima permitida por `EnemyStats.move_speed`
+# (`@export_range(10.0, ...)`), usada para que un `Enemigo` real permanezca
+# el mayor tiempo posible dentro de "RangoMelee" mientras lo ataca.
+const MOVE_SPEED_SLOW_ENEMY := 10.0
 
 var _soldado_script: Script
 var _soldado: Node
@@ -107,6 +165,7 @@ func _spawn_soldado(overrides: Dictionary = {}) -> Node:
 		"machete_moral_multiplier", DEFAULT_MACHETE_MORAL_MULTIPLIER
 	)
 	_stats.moral_per_kill = overrides.get("moral_per_kill", DEFAULT_MORAL_PER_KILL)
+	_stats.max_health = overrides.get("max_health", DEFAULT_MAX_HEALTH)
 	_stats.deploy_ammo_cost = _stats.max_ammo
 
 	_soldado = load(SOLDADO_SCENE_PATH).instantiate()
@@ -118,6 +177,25 @@ func _spawn_soldado(overrides: Dictionary = {}) -> Node:
 func _spawn_enemy(offset: Vector2, health: int = 1000) -> Node:
 	var enemy := EnemigoDouble.new()
 	enemy.health = health
+	add_child_autofree(enemy)
+	enemy.global_position = _soldado.global_position + offset
+	return enemy
+
+
+## T051: instancia un `Enemigo` REAL (`EnemigoBase.tscn`), a diferencia de
+## `_spawn_enemy()` (que usa el `enemigo_double.gd` de este archivo). Se
+## necesita el `Enemigo` real -y no el double- porque la conducta bajo prueba
+## (atacar activamente a un `Soldado` dentro de "RangoMelee") es
+## responsabilidad de `enemigo.gd` (T053), no del contrato mínimo que
+## implementa el double.
+func _spawn_real_enemy(offset: Vector2, stats_overrides: Dictionary = {}) -> Node:
+	var enemy: Node = load(ENEMY_SCENE_PATH).instantiate()
+	var enemy_stats: Resource = load(ENEMY_STATS_SCRIPT_PATH).new()
+	enemy_stats.max_health = stats_overrides.get("max_health", 20)
+	enemy_stats.move_speed = stats_overrides.get("move_speed", MOVE_SPEED_SLOW_ENEMY)
+	enemy_stats.melee_damage = stats_overrides.get("melee_damage", 10)
+	enemy_stats.ammo_drop = stats_overrides.get("ammo_drop", 5)
+	enemy.stats = enemy_stats
 	add_child_autofree(enemy)
 	enemy.global_position = _soldado.global_position + offset
 	return enemy
@@ -446,3 +524,158 @@ func test_reload_preserves_accumulated_morale_instead_of_resetting_it() -> void:
 
 	# Cleanup: restaurar el pool global compartido entre tests/archivos.
 	EconomyManager.collected_ammo = original_collected_ammo
+
+
+## --- Derrota del soldado: Edge Case de `spec.md` (T051, depende de T050) ---
+##
+## `take_damage()`, `_current_health`, `set_grid_cell()` y `soldier_defeated`
+## TODAVÍA NO existen en `soldado.gd` — todos los tests de esta sección DEBEN
+## fallar hasta que se implementen T052 (contrato de daño/derrota) y, para
+## los dos últimos, también T053 (el `Enemigo` real atacando activamente).
+
+func test_soldier_current_health_is_initialized_from_stats_max_health() -> void:
+	# Given/When: un soldado recién desplegado con un max_health de producción
+	_spawn_soldado({"max_health": 30})
+
+	# Then: su salud runtime arranca exactamente en ese máximo
+	# (`data-model.md`: "_current_health inicializado desde stats.max_health")
+	assert_eq(
+		_soldado.get("_current_health"), 30,
+		"_current_health debe inicializarse desde stats.max_health en _ready()"
+	)
+
+
+func test_take_damage_reduces_current_health_without_killing_if_amount_is_less_than_health() -> void:
+	# Given: un soldado con salud de sobra frente a un único golpe cuerpo a
+	# cuerpo de un enemigo (magnitud de `EnemyStats.melee_damage`)
+	_spawn_soldado({"max_health": 30})
+	var melee_damage := 10
+
+	# When: recibe un único golpe que no lo elimina
+	var killed: bool = _soldado.call("take_damage", melee_damage)
+
+	# Then: su salud se reduce exactamente en esa cantidad y no se reporta
+	# como eliminado
+	assert_false(
+		killed,
+		"take_damage() debe retornar false cuando el golpe no deja la salud en 0 o menos"
+	)
+	assert_eq(
+		_soldado.get("_current_health"), 30 - melee_damage,
+		"take_damage() debe restar exactamente el monto recibido de _current_health"
+	)
+
+
+func test_take_damage_returns_true_only_on_the_hit_that_reaches_zero_health() -> void:
+	# Given: un soldado cuya salud es exactamente dos golpes de
+	# EnemyStats.melee_damage (10 + 10 = 20)
+	_spawn_soldado({"max_health": 20})
+	var melee_damage := 10
+
+	# When/Then: el primer golpe lo deja vivo (salud = 10, no eliminado)...
+	var first_hit_killed: bool = _soldado.call("take_damage", melee_damage)
+	assert_false(
+		first_hit_killed,
+		"el primer golpe (salud restante > 0) no debe reportarse como eliminación"
+	)
+
+	# ...y solo el segundo, que agota su salud, se reporta como la eliminación
+	var second_hit_killed: bool = _soldado.call("take_damage", melee_damage)
+	assert_true(
+		second_hit_killed,
+		"take_damage() debe retornar true únicamente en el golpe que deja la salud en 0 o menos"
+	)
+
+
+func test_soldier_emits_soldier_defeated_with_its_assigned_grid_cell_when_health_reaches_zero() -> void:
+	# Given: un soldado desplegado en una celda conocida del tablero
+	_spawn_soldado({"max_health": 10})
+	var expected_cell := Vector2i(3, 4)
+	_soldado.call("set_grid_cell", expected_cell)
+	watch_signals(_soldado)
+
+	# When: recibe daño suficiente para agotar su salud de una sola vez
+	_soldado.call("take_damage", 10)
+
+	# Then: emite soldier_defeated con exactamente la celda que ocupaba
+	# (`contracts/signals.md`: "El soldado es derrotado... libera celda")
+	assert_signal_emitted(
+		_soldado, "soldier_defeated",
+		"al llegar _current_health a 0, el soldado debe emitir soldier_defeated"
+	)
+	assert_eq(
+		get_signal_parameters(_soldado, "soldier_defeated")[0], expected_cell,
+		"soldier_defeated debe reportar exactamente la grid_cell asignada al soldado derrotado"
+	)
+
+
+func test_soldier_loses_all_accumulated_morale_when_defeated() -> void:
+	# Given: un soldado que acumuló moral eliminando un enemigo con el fusil
+	# antes de ser derrotado (una eliminación = moral_per_kill > 0)
+	_spawn_soldado({"max_ammo": 1, "max_health": 10})
+	_spawn_enemy(RIFLE_ONLY_OFFSET, _stats.damage_per_shot) # muere con el único disparo
+	await wait_physics_frames(FRAMES_TO_DETECT)
+	assert_gt(
+		_soldado.get("_current_morale"), 0.0,
+		"precondición del test: el soldado debe haber acumulado moral antes de ser derrotado"
+	)
+
+	# When: recibe daño suficiente para agotar su salud
+	_soldado.call("take_damage", 10)
+
+	# Then: pierde toda la moral acumulada (`spec.md` Edge Case: "el soldado
+	# y su moral acumulada se pierden")
+	assert_eq(
+		_soldado.get("_current_morale"), 0.0,
+		"un soldado derrotado debe perder toda su moral acumulada (_current_morale vuelve a 0)"
+	)
+
+
+func test_soldier_is_removed_from_the_scene_tree_when_defeated() -> void:
+	# Given: un soldado con salud mínima
+	_spawn_soldado({"max_health": 10})
+
+	# When: recibe daño suficiente para agotar su salud
+	_soldado.call("take_damage", 10)
+	await wait_physics_frames(1) # queue_free() difiere la liberación al fin de frame
+
+	# Then: el nodo queda liberado del árbol (contrato de T052: "queue_free()"
+	# tras reportar la derrota)
+	assert_false(
+		is_instance_valid(_soldado),
+		"un soldado derrotado debe liberarse del árbol (queue_free()) tras emitir soldier_defeated"
+	)
+
+
+## --- Derrota por ataque real de un Enemigo dentro de RangoMelee (T053) ---
+
+func test_soldier_is_defeated_by_a_real_enemy_attacking_within_rango_melee() -> void:
+	# Given: un soldado cuya salud total equivale a un único golpe cuerpo a
+	# cuerpo de un enemigo real (EnemyStats.melee_damage = 10), desplegado en
+	# una celda conocida del tablero
+	_spawn_soldado({"max_health": 10})
+	var expected_cell := Vector2i(1, 2)
+	_soldado.call("set_grid_cell", expected_cell)
+	watch_signals(_soldado)
+
+	# When: un Enemigo real entra en su "RangoMelee" y permanece el tiempo
+	# suficiente para atacarlo activamente (Edge Case de derrota de
+	# `spec.md`: "un soldado en modo cuerpo a cuerpo es derrotado por los
+	# enemigos")
+	_spawn_real_enemy(MELEE_TOP_OFFSET, {"melee_damage": 10})
+	await wait_physics_frames(FRAMES_TO_DEFEAT_SOLDIER)
+
+	# Then: el soldado real fue derrotado por el ataque real del enemigo —
+	# emite soldier_defeated con su celda y queda liberado del árbol
+	assert_signal_emitted(
+		_soldado, "soldier_defeated",
+		"un Enemigo real atacando dentro de RangoMelee debe derrotar al soldado (T052+T053)"
+	)
+	assert_eq(
+		get_signal_parameters(_soldado, "soldier_defeated")[0], expected_cell,
+		"soldier_defeated debe reportar la grid_cell del soldado derrotado por el enemigo real"
+	)
+	assert_false(
+		is_instance_valid(_soldado),
+		"el soldado derrotado por el enemigo real debe liberarse del árbol"
+	)
