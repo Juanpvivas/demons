@@ -64,7 +64,7 @@ Una oleada autorada (ver `research.md` §4). Instancias en
 | `_current_ammo` | `int` | Estado runtime, inicializado desde `stats.max_ammo`. |
 | `_current_morale` | `float` | Acumulada por eliminación (FR-006); persiste entre recargas (`spec.md` Assumptions); se pierde solo si el soldado es derrotado. |
 | `_mode` | `enum SoldierMode {RIFLE, MELEE}` | Definido en `ARCHITECTURE.md` §4.4. |
-| `_current_target` | `Enemigo` (nullable) | Objetivo activo — ver `research.md` §1. Implementado hoy como `Node2D` + despacho dinámico (`Object.call()`), porque `Enemigo` todavía no existe como clase (T018/T025/T026, en curso en paralelo); ver el contrato asumido documentado en la cabecera de `scenes/units/soldado.gd`. |
+| `_current_target` | `Enemigo` (nullable) | Objetivo activo — ver `research.md` §1. Implementado como `Node2D` + despacho dinámico (`Object.call()`) porque `Enemigo` no existía como clase cuando se escribió `soldado.gd`; ahora que sí existe (T025/T026), sigue sin tipar directamente — observación no bloqueante de `qa-validator` en T027/T028, marcada con `TODO (T047)` en la cabecera y en los dos puntos de llamada de `scenes/units/soldado.gd` para revisarla en la fase de Polish. |
 | `_grid_cell` | `Vector2i` | Celda ocupada en el `BoardManager` del nivel. |
 
 **Transiciones de estado** (`_mode`):

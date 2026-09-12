@@ -6,8 +6,8 @@
 ## `StaticBody2D` raíz (`docs/ARCHITECTURE.md` §5) — el soldado no se mueve,
 ## solo dispara/ataca desde su celda.
 ##
-## Contrato asumido de `Enemigo` (todavía no implementado en este grupo de
-## tareas — ver reporte de T017-T024 para el detalle completo):
+## Contrato asumido de `Enemigo`, cumplido desde T018/T025/T026 (la clase
+## `Enemigo` ya existe en `scenes/enemies/enemigo.gd`):
 ## - Pertenece al grupo `"enemies"` (`ENEMY_GROUP`), usado para filtrar los
 ##   cuerpos detectados por "DeteccionRango"/"RangoMelee" (que también
 ##   podrían recibir otros `StaticBody2D`/`CharacterBody2D` del nivel).
@@ -24,6 +24,16 @@
 ##   más avanzado hacia la posición defendida), usado para desempatar la
 ##   prioridad de objetivo (`spec.md` Assumptions). Si no existe, se usa
 ##   como respaldo la cercanía a este soldado (`_advance_score()`).
+##
+## TODO (T047 — revisión de todo el código nuevo contra ARCHITECTURE.md):
+## `_current_target`/`_current_melee_target` siguen tipados como `Node2D` y
+## el daño se aplica vía `Object.call("take_damage", ...)` (despacho
+## dinámico) en vez de tipar directamente como `Enemigo` y llamar
+## `target.take_damage(...)`. Quedó así porque `Enemigo` no existía cuando
+## se escribió este archivo; ahora que existe (T025/T026), esto puede
+## simplificarse a una llamada tipada estática. Observación no bloqueante
+## de `qa-validator` en T027/T028 — no se corrige aquí porque es cambio de
+## lógica, fuera del alcance de documentación.
 class_name Soldado
 extends StaticBody2D
 
@@ -138,13 +148,14 @@ func _process_rifle(delta: float) -> void:
 func _fire_at_current_target() -> void:
 	var target := _current_target
 	_current_ammo -= 1
-	# `.call()` en vez de `target.take_damage(...)`: `_current_target` está
-	# tipado como `Node2D` (Enemigo todavía no existe como clase — ver
-	# comentario de cabecera), y GDScript con tipado estático rechaza en
-	# tiempo de compilación una llamada directa a un método que no existe
-	# en `Node2D`. `Object.call()` sí es un método real de `Node2D`
-	# (heredado de `Object`), por lo que el despacho dinámico compila sin
-	# problema y sigue siendo tipado estático en todo lo demás.
+	# TODO (T047): `.call()` en vez de `target.take_damage(...)` directo —
+	# ver TODO en la cabecera del archivo. `_current_target` sigue tipado
+	# como `Node2D` aunque `Enemigo` ya existe (T025/T026); GDScript con
+	# tipado estático rechaza en tiempo de compilación una llamada directa
+	# a un método que no existe en `Node2D`. `Object.call()` sí es un
+	# método real de `Node2D` (heredado de `Object`), por lo que el
+	# despacho dinámico compila sin problema, pero es más frágil que tipar
+	# `_current_target` como `Enemigo`.
 	var killed: bool = target.call("take_damage", stats.damage_per_shot)
 	if killed:
 		_register_kill()
@@ -202,6 +213,8 @@ func _process_melee(delta: float) -> void:
 
 func _attack_current_melee_target() -> void:
 	var target := _current_melee_target
+	# TODO (T047): mismo despacho dinámico que `_fire_at_current_target()` —
+	# ver TODO en la cabecera del archivo.
 	var killed: bool = target.call("take_damage", _current_machete_damage())
 	if killed:
 		# A diferencia del fusil, una eliminación a machete NO suma moral
