@@ -30,9 +30,16 @@ Este proyecto usa un pipeline de subagentes especializados en `.claude/agents/`.
 
 **Punto de entrada correcto**: si la persona pide "implementar la feature X", usa el comando `/implementar-feature <feature-id>` (en `.claude/commands/`) — invoca a `project-orchestrator` de forma determinista. **No corras `/speckit-implement` directo**: se salta todo el pipeline de test/validación propio del proyecto y no crea Issue ni PR.
 
+## GodotPrompter
+
+Este proyecto tiene el plugin **GodotPrompter** activo, con skills especializadas por sistema de Godot (`godot-prompter:resource-pattern`, `godot-prompter:state-machine`, `godot-prompter:event-bus`, `godot-prompter:ai-navigation`, `godot-prompter:animation-system`, etc. — índice completo en `godot-prompter:using-godot-prompter`).
+
+**Antes de implementar cualquier sistema de Godot** (no solo scripts triviales — un `Resource` nuevo, un autoload, una máquina de estados, señales entre nodos, IA de enemigos, UI, etc.), revisa si existe una skill `godot-prompter:<tema>` que corresponda y aplícala. Esto aplica también a los subagentes (`dev-godot`, `godot-tester`, `qa-validator`, `docs-writer`) cuando escriben o revisan código de Godot — no asumas que "ya conoces la clase" reemplaza consultar el patrón documentado.
+
 ## Historial de cambios de este archivo
 
 | Fecha | Cambio |
 |---|---|
 | 2026-09-11 | Versión inicial — creado para dar continuidad de contexto entre sesiones nuevas de Claude Code |
 | 2026-09-11 | Actualizado: los 5 subagentes están completos (ya no "en construcción"); se documenta el comando `/implementar-feature` como punto de entrada; se agrega advertencia sobre confirmar el entorno real (Code vs Chat de Claude Desktop) tras una confusión detectada en esta sesión de diseño. |
+| 2026-09-12 | Se agrega sección GodotPrompter: instrucción para que también los subagentes (no solo la sesión interactiva) consulten la skill `godot-prompter:*` correspondiente antes de implementar un sistema de Godot. |
