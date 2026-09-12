@@ -323,6 +323,17 @@ sistema, se asumen desde este documento):
   de oleadas) + puntos de spawn + instancia de `HUD.tscn` como
   `CanvasLayer`.
 
+**Nota sobre `collision_layer`/`collision_mask` (sin convención propia
+todavía):** ninguna escena del proyecto (`Soldado.tscn`, `EnemigoBase.tscn`)
+declara `collision_layer`/`collision_mask` explícitos — todo `CollisionObject2D`
+queda en el default de Godot (layer 1 / mask 1), por lo que `Soldado`
+(`StaticBody2D`) y `Enemigo` (`CharacterBody2D`) colisionan físicamente entre
+sí sin que nadie lo haya decidido a propósito. Esto no es una convención
+adoptada — es la ausencia de una, detectada como gap de diseño durante T043
+de `001-soldado-defensor-oleadas` (ver `docs/SPEC.md` §10, pendiente de
+decisión humana). Si en algún momento se define una convención explícita de
+capas de colisión para el proyecto, documentarla aquí.
+
 ## 6. Testing
 
 - Framework: **GUT** (Godot Unit Testing) v9.7.1, instalado en
@@ -388,6 +399,7 @@ sistema, se asumen desde este documento):
 |---|---|
 | 2026-08-13 | Versión inicial del documento de arquitectura |
 | 2026-09-10 | Se agrega `addons/`, `core/` (lógica compartida no-autoload) y `resources/schemas/` (scripts base de Resource, separados de las instancias `.tres`); se subdivide `assets/` por dominio; se corrige la estructura de `tests/unit/` para reflejar la organización real de `scenes/` en vez de una carpeta `scripts/` inexistente. |
+| 2026-09-12 | §5: nota sobre la ausencia de una convención de `collision_layer`/`collision_mask` en el proyecto — todo queda en el default de Godot, lo que permite que `Soldado` bloquee físicamente a `Enemigo`. Gap de diseño detectado en T043 de `001-soldado-defensor-oleadas`, graduado en detalle a `docs/SPEC.md` §10 (pendiente de decisión humana). |
 | 2026-09-11 | Correcciones de revisión (`godot-code-review` + `resource-pattern`): raíz de `Soldado.tscn` cambiada de `CharacterBody2D` a `StaticBody2D` (unidad estacionaria); regla explícita de límite dato/estado entre `Resource` de stats y estado mutable por instancia; regla de `@onready` y conexión de señales en `_ready()`; `queue_free()` vs `free()` para limpieza fuera del pool; `@export_range`/`@export_group` para campos de balance; nueva sección 4.6 de convenciones C# |
 | 2026-09-11 | §6 y §7 sincronizadas con la realidad del repo tras T002/T003 de `001-soldado-defensor-oleadas`: se confirma versión de GUT (v9.7.1) ya instalada, y se documenta como ejemplo concreto el par de acciones `InputMap` `select_cell`/`collect_pickup` (mouse+touch, sin tecla hardcodeada) — antes ambas secciones solo describían la convención en abstracto |
 | 2026-09-11 | §4.1: se agrega la convención de que los scripts de autoload no declaran `class_name` (se referencian por su nombre de singleton) — duda explícita de implementación surgida en T008/T009 (`EconomyManager`, `GameStateManager`) de `001-soldado-defensor-oleadas`, graduada aquí porque aplica a todo autoload futuro (ej. `WaveManager` en T039) |
