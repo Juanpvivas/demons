@@ -32,6 +32,15 @@ extends StaticBody2D
 ## `Area2D` de este soldado.
 const ENEMY_GROUP: String = "enemies"
 
+## Munición llega a 0, justo antes de pasar a modo machete (FR-004).
+signal ammo_depleted
+
+## Cambio entre `RIFLE` y `MELEE`, en cualquier dirección.
+signal mode_changed(new_mode: SoldierMode)
+
+## Se acumuló moral por una eliminación confirmada con fusil (FR-006).
+signal moral_changed(new_morale: float)
+
 ## Modo de combate activo (`docs/ARCHITECTURE.md` §4.4).
 enum SoldierMode { RIFLE, MELEE }
 
@@ -75,15 +84,6 @@ var _melee_cooldown: float = 0.0
 
 @onready var _deteccion_rango: Area2D = $DeteccionRango
 @onready var _rango_melee: Area2D = $RangoMelee
-
-## Munición llega a 0, justo antes de pasar a modo machete (FR-004).
-signal ammo_depleted
-
-## Cambio entre `RIFLE` y `MELEE`, en cualquier dirección.
-signal mode_changed(new_mode: SoldierMode)
-
-## Se acumuló moral por una eliminación confirmada (FR-006).
-signal moral_changed(new_morale: float)
 
 
 func _ready() -> void:
@@ -188,7 +188,10 @@ func _attack_current_melee_target() -> void:
 	var target := _current_melee_target
 	var killed: bool = target.call("take_damage", _current_machete_damage())
 	if killed:
-		_register_kill()
+		# A diferencia del fusil, una eliminación a machete NO suma moral
+		# (FR-006, `data-model.md` fila `moral_per_kill`, `spec.md`
+		# Assumptions): la moral se acumula únicamente por eliminaciones
+		# mientras el soldado dispara con munición disponible.
 		_remove_melee_candidate(target)
 
 
@@ -239,8 +242,10 @@ func _set_mode(new_mode: SoldierMode) -> void:
 
 # --- Moral (T024) ---------------------------------------------------------
 
-## Suma moral únicamente por una eliminación confirmada (fusil o machete;
-## FR-006) — nunca por un impacto que no mata.
+## Suma moral únicamente por una eliminación confirmada mientras el soldado
+## dispara con munición disponible (modo RIFLE; FR-006) — nunca por un
+## impacto que no mata, y nunca por una eliminación a machete (modo MELEE,
+## ver `_attack_current_melee_target()`).
 func _register_kill() -> void:
 	_current_morale += stats.moral_per_kill
 	moral_changed.emit(_current_morale)
