@@ -131,8 +131,8 @@ Proyecto único Godot 4.7 (GDScript). Rutas relativas a `res://` — ver
 
 - [X] T039 [P] [US3] Crear autoload `WaveManager` en `autoloads/wave_manager.gd`: consume `Array[WaveData]`, emite `wave_started`/`wave_completed`/`all_waves_completed` (depende de T007)
 - [X] T040 [US3] Registrar `WaveManager` como autoload en `project.godot` (depende de T039)
-- [ ] T041 [P] [US3] Crear 3 a 10 `resources/waves/nivel_montecalvo_oleada_0N.tres` con dificultad creciente en composición/cantidad, por `research.md` §4 — cubre SC-005 (depende de T007, T018)
-- [ ] T042 [US3] `nivel_monte_calvo.gd`: `WaveSpawner` (`Timer` + cola de spawns por `WaveSpawnEntry`), instanciando enemigos vía `ObjectPool` (depende de T011, T026, T039)
+- [X] T041 [P] [US3] Crear 3 a 10 `resources/waves/nivel_montecalvo_oleada_0N.tres` con dificultad creciente en composición/cantidad, por `research.md` §4 — cubre SC-005 (depende de T007, T018)
+- [X] T042 [US3] `nivel_monte_calvo.gd`: `WaveSpawner` (`Timer` + cola de spawns por `WaveSpawnEntry`), instanciando enemigos vía `ObjectPool` (depende de T011, T026, T039)
 - [ ] T043 [US3] `Nivel_MonteCalvo.tscn`: `Area2D` de "posición defendida" que, al detectar `body_entered` de un `Enemigo`, hace que este emita `reached_defended_position()` (depende de T026, T027)
 - [ ] T044 [US3] `GameStateManager`: escuchar `reached_defended_position` → `game_lost`; escuchar `all_waves_completed` → `game_won` (depende de T009, T039, T043)
 - [ ] T045 [US3] `hud.gd`: feedback de "oleada por llegar" (`wave_started`) y pantallas de victoria/derrota (`game_won`/`game_lost`) (depende de T036, T044)
