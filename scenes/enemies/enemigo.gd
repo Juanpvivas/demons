@@ -29,6 +29,15 @@
 ## el punto de aparición del enemigo. Si un nivel futuro necesita carriles
 ## en otra orientación, este supuesto debe revisarse junto con la geometría
 ## de `Nivel_MonteCalvo.tscn` (T027).
+##
+## **Integración con `ObjectPool` (T042, `scenes/levels/wave_spawner.gd`)**:
+## esta clase admite ser reciclada por un `ObjectPool` en vez de
+## instanciarse/destruirse por spawn (`constitution.md` Principio IV) — ver
+## `set_pool()`/`prepare_for_spawn()` y la nota dentro de `_die()`. El
+## `Enemigo` colocado a mano en `Nivel_MonteCalvo.tscn` para el Independent
+## Test de US1/US2 (T027) nunca pasa por un pool y conserva el
+## comportamiento original sin cambios (auto-destrucción con `queue_free()`
+## al morir).
 class_name Enemigo
 extends CharacterBody2D
 
@@ -53,8 +62,17 @@ signal enemy_defeated(ammo_dropped: int, position: Vector2)
 ## en runtime (`docs/ARCHITECTURE.md` §4.3).
 @export var stats: EnemyStats
 
-## Salud actual, runtime. Inicializada desde `stats.max_health` en `_ready()`.
+## Salud actual, runtime. Inicializada desde `stats.max_health` en `_ready()`
+## y reinicializada en cada reciclado vía `prepare_for_spawn()` (T042).
 var _current_health: int = 0
+
+## T042: `ObjectPool` al que pertenece esta instancia, o `null` si nunca
+## pasó por uno (ej. el `Enemigo` colocado a mano en `Nivel_MonteCalvo.tscn`
+## para el Independent Test de US1/US2, T027). Determina el destino de
+## `_die()` — ver `set_pool()` y el comentario dentro de `_die()` para el
+## conflicto real que resuelve entre el `queue_free()` original de esta
+## clase y el patrón de reciclado de `ObjectPool` (`WaveSpawner`, T042).
+var _pool: ObjectPool = null
 
 @onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
 
@@ -96,6 +114,37 @@ func take_damage(amount: int) -> bool:
 	return false
 
 
+## T042: registra el `ObjectPool` dueño de esta instancia. Llamado
+## exactamente una vez por instancia física, no en cada spawn — ver
+## `WaveSpawner._on_enemy_pool_instance_created()`, que escucha
+## `ObjectPool.instance_created` (emitida solo cuando el pool crea una
+## instancia nueva, nunca en cada `acquire()`/`release()` de una ya
+## existente).
+func set_pool(pool: ObjectPool) -> void:
+	_pool = pool
+
+
+## T042: (re)activa esta instancia para un nuevo spawn. Llamado por
+## `WaveSpawner` inmediatamente después de `ObjectPool.acquire()` en vez de
+## depender del hook automático `on_pool_acquired()`, porque
+## `ObjectPool.acquire()` no admite argumentos: `on_pool_acquired()` se
+## ejecutaría ANTES de que el llamador pudiera asignar el `stats` correcto
+## de la `WaveSpawnEntry` que se está por spawnear, dejando a la instancia
+## con el `stats`/salud de su uso anterior (o el default embebido en
+## `EnemigoBase.tscn`, en su primera creación). Reinicia exactamente lo que
+## `_ready()` inicializa una sola vez (`_current_health`), reasigna `stats`
+## (distintas oleadas pueden reciclar la misma instancia física con
+## `EnemyStats` distintos) y reposiciona el enemigo en el punto de spawn.
+## También limpia cualquier tinte visual dejado por `_flash_hit()`/la
+## muerte anterior (`_on_enemy_defeated_visual()` tiñe a negro), para que
+## un enemigo reciclado no aparezca ya "golpeado" o "muerto".
+func prepare_for_spawn(new_stats: EnemyStats, spawn_position: Vector2) -> void:
+	stats = new_stats
+	_current_health = stats.max_health
+	global_position = spawn_position
+	_sprite.modulate = Color(1.0, 1.0, 1.0)
+
+
 ## Mayor valor = más avanzado hacia la posición defendida (`spec.md`
 ## Assumptions), usado por `Soldado._advance_score()` para desempatar
 ## prioridad de objetivo. Con el eje de avance `+Y` asumido arriba, la
@@ -107,14 +156,35 @@ func get_advance_progress() -> float:
 func _die() -> void:
 	enemy_defeated.emit(stats.ammo_drop, global_position)
 	_spawn_ammo_pickup()
-	# `queue_free()`, nunca `free()` (`docs/ARCHITECTURE.md` §4.5): evita
-	# use-after-free si algo más todavía tiene una referencia pendiente en
-	# el mismo frame (ej. `Soldado._rifle_candidates`/`_melee_candidates`
-	# antes de procesar `body_exited`). El feedback visual de muerte ya se
-	# aplicó de forma síncrona vía `_on_enemy_defeated_visual` (conectado en
-	# `_ready()`), antes de esta línea — el nodo sigue siendo válido durante
-	# el resto de este frame porque `queue_free()` difiere la liberación.
-	queue_free()
+
+	# T042: conflicto real entre esta clase y `ObjectPool` — un
+	# `queue_free()` incondicional aquí destruiría cualquier instancia
+	# pooleada que `WaveSpawner`/`ObjectPool` todavía creyeran disponible
+	# para un futuro `acquire()` (el pool nunca reparenta ni pierde su
+	# referencia a las instancias que reparte). Se resuelve delegando el
+	# destino de la instancia a quien la posee:
+	if _pool == null:
+		# Sin pool (`set_pool()` nunca se llamó) — el `Enemigo` colocado a
+		# mano en `Nivel_MonteCalvo.tscn` para el Independent Test de
+		# US1/US2 (T027) cae en este caso. Conserva el comportamiento
+		# original: `queue_free()`, nunca `free()`
+		# (`docs/ARCHITECTURE.md` §4.5), evita use-after-free si algo más
+		# todavía tiene una referencia pendiente en el mismo frame (ej.
+		# `Soldado._rifle_candidates`/`_melee_candidates` antes de procesar
+		# `body_exited`). El feedback visual de muerte ya se aplicó de
+		# forma síncrona vía `_on_enemy_defeated_visual` (conectado en
+		# `_ready()`), antes de esta línea — el nodo sigue siendo válido
+		# durante el resto de este frame porque `queue_free()` difiere la
+		# liberación.
+		queue_free()
+	# Con pool asignado, esta instancia NO se autodestruye: quien escucha
+	# `enemy_defeated` (`WaveSpawner._on_enemy_defeated()`) es responsable
+	# de llamar `_pool.release(self)` para reciclarla en vez de destruirla.
+	# Esa llamada ocurre de forma síncrona en el mismo `emit()` de arriba
+	# (las señales de Godot despachan sus listeners de forma síncrona), así
+	# que para cuando esta función retorna, la instancia ya fue devuelta al
+	# pool (o no, si nadie escucha — no es responsabilidad de `Enemigo`
+	# garantizar que alguien libere lo que él no destruye).
 
 
 ## T032: instancia la pickup de munición en la posición de muerte de este
@@ -125,13 +195,23 @@ func _die() -> void:
 ## pickup recién creada — suficiente para identificarla de forma única sin
 ## necesitar un contador global.
 ##
-## Se agrega como hijo del padre de este enemigo (no de este nodo, que se
-## libera a continuación vía `queue_free()`). `global_position` se asigna
-## **después** de `add_child()` (no antes) para que se calcule respecto al
-## transform real del padre en el árbol — si se asignara antes, con el nodo
-## todavía sin padre, equivaldría a fijar la posición local asumiendo un
-## padre en el origen, lo cual sería incorrecto si el contenedor de
-## enemigos del nivel tiene su propio offset.
+## Se agrega como hijo del padre de este enemigo, no de este nodo — sin
+## pool (T027), este nodo se libera a continuación vía `queue_free()`; con
+## pool (T042), este nodo va a quedar invisible/con procesamiento
+## deshabilitado (`ObjectPool.release()`), así que tampoco es un padre
+## sensato para la pickup en ninguno de los dos casos. `global_position` se
+## asigna **después** de `add_child()` (no antes) para que se calcule
+## respecto al transform real del padre en el árbol — si se asignara antes,
+## con el nodo todavía sin padre, equivaldría a fijar la posición local
+## asumiendo un padre en el origen, lo cual sería incorrecto si el
+## contenedor de enemigos del nivel tiene su propio offset. Nota T042: si el
+## padre de este enemigo es el `ObjectPool` que lo posee (`extends Node`,
+## sin transform 2D propio), la pickup queda como hijo de un `Node` plano en
+## vez de un `Node2D`/`CanvasItem` — Godot sigue renderizándola y resolviendo
+## su `global_position` correctamente (un `CanvasItem` sin ancestro
+## `CanvasItem` se trata como de nivel superior para efectos de transform),
+## mismo patrón ya documentado como válido en `core/object_pool.gd`
+## ("Uso típico: `add_child(enemy_pool)`").
 func _spawn_ammo_pickup() -> void:
 	var parent := get_parent()
 	if parent == null:
