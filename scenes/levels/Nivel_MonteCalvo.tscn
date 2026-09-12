@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/units/Soldado.tscn" id="1_soldado"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/EnemigoBase.tscn" id="2_enemigo"]
+
+[sub_resource type="TileSet" id="TileSet_tablero"]
+tile_size = Vector2i(96, 96)
+
+[node name="Nivel_MonteCalvo" type="Node2D"]
+
+[node name="Tablero" type="TileMap" parent="."]
+tile_set = SubResource("TileSet_tablero")
+format = 2
+
+[node name="Soldado" parent="." instance=ExtResource("1_soldado")]
+position = Vector2(576, 500)
+
+[node name="Enemigo" parent="." instance=ExtResource("2_enemigo")]
+position = Vector2(576, 50)

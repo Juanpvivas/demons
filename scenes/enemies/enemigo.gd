@@ -49,11 +49,20 @@ signal enemy_defeated(ammo_dropped: int, position: Vector2)
 ## Salud actual, runtime. Inicializada desde `stats.max_health` en `_ready()`.
 var _current_health: int = 0
 
+@onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
+
 
 func _ready() -> void:
 	assert(stats != null, "Enemigo requiere un EnemyStats asignado en 'stats'")
 	_current_health = stats.max_health
 	add_to_group(ENEMY_GROUP)
+	# T028: el propio enemigo escucha su señal de muerte para disparar el
+	# feedback visual placeholder — mismo patrón de auto-conexión en
+	# `_ready()` que `soldado.gd` usa con `ammo_depleted`
+	# (`docs/ARCHITECTURE.md` §4.2). `_die()` emite esta señal antes de
+	# llamar `queue_free()`, así que el destello se aplica mientras el nodo
+	# sigue siendo válido dentro del mismo frame.
+	enemy_defeated.connect(_on_enemy_defeated_visual)
 
 
 func _physics_process(_delta: float) -> void:
@@ -73,6 +82,10 @@ func take_damage(amount: int) -> bool:
 	if _current_health <= 0:
 		_die()
 		return true
+	# T028: destello de impacto no letal — llamada directa (no señal, no hay
+	# contrato de `contracts/signals.md` para "golpe recibido"), inocua para
+	# los tests existentes que solo observan `take_damage`/`enemy_defeated`.
+	_flash_hit()
 	return false
 
 
@@ -89,5 +102,27 @@ func _die() -> void:
 	# `queue_free()`, nunca `free()` (`docs/ARCHITECTURE.md` §4.5): evita
 	# use-after-free si algo más todavía tiene una referencia pendiente en
 	# el mismo frame (ej. `Soldado._rifle_candidates`/`_melee_candidates`
-	# antes de procesar `body_exited`).
+	# antes de procesar `body_exited`). El feedback visual de muerte ya se
+	# aplicó de forma síncrona vía `_on_enemy_defeated_visual` (conectado en
+	# `_ready()`), antes de esta línea — el nodo sigue siendo válido durante
+	# el resto de este frame porque `queue_free()` difiere la liberación.
 	queue_free()
+
+
+# --- Feedback visual placeholder (T028) ------------------------------------
+
+## Destello breve al recibir un golpe que no elimina al enemigo — sin
+## sprites artísticos reales todavía (`Soldado`/`EnemigoBase` usan una
+## textura sólida generada vía `GradientTexture2D`), pero suficiente para que
+## un impacto sea perceptible (`constitution.md` Principio III).
+func _flash_hit() -> void:
+	var tween := create_tween()
+	tween.tween_property(_sprite, "modulate", Color(1.0, 0.3, 0.3), 0.05)
+	tween.tween_property(_sprite, "modulate", Color(1.0, 1.0, 1.0), 0.15)
+
+
+## Destello final antes de que el nodo se libere (mismo frame): tiñe el
+## sprite a negro para marcar visualmente la eliminación (FR-007,
+## `contracts/signals.md` fila `enemy_defeated`).
+func _on_enemy_defeated_visual(_ammo_dropped: int, _position: Vector2) -> void:
+	_sprite.modulate = Color(0.05, 0.05, 0.05)

@@ -84,6 +84,18 @@ var _melee_cooldown: float = 0.0
 
 @onready var _deteccion_rango: Area2D = $DeteccionRango
 @onready var _rango_melee: Area2D = $RangoMelee
+@onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
+
+## T028: feedback visual placeholder mínimo (`constitution.md` Principio
+## III — ninguna transición de modo debe quedar silenciosa; SC-003 exige que
+## el modo activo se distinga solo con retroalimentación visual/sonora, sin
+## leer números de interfaz). Sin sprites artísticos reales todavía: cada
+## modo se representa con un tinte distinto sobre el `AnimatedSprite2D`
+## placeholder (`Soldado.tscn`, textura sólida vía `GradientTexture2D`).
+const _MODE_TINT: Dictionary = {
+	SoldierMode.RIFLE: Color(1.0, 1.0, 1.0),
+	SoldierMode.MELEE: Color(1.0, 0.45, 0.15),
+}
 
 
 func _ready() -> void:
@@ -97,6 +109,10 @@ func _ready() -> void:
 	# El propio soldado escucha su señal para transicionar de modo — mismo
 	# patrón ya documentado en `docs/ARCHITECTURE.md` §4.2.
 	ammo_depleted.connect(_on_ammo_depleted)
+	# T028: conexiones de feedback visual, también solo en `_ready()`.
+	mode_changed.connect(_on_mode_changed_visual)
+	moral_changed.connect(_on_moral_changed_visual)
+	_sprite.modulate = _MODE_TINT[_mode]
 
 
 func _physics_process(delta: float) -> void:
@@ -276,3 +292,30 @@ func _advance_score(enemy: Node2D) -> float:
 	if enemy.has_method("get_advance_progress"):
 		return enemy.call("get_advance_progress")
 	return -global_position.distance_squared_to(enemy.global_position)
+
+
+# --- Feedback visual placeholder (T028) ------------------------------------
+
+## Tinta el sprite placeholder según el modo activo y aplica un pulso de
+## escala para que la transición fusil↔machete sea perceptible de inmediato
+## (`mode_changed`, `contracts/signals.md`), sin depender de arte final.
+func _on_mode_changed_visual(new_mode: SoldierMode) -> void:
+	_sprite.modulate = _MODE_TINT[new_mode]
+	_play_pulse()
+
+
+## Cada acumulación de moral (`moral_changed`) también dispara el mismo pulso
+## — refuerza que "algo pasó" sin requerir que el jugador lea el número de
+## moral en el HUD (`constitution.md` Principio III).
+func _on_moral_changed_visual(_new_morale: float) -> void:
+	_play_pulse()
+
+
+## Pulso de escala corto y reutilizable como placeholder genérico de
+## "impacto"/"cambio de estado" — reemplazable por una animación real sin
+## tocar la lógica de combate (`constitution.md` Principio I: gameplay
+## separado de lo puramente visual).
+func _play_pulse() -> void:
+	var tween := create_tween()
+	tween.tween_property(_sprite, "scale", Vector2(1.25, 1.25), 0.08)
+	tween.tween_property(_sprite, "scale", Vector2.ONE, 0.08)

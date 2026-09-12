@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scenes/units/soldado.gd" id="1_soldado"]
 [ext_resource type="Resource" path="res://resources/units/soldado_base_stats.tres" id="2_stats"]
@@ -12,11 +12,33 @@ size = Vector2(144, 240)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_melee"]
 size = Vector2(64, 64)
 
+[sub_resource type="Gradient" id="Gradient_soldado_sprite"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_soldado_sprite"]
+gradient = SubResource("Gradient_soldado_sprite")
+width = 48
+height = 48
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_soldado"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("GradientTexture2D_soldado_sprite")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
 [node name="Soldado" type="StaticBody2D"]
 script = ExtResource("1_soldado")
 stats = ExtResource("2_stats")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_soldado")
+animation = &"default"
+autoplay = "default"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_body")
