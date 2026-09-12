@@ -39,6 +39,7 @@ Juego de defensa por carriles (estilo *Plants vs. Zombies*) inspirado en la hist
 
 **Recurso global: Munición**
 - Se obtiene principalmente de enemigos derrotados (dropean munición al morir, el jugador la recoge/recolecta). *(Supuesto — confirmar si además debería acumularse pasiva y automáticamente con el tiempo, estilo sol en PvZ.)*
+- **Confirmado** (spec `001-soldado-defensor-oleadas`, T031/T032): la recolección de la munición soltada es una acción **explícita** del jugador — tap/click sobre la pickup (`AmmoPickup`, `Area2D`) que aparece en la posición del enemigo derrotado — nunca automática por proximidad. Misma acción discreta (`collect_pickup` del `InputMap`) en touch (Android/iOS) y mouse (PC); ver rationale en `research.md` §3 de esa feature.
 - Uso dual, a elección del jugador:
   1. **Recargar** a un soldado ya desplegado en el tablero (le da más disparos antes de quedarse sin balas).
   2. **Desplegar** un soldado nuevo en una casilla libre.
@@ -115,6 +116,7 @@ Esta economía recrea la tensión histórica real: cada bala cuenta, y sobrevivi
 - ✅ Alcance de diagonales: celdas diagonalmente contiguas a la posición del soldado, no un cono más amplio. (spec `001-soldado-defensor-oleadas`)
 - ✅ Disparador de moral: solo al eliminar enemigos, no por impactos sin eliminación. Se corrigió el FR-006 del spec `001-soldado-defensor-oleadas`, que decía "impacta o elimina", para alinearlo con esta definición. (spec `001-soldado-defensor-oleadas`)
 - ✅ Fórmula exacta de daño en modo machete según moral acumulada: `machete_damage = machete_base_damage + current_morale * machete_moral_multiplier` (lineal), con `machete_base_damage` y `machete_moral_multiplier` como campos `@export_range` de `UnitStats` (balanceables sin tocar código). Con moral en cero, `machete_base_damage > 0` garantiza el daño mínimo del Edge Case de `spec.md`. Implementada y validada en `soldado.gd` (T017-T024) y cubierta por `tests/unit/units/test_soldado.gd` (T015); decisión de diseño en `research.md` §2 de esa feature. (spec `001-soldado-defensor-oleadas`)
+- ✅ Mecánica de recolección de la munición soltada por enemigos: acción explícita del jugador (tap/click sobre la pickup `AmmoPickup`), no automática por proximidad, por consistencia entre touch y mouse. No resuelve por sí sola si además habrá acumulación pasiva con el tiempo (pregunta todavía abierta arriba). Implementada en `scenes/levels/AmmoPickup.tscn`/`ammo_pickup.gd` y `Enemigo._spawn_ammo_pickup()` (T031/T032); decisión de diseño en `research.md` §3 de esa feature. (spec `001-soldado-defensor-oleadas`)
 
 ## 11. Historial de cambios
 
@@ -126,3 +128,4 @@ Esta economía recrea la tensión histórica real: cada bala cuenta, y sobrevivi
 | 2026-09-11 | Graduadas tres decisiones desde el spec de feature `001-soldado-defensor-oleadas`: persistencia de moral tras recarga, alcance exacto de las diagonales, y disparador de acumulación de moral (solo eliminaciones, no impactos). Se corrigió el FR-006 de esa feature, que decía "impacta o elimina", para alinearlo. |
 | 2026-09-11 | Reparado el archivo: contenía contenido duplicado/entreverado (versión vieja sin resolver + versión nueva, pegadas sin salto de línea entre ellas). Se recuperó la versión correcta sin pérdida de contenido. |
 | 2026-09-12 | Graduada la fórmula de daño de machete según moral desde el spec de feature `001-soldado-defensor-oleadas` (T017-T024, validado por `qa-validator`): `machete_base_damage + moral * machete_moral_multiplier`, lineal, con daño mínimo garantizado en moral=0. Se retira de "pendientes" en §10. |
+| 2026-09-12 | §6.1 y §10: graduada la decisión de recolección explícita por tap/click (no por proximidad) de la munición soltada por enemigos, implementada en T031/T032 de `001-soldado-defensor-oleadas` |
