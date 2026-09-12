@@ -101,14 +101,14 @@ Proyecto único Godot 4.7 (GDScript). Rutas relativas a `res://` — ver
 ### Tests for User Story 2 (GUT) ⚠️
 
 - [X] T029 [P] [US2] Ampliar `test_economy_manager.gd` (`tests/unit/systems/test_economy_manager.gd`): rechazo (`deploy_or_reload_rejected`) al intentar gastar más munición de la disponible — cubre FR-011 (depende de T013)
-- [ ] T030 [P] [US2] Ampliar `test_soldado.gd` (`tests/unit/units/test_soldado.gd`): recargar un soldado en modo `MELEE` lo vuelve a `RIFLE` **conservando** `_current_morale` (depende de T015)
+- [X] T030 [P] [US2] Ampliar `test_soldado.gd` (`tests/unit/units/test_soldado.gd`): recargar un soldado en modo `MELEE` lo vuelve a `RIFLE` **conservando** `_current_morale` (depende de T015)
 
 ### Implementation for User Story 2
 
 - [X] T031 [US2] Crear `scenes/levels/AmmoPickup.tscn` + `ammo_pickup.gd` (`Area2D` + sprite): recolección explícita por tap/click (no por proximidad), por `research.md` §3 (depende de T008)
 - [X] T032 [US2] `enemigo.gd`: al emitir `enemy_defeated`, instanciar `AmmoPickup` en su posición vía `EconomyManager.ammo_pickup_spawned` (depende de T026, T031)
 - [X] T033 [US2] `EconomyManager`: métodos `try_spend_ammo(amount)` / `add_ammo(amount)`, emitiendo `deploy_or_reload_rejected(reason)` cuando la munición disponible es insuficiente (depende de T008)
-- [ ] T034 [US2] `soldado.gd`: método público `reload()` que gasta munición vía `EconomyManager.try_spend_ammo()` y, si tiene éxito, vuelve a `RIFLE` conservando `_current_morale` (depende de T020, T033)
+- [X] T034 [US2] `soldado.gd`: método público `reload()` que gasta munición vía `EconomyManager.try_spend_ammo()` y, si tiene éxito, vuelve a `RIFLE` conservando `_current_morale` (depende de T020, T033)
 - [ ] T035 [US2] `nivel_monte_calvo.gd`: interacción de despliegue de soldado nuevo en celda vacía, consultando `BoardManager.is_cell_free()` y `EconomyManager.try_spend_ammo(stats.deploy_ammo_cost)` (depende de T012, T027, T033)
 - [ ] T036 [US2] Crear `scenes/ui/HUD.tscn` + `hud.gd`: contador global de munición recolectada (escucha `ammo_pool_changed`) y mensaje visible al recibir `deploy_or_reload_rejected` (depende de T008)
 
