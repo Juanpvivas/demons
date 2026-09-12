@@ -26,6 +26,26 @@ extends GutTest
 ## del default debe fijarse en el `UnitStats` ANTES de instanciar/agregar el
 ## soldado al árbol (ver `_spawn_soldado`) — fijarlo después de que el
 ## soldado ya esté en el árbol no tiene efecto sobre `_current_ammo`.
+##
+## T030: agrega cobertura para `reload()` (`data-model.md` transición
+## `MELEE → RIFLE`, FR-009) — un método público que TODAVÍA NO EXISTE en
+## `soldado.gd` (lo implementa T034, después de este test, siguiendo TDD).
+## Se invoca vía `Object.call("reload")` en lugar de `_soldado.reload()`
+## porque `_soldado` está tipado como `Node` genérico en este archivo
+## (mismo motivo ya documentado en `soldado.gd` para
+## `target.call("take_damage", ...)`: GDScript con tipado estático rechaza
+## en tiempo de compilación una llamada directa a un método inexistente en
+## la clase base declarada; `Object.call()` sí compila y simplemente falla
+## en tiempo de ejecución —justo el comportamiento que necesitamos para que
+## SOLO estos tests fallen ahora mismo, sin romper la carga del resto del
+## archivo). T034 (`tasks.md`) documenta que `reload()` gasta munición vía
+## `EconomyManager.try_spend_ammo()` — el autoload `EconomyManager` ya está
+## registrado en `project.godot` (T010), así que estos tests fondean
+## generosamente el pool global (`EconomyManager.add_ammo(999)`) para no
+## acoplarse al costo exacto que decida T034, y restauran
+## `collected_ammo` al final para no filtrar estado hacia otros tests que
+## compartan el mismo autoload en este proceso de GUT (mismo patrón que
+## `tests/unit/systems/test_autoloads_registration.gd`).
 
 const SOLDADO_SCENE_PATH := "res://scenes/units/Soldado.tscn"
 const SOLDADO_SCRIPT_PATH := "res://scenes/units/soldado.gd"
@@ -338,3 +358,91 @@ func test_soldier_does_not_split_fire_when_a_second_enemy_enters_detection_range
 		first_enemy.damage_received.size() > 1,
 		"el soldado debe seguir disparando repetidamente contra su objetivo original"
 	)
+
+
+## --- Recarga: MELEE -> RIFLE conservando _current_morale (T030, FR-009) ---
+##
+## `reload()` todavía no existe en `soldado.gd` (es T034) — ambos tests de
+## esta sección DEBEN fallar hasta que se implemente.
+
+func test_reload_transitions_soldier_from_melee_back_to_rifle_mode() -> void:
+	# Given: un soldado que agotó su única bala sin eliminar a nadie y ya
+	# transicionó a modo MELEE
+	_spawn_soldado({"max_ammo": 1})
+	_spawn_enemy(RIFLE_ONLY_OFFSET, 1000) # sobrevive al único disparo, agota la munición
+	await wait_physics_frames(FRAMES_TO_DETECT)
+
+	# Y el jugador tiene munición recolectada suficiente para recargar
+	# (fondeo generoso: T030 no depende de T033/T034 y no debe acoplarse al
+	# costo exacto de recarga que decida T034)
+	var original_collected_ammo: int = EconomyManager.collected_ammo
+	EconomyManager.add_ammo(999)
+	watch_signals(_soldado)
+
+	# When: se recarga al soldado
+	_soldado.call("reload")
+
+	# Then: el soldado vuelve a modo RIFLE (contrato de `data-model.md`:
+	# "MELEE -> RIFLE: al recargar", y `contracts/signals.md`: `mode_changed`
+	# se emite "en cualquier dirección, incluida recarga")
+	assert_signal_emitted(
+		_soldado, "mode_changed",
+		"reload() debe emitir mode_changed al devolver al soldado a modo RIFLE"
+	)
+	assert_eq(
+		get_signal_parameters(_soldado, "mode_changed")[0], _soldado_script.SoldierMode.RIFLE,
+		"reload() debe transicionar al soldado de vuelta a modo RIFLE (FR-009, data-model.md)"
+	)
+
+	# Cleanup: restaurar el pool global compartido entre tests/archivos.
+	EconomyManager.collected_ammo = original_collected_ammo
+
+
+func test_reload_preserves_accumulated_morale_instead_of_resetting_it() -> void:
+	# Given: un soldado que elimina un enemigo con su única bala (acumula
+	# exactamente moral_per_kill de moral) antes de agotar munición y pasar
+	# a modo MELEE
+	_spawn_soldado({"max_ammo": 1})
+	_spawn_enemy(RIFLE_ONLY_OFFSET, _stats.damage_per_shot) # muere con el único disparo
+	await wait_physics_frames(FRAMES_TO_DETECT)
+
+	# Y el jugador tiene munición recolectada suficiente para recargar
+	var original_collected_ammo: int = EconomyManager.collected_ammo
+	EconomyManager.add_ammo(999)
+
+	# When: se recarga (vuelve a RIFLE con una bala nueva) y esa bala se
+	# dispara contra un segundo objetivo que NO muere (FR-006: un impacto
+	# que no elimina no suma moral adicional), lo que agota la munición de
+	# nuevo y devuelve al soldado a MELEE
+	_soldado.call("reload")
+	var second_enemy := _spawn_enemy(RIFLE_ONLY_OFFSET_B, 1000) # sobrevive al disparo
+	await wait_physics_frames(FRAMES_TO_FIRE_SEVERAL_SHOTS)
+	assert_true(
+		second_enemy.damage_received.size() > 0,
+		"precondición del test: tras reload() el soldado debe volver a disparar con fusil " +
+		"(consumir su bala recargada) antes de poder verificar el daño de machete resultante " +
+		"— si esto falla, reload() no devolvió al soldado a modo RIFLE"
+	)
+
+	# Then: el daño de machete contra un tercer objetivo en RangoMelee sigue
+	# reflejando ÚNICAMENTE la moral acumulada ANTES de la recarga
+	# (moral_per_kill de la única eliminación) — reload() NO debe resetear
+	# `_current_morale` a 0 (FR-009, `data-model.md`: "conservando
+	# _current_morale")
+	var melee_target := _spawn_enemy(MELEE_OFFSET, 1000)
+	await wait_physics_frames(FRAMES_TO_FIRE_SEVERAL_SHOTS)
+	var expected_damage: int = roundi(
+		_stats.machete_base_damage + _stats.moral_per_kill * _stats.machete_moral_multiplier
+	)
+	assert_true(
+		melee_target.damage_received.size() > 0,
+		"el objetivo en RangoMelee debe recibir al menos un golpe de machete"
+	)
+	assert_eq(
+		melee_target.damage_received[0], expected_damage,
+		"reload() debe conservar _current_morale: el daño de machete tras recargar debe seguir " +
+		"reflejando la moral acumulada antes de la recarga, no reiniciarla a 0"
+	)
+
+	# Cleanup: restaurar el pool global compartido entre tests/archivos.
+	EconomyManager.collected_ammo = original_collected_ammo
