@@ -1,30 +1,24 @@
 extends GutTest
-## T013: test del autoload EconomyManager (`autoloads/economy_manager.gd`) —
-## cubre "consumo/recolección de munición" de `constitution.md` Principio II.
+## T013/T029: test del autoload EconomyManager (`autoloads/economy_manager.gd`)
+## — cubre "consumo/recolección de munición" de `constitution.md` Principio II.
 ##
-## Estado en este punto (T008 recién completado): EconomyManager es solo
-## estructura de datos + señales (`collected_ammo`, `ammo_pool_changed`,
-## `ammo_pickup_spawned`). NO existen todavía `try_spend_ammo`/`add_ammo`
-## (llegan en T033) ni la señal `deploy_or_reload_rejected` (también T033).
-## Este archivo cubre por ahora lo que SÍ existe: la estructura base y que
-## las señales declaradas en `contracts/signals.md` son reales y escuchables.
+## T029 amplía la cobertura tras la implementación de T033
+## (`try_spend_ammo`/`add_ammo`/`deploy_or_reload_rejected`), verificando el
+## comportamiento observable descrito en `spec.md` FR-009/FR-010/FR-011 y
+## User Story 2, Acceptance Scenario 4 (rechazo por munición insuficiente).
+##
+## Nota sobre `deploy_or_reload_rejected`: `contracts/signals.md` la lista
+## bajo la tabla de `Soldado`, pero `EconomyManager` es quien la emite
+## realmente (ver comentario en `economy_manager.gd` — decisión de T033
+## siguiendo `tasks.md`). Estos tests verifican el comportamiento real del
+## autoload; la corrección del contrato es responsabilidad del orquestador.
 ##
 ## EconomyManager no está registrado todavía como autoload en project.godot
 ## (eso es T010, tarea separada) — por eso se carga el script directamente
 ## con `load()` + `.new()` en vez de referenciar un singleton global, igual
-## que hace `test_resource_schemas.gd` con los Resource schemas.
-##
-## TODO (T029, cuando T033 implemente try_spend_ammo/add_ammo en este mismo
-## archivo): agregar aquí
-##   - test de que add_ammo(n) suma a collected_ammo y emite
-##     ammo_pool_changed con el nuevo total.
-##   - test de que try_spend_ammo(n) con fondos suficientes resta de
-##     collected_ammo, emite ammo_pool_changed y retorna éxito (true).
-##   - test de que try_spend_ammo(n) con fondos insuficientes NO modifica
-##     collected_ammo, emite deploy_or_reload_rejected(reason) en vez de
-##     ammo_pool_changed, y retorna fracaso (false) — cubre FR-011.
-##   - edge case: gastar exactamente el total disponible (deja el pool en 0
-##     sin rechazo).
+## que hace `test_resource_schemas.gd` con los Resource schemas. Cada test
+## obtiene una instancia nueva vía `before_each`, por lo que no hay estado
+## compartido entre tests pese a que en producción esto sea un singleton.
 
 const ECONOMY_MANAGER_SCRIPT_PATH := "res://autoloads/economy_manager.gd"
 
@@ -109,21 +103,147 @@ func test_ammo_pickup_spawned_is_emitted_and_listenable_with_full_payload() -> v
 	)
 
 
-## --- Lo que NO existe todavía (documentado explícitamente, no un olvido) ---
+## --- add_ammo (FR-008: recolección de munición) ---
 
-func test_try_spend_ammo_does_not_exist_yet_before_t033() -> void:
-	# Este test es intencional: confirma el estado esperado de "TDD
-	# incremental" en este punto del plan (T008 completo, T033 pendiente).
-	# Cuando T033 implemente try_spend_ammo, este test DEBE eliminarse junto
-	# con el resto de este bloque, como parte del trabajo de T029.
-	assert_false(
-		_economy_manager.has_method("try_spend_ammo"),
-		"try_spend_ammo no debe existir todavía (llega en T033) — si este test falla, actualizar T029"
+func test_add_ammo_increases_collected_ammo_by_given_amount() -> void:
+	# Given: un pool en 0
+	# When: se recolecta munición de un enemigo derrotado
+	_economy_manager.add_ammo(5)
+
+	# Then: el pool refleja la suma
+	assert_eq(
+		_economy_manager.collected_ammo, 5,
+		"add_ammo(5) debe sumar 5 a collected_ammo"
 	)
 
 
-func test_add_ammo_does_not_exist_yet_before_t033() -> void:
-	assert_false(
-		_economy_manager.has_method("add_ammo"),
-		"add_ammo no debe existir todavía (llega en T033) — si este test falla, actualizar T029"
+func test_add_ammo_accumulates_across_multiple_calls() -> void:
+	_economy_manager.add_ammo(3)
+	_economy_manager.add_ammo(4)
+
+	assert_eq(
+		_economy_manager.collected_ammo, 7,
+		"llamadas sucesivas a add_ammo deben acumularse en collected_ammo"
 	)
+
+
+func test_add_ammo_emits_ammo_pool_changed_with_new_total() -> void:
+	watch_signals(_economy_manager)
+
+	_economy_manager.add_ammo(5)
+
+	assert_signal_emitted(_economy_manager, "ammo_pool_changed")
+	assert_signal_emitted_with_parameters(_economy_manager, "ammo_pool_changed", [5])
+
+
+## --- try_spend_ammo con fondos suficientes (FR-009/FR-010, US2 Scenario 2/3) ---
+
+func test_try_spend_ammo_with_sufficient_funds_returns_true() -> void:
+	# Given: el jugador tiene munición recolectada suficiente
+	_economy_manager.add_ammo(10)
+
+	# When: recarga un soldado o despliega uno nuevo
+	var success: bool = _economy_manager.try_spend_ammo(6)
+
+	# Then: la operación se permite
+	assert_true(success, "try_spend_ammo debe retornar true cuando hay fondos suficientes")
+
+
+func test_try_spend_ammo_with_sufficient_funds_subtracts_from_pool() -> void:
+	_economy_manager.add_ammo(10)
+
+	_economy_manager.try_spend_ammo(6)
+
+	assert_eq(
+		_economy_manager.collected_ammo, 4,
+		"try_spend_ammo(6) sobre un pool de 10 debe dejar collected_ammo en 4"
+	)
+
+
+func test_try_spend_ammo_with_sufficient_funds_emits_ammo_pool_changed_with_new_total() -> void:
+	_economy_manager.add_ammo(10)
+	watch_signals(_economy_manager)
+
+	_economy_manager.try_spend_ammo(6)
+
+	assert_signal_emitted(_economy_manager, "ammo_pool_changed")
+	assert_signal_emitted_with_parameters(_economy_manager, "ammo_pool_changed", [4])
+
+
+func test_try_spend_ammo_with_sufficient_funds_does_not_emit_rejection() -> void:
+	_economy_manager.add_ammo(10)
+	watch_signals(_economy_manager)
+
+	_economy_manager.try_spend_ammo(6)
+
+	assert_signal_not_emitted(
+		_economy_manager, "deploy_or_reload_rejected",
+		"un gasto exitoso no debe emitir deploy_or_reload_rejected"
+	)
+
+
+func test_try_spend_ammo_can_spend_exact_available_amount_leaving_pool_at_zero() -> void:
+	# Edge case: gastar exactamente el total disponible no debe ser rechazado.
+	_economy_manager.add_ammo(5)
+
+	var success: bool = _economy_manager.try_spend_ammo(5)
+
+	assert_true(success, "gastar exactamente el total disponible debe ser exitoso")
+	assert_eq(_economy_manager.collected_ammo, 0, "el pool debe quedar en 0, no negativo")
+
+
+## --- try_spend_ammo con fondos insuficientes (FR-011, US2 Scenario 4) ---
+
+func test_try_spend_ammo_with_insufficient_funds_returns_false() -> void:
+	# Given: el jugador NO tiene munición recolectada suficiente
+	_economy_manager.add_ammo(3)
+
+	# When: intenta recargar o desplegar un soldado
+	var success: bool = _economy_manager.try_spend_ammo(10)
+
+	# Then: el sistema le impide la acción
+	assert_false(success, "try_spend_ammo debe retornar false cuando la munición es insuficiente")
+
+
+func test_try_spend_ammo_with_insufficient_funds_does_not_mutate_collected_ammo() -> void:
+	_economy_manager.add_ammo(3)
+
+	_economy_manager.try_spend_ammo(10)
+
+	assert_eq(
+		_economy_manager.collected_ammo, 3,
+		"un gasto rechazado no debe restar ni parcialmente del pool"
+	)
+
+
+func test_try_spend_ammo_with_insufficient_funds_emits_deploy_or_reload_rejected() -> void:
+	_economy_manager.add_ammo(3)
+	watch_signals(_economy_manager)
+
+	_economy_manager.try_spend_ammo(10)
+
+	# Then: el sistema le indica al jugador que no tiene recursos suficientes
+	assert_signal_emitted(_economy_manager, "deploy_or_reload_rejected")
+	assert_signal_emitted_with_parameters(
+		_economy_manager, "deploy_or_reload_rejected", ["Munición insuficiente"]
+	)
+
+
+func test_try_spend_ammo_with_insufficient_funds_does_not_emit_ammo_pool_changed() -> void:
+	_economy_manager.add_ammo(3)
+	watch_signals(_economy_manager)
+
+	_economy_manager.try_spend_ammo(10)
+
+	assert_signal_not_emitted(
+		_economy_manager, "ammo_pool_changed",
+		"un gasto rechazado no debe emitir ammo_pool_changed (el pool no cambió)"
+	)
+
+
+func test_try_spend_ammo_with_zero_collected_ammo_is_rejected() -> void:
+	# Edge case: pool vacío desde el inicio (sin ninguna recolección previa).
+	var success: bool = _economy_manager.try_spend_ammo(1)
+
+	assert_false(success, "intentar gastar con el pool en 0 debe ser rechazado")
+	assert_eq(_economy_manager.collected_ammo, 0, "el pool debe permanecer en 0")
