@@ -238,7 +238,9 @@ sistema, se asumen desde este documento):
 
 ## 6. Testing
 
-- Framework: **GUT** (Godot Unit Testing), instalado en `res://addons/gut/`.
+- Framework: **GUT** (Godot Unit Testing) v9.7.1, instalado en
+  `res://addons/gut/` y habilitado en Project Settings → Plugins (antes
+  asumido por este documento, confirmado en el repo desde `001-soldado-defensor-oleadas`/T002).
 - Los tests viven en `res://tests/unit/`, con estructura espejo a la de
   `scenes/` por dominio (`tests/unit/units/`, `tests/unit/enemies/`,
   `tests/unit/systems/` para lo que vive en `autoloads/` y `core/`) — ej.
@@ -252,7 +254,12 @@ sistema, se asumen desde este documento):
 
 - Input abstraído vía `InputMap` de Godot; no se hardcodean teclas/toques
   directamente en la lógica de gameplay, para que Android/iOS (touch) y PC
-  (mouse/teclado) compartan la misma capa de lógica.
+  (mouse/teclado) compartan la misma capa de lógica. Ejemplo concreto ya en
+  el repo (`project.godot`, `001-soldado-defensor-oleadas`/T003): las
+  acciones `select_cell` y `collect_pickup` mapean mouse click y touch tap
+  al mismo evento lógico, sin tecla de teclado asociada; la distinción de
+  qué gesto significa cada una queda en la lógica de gameplay, no en el
+  `InputMap`.
 - UI (`HUD.tscn`) usa contenedores con anclas relativas, no posiciones fijas
   en píxeles, para adaptarse a distintas resoluciones y aspect ratios entre
   dispositivos móviles y PC.
@@ -278,3 +285,4 @@ sistema, se asumen desde este documento):
 | 2026-08-13 | Versión inicial del documento de arquitectura |
 | 2026-09-10 | Se agrega `addons/`, `core/` (lógica compartida no-autoload) y `resources/schemas/` (scripts base de Resource, separados de las instancias `.tres`); se subdivide `assets/` por dominio; se corrige la estructura de `tests/unit/` para reflejar la organización real de `scenes/` en vez de una carpeta `scripts/` inexistente. |
 | 2026-09-11 | Correcciones de revisión (`godot-code-review` + `resource-pattern`): raíz de `Soldado.tscn` cambiada de `CharacterBody2D` a `StaticBody2D` (unidad estacionaria); regla explícita de límite dato/estado entre `Resource` de stats y estado mutable por instancia; regla de `@onready` y conexión de señales en `_ready()`; `queue_free()` vs `free()` para limpieza fuera del pool; `@export_range`/`@export_group` para campos de balance; nueva sección 4.6 de convenciones C# |
+| 2026-09-11 | §6 y §7 sincronizadas con la realidad del repo tras T002/T003 de `001-soldado-defensor-oleadas`: se confirma versión de GUT (v9.7.1) ya instalada, y se documenta como ejemplo concreto el par de acciones `InputMap` `select_cell`/`collect_pickup` (mouse+touch, sin tecla hardcodeada) — antes ambas secciones solo describían la convención en abstracto |
