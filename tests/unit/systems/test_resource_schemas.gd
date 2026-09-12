@@ -1,11 +1,11 @@
 extends GutTest
-## T004/T005/T006: verificación mínima pero real de los Resource schemas
+## T004/T005/T006/T007: verificación mínima pero real de los Resource schemas
 ## fundacionales (`resources/schemas/`) — no hay tarea de test GUT dedicada
-## explícita en tasks.md para estos tres schemas (los tests de comportamiento
-## que los consumen llegan en T015/T016), pero T015/T016 dependen de que
+## explícita en tasks.md para estos schemas (los tests de comportamiento
+## que los consumen llegan en T015/T016), pero dependen de que
 ## Godot realmente reconozca `class_name UnitStats`/`EnemyStats`/
-## `WaveSpawnEntry` como tipos globales instanciables con los campos y tipos
-## correctos. Este test valida esa base.
+## `WaveSpawnEntry`/`WaveData` como tipos globales instanciables con los
+## campos y tipos correctos. Este test valida esa base.
 
 
 ## --- UnitStats (T004) ---
@@ -129,3 +129,81 @@ func test_wave_spawn_entry_enemy_stats_field_is_statically_typed_as_enemy_stats(
 				"enemy_stats debe declarar EnemyStats como su tipo exportado"
 			)
 	assert_true(found_property, "enemy_stats debe existir en la lista de propiedades exportadas")
+
+
+## --- WaveData (T007) ---
+
+func test_wave_data_instantiates_via_global_class_name() -> void:
+	var wave := WaveData.new()
+	assert_not_null(wave, "WaveData.new() debe instanciar vía class_name global")
+	assert_true(wave is Resource, "una instancia de WaveData debe ser un Resource")
+
+
+func test_wave_data_has_expected_fields_with_correct_types_and_default() -> void:
+	var wave := WaveData.new()
+	assert_typeof(wave.wave_number, TYPE_INT, "wave_number debe ser int")
+	assert_typeof(wave.spawn_entries, TYPE_ARRAY, "spawn_entries debe ser un Array")
+	assert_gt(wave.wave_number, 0, "wave_number por defecto debe ser > 0 (orden 1-based)")
+	assert_eq(
+		wave.spawn_entries.size(), 0,
+		"spawn_entries debe iniciar vacío por defecto (composición se autora en el .tres)"
+	)
+
+
+func test_wave_data_spawn_entries_is_statically_typed_as_wave_spawn_entry_array() -> void:
+	# Verifica que spawn_entries es realmente Array[WaveSpawnEntry] (tipado),
+	# no un Array genérico: el motor debe reportar TYPE_ARRAY con un hint de
+	# subtipo que referencia la clase WaveSpawnEntry.
+	var wave := WaveData.new()
+	var found_property := false
+	for prop in wave.get_property_list():
+		if prop.get("name") == "spawn_entries":
+			found_property = true
+			assert_eq(
+				int(prop.get("type", -1)), TYPE_ARRAY,
+				"spawn_entries debe reportar TYPE_ARRAY en su property list"
+			)
+			assert_string_contains(
+				String(prop.get("hint_string", "")), "WaveSpawnEntry",
+				"spawn_entries debe declarar WaveSpawnEntry como subtipo del array exportado"
+			)
+	assert_true(found_property, "spawn_entries debe existir en la lista de propiedades exportadas")
+
+
+func test_wave_data_spawn_entries_accepts_and_stores_wave_spawn_entry_instances() -> void:
+	# Comportamiento real: la composición de una oleada se arma agregando
+	# WaveSpawnEntry al array (ver data-model.md "Relaciones":
+	# WaveData (1) --> (N) WaveSpawnEntry).
+	var wave := WaveData.new()
+	var entry_a := WaveSpawnEntry.new()
+	entry_a.count = 3
+	var entry_b := WaveSpawnEntry.new()
+	entry_b.count = 7
+
+	wave.spawn_entries.append(entry_a)
+	wave.spawn_entries.append(entry_b)
+
+	assert_eq(wave.spawn_entries.size(), 2, "spawn_entries debe conservar las entradas agregadas")
+	assert_eq(wave.spawn_entries[0], entry_a, "el orden de las entradas debe preservarse")
+	assert_eq(wave.spawn_entries[1].count, 7, "cada entrada debe conservar sus propios datos")
+
+
+func test_wave_data_spawn_entries_is_typed_array_enforced_at_runtime_not_generic() -> void:
+	# Edge case de tipado: al ser Array[WaveSpawnEntry] (no Array genérico),
+	# el motor debe reportar el array como tipado en tiempo de ejecución
+	# (is_typed) y con el script de WaveSpawnEntry como su tipo de elemento
+	# — así se garantiza que WaveManager/WaveSpawner reciban únicamente
+	# WaveSpawnEntry reales al iterar spawn_entries, con el tipo rechazado
+	# por el motor si se intentara insertar otra cosa (ver `get_typed_script`).
+	var wave := WaveData.new()
+	var raw_array: Array = wave.spawn_entries
+	var wave_spawn_entry_script := load("res://resources/schemas/wave_spawn_entry.gd")
+
+	assert_true(
+		raw_array.is_typed(),
+		"spawn_entries debe reportarse como Array tipado (is_typed) en tiempo de ejecución"
+	)
+	assert_eq(
+		raw_array.get_typed_script(), wave_spawn_entry_script,
+		"el tipo de elemento del array debe ser específicamente el script de WaveSpawnEntry"
+	)
