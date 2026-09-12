@@ -32,7 +32,8 @@ res://
 │   └── waves/                  # definición de oleadas por nivel (.tres)
 ├── autoloads/                   # Singletons globales (ver sección 4.1)
 ├── core/                          # Lógica compartida NO-autoload (ver sección 4.5)
-│   └── object_pool.gd             # ej: ObjectPool genérico para enemigos/proyectiles
+│   ├── object_pool.gd             # ObjectPool genérico para enemigos/proyectiles
+│   └── board_manager.gd           # BoardManager: ocupación de celdas del tablero, por-nivel
 ├── assets/
 │   ├── sprites/
 │   │   ├── units/
@@ -200,9 +201,35 @@ se reciclan desde un pool en vez de instanciar/destruir en cada oleada. Un
 `ObjectPool` **no** es un autoload: no representa estado global del juego,
 es una utilidad instanciable. Vive en `core/object_pool.gd` — la carpeta
 `core/` es el lugar para este tipo de lógica compartida que no encaja como
-autoload ni pertenece a una sola feature (por ejemplo, si en el futuro
-`Soldado` y `Enemigo` llegan a compartir una clase base, también viviría
-aquí).
+autoload ni pertenece a una sola feature. Ese precedente ya se concretó en
+`001-soldado-defensor-oleadas`/T012 con `core/board_manager.gd`
+(`BoardManager`, estructura de datos de ocupación de celdas del tablero,
+tampoco autoload por ser estado por-nivel — ver `research.md` §5 de esa
+feature): cualquier utilidad futura en la misma situación (no-global,
+reutilizable entre features) sigue este mismo patrón.
+
+API concreta de `ObjectPool` (`core/object_pool.gd`, `extends Node`,
+confirmada en el repo desde T011): `setup(scene, initial_size)` fija la
+escena a reciclar y pre-instancia el tamaño inicial; `acquire()` entrega
+una instancia libre (o instancia una nueva si el pool está vacío) y nunca
+retorna `null`; `release(instance)` la devuelve al pool en vez de
+destruirla; `available_count()`/`in_use_count()` exponen el tamaño del
+pool para depuración/tests; `clear()` libera definitivamente todas las
+instancias (ver regla de `queue_free()` más abajo). La escena pooleada
+puede implementar opcionalmente `on_pool_acquired()`/`on_pool_released()`
+para resetear su propio estado (salud, munición, posición) en cada
+transición, sin que `ObjectPool` conozca nada específico de esa escena.
+
+**Nota para quien implemente esos hooks** (relevante para T026/T042,
+`Enemigo` y proyectiles): una instancia recién creada por el pool (primera
+vez que se necesita, o pre-población en `setup()`) pasa por `_deactivate()`
+internamente antes de su primer `acquire()`, lo cual invoca
+`on_pool_released()` aunque la instancia nunca estuvo realmente "en uso".
+Es intencional (deja la instancia nueva en el mismo estado inactivo que
+cualquier instancia reciclada, sin duplicar esa lógica), pero implica que
+`on_pool_released()` debe poder ejecutarse de forma segura sobre una
+instancia recién instanciada con sus valores por defecto — no debe asumir
+que ya pasó por `on_pool_acquired()` antes.
 
 Cuando sí hace falta liberar definitivamente un nodo (por ejemplo, al
 descargar el nivel o salir al menú, fuera del ciclo de vida del pool), se
@@ -296,3 +323,4 @@ sistema, se asumen desde este documento):
 | 2026-09-11 | Correcciones de revisión (`godot-code-review` + `resource-pattern`): raíz de `Soldado.tscn` cambiada de `CharacterBody2D` a `StaticBody2D` (unidad estacionaria); regla explícita de límite dato/estado entre `Resource` de stats y estado mutable por instancia; regla de `@onready` y conexión de señales en `_ready()`; `queue_free()` vs `free()` para limpieza fuera del pool; `@export_range`/`@export_group` para campos de balance; nueva sección 4.6 de convenciones C# |
 | 2026-09-11 | §6 y §7 sincronizadas con la realidad del repo tras T002/T003 de `001-soldado-defensor-oleadas`: se confirma versión de GUT (v9.7.1) ya instalada, y se documenta como ejemplo concreto el par de acciones `InputMap` `select_cell`/`collect_pickup` (mouse+touch, sin tecla hardcodeada) — antes ambas secciones solo describían la convención en abstracto |
 | 2026-09-11 | §4.1: se agrega la convención de que los scripts de autoload no declaran `class_name` (se referencian por su nombre de singleton) — duda explícita de implementación surgida en T008/T009 (`EconomyManager`, `GameStateManager`) de `001-soldado-defensor-oleadas`, graduada aquí porque aplica a todo autoload futuro (ej. `WaveManager` en T039) |
+| 2026-09-11 | §2 y §4.5 sincronizadas con la realidad del repo tras T011/T012/T014 de `001-soldado-defensor-oleadas`: se documenta la API concreta de `ObjectPool` (`setup`/`acquire`/`release`/`available_count`/`in_use_count`/`clear` + hooks opcionales `on_pool_acquired`/`on_pool_released`, antes solo descrita en principio); se agrega `core/board_manager.gd` (`BoardManager`) como segundo ejemplo real (ya no hipotético) del patrón de utilidad no-autoload en `core/`; se agrega nota para T026/T042 sobre que `on_pool_released()` se invoca también sobre instancias recién creadas por el pool, antes de cualquier uso real (comportamiento intencional, observación no bloqueante de `qa-validator` en T011/T012) |
