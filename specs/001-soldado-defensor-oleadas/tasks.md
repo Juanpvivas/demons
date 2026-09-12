@@ -134,7 +134,32 @@ Proyecto único Godot 4.7 (GDScript). Rutas relativas a `res://` — ver
 - [X] T041 [P] [US3] Crear 3 a 10 `resources/waves/nivel_montecalvo_oleada_0N.tres` con dificultad creciente en composición/cantidad, por `research.md` §4 — cubre SC-005 (depende de T007, T018)
 - [X] T042 [US3] `nivel_monte_calvo.gd`: `WaveSpawner` (`Timer` + cola de spawns por `WaveSpawnEntry`), instanciando enemigos vía `ObjectPool` (depende de T011, T026, T039)
 - [X] T043 [US3] `Nivel_MonteCalvo.tscn`: `Area2D` de "posición defendida" que, al detectar `body_entered` de un `Enemigo`, hace que este emita `reached_defended_position()` (depende de T026, T027)
-- [ ] T044 [US3] `GameStateManager`: escuchar `reached_defended_position` → `game_lost`; escuchar `all_waves_completed` → `game_won` (depende de T009, T039, T043)
+### Gap cerrado tras T043: condición de derrota del `Soldado` (T050-T054)
+
+`godot-tester` y `qa-validator` confirmaron de forma independiente y empírica
+en T043 que, sin estas tareas, un `Enemigo` nunca puede alcanzar
+"PosicionDefendida": `Soldado` (`StaticBody2D`) no tiene salud ni forma de
+ser derrotado en ninguna tarea T001-T049, por lo que su colisión física
+bloquea indefinidamente al carril. La señal `soldier_defeated` ya estaba
+contratada en `contracts/signals.md` y el edge case ya estaba descrito en
+`spec.md` ("qué ocurre si un soldado en modo cuerpo a cuerpo es
+derrotado... se pierde moral, libera la celda") — nunca se desglosó en
+tareas. Esto NO es una decisión de diseño nueva, es completar un edge case
+ya aprobado. Graduado como hallazgo en `docs/SPEC.md` §10 y
+`docs/ARCHITECTURE.md` §5 (commit `ffe77bf`); decisión de la persona:
+agregar las tareas ahora, dentro de esta misma feature, en vez de tocar
+`collision_layer`/`collision_mask` (alternativa descartada) o redistribuir
+`wave_spawn_position` (mitigación parcial, también descartada).
+
+- [ ] T050 [P] [US3] Agregar campo `max_health: int` (`@export_range`) a `UnitStats` en `resources/schemas/unit_stats.gd`, y asignarle un valor de balance en `resources/units/soldado_base_stats.tres` — campo aditivo, no rompe nada de lo ya aprobado en T004/T017 (depende de T004, T017)
+- [ ] T051 [P] [US3] Ampliar test GUT `test_soldado.gd` (`tests/unit/units/test_soldado.gd`): el soldado recibe daño de `EnemyStats.melee_damage` mientras un enemigo lo ataca dentro de su "RangoMelee"; al llegar `_current_health` a 0, el soldado emite `soldier_defeated(grid_cell)` (contrato ya definido en `contracts/signals.md`) y pierde toda la moral acumulada (`_current_morale` vuelve a 0) — cubre el Edge Case de derrota de `spec.md` (depende de T050; DEBE fallar antes de implementar T052/T053)
+- [ ] T052 [US3] `soldado.gd`: inicializar `_current_health` desde `stats.max_health` en `_ready()`; agregar `_grid_cell: Vector2i` (ya contemplado en `data-model.md` pero nunca asignado desde T020) con un setter público para que quien despliegue el soldado se lo asigne; exponer `take_damage(amount: int) -> bool` con el mismo contrato que `Enemigo.take_damage()` (aplica daño, retorna `true` solo en la llamada que elimina); al llegar `_current_health` a 0, poner `_current_morale = 0.0`, emitir `soldier_defeated(_grid_cell)` y `queue_free()` (depende de T050, T051)
+- [ ] T053 [US3] `enemigo.gd`: lógica de "atacando activamente" contra un `Soldado` dentro del rango de combate cuerpo a cuerpo — necesaria porque hoy `Enemigo` no tiene ninguna forma de atacar, solo avanza con `move_and_slide()`; mientras un `Soldado` esté en ese rango, aplicar `stats.melee_damage` sobre él vía `take_damage()` (T052) con una cadencia propia (documentar el supuesto de implementación elegido; no requiere campo nuevo en `EnemyStats`, fuera del alcance autorizado de esta tarea) — sin esto, T052 nunca se dispara en juego real (depende de T026, T052)
+- [ ] T054 [US3] `nivel_monte_calvo.gd`: asignar `_grid_cell` (setter de T052) al soldado colocado a mano en `_ready()` y a cada soldado desplegado en `_try_deploy_soldado()`; escuchar `soldier_defeated` de cada instancia y llamar `_board_manager.free_cell(grid_cell)` para liberar la celda (`spec.md` Edge Case), siguiendo el patrón de comunicación por señales de `docs/ARCHITECTURE.md` §4.2 (depende de T012, T035, T052)
+
+**Checkpoint**: un `Soldado` puede ser derrotado y su celda se libera — el bloqueo físico que impedía alcanzar "PosicionDefendida" queda resuelto sin tocar `collision_layer`/`collision_mask`.
+
+- [ ] T044 [US3] `GameStateManager`: escuchar `reached_defended_position` → `game_lost`; escuchar `all_waves_completed` → `game_won` (depende de T009, T039, T043, T052-T054 para que la derrota sea alcanzable en juego real)
 - [ ] T045 [US3] `hud.gd`: feedback de "oleada por llegar" (`wave_started`) y pantallas de victoria/derrota (`game_won`/`game_lost`) (depende de T036, T044)
 
 **Checkpoint**: las tres user stories funcionan juntas — MVP completo de la feature.
@@ -164,6 +189,7 @@ Proyecto único Godot 4.7 (GDScript). Rutas relativas a `res://` — ver
 - **US1 (P1)**: solo depende de Foundational — sin dependencia de otras stories
 - **US2 (P2)**: depende de Foundational; se integra con `Soldado`/`Enemigo` de US1 pero es testeable de forma independiente (economía en aislado vía `EconomyManager`)
 - **US3 (P3)**: depende de Foundational; se integra con `Enemigo` de US1 y el nivel de US2, pero el `WaveManager`/`GameStateManager` son testeables de forma independiente
+- **T050-T054 (dentro de US3)**: cierran el edge case de derrota del `Soldado` (`spec.md`) que T001-T049 dejó sin desglosar — deben completarse antes de que la condición de derrota de T044 sea alcanzable en una partida real (el bloqueo físico Soldado/Enemigo documentado en `docs/SPEC.md` §10 desaparece al poder destruirse el `Soldado`)
 
 ### Dentro de cada User Story
 
@@ -179,7 +205,7 @@ Proyecto único Godot 4.7 (GDScript). Rutas relativas a `res://` — ver
 - T013, T014 (tests foundational) en paralelo entre sí
 - Dentro de US1: T015/T016 (tests) en paralelo; T017/T018/T019/T025 (recursos/escenas) en paralelo; la cadena T020→T021→T022→T023→T024 es secuencial (mismo archivo `soldado.gd`)
 - Dentro de US2: T029/T030 en paralelo
-- Dentro de US3: T037/T038 en paralelo; T039/T041 en paralelo
+- Dentro de US3: T037/T038 en paralelo; T039/T041 en paralelo; T050/T051 en paralelo (recurso vs. test); T052 y T053 son secuenciales entre sí (T053 llama al `take_damage()` que T052 expone) aunque toquen archivos distintos; T054 depende de T052 completa
 
 ---
 
