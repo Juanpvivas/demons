@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="UnitStats" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/schemas/unit_stats.gd" id="1_soldado"]
+
+[resource]
+script = ExtResource("1_soldado")
+max_ammo = 10
+damage_per_shot = 5
+fire_rate = 1.5
+machete_base_damage = 3
+machete_moral_multiplier = 1.0
+moral_per_kill = 1.0
+deploy_ammo_cost = 10
