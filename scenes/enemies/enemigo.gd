@@ -36,6 +36,13 @@ extends CharacterBody2D
 ## `Soldado` (`Soldado.ENEMY_GROUP`, mismo literal).
 const ENEMY_GROUP: String = "enemies"
 
+## T032: escena de la pickup de munición que se instancia al morir
+## (`_die()`), según `research.md` §3 (recolección explícita por tap/click,
+## no por proximidad). Se precarga aquí en vez de vivir como `@export`
+## porque toda instancia de `Enemigo` genera el mismo tipo de pickup — solo
+## cambia `amount`, tomado de `stats.ammo_drop`.
+const _AMMO_PICKUP_SCENE: PackedScene = preload("res://scenes/levels/AmmoPickup.tscn")
+
 ## El enemigo fue eliminado (por disparo o por machete). Payload por
 ## contrato (`contracts/signals.md`): munición que suelta y su posición en
 ## el momento de morir, para que quien escuche (ej. `EconomyManager`, fuera
@@ -99,6 +106,7 @@ func get_advance_progress() -> float:
 
 func _die() -> void:
 	enemy_defeated.emit(stats.ammo_drop, global_position)
+	_spawn_ammo_pickup()
 	# `queue_free()`, nunca `free()` (`docs/ARCHITECTURE.md` §4.5): evita
 	# use-after-free si algo más todavía tiene una referencia pendiente en
 	# el mismo frame (ej. `Soldado._rifle_candidates`/`_melee_candidates`
@@ -107,6 +115,33 @@ func _die() -> void:
 	# `_ready()`), antes de esta línea — el nodo sigue siendo válido durante
 	# el resto de este frame porque `queue_free()` difiere la liberación.
 	queue_free()
+
+
+## T032: instancia la pickup de munición en la posición de muerte de este
+## enemigo (FR-007) y notifica a `EconomyManager` para que emita
+## `ammo_pickup_spawned` (`contracts/signals.md` — `EconomyManager` es el
+## único emisor de esa señal, aunque quien instancia la escena sea este
+## nodo, no el autoload). `pickup_id` es simplemente el `instance_id` de la
+## pickup recién creada — suficiente para identificarla de forma única sin
+## necesitar un contador global.
+##
+## Se agrega como hijo del padre de este enemigo (no de este nodo, que se
+## libera a continuación vía `queue_free()`). `global_position` se asigna
+## **después** de `add_child()` (no antes) para que se calcule respecto al
+## transform real del padre en el árbol — si se asignara antes, con el nodo
+## todavía sin padre, equivaldría a fijar la posición local asumiendo un
+## padre en el origen, lo cual sería incorrecto si el contenedor de
+## enemigos del nivel tiene su propio offset.
+func _spawn_ammo_pickup() -> void:
+	var parent := get_parent()
+	if parent == null:
+		return
+	var pickup: AmmoPickup = _AMMO_PICKUP_SCENE.instantiate()
+	pickup.amount = stats.ammo_drop
+	parent.add_child(pickup)
+	pickup.global_position = global_position
+	var pickup_id: int = pickup.get_instance_id()
+	EconomyManager.notify_pickup_spawned(pickup_id, global_position, stats.ammo_drop)
 
 
 # --- Feedback visual placeholder (T028) ------------------------------------

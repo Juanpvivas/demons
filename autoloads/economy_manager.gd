@@ -50,3 +50,13 @@ func try_spend_ammo(amount: int) -> bool:
 func add_ammo(amount: int) -> void:
 	collected_ammo += amount
 	ammo_pool_changed.emit(collected_ammo)
+
+
+## T032: notifica que una pickup de munición fue instanciada en el tablero
+## (ej. `Enemigo._die()`, al morir, instancia `AmmoPickup.tscn` y llama a
+## este método). `EconomyManager` sigue siendo el único emisor de
+## `ammo_pickup_spawned` (`contracts/signals.md`), aunque no sea quien
+## instancia la escena, para que otros sistemas (HUD, audio) se enteren sin
+## tener que escuchar directamente cada instancia de `Enemigo`/`AmmoPickup`.
+func notify_pickup_spawned(pickup_id, position: Vector2, amount: int) -> void:
+	ammo_pickup_spawned.emit(pickup_id, position, amount)
