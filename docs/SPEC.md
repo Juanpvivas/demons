@@ -108,13 +108,13 @@ Esta economía recrea la tensión histórica real: cada bala cuenta, y sobrevivi
 - ¿Narrativa/contexto histórico se presenta dentro del juego (cutscenes, texto) o queda solo como inspiración temática?
 - Balance de costos exactos de cada unidad (se define con playtesting).
 - ¿La munición cae solo de enemigos derrotados, o también se acumula pasivamente con el tiempo? (supuesto actual: solo de enemigos)
-- Fórmula exacta de daño en modo machete según moral acumulada.
 
 ### Resueltas (graduadas desde specs de feature)
 
 - ✅ Moral tras recarga: se conserva, no decae con el tiempo, se pierde solo si el soldado es derrotado. (spec `001-soldado-defensor-oleadas`)
 - ✅ Alcance de diagonales: celdas diagonalmente contiguas a la posición del soldado, no un cono más amplio. (spec `001-soldado-defensor-oleadas`)
 - ✅ Disparador de moral: solo al eliminar enemigos, no por impactos sin eliminación. Se corrigió el FR-006 del spec `001-soldado-defensor-oleadas`, que decía "impacta o elimina", para alinearlo con esta definición. (spec `001-soldado-defensor-oleadas`)
+- ✅ Fórmula exacta de daño en modo machete según moral acumulada: `machete_damage = machete_base_damage + current_morale * machete_moral_multiplier` (lineal), con `machete_base_damage` y `machete_moral_multiplier` como campos `@export_range` de `UnitStats` (balanceables sin tocar código). Con moral en cero, `machete_base_damage > 0` garantiza el daño mínimo del Edge Case de `spec.md`. Implementada y validada en `soldado.gd` (T017-T024) y cubierta por `tests/unit/units/test_soldado.gd` (T015); decisión de diseño en `research.md` §2 de esa feature. (spec `001-soldado-defensor-oleadas`)
 
 ## 11. Historial de cambios
 
@@ -125,3 +125,4 @@ Esta economía recrea la tensión histórica real: cada bala cuenta, y sobrevivi
 | 2026-08-13 | Nombre del juego confirmado: "Demonios de las Trincheras" |
 | 2026-09-11 | Graduadas tres decisiones desde el spec de feature `001-soldado-defensor-oleadas`: persistencia de moral tras recarga, alcance exacto de las diagonales, y disparador de acumulación de moral (solo eliminaciones, no impactos). Se corrigió el FR-006 de esa feature, que decía "impacta o elimina", para alinearlo. |
 | 2026-09-11 | Reparado el archivo: contenía contenido duplicado/entreverado (versión vieja sin resolver + versión nueva, pegadas sin salto de línea entre ellas). Se recuperó la versión correcta sin pérdida de contenido. |
+| 2026-09-12 | Graduada la fórmula de daño de machete según moral desde el spec de feature `001-soldado-defensor-oleadas` (T017-T024, validado por `qa-validator`): `machete_base_damage + moral * machete_moral_multiplier`, lineal, con daño mínimo garantizado en moral=0. Se retira de "pendientes" en §10. |
