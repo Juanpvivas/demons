@@ -12,6 +12,23 @@ extends GutTest
 ## por la suite automática en vez de depender de una verificación manual: un
 ## futuro ajuste de balance que rompa el orden o la progresión debe fallar
 ## aquí, no descubrirse jugando.
+##
+## NOTA (observación no bloqueante de qa-validator en T041, pendiente para
+## T047 — revisión final): `nivel_montecalvo_oleada_01.tres` no fija
+## `wave_number` explícitamente (usa el default `1` de `WaveData`, que hoy
+## coincide con el valor correcto); `_03.tres` no fija `count` (usa el
+## default `5` de `WaveSpawnEntry`, que hoy coincide con el valor esperado
+## en la progresión 3→4→5→6→8→...); `_06.tres` no fija `spawn_interval`
+## (usa el default `1.0`, que hoy coincide con el valor esperado en la
+## progresión 1.5→...→1.0→...→0.6). Los tests de este archivo pasan porque
+## el valor por defecto del schema resulta ser, por coincidencia, el valor
+## de balance correcto para esa oleada — no porque el archivo lo declare.
+## Si algún día cambia el default de `wave_number`, `count` o
+## `spawn_interval` en `resources/schemas/wave_data.gd` /
+## `wave_spawn_entry.gd`, estas tres oleadas cambiarían de valor
+## silenciosamente sin que nadie haya tocado el `.tres`. T047 debería fijar
+## los tres valores explícitamente en esos archivos para eliminar la
+## dependencia implícita.
 
 const WAVE_COUNT := 10
 const WAVE_PATH_FORMAT := "res://resources/waves/nivel_montecalvo_oleada_%02d.tres"
