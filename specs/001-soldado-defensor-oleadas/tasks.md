@@ -110,7 +110,7 @@ Proyecto único Godot 4.7 (GDScript). Rutas relativas a `res://` — ver
 - [X] T033 [US2] `EconomyManager`: métodos `try_spend_ammo(amount)` / `add_ammo(amount)`, emitiendo `deploy_or_reload_rejected(reason)` cuando la munición disponible es insuficiente (depende de T008)
 - [X] T034 [US2] `soldado.gd`: método público `reload()` que gasta munición vía `EconomyManager.try_spend_ammo()` y, si tiene éxito, vuelve a `RIFLE` conservando `_current_morale` (depende de T020, T033)
 - [X] T035 [US2] `nivel_monte_calvo.gd`: interacción de despliegue de soldado nuevo en celda vacía, consultando `BoardManager.is_cell_free()` y `EconomyManager.try_spend_ammo(stats.deploy_ammo_cost)` (depende de T012, T027, T033)
-- [ ] T036 [US2] Crear `scenes/ui/HUD.tscn` + `hud.gd`: contador global de munición recolectada (escucha `ammo_pool_changed`) y mensaje visible al recibir `deploy_or_reload_rejected` (depende de T008)
+- [X] T036 [US2] Crear `scenes/ui/HUD.tscn` + `hud.gd`: contador global de munición recolectada (escucha `ammo_pool_changed`) y mensaje visible al recibir `deploy_or_reload_rejected` (depende de T008)
 
 **Checkpoint**: US1 + US2 funcionan juntas (defensa + economía).
 
