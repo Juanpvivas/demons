@@ -222,6 +222,32 @@ func test_moral_changed_is_emitted_with_moral_per_kill_when_a_shot_kills_the_tar
 	)
 
 
+func test_moral_changed_is_not_emitted_when_a_melee_kill_happens() -> void:
+	# Given: un soldado que ya está en modo MELEE (agotó su munición sin
+	# eliminar a nadie con el fusil, moral permanece en 0)
+	_spawn_soldado({"max_ammo": 1})
+	_spawn_enemy(RIFLE_ONLY_OFFSET, 1000) # sobrevive al único disparo, sin acumular moral
+	await wait_physics_frames(FRAMES_TO_DETECT)
+
+	# When: entra un enemigo en RangoMelee y el soldado, ya en modo MELEE, lo
+	# elimina a machetazos
+	watch_signals(_soldado)
+	var melee_target := _spawn_enemy(MELEE_OFFSET, _stats.machete_base_damage)
+	await wait_physics_frames(FRAMES_TO_FIRE_SEVERAL_SHOTS)
+	assert_true(
+		melee_target.damage_received.size() > 0,
+		"precondición del test: el objetivo en RangoMelee debe haber sido golpeado"
+	)
+
+	# Then: la eliminación en modo MELEE (machete) NO debe sumar moral —
+	# FR-006 exige que la moral solo suba por eliminaciones mientras hay
+	# munición/modo RIFLE
+	assert_signal_not_emitted(
+		_soldado, "moral_changed",
+		"una eliminación en modo MELEE (machete) no debe acumular moral (FR-006)"
+	)
+
+
 ## --- Daño de machete = base + moral * multiplicador (FR-005) ---
 
 func test_machete_damage_with_zero_accumulated_morale_equals_base_damage() -> void:
@@ -280,9 +306,10 @@ func test_machete_damage_scales_with_accumulated_morale() -> void:
 
 func test_soldier_does_not_split_fire_when_a_second_enemy_enters_detection_range() -> void:
 	# Given: un soldado con munición suficiente y un primer enemigo ya
-	# targeteado en su carril frontal
+	# targeteado en su carril frontal, MENOS avanzado que el que entrará después
 	_spawn_soldado({"max_ammo": 10})
 	var first_enemy := _spawn_enemy(RIFLE_ONLY_OFFSET, 1000)
+	first_enemy.advance_progress = 0.0
 	await wait_physics_frames(FRAMES_TO_DETECT)
 	assert_true(
 		first_enemy.damage_received.size() > 0,
@@ -290,8 +317,15 @@ func test_soldier_does_not_split_fire_when_a_second_enemy_enters_detection_range
 	)
 
 	# When: un segundo enemigo entra simultáneamente en una diagonal adyacente,
-	# mientras el primero sigue vivo y en rango
+	# MÁS avanzado que el objetivo actual (spec.md Edge Cases: "el recién
+	# llegado... más avanzado"), mientras el primero sigue vivo y en rango.
+	# Si el soldado recalculara prioridad al entrar un candidato nuevo (en vez
+	# de solo cuando no hay objetivo activo), el score más alto del recién
+	# llegado le robaría el foco al objetivo original — por eso este test
+	# exige una diferencia de prioridad real, no un empate resuelto por orden
+	# de inserción.
 	var second_enemy := _spawn_enemy(RIFLE_ONLY_OFFSET_B, 1000)
+	second_enemy.advance_progress = 100.0
 	await wait_physics_frames(FRAMES_TO_FIRE_SEVERAL_SHOTS)
 
 	# Then: el soldado sigue disparando exclusivamente al objetivo original;
