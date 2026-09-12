@@ -85,7 +85,7 @@ El jugador se enfrenta a oleadas sucesivas de enemigos que aumentan en dificulta
 - **FR-003**: Cada soldado DEBE tener una cantidad limitada de munición que se reduce con cada disparo realizado.
 - **FR-004**: Cuando la munición de un soldado llega a cero, el sistema DEBE hacer que ese soldado transicione automáticamente a combate cuerpo a cuerpo con machete contra enemigos dentro de su rango de melee.
 - **FR-005**: El daño del ataque cuerpo a cuerpo con machete DEBE calcularse en función de la moral acumulada por ese soldado durante su fase de combate a distancia.
-- **FR-006**: El sistema DEBE incrementar la moral acumulada de un soldado cada vez que impacta o elimina a un enemigo mientras dispara con munición.
+- **FR-006**: El sistema DEBE incrementar la moral acumulada de un soldado cada vez que elimina a un enemigo mientras dispara con munición (no por impactos que no resulten en eliminación).
 - **FR-007**: Todo enemigo derrotado (por disparo o por machete) DEBE soltar una cantidad de munición recolectable en el tablero.
 - **FR-008**: El jugador DEBE poder recolectar la munición soltada por enemigos derrotados y acumularla como recurso disponible.
 - **FR-009**: El jugador DEBE poder usar munición recolectada para recargar a un soldado en el tablero que se encuentre sin munición (en modo machete).
@@ -120,6 +120,6 @@ El jugador se enfrenta a oleadas sucesivas de enemigos que aumentan en dificulta
 - Cuando un soldado con munición tiene varios enemigos elegibles a la vez (carril frontal y/o diagonales), el objetivo prioritario es el enemigo más avanzado (más cercano a la posición defendida); esta es la regla de desempate por defecto para la selección de un único objetivo.
 - La munición recolectada por el jugador es un recurso único y compartido (no distinto por tipo de enemigo ni por soldado), usado indistintamente para recargar soldados existentes o desplegar soldados nuevos.
 - Cada nuevo despliegue de soldado tiene un costo en munición recolectada equivalente a una recarga completa; no existe un recurso económico separado (como "puntos" u "oro") en el alcance de esta feature.
-- La moral de un soldado se acumula de forma incremental por cada impacto/eliminación exitosa mientras tiene munición, no decae con el tiempo, y se pierde por completo si el soldado es derrotado.
+- La moral de un soldado se acumula de forma incremental por cada eliminación exitosa mientras tiene munición (los impactos que no eliminan al enemigo no otorgan moral), no decae con el tiempo, y se pierde por completo si el soldado es derrotado.
 - Cuando cualquier enemigo alcanza la posición defendida, la partida termina inmediatamente en derrota (no existe un sistema de "vidas" o daño acumulado a la posición en el alcance de esta feature).
 - El soporte multiplataforma (Android, iOS, PC) y el rendimiento a 60 FPS ya están cubiertos por los principios de la constitución del proyecto y no se repiten como requisitos de esta feature.

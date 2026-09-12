@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "skillsmith": {
+      "source": {
+        "source": "github",
+        "repo": "jame581/skillsmith"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "godot-prompter@skillsmith": true
+  }
+}
