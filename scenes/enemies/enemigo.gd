@@ -38,6 +38,21 @@
 ## Test de US1/US2 (T027) nunca pasa por un pool y conserva el
 ## comportamiento original sin cambios (auto-destrucción con `queue_free()`
 ## al morir).
+##
+## **Ataque cuerpo a cuerpo contra `Soldado` (T053, `spec.md` Edge Case: "un
+## soldado en modo cuerpo a cuerpo es derrotado por los enemigos")**: este
+## enemigo detecta a un `Soldado` dentro de su propia `Area2D` "RangoAtaque"
+## (mismo patrón `body_entered`/`body_exited` + lista de candidatos que usa
+## `Soldado` para "DeteccionRango"/"RangoMelee", `docs/ARCHITECTURE.md` §4.2)
+## y le aplica `stats.melee_damage` vía `Soldado.take_damage()` a una cadencia
+## fija — ver `_MELEE_ATTACK_INTERVAL`/`_process_melee_attack()` para el
+## supuesto de implementación exacto (no es un valor de diseño de `spec.md`
+## ni un campo nuevo en `EnemyStats`, fuera del alcance autorizado de esta
+## tarea). "RangoAtaque" está posicionada y dimensionada para solaparse con
+## "RangoMelee" de `Soldado.tscn` en la franja donde ambos ya se detectan
+## mutuamente, así que el intercambio de daño es simétrico: mientras un
+## enemigo está lo bastante cerca para que el soldado lo ataque a machete,
+## también lo está para atacar al soldado de vuelta.
 class_name Enemigo
 extends CharacterBody2D
 
@@ -84,7 +99,37 @@ var _current_health: int = 0
 ## clase y el patrón de reciclado de `ObjectPool` (`WaveSpawner`, T042).
 var _pool: ObjectPool = null
 
+## T053: cadencia de ataque cuerpo a cuerpo contra un `Soldado` dentro de
+## "RangoAtaque" — **supuesto de implementación**, no un valor de diseño
+## definido en `spec.md` ni un campo nuevo en `EnemyStats` (fuera del alcance
+## autorizado de esta tarea): ningún campo existente de `EnemyStats`
+## representa una cadencia de ataque (`move_speed`, `melee_damage`,
+## `ammo_drop`, `max_health`), así que se usa un intervalo fijo de 1 golpe
+## por segundo, igual para todo enemigo hasta que el balance exija
+## diferenciarlo por tipo.
+const _MELEE_ATTACK_INTERVAL: float = 1.0
+
+## Objetivo activo de ataque cuerpo a cuerpo — nunca más de uno a la vez
+## (mismo criterio de "sin dividir fuego" que `Soldado._current_melee_target`).
+## Tipado como `Node2D`, no `Soldado`, por el mismo motivo ya documentado en
+## la cabecera de `soldado.gd` para `_current_target`/`_current_melee_target`:
+## evita fricción de tipado estático al filtrar candidatos con `is Soldado`
+## dentro de un handler cuyo parámetro llega tipado `Node2D` desde la señal
+## `body_entered`/`body_exited` de Godot.
+var _melee_target: Node2D = null
+
+## Candidatos (siempre instancias de `Soldado`, filtradas con `is Soldado` en
+## `_on_rango_ataque_body_entered()`) actualmente dentro de "RangoAtaque".
+var _melee_candidates: Array[Node2D] = []
+
+## Cuenta regresiva hasta el próximo golpe cuerpo a cuerpo. Se reinicia a 0
+## al adquirir un objetivo nuevo, para que el primer golpe contra ese
+## objetivo sea inmediato (mismo criterio que `Soldado._melee_cooldown`
+## arranca en 0.0 en `soldado.gd`).
+var _melee_attack_cooldown: float = 0.0
+
 @onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var _rango_ataque: Area2D = $RangoAtaque
 
 
 func _ready() -> void:
@@ -98,11 +143,16 @@ func _ready() -> void:
 	# llamar `queue_free()`, así que el destello se aplica mientras el nodo
 	# sigue siendo válido dentro del mismo frame.
 	enemy_defeated.connect(_on_enemy_defeated_visual)
+	# T053: mismo patrón de conexión de `Area2D` en `_ready()` que usa
+	# `soldado.gd` para "DeteccionRango"/"RangoMelee".
+	_rango_ataque.body_entered.connect(_on_rango_ataque_body_entered)
+	_rango_ataque.body_exited.connect(_on_rango_ataque_body_exited)
 
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	velocity = Vector2(0.0, stats.move_speed)
 	move_and_slide()
+	_process_melee_attack(delta)
 
 
 ## Aplica `amount` de daño y retorna `true` únicamente si esta llamada dejó
@@ -122,6 +172,67 @@ func take_damage(amount: int) -> bool:
 	# los tests existentes que solo observan `take_damage`/`enemy_defeated`.
 	_flash_hit()
 	return false
+
+
+## T053: mientras este enemigo tiene un `Soldado` activo dentro de
+## "RangoAtaque", lo ataca con `stats.melee_damage` a la cadencia fija de
+## `_MELEE_ATTACK_INTERVAL` (`spec.md` Edge Case: "un soldado en modo cuerpo
+## a cuerpo es derrotado por los enemigos"). Mismo patrón de cooldown por
+## acumulador en `_physics_process` que usa `Soldado._process_melee()`.
+func _process_melee_attack(delta: float) -> void:
+	if _melee_target == null:
+		return
+	if not is_instance_valid(_melee_target):
+		_remove_melee_candidate(_melee_target)
+		return
+	_melee_attack_cooldown -= delta
+	if _melee_attack_cooldown > 0.0:
+		return
+	# Mismo despacho dinámico que `soldado.gd` usa para atacar a `Enemigo` —
+	# ver el TODO de su cabecera para el motivo (tipado `Node2D`, no
+	# `Soldado`, evita la fricción de tipado estático explicada arriba).
+	_melee_target.call("take_damage", stats.melee_damage)
+	_melee_attack_cooldown = _MELEE_ATTACK_INTERVAL
+
+
+## Entra un `Soldado` nuevo en "RangoAtaque" — solo se adquiere como objetivo
+## si no hay uno activo (misma regla de "sin dividir fuego" que
+## `Soldado._on_rango_melee_body_entered()`).
+func _on_rango_ataque_body_entered(body: Node2D) -> void:
+	if not (body is Soldado) or _melee_candidates.has(body):
+		return
+	_melee_candidates.append(body)
+	if _melee_target == null:
+		_recompute_melee_target()
+
+
+func _on_rango_ataque_body_exited(body: Node2D) -> void:
+	if not _melee_candidates.has(body):
+		return
+	_remove_melee_candidate(body)
+
+
+func _remove_melee_candidate(body: Node2D) -> void:
+	_melee_candidates.erase(body)
+	if body == _melee_target:
+		_melee_target = null
+		_recompute_melee_target()
+
+
+## Recalcula el objetivo activo de "RangoAtaque" — el primer candidato válido
+## de la lista (a diferencia de `Soldado._pick_priority_target()`, no hay
+## noción de "más avanzado" que desempatar aquí: en la práctica, el grid del
+## tablero nunca permite más de un `Soldado` simultáneo dentro de esta
+## `Area2D`, tan pequeña como "RangoMelee" de `Soldado.tscn`). Reinicia el
+## cooldown a 0 para que el primer golpe contra el objetivo nuevo sea
+## inmediato.
+func _recompute_melee_target() -> void:
+	_melee_target = null
+	for candidate in _melee_candidates:
+		if is_instance_valid(candidate):
+			_melee_target = candidate
+			break
+	_melee_attack_cooldown = 0.0
 
 
 ## T042: registra el `ObjectPool` dueño de esta instancia. Llamado
