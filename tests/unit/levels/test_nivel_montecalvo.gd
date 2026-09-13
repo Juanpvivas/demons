@@ -696,6 +696,187 @@ func test_soldado_desplegado_defeated_libera_su_celda_en_board_manager() -> void
 	EconomyManager.collected_ammo = original_collected_ammo
 
 
+## --- T046 (smoke test de `quickstart.md`, Escenario 2 "Recolección y
+## reabastecimiento"): un `Enemigo` REAL derrotado dentro del nivel REAL debe
+## generar una `AmmoPickup` REAL (no solo el `emit_signal()` manual sobre
+## `EconomyManager` que ya cubre `tests/unit/systems/test_economy_manager.gd`
+## — ese test nunca instancia `Enemigo`/`AmmoPickup` reales, así que nunca
+## ejercitó `Enemigo._spawn_ammo_pickup()` en sí). Cierra ese hueco con
+## instancias de producción sin overrides. ---
+
+func test_defeating_a_real_enemy_in_the_level_spawns_a_real_ammopickup_child_with_correct_amount_and_position() -> void:
+	# Given: el nivel real cargado, con el Enemigo colocado a mano (T027) vivo
+	var level := _load_level()
+	var enemigo: Enemigo = level.get_node("Enemigo")
+	var death_position: Vector2 = enemigo.global_position
+	var expected_amount: int = enemigo.stats.ammo_drop
+	watch_signals(EconomyManager)
+
+	# When: el enemigo real es derrotado (mismo `take_damage()` que usaría el
+	# combate automático del soldado, invocado aquí directamente para aislar
+	# la generación de la pickup del resto del combate, ya cubierto en otros
+	# tests de este archivo)
+	enemigo.take_damage(enemigo.stats.max_health)
+
+	# Then: una AmmoPickup real quedó como hijo del nivel, en la posición de
+	# muerte del enemigo y con el amount correcto (FR-007) — Enemigo._die()
+	# la agrega de forma síncrona antes de queue_free(), así que ya debe
+	# existir sin esperar ningún frame adicional
+	var pickups: Array = []
+	for child in level.get_children():
+		if child is AmmoPickup:
+			pickups.append(child)
+	assert_eq(
+		pickups.size(), 1,
+		"derrotar a un Enemigo real del nivel debe agregar exactamente una AmmoPickup real como hijo del nivel"
+	)
+	var pickup: AmmoPickup = pickups[0]
+	assert_eq(
+		pickup.amount, expected_amount,
+		"la AmmoPickup real generada debe llevar el ammo_drop de EnemyStats del enemigo derrotado (FR-007)"
+	)
+	assert_eq(
+		pickup.global_position, death_position,
+		"la AmmoPickup real generada debe aparecer en la posición de muerte del enemigo"
+	)
+
+	# Then: EconomyManager real fue notificado con el mismo payload (contrato
+	# de `ammo_pickup_spawned`, consumido por el HUD real, T036)
+	assert_signal_emitted_with_parameters(
+		EconomyManager, "ammo_pickup_spawned",
+		[pickup.get_instance_id(), death_position, expected_amount]
+	)
+
+
+## --- T046: recolectar una `AmmoPickup` REAL suma su `amount` al pool global
+## (FR-008). Se invoca `_collect()` directamente en vez de simular un
+## click/tap real: `Area2D.input_event` se resuelve por "physics picking" del
+## motor, que depende de coordenadas de pantalla/viewport — la misma
+## limitación de `--headless` ya documentada en `docs/ARCHITECTURE.md` §6
+## para `_unhandled_input()` de este mismo nivel aplica igual (o peor: physics
+## picking necesita además un `Camera2D`/viewport real renderizando, que no
+## existe en este entorno de test). Lo que este test SÍ cubre de punta a
+## punta con una instancia real: la lógica de negocio de la recolección en sí
+## (`_collect()` → `EconomyManager.add_ammo()` → autoliberación) — lo único
+## que queda sin cubrir por esta decisión es el despacho del evento de
+## input/physics picking en sí, sin lógica de negocio propia. ---
+
+func test_collecting_a_real_ammopickup_adds_its_amount_to_the_global_ammo_pool() -> void:
+	# Given: el nivel real cargado, con una AmmoPickup real generada por la
+	# derrota real de un enemigo (mismo camino de producción que el test
+	# anterior, no una instancia de AmmoPickup.tscn armada a mano)
+	var level := _load_level()
+	var original_collected_ammo: int = EconomyManager.collected_ammo
+	EconomyManager.collected_ammo = 0
+	var enemigo: Enemigo = level.get_node("Enemigo")
+	var expected_amount: int = enemigo.stats.ammo_drop
+	enemigo.take_damage(enemigo.stats.max_health)
+
+	var pickup: AmmoPickup = null
+	for child in level.get_children():
+		if child is AmmoPickup:
+			pickup = child
+	assert_not_null(pickup, "precondición del test: debe existir una AmmoPickup real generada por la derrota")
+
+	# When: se recolecta la pickup real (equivalente al resultado de un
+	# tap/click real sobre ella, ver nota de cabecera sobre por qué no se
+	# simula el evento de input/physics picking en sí)
+	pickup.call("_collect")
+
+	# Then: el pool global real sube exactamente el amount de la pickup (FR-008)
+	assert_eq(
+		EconomyManager.collected_ammo, expected_amount,
+		"recolectar una AmmoPickup real debe sumar su amount al pool global de EconomyManager (FR-008)"
+	)
+
+	# Cleanup: restaurar el pool global compartido entre tests/archivos.
+	EconomyManager.collected_ammo = original_collected_ammo
+
+
+## --- T046 (smoke test de `quickstart.md`, Escenario 3 "Oleadas crecientes",
+## paso 4: "derrotar todos los enemigos de todas las oleadas configuradas" →
+## `game_won`). Cierra el hueco de cobertura documentado explícitamente en
+## `docs/ARCHITECTURE.md` §6 ("falta el simétrico de victoria... con
+## WaveManager/GameStateManager reales") — a diferencia de
+## `tests/unit/systems/test_game_state_manager.gd` (que nunca toca el
+## autoload real ni pasa por `Nivel_MonteCalvo.tscn`) y de
+## `tests/unit/systems/test_wave_manager.gd`/`test_wave_spawner.gd` (que usan
+## una secuencia de oleadas de prueba pero nunca verifican que
+## `GameStateManager` real reaccione a `all_waves_completed`), este test
+## ejercita la cadena COMPLETA con el nivel real, sustituyendo únicamente la
+## secuencia de oleadas por una de una sola oleada/un solo enemigo (para no
+## depender de tiempo real de las 10 oleadas de producción, decenas de
+## enemigos y cadencia de disparo real) — mismo criterio de "acortar tiempo
+## sin cambiar el cableado real" que ya usa `tests/unit/levels/test_wave_spawner.gd`. ---
+
+func test_completing_all_configured_real_waves_transitions_the_real_gamestatemanager_to_won_end_to_end() -> void:
+	# Given: el autoload real GameStateManager arrancando en PLAYING (mismo
+	# guardado/restaurado que el resto de este archivo para no contaminar
+	# otros archivos de test que comparten el mismo proceso de GUT)
+	var original_game_state: int = GameStateManager._current_state
+	GameStateManager._current_state = GameStateManager.GameState.PLAYING
+	watch_signals(GameStateManager)
+
+	# Given: el nivel real, con `waves` sobreescrito ANTES de entrar al árbol
+	# (por lo tanto antes de que corra `_ready()`) por una secuencia de
+	# prueba de una sola oleada con un solo enemigo — se sustituye solo el
+	# CONTENIDO de las oleadas, nunca el cableado real (`WaveManager`,
+	# `WaveSpawner`, `GameStateManager` real siguen siendo exactamente los
+	# mismos que en producción)
+	var level: Node = load(LEVEL_SCENE_PATH).instantiate()
+	var stats := EnemyStats.new()
+	stats.max_health = 1
+	stats.move_speed = 40
+	stats.melee_damage = 0
+	stats.ammo_drop = 0
+	var entry := WaveSpawnEntry.new()
+	entry.enemy_stats = stats
+	entry.count = 1
+	entry.spawn_interval = 0.05
+	var entries: Array[WaveSpawnEntry] = [entry]
+	var only_wave := WaveData.new()
+	only_wave.wave_number = 1
+	only_wave.spawn_entries = entries
+	var test_waves: Array[WaveData] = [only_wave]
+	level.waves = test_waves
+	add_child_autofree(level)
+	_level = level
+
+	# When: transcurre tiempo real suficiente para que WaveSpawner instancie
+	# el único enemigo de la única oleada configurada
+	await wait_seconds(0.3, "tiempo suficiente para el único spawn de 0.05s de la oleada de prueba")
+	var spawner: WaveSpawner = level.get("_wave_spawner")
+	assert_eq(
+		spawner._enemy_pool.in_use_count(), 1,
+		"precondición del test: debe haberse instanciado exactamente el único enemigo de la oleada de prueba"
+	)
+	var enemy: Enemigo = spawner._enemy_pool._in_use[0]
+
+	# When: se derrota al único enemigo de la única oleada configurada —
+	# equivalente en efecto a "derrotar todos los enemigos de todas las
+	# oleadas" (Escenario 3 paso 4 de quickstart.md) sin depender de las 10
+	# oleadas de producción
+	enemy.take_damage(9999)
+
+	# Then: el autoload REAL GameStateManager (registrado en project.godot,
+	# no una instancia aislada) transicionó a WON de punta a punta
+	assert_eq(
+		GameStateManager._current_state, GameStateManager.GameState.WON,
+		"completar todas las oleadas configuradas (reales, WaveManager/WaveSpawner reales) debe transicionar al GameStateManager real a WON de punta a punta (spec.md US3 AS2)"
+	)
+	assert_signal_emitted(
+		GameStateManager, "game_won",
+		"el autoload real GameStateManager debe emitir game_won ante la victoria real de punta a punta"
+	)
+	assert_signal_emitted_with_parameters(
+		GameStateManager, "game_state_changed", [GameStateManager.GameState.WON]
+	)
+
+	# Cleanup: restaurar el estado real del singleton compartido entre
+	# tests/archivos.
+	GameStateManager._current_state = original_game_state
+
+
 func test_celda_liberada_tras_derrota_puede_volver_a_desplegarse_un_nuevo_soldado() -> void:
 	# Given: el nivel real cargado, un Soldado desplegado en una celda libre,
 	# y luego derrotado (cierra el ciclo completo del Edge Case: la celda no
