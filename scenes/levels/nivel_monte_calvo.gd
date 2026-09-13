@@ -228,15 +228,23 @@ func _try_deploy_soldado(cell: Vector2i) -> void:
 ## (`_on_deteccion_rango_body_entered()`/`_on_rango_melee_body_entered()`),
 ## por consistencia con el patrón ya establecido en el proyecto — sin esta
 ## guarda, cualquier otro `PhysicsBody2D` del nivel (ej. un `Soldado`
-## desplegado sobre esa celda) dispararía la derrota. Solo notifica al
-## propio `Enemigo`, que es quien emite `reached_defended_position`
-## (`contracts/signals.md`) — este nivel no decide victoria/derrota
-## directamente (eso es `GameStateManager`, T044, fuera del alcance de esta
-## tarea).
+## desplegado sobre esa celda) dispararía la derrota.
+##
+## T044: además de notificar al propio `Enemigo` (que emite
+## `reached_defended_position` como registro semántico de instancia, por si
+## algún listener futuro la necesita), este nivel es quien detecta el hecho
+## real y por eso es quien llama directamente al método público
+## `GameStateManager.report_reached_defended_position()` — el mismo patrón
+## de "método público en vez de señal de instancia" que
+## `EconomyManager.notify_pickup_spawned()` (ver cabecera de
+## `game_state_manager.gd`). `GameStateManager` sigue siendo el único
+## autoload que decide victoria/derrota (`contracts/signals.md`,
+## Invariantes de contrato); este nivel solo reporta el hecho.
 func _on_posicion_defendida_body_entered(body: Node2D) -> void:
 	if not body.is_in_group(Enemigo.ENEMY_GROUP):
 		return
 	(body as Enemigo).notify_reached_defended_position()
+	GameStateManager.report_reached_defended_position()
 
 
 ## T054 (`spec.md` Edge Case de derrota del Soldado: "libera esa posición del
