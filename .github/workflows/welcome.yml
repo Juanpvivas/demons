@@ -1,0 +1,31 @@
+name: Welcome
+
+# Da la bienvenida automáticamente a alguien que abre su primer issue o su
+# primer Pull Request en el repo.
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: >
+            ¡Gracias por abrir tu primer issue en **Demonios de las
+            Trincheras**! 🪖 Le echamos un vistazo pronto. Si es un bug,
+            cualquier detalle extra (pasos para reproducirlo, versión de
+            Godot) ayuda un montón.
+          pr-message: >
+            ¡Gracias por tu primer Pull Request en **Demonios de las
+            Trincheras**! 🪖 Lo revisamos pronto. Antes de pedir revisión,
+            fijate que el check de CI (tests GUT + build) pase en verde —
+            lo ves en la pestaña **Checks** de este PR.

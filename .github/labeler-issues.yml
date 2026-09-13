@@ -1,0 +1,19 @@
+# Config de github/issue-labeler — mapea labels ya existentes en el repo
+# (ver `gh label list`) a patrones regex sobre título + cuerpo del issue.
+# Ajustar/agregar patrones según se note que el etiquetado automático se
+# equivoca o se queda corto.
+
+bug:
+  - '(?i)\b(bug|error|falla|fallando|rompe|roto|crash|no funciona|excepci[oó]n)\b'
+
+documentation:
+  - '(?i)\b(doc|documentaci[oó]n|readme|typo|aclarar)\b'
+
+question:
+  - '(?i)\b(pregunta|duda|c[oó]mo (hago|funciona)|no entiendo)\?'
+
+enhancement:
+  - '(?i)\b(feature|funcionalidad|agregar|nueva? (feature|funcionalidad)|mejora|propuesta)\b'
+
+help wanted:
+  - '(?i)\b(help wanted|ayuda|necesito ayuda|busco colaborador)\b'
