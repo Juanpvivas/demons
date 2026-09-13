@@ -24,6 +24,26 @@
 ##   más avanzado hacia la posición defendida), usado para desempatar la
 ##   prioridad de objetivo (`spec.md` Assumptions). Si no existe, se usa
 ##   como respaldo la cercanía a este soldado (`_advance_score()`).
+## - Expone `get_melee_damage() -> int` (`stats.melee_damage` de ese
+##   enemigo), usado por este soldado para aplicarse daño a sí mismo
+##   mientras ese enemigo esté dentro de "RangoMelee" (T053, rehecha —
+##   ver `_process_incoming_melee_damage()`).
+##
+## **T053, rehecha — daño mutuo dentro de "RangoMelee" (`spec.md` Edge Case:
+## "un soldado en modo cuerpo a cuerpo es derrotado por los enemigos")**: la
+## implementación original de T053 le daba a `Enemigo` su propia `Area2D`
+## "RangoAtaque" para detectar y atacar a este soldado. `qa-validator`
+## encontró con evidencia empírica que una `Area2D` hija de un
+## `CharacterBody2D` que llama `move_and_slide()` en cada `_physics_process`
+## (como sería "RangoAtaque" sobre `Enemigo`) nunca actualiza su lista
+## interna de overlaps contra un `StaticBody2D` (este `Soldado`) — esa
+## `Area2D` nunca dispararía `body_entered`/`body_exited` contra un `Soldado`
+## real en juego real. Decisión de la persona dueña del proyecto: invertir
+## qué lado dispara la interacción. Este soldado ahora es quien, desde la
+## misma "RangoMelee" que ya usa de forma fiable para atacar a machete
+## (T023), también se aplica a sí mismo el daño de cualquier `Enemigo`
+## presente ahí, vía `get_melee_damage()` de cada uno — ver
+## `_process_incoming_melee_damage()`.
 ##
 ## TODO (T047 — revisión de todo el código nuevo contra ARCHITECTURE.md):
 ## `_current_target`/`_current_melee_target` siguen tipados como `Node2D` y
@@ -108,6 +128,16 @@ var _rifle_cooldown: float = 0.0
 ## T017-T024, supuesto documentado explícitamente).
 var _melee_cooldown: float = 0.0
 
+## Cuenta regresiva hasta el próximo golpe QUE RECIBE este soldado de
+## cualquier `Enemigo` dentro de "RangoMelee" (daño mutuo, T053 rehecha).
+## Independiente de `_mode`: un enemigo adyacente golpea a este soldado
+## tanto si sigue disparando con fusil como si ya pasó a machete — el
+## ataque entrante no depende del modo de combate del soldado, solo de la
+## presencia real de un enemigo en "RangoMelee". Arranca en 0.0 para que el
+## primer golpe recibido tras entrar el primer enemigo sea inmediato (mismo
+## criterio que `_melee_cooldown`/`_rifle_cooldown`).
+var _incoming_melee_cooldown: float = 0.0
+
 @onready var _deteccion_rango: Area2D = $DeteccionRango
 @onready var _rango_melee: Area2D = $RangoMelee
 @onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
@@ -122,6 +152,19 @@ const _MODE_TINT: Dictionary = {
 	SoldierMode.RIFLE: Color(1.0, 1.0, 1.0),
 	SoldierMode.MELEE: Color(1.0, 0.45, 0.15),
 }
+
+## T053 (rehecha): cadencia del ataque entrante de cada `Enemigo` dentro de
+## "RangoMelee" contra este soldado — **supuesto de implementación**, igual
+## que el ya documentado arriba para `_melee_cooldown` (`stats.fire_rate`
+## reutilizado como cadencia de machete propia del soldado): `EnemyStats` no
+## define ningún campo de cadencia de ataque (`move_speed`, `melee_damage`,
+## `ammo_drop`, `max_health`), así que se fija un intervalo constante de 1
+## golpe por segundo por cada enemigo presente en "RangoMelee", igual para
+## todo tipo de enemigo hasta que el balance exija diferenciarlo. Mismo
+## valor que usaba la implementación original y descartada de esta cadencia
+## del lado de `Enemigo` (T053 original) — no es una decisión de diseño
+## nueva, solo cambia qué lado del combate la dispara.
+const _INCOMING_MELEE_ATTACK_INTERVAL: float = 1.0
 
 
 func _ready() -> void:
@@ -148,6 +191,9 @@ func _physics_process(delta: float) -> void:
 			_process_rifle(delta)
 		SoldierMode.MELEE:
 			_process_melee(delta)
+	# T053 (rehecha): daño mutuo, independiente del modo activo (ver
+	# comentario de `_incoming_melee_cooldown`).
+	_process_incoming_melee_damage(delta)
 
 
 # --- Modo fusil (T021, T022) --------------------------------------------
@@ -273,6 +319,33 @@ func _remove_melee_candidate(body: Node2D) -> void:
 
 func _recompute_melee_target() -> void:
 	_current_melee_target = _pick_priority_target(_melee_candidates)
+
+
+## T053 (rehecha): daño mutuo dentro de "RangoMelee" (`spec.md` Edge Case,
+## ver comentario de `_incoming_melee_cooldown` y la cabecera del archivo).
+## A diferencia del ataque de machete de este soldado (que solo golpea a
+## `_current_melee_target`, sin dividir fuego), el daño ENTRANTE se aplica
+## por cada `Enemigo` presente en `_melee_candidates` — un soldado rodeado
+## por varios enemigos cuerpo a cuerpo recibe el golpe de cada uno, aunque
+## él mismo solo pueda atacar a uno a la vez. Se dispara desde este lado
+## (`Soldado`, `StaticBody2D`) porque es el que detecta overlaps de forma
+## fiable — ver la nota de motor documentada en la cabecera de este archivo
+## y en `enemigo.gd`.
+func _process_incoming_melee_damage(delta: float) -> void:
+	if _melee_candidates.is_empty():
+		return
+	_incoming_melee_cooldown -= delta
+	if _incoming_melee_cooldown > 0.0:
+		return
+	for enemy in _melee_candidates:
+		if not is_instance_valid(enemy) or not enemy.has_method("get_melee_damage"):
+			continue
+		# `take_damage()` es defensivo ante llamadas repetidas una vez que
+		# `_current_health` llega a 0 (ver cabecera de esa función) — seguro
+		# de llamar por cada enemigo restante aunque uno anterior ya haya
+		# derrotado a este soldado en esta misma pasada.
+		take_damage(enemy.call("get_melee_damage"))
+	_incoming_melee_cooldown = _INCOMING_MELEE_ATTACK_INTERVAL
 
 
 func _on_ammo_depleted() -> void:

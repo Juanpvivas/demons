@@ -1,13 +1,10 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scenes/enemies/enemigo.gd" id="1_enemigo"]
 [ext_resource type="Resource" path="res://resources/enemies/enemigo_infanteria_base.tres" id="2_stats"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(48, 48)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rango_ataque"]
-size = Vector2(64, 64)
 
 [sub_resource type="Gradient" id="Gradient_enemigo_sprite"]
 colors = PackedColorArray(0.6, 0.15, 0.15, 1, 0.6, 0.15, 0.15, 1)
@@ -39,10 +36,3 @@ autoplay = "default"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_body")
-
-[node name="RangoAtaque" type="Area2D" parent="."]
-monitorable = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RangoAtaque"]
-position = Vector2(0, 32)
-shape = SubResource("RectangleShape2D_rango_ataque")

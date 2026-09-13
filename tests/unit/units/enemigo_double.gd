@@ -11,6 +11,11 @@ extends CharacterBody2D
 ##   retorna `true` únicamente si ese impacto dejó `health` en 0 o menos.
 ## - Expone opcionalmente `get_advance_progress() -> float` (mayor valor =
 ##   más avanzado hacia la posición defendida).
+## - Expone `get_melee_damage() -> int` (T053, rehecha), usado por
+##   `soldado.gd` para aplicarse a sí mismo el daño mutuo mientras este
+##   double esté dentro de "RangoMelee". Configurable vía `melee_damage`,
+##   con default 0 (sin daño) para no romper ningún test existente
+##   (T015-T034) que reutiliza este double sin haber configurado esto nunca.
 ##
 ## Es un `CharacterBody2D` (igual que especifica `docs/ARCHITECTURE.md` §5
 ## para `EnemigoBase.tscn`) con una `CollisionShape2D` propia, para que las
@@ -34,6 +39,11 @@ var damage_received: Array[int] = []
 ## puedan reutilizar este double.
 var advance_progress: float = 0.0
 
+## Valor que devuelve `get_melee_damage()`. Default 0 para no infligir daño
+## mutuo sobre `Soldado` en ningún test que no lo configure explícitamente
+## (T015-T034, escritos antes de que existiera este contrato).
+var melee_damage: int = 0
+
 
 func _ready() -> void:
 	add_to_group("enemies")
@@ -55,3 +65,7 @@ func take_damage(amount: int) -> bool:
 
 func get_advance_progress() -> float:
 	return advance_progress
+
+
+func get_melee_damage() -> int:
+	return melee_damage
