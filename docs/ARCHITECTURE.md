@@ -426,16 +426,20 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   de simular el evento crudo — deja sin cubrir solo la conversión de
   coordenadas en sí (pantalla → mundo → celda) y el filtro de tipo de
   evento, sin lógica de negocio real.
-- **Hueco de cobertura conocido, no bloqueante (T044,
-  `001-soldado-defensor-oleadas`):** existe un test de integración de
-  punta a punta con instancias reales para la condición de derrota
-  (`test_enemigo_real_que_alcanza_posicion_defendida_termina_la_partida_en_derrota_de_punta_a_punta`
-  en `tests/unit/levels/test_nivel_montecalvo.gd`), pero no su simétrico
-  para victoria (un `WaveManager` real completando todas sus oleadas y
-  disparando `GameStateManager.game_won` sobre el autoload real, no solo
-  evidencia indirecta). Señalado por `qa-validator` al aprobar T044;
-  queda como nota para una futura tarea de `godot-tester`, no bloquea
-  nada hoy.
+- **Cerrado (T046, `001-soldado-defensor-oleadas`):** el hueco de cobertura
+  señalado en T044 (existía cobertura de punta a punta con instancias
+  reales para la condición de derrota, pero no su simétrico para victoria)
+  quedó cerrado por
+  `test_completing_all_configured_real_waves_transitions_the_real_gamestatemanager_to_won_end_to_end`
+  en `tests/unit/levels/test_nivel_montecalvo.gd`: instancia
+  `Nivel_MonteCalvo.tscn` real con `WaveManager`/`WaveSpawner` reales
+  (sustituyendo solo el *contenido* de las oleadas por una secuencia corta
+  de una oleada/un enemigo, para no depender del tiempo real de las 10
+  oleadas de producción) y verifica que el `GameStateManager` real
+  (registrado en `project.godot`, no una instancia aislada) transiciona a
+  `WON` y emite `game_won` al derrotar a ese único enemigo. Con esto, tanto
+  el camino de derrota (T044) como el de victoria (T046) tienen cobertura
+  de integración de punta a punta con instancias reales.
 
 ## 7. Consideraciones multiplataforma
 
@@ -484,3 +488,4 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
 | 2026-09-12 | §4.2: agregada excepción explícita a la regla de "conectar señales siempre en `_ready()`" para instancias creadas en tiempo de ejecución (conectar en el punto de creación/registro de la instancia, no en un `_ready()` genérico posterior) — convención ya presente de forma implícita en `wave_spawner.gd` (T042) y confirmada por segunda vez, de forma independiente, en `nivel_monte_calvo.gd` (T054, `001-soldado-defensor-oleadas`, validado por `qa-validator`), que la aplicó tanto al soldado colocado a mano como a los desplegados dinámicamente. Se gradúa aquí por ser un patrón repetido en dos features/puntos distintos del código, de alcance de proyecto. |
 | 2026-09-12 | §4.1: agregado `GameStateManager.report_reached_defended_position()` (T044, `001-soldado-defensor-oleadas`, aprobado por `qa-validator`) como tercer ejemplo del patrón "autoload orquestador no instancia, un nodo de nivel se lo notifica vía método público" — cierra de punta a punta la condición de derrota (`Enemigo` alcanza real, físicamente, la posición defendida Y `GameStateManager` real transiciona a `LOST`, con test de integración de instancias reales en `test_nivel_montecalvo.gd`). Se documenta también, sin bloquear nada, la inconsistencia cosmética de nombre `report_*()` vs. el prefijo `notify_*()` usado por los otros dos ejemplos del mismo patrón (observación de `qa-validator`, no ameritó reabrir T044). |
 | 2026-09-12 | §6: agregado hueco de cobertura de test conocido y no bloqueante — falta el simétrico de victoria (con `WaveManager`/`GameStateManager` reales) al test de integración de derrota de punta a punta agregado en T044 de `001-soldado-defensor-oleadas`. |
+| 2026-09-13 | §6: cerrado el hueco de cobertura anterior — T046 de `001-soldado-defensor-oleadas` (validado por `qa-validator`) agrega el test simétrico de victoria de punta a punta con instancias reales (`Nivel_MonteCalvo.tscn`/`WaveManager`/`WaveSpawner`/`GameStateManager` reales, oleada de prueba acortada), cerrando la Fase Final de la feature. Consolidación de fin de feature: se confirma que las graduaciones de T050-T054 (gap de derrota del `Soldado`) y del hallazgo de motor de T053 (§4.2) ya estaban correctamente integradas, sin duplicados. |

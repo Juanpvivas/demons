@@ -14,13 +14,14 @@ Base/máximos para un tipo de soldado. Instancias concretas en
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `max_ammo` | `int` (`@export_range`) | Munición máxima al desplegar o recargar. FR-003. |
-| `damage_per_shot` | `int` (`@export_range`) | Daño de cada disparo de fusil. |
-| `fire_rate` | `float` (`@export_range`) | Disparos por segundo mientras hay objetivo y munición. |
-| `machete_base_damage` | `int` (`@export_range`) | Daño mínimo de machete con moral cero (ver `research.md` §2 y Edge Case de `spec.md`). |
-| `machete_moral_multiplier` | `float` (`@export_range`) | Escala el daño de machete por punto de moral acumulada. FR-005. |
-| `moral_per_kill` | `float` (`@export_range`) | Moral ganada por cada eliminación mientras hay munición. FR-006. |
-| `deploy_ammo_cost` | `int` (`@export_range`) | Costo en munición recolectada para desplegar un soldado nuevo de este tipo (`spec.md` Assumptions: igual a una recarga completa → normalmente `= max_ammo`). |
+| `max_health` | `int` (`@export_range`, grupo "Combate") | Vida total del soldado. Agregado en T050 para cerrar el gap crítico de derrota alcanzable del `Soldado` (ver `docs/SPEC.md` §10, "Resueltas") — antes de T050 el `Soldado` no tenía ningún campo de salud. |
+| `max_ammo` | `int` (`@export_range`, grupo "Fusil") | Munición máxima al desplegar o recargar. FR-003. |
+| `damage_per_shot` | `int` (`@export_range`, grupo "Fusil") | Daño de cada disparo de fusil. |
+| `fire_rate` | `float` (`@export_range`, grupo "Fusil") | Disparos por segundo mientras hay objetivo y munición. |
+| `machete_base_damage` | `int` (`@export_range`, grupo "Machete") | Daño mínimo de machete con moral cero (ver `research.md` §2 y Edge Case de `spec.md`). |
+| `machete_moral_multiplier` | `float` (`@export_range`, grupo "Machete") | Escala el daño de machete por punto de moral acumulada. FR-005. |
+| `moral_per_kill` | `float` (`@export_range`, grupo "Machete") | Moral ganada por cada eliminación mientras hay munición. FR-006. |
+| `deploy_ammo_cost` | `int` (`@export_range`, grupo "Despliegue") | Costo en munición recolectada para desplegar un soldado nuevo de este tipo (`spec.md` Assumptions: igual a una recarga completa → normalmente `= max_ammo`). |
 
 ### EnemyStats
 
@@ -61,6 +62,7 @@ Una oleada autorada (ver `research.md` §4). Instancias en
 | Variable | Tipo | Notas |
 |---|---|---|
 | `stats` | `UnitStats` (`@export`) | Referencia al `Resource` base — solo lectura, nunca mutado. |
+| `_current_health` | `int` | Estado runtime, inicializado desde `stats.max_health` (T050/T052, mismo patrón que `Enemigo._current_health`). Reducida por `take_damage(amount) -> bool`; al llegar a `0`, pone `_current_morale` en `0`, emite `soldier_defeated(_grid_cell)` y hace `queue_free()`. |
 | `_current_ammo` | `int` | Estado runtime, inicializado desde `stats.max_ammo`. |
 | `_current_morale` | `float` | Acumulada por eliminación (FR-006); persiste entre recargas (`spec.md` Assumptions); se pierde solo si el soldado es derrotado. |
 | `_mode` | `enum SoldierMode {RIFLE, MELEE}` | Definido en `ARCHITECTURE.md` §4.4. |
