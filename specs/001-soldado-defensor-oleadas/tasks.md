@@ -168,10 +168,10 @@ agregar las tareas ahora, dentro de esta misma feature, en vez de tocar
 
 ## Phase Final: Polish & Cross-Cutting Concerns
 
-- [ ] T046 [P] Ejecutar los 3 escenarios de [quickstart.md](./quickstart.md) como smoke test manual y documentar resultados — exigido por `constitution.md` Principio II antes de compartir un build
-- [ ] T047 [P] Revisar todo el código nuevo contra `docs/ARCHITECTURE.md` (tipo de nodo raíz, `@onready`, señales conectadas solo en `_ready()`, regla dato/estado del `Resource`, `queue_free()` vs `free()`)
+- [X] T046 [P] Ejecutar los 3 escenarios de [quickstart.md](./quickstart.md) como smoke test manual y documentar resultados — exigido por `constitution.md` Principio II antes de compartir un build
+- [X] T047 [P] Revisar todo el código nuevo contra `docs/ARCHITECTURE.md` (tipo de nodo raíz, `@onready`, señales conectadas solo en `_ready()`, regla dato/estado del `Resource`, `queue_free()` vs `free()`)
 - [ ] T048 Graduar hacia `docs/SPEC.md` cualquier decisión de balance final (constantes de `UnitStats`/`EnemyStats` ajustadas en playtesting), si corresponde
-- [ ] T049 [P] Ejecutar la suite completa de GUT y confirmar 0 fallos antes de considerar la feature lista para PR
+- [X] T049 [P] Ejecutar la suite completa de GUT y confirmar 0 fallos antes de considerar la feature lista para PR
 
 ---
 
