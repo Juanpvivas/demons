@@ -134,9 +134,29 @@ func _ready() -> void:
 	# para el Independent Test de US1) también debe contar como ocupante de
 	# su celda — de lo contrario un click sobre esa misma celda desplegaría
 	# un segundo soldado encima del ya existente.
+	#
+	# T054 (`spec.md` Edge Case de derrota del Soldado): además de
+	# registrarlo en `_board_manager`, se le asigna su `_grid_cell` real vía
+	# `set_grid_cell()` (T052) — sin esto, si este soldado colocado a mano
+	# llegara a morir, `soldier_defeated` reportaría `Vector2i()` (default
+	# 0,0) en vez de su celda real, y `_on_soldado_defeated()` liberaría la
+	# celda equivocada. Se conecta también su `soldier_defeated` aquí mismo,
+	# en el único punto donde este soldado en concreto se registra —
+	# consistente con `docs/ARCHITECTURE.md` §4.2 (conectar señales de
+	# instancias en el momento en que se crean/registran, no en un callback
+	# genérico posterior que itere todos los soldados del nivel).
 	var soldado_inicial: Node2D = get_node_or_null("Soldado")
 	if soldado_inicial != null:
-		_board_manager.occupy_cell(_world_to_cell(soldado_inicial.global_position), soldado_inicial)
+		var celda_inicial := _world_to_cell(soldado_inicial.global_position)
+		_board_manager.occupy_cell(celda_inicial, soldado_inicial)
+		# `get_node_or_null()` retorna estáticamente `Node2D` (no conoce el
+		# tipo concreto de la escena apuntada) — se castea explícitamente a
+		# `Soldado` antes de acceder a `set_grid_cell()`/`soldier_defeated`,
+		# mismo patrón ya usado en este archivo en
+		# `_on_posicion_defendida_body_entered()` (`body as Enemigo`).
+		var soldado_inicial_tipado := soldado_inicial as Soldado
+		soldado_inicial_tipado.set_grid_cell(celda_inicial)
+		soldado_inicial_tipado.soldier_defeated.connect(_on_soldado_defeated)
 
 	# T042: arranca la secuencia de oleadas de este nivel. El `Enemigo`
 	# colocado a mano en la escena (T027, Independent Test de US1/US2) es
@@ -188,6 +208,19 @@ func _try_deploy_soldado(cell: Vector2i) -> void:
 	add_child(nuevo_soldado)
 	_board_manager.occupy_cell(cell, nuevo_soldado)
 
+	# T054 (`spec.md` Edge Case de derrota del Soldado): se asigna
+	# `_grid_cell` y se conecta `soldier_defeated` en este mismo punto —
+	# único lugar donde este soldado nuevo se crea/registra
+	# (`docs/ARCHITECTURE.md` §4.2) — después de `occupy_cell()` porque
+	# ambas llamadas usan la misma `cell` ya validada como libre arriba;
+	# el orden entre sí no afecta el resultado (ninguna de las dos lee
+	# estado que la otra escriba), así que se deja `occupy_cell()` primero
+	# para mantener junto el par ya existente "instanciar -> registrar
+	# ocupante" y agregar el par nuevo "asignar celda -> escuchar derrota"
+	# inmediatamente después, sin intercalarlos.
+	nuevo_soldado.set_grid_cell(cell)
+	nuevo_soldado.soldier_defeated.connect(_on_soldado_defeated)
+
 
 ## T043 (FR-013): un cuerpo entró en la `Area2D` "PosicionDefendida". Filtra
 ## por el mismo grupo (`Enemigo.ENEMY_GROUP`) que usa `soldado.gd` para
@@ -204,6 +237,32 @@ func _on_posicion_defendida_body_entered(body: Node2D) -> void:
 	if not body.is_in_group(Enemigo.ENEMY_GROUP):
 		return
 	(body as Enemigo).notify_reached_defended_position()
+
+
+## T054 (`spec.md` Edge Case de derrota del Soldado: "libera esa posición del
+## tablero"): handler compartido conectado a `soldier_defeated` de CADA
+## instancia de `Soldado` de este nivel (tanto el colocado a mano en
+## `_ready()` como cualquiera desplegado vía `_try_deploy_soldado()`) — un
+## único método reutilizado en vez de uno por soldado, ya que la lógica de
+## reacción es idéntica sin importar cuál soldado la disparó: liberar la
+## celda que la propia señal reporta.
+##
+## Se usa `grid_cell` (el argumento que la señal lleva encima) en vez de
+## recalcular la celda desde la posición del nodo emisor: para cuando este
+## handler corre, el `Soldado` que emitió la señal ya llamó `queue_free()`
+## en `_die()` (ver `soldado.gd`) — su posición puede no reflejar más la
+## celda real, o el nodo puede estar en un estado intermedio de liberación.
+## Mismo criterio que ya usa `_on_posicion_defendida_body_entered()` arriba
+## al operar sobre el `body` que el propio evento entrega, no sobre estado
+## recalculado.
+##
+## `BoardManager.free_cell()` es idempotente (no falla si la celda ya
+## estaba libre, `core/board_manager.gd`), así que este handler no necesita
+## guardas adicionales aunque, por ejemplo, dos soldados de distintas celdas
+## fueran derrotados en el mismo frame: cada señal lleva su propia `cell`,
+## y cada llamada a `free_cell()` solo afecta la suya.
+func _on_soldado_defeated(grid_cell: Vector2i) -> void:
+	_board_manager.free_cell(grid_cell)
 
 
 ## Convierte la posición de pantalla de un evento de input (mouse o touch,
