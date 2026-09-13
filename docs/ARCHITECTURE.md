@@ -159,6 +159,30 @@ Reglas complementarias:
   ni, con más razón, para nodos externos (eso ya lo cubre la regla anterior
   contra `get_node("../../...")`).
 
+**Una `Area2D` detectora debe pertenecer al lado ESTÁTICO de la interacción,
+no al que se mueve con `move_and_slide()`.** Hallazgo de motor confirmado de
+forma empírica durante T053 de `001-soldado-defensor-oleadas` (`qa-validator`,
+usando `PhysicsDirectSpaceState2D.intersect_shape()` para verificar overlap
+geométrico real y sostenido, no solo lectura de código): una `Area2D` hija de
+un `CharacterBody2D` que llama `move_and_slide()` en cada `_physics_process`
+**no actualiza de forma fiable su lista interna de overlaps**
+(`get_overlapping_bodies()`) contra un `StaticBody2D` — sus señales
+`body_entered`/`body_exited` no llegan a dispararse en juego real contra ese
+`StaticBody2D`, aunque la geometría sí se solape de forma sostenida. Regla
+práctica para cualquier feature futura: si dos nodos necesitan detectarse
+mutuamente por `Area2D` y uno de ellos se mueve con `move_and_slide()`, la
+`Area2D` de detección debe vivir en el nodo que NO se mueve así (o, si ambos
+se mueven, evaluar una alternativa a `Area2D`/señales para esa detección
+puntual). Caso real ya resuelto en el repo con este patrón: el daño cuerpo a
+cuerpo que un `Enemigo` (`CharacterBody2D`, se mueve con `move_and_slide()`)
+inflige a un `Soldado` (`StaticBody2D`, estático) se detecta y se dispara
+desde la `Area2D` "RangoMelee" del propio `Soldado` — la misma que ya usaba
+de forma fiable para su ataque a machete (T023) — en vez de una `Area2D`
+propia de `Enemigo` (implementación original de T053, descartada tras este
+hallazgo). Ver cabecera de `scenes/units/soldado.gd`/`scenes/enemies/enemigo.gd`
+para el detalle completo y `docs/SPEC.md` §10 para el gap de diseño que esto
+resolvió.
+
 ### 4.3 Datos como Resource, nunca hardcodeados
 
 Ya establecido como principio no negociable en `constitution.md`. Cada tipo
@@ -330,9 +354,15 @@ queda en el default de Godot (layer 1 / mask 1), por lo que `Soldado`
 (`StaticBody2D`) y `Enemigo` (`CharacterBody2D`) colisionan físicamente entre
 sí sin que nadie lo haya decidido a propósito. Esto no es una convención
 adoptada — es la ausencia de una, detectada como gap de diseño durante T043
-de `001-soldado-defensor-oleadas` (ver `docs/SPEC.md` §10, pendiente de
-decisión humana). Si en algún momento se define una convención explícita de
-capas de colisión para el proyecto, documentarla aquí.
+de `001-soldado-defensor-oleadas` (ver `docs/SPEC.md` §10). Si en algún
+momento se define una convención explícita de capas de colisión para el
+proyecto, documentarla aquí.
+
+**Nota (T050-T053):** el síntoma práctico que motivó esta observación (un
+`Soldado` que nunca podía morir, bloqueando permanentemente el carril) quedó
+resuelto por otra vía — dándole salud/derrota real al `Soldado` (ver
+`docs/SPEC.md` §10, "Resueltas") — sin tocar `collision_layer`/`collision_mask`.
+La ausencia de convención explícita documentada aquí sigue vigente tal cual.
 
 ## 6. Testing
 
@@ -408,3 +438,4 @@ capas de colisión para el proyecto, documentarla aquí.
 | 2026-09-12 | §4.1: completada la descripción de `EconomyManager` con la señal `deploy_or_reload_rejected(reason)` (faltaba junto a `ammo_pool_changed`) y nota de que el ciclo recolección → gasto → feedback visual queda cerrado de punta a punta con `HUD.tscn`/`hud.gd` (T036 de `001-soldado-defensor-oleadas`, que además cierra la Fase 4/User Story 2 completa: "US1 + US2 funcionan juntas") |
 | 2026-09-12 | §4.1: completada la descripción de `WaveManager` (`start_waves`, `get_current_wave`, señal `all_waves_completed` faltante) tras su implementación en T039 de `001-soldado-defensor-oleadas` (validada por `qa-validator`, 25/25 tests de T037 en verde); se gradúa como convención explícita de proyecto el patrón "autoload orquestador no instancia ni temporiza, un spawner externo se lo notifica vía `notify_*()`", ya presente en `EconomyManager.notify_pickup_spawned` (T032) y ahora repetido en `WaveManager.notify_enemy_defeated` (T039) |
 | 2026-09-12 | §4.5: completada la nota sobre hooks de `ObjectPool` que ya nombraba a T026/T042 como caso relevante — tras la implementación real de T042 (`WaveSpawner`/`Enemigo`, validada por `qa-validator`), se documenta que esa implementación concreta no usó `on_pool_acquired()`/`on_pool_released()` sino un método explícito propio (`prepare_for_spawn()`) llamado por el dueño del pool justo después de `acquire()`, porque `acquire()` no admite argumentos y el hook automático se dispararía antes de tener los datos correctos del spawn. Se deja como guía para pools futuros con la misma necesidad. |
+| 2026-09-12 | §4.2: graduada como convención de alcance de proyecto la regla "una `Area2D` detectora debe pertenecer al lado estático de la interacción, no al que se mueve con `move_and_slide()`" — hallazgo de motor confirmado de forma empírica por `qa-validator` durante T053 de `001-soldado-defensor-oleadas` (una `Area2D` hija de un `CharacterBody2D` que llama `move_and_slide()` no actualiza de forma fiable sus overlaps contra un `StaticBody2D`). §5: agregada nota de que el síntoma práctico que motivó la observación sobre `collision_layer`/`collision_mask` (un `Soldado` indestructible bloqueando el carril) quedó resuelto por T050-T053 sin tocar capas de colisión — la ausencia de convención explícita documentada ahí sigue vigente. |

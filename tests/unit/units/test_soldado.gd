@@ -47,30 +47,30 @@ extends GutTest
 ## compartan el mismo autoload en este proceso de GUT (mismo patrón que
 ## `tests/unit/systems/test_autoloads_registration.gd`).
 ##
-## T051: agrega cobertura del Edge Case de derrota de `spec.md` ("¿Qué ocurre
-## si un soldado en modo cuerpo a cuerpo es derrotado por los enemigos antes
-## de que el jugador pueda recargarlo? El soldado y su moral acumulada se
+## T051 (implementado y validado junto con T052/T053, `qa-validator` —
+## `APROBADO`): cubre el Edge Case de derrota de `spec.md` ("¿Qué ocurre si
+## un soldado en modo cuerpo a cuerpo es derrotado por los enemigos antes de
+## que el jugador pueda recargarlo? El soldado y su moral acumulada se
 ## pierden, liberando esa posición del tablero") y su contrato en
 ## `contracts/signals.md` (`soldier_defeated(grid_cell: Vector2i)`).
-## `soldado.gd` TODAVÍA NO implementa `_current_health`, `take_damage()`,
-## `_grid_cell`/su setter, ni la emisión de `soldier_defeated` — todo eso es
-## T052 (`tasks.md`); el ataque activo de un `Enemigo` real contra un
-## `Soldado` en "RangoMelee" es, a su vez, T053. Todos los tests de esta
-## sección DEBEN fallar hasta que ambas tareas existan.
+## `_current_health`, `take_damage()`, `_grid_cell`/su setter y la emisión de
+## `soldier_defeated` los implementó T052 (`scenes/units/soldado.gd`); el
+## ataque activo de un `Enemigo` real contra un `Soldado` en "RangoMelee" lo
+## implementó T053 — ver la cabecera de `soldado.gd`/`enemigo.gd` para el
+## detalle de por qué esa interacción termina disparándose desde `Soldado`
+## (`RangoMelee`) y no desde `Enemigo`.
 ##
 ## Se usa `Object.call()` para invocar `take_damage()`/`set_grid_cell()` sobre
-## `_soldado` (mismo motivo ya documentado arriba para `reload()`): estos
-## métodos no existen todavía en la clase base declarada (`Node`), y una
-## llamada directa no compilaría.
+## `_soldado` (mismo motivo ya documentado arriba para `reload()`): `_soldado`
+## sigue tipado como `Node` genérico en este archivo, así que una llamada
+## directa a un método declarado en `Soldado` no compilaría contra esa
+## declaración de tipo, aunque la clase real sí lo implemente.
 ##
-## SUPUESTO no confirmado con `dev-godot` (T052 no especifica el nombre del
-## setter público de `_grid_cell`, solo que debe existir): se asume
-## `set_grid_cell(cell: Vector2i) -> void`, seleccionado por ser el nombre más
-## idiomático para un setter público en este proyecto (ver `BoardManager`:
-## `occupy_cell`, `free_cell`, `get_occupant` — todos verbo + `cell`). Si
-## T052 elige otro nombre, los tests que dependen de él fallarán por ese
-## motivo específico (método inexistente), no por lógica incorrecta — avisar
-## si ese es el caso.
+## `set_grid_cell(cell: Vector2i) -> void` (nombre que este archivo asumió
+## antes de que T052 existiera, por ser el más idiomático para un setter
+## público en este proyecto — ver `BoardManager`: `occupy_cell`, `free_cell`,
+## `get_occupant`, todos verbo + `cell`) quedó confirmado: T052 implementó el
+## setter con exactamente ese nombre.
 ##
 ## Los últimos dos tests de esta sección usan un `Enemigo` REAL
 ## (`EnemigoBase.tscn`, vía `_spawn_real_enemy()`) en vez de
@@ -115,10 +115,12 @@ const MELEE_TOP_OFFSET := Vector2(0, -60)
 const FRAMES_TO_DETECT := 5
 const FRAMES_TO_FIRE_SEVERAL_SHOTS := 40
 
-# T051: ventana generosa para que un `Enemigo` real, atacando con una
-# cadencia todavía no definida (implementación de T053, fuera del alcance de
-# este test), alcance a golpear al soldado al menos una vez mientras
-# permanece dentro de "RangoMelee". A `MOVE_SPEED_SLOW_ENEMY` (mínimo
+# T051: ventana generosa para que un `Enemigo` real, atacando con la
+# cadencia fija que terminó definiendo T053
+# (`Soldado._INCOMING_MELEE_ATTACK_INTERVAL = 1.0`, deliberadamente no
+# asumida aquí como constante propia de este test para no acoplarse a un
+# detalle interno de `soldado.gd`), alcance a golpear al soldado al menos una
+# vez mientras permanece dentro de "RangoMelee". A `MOVE_SPEED_SLOW_ENEMY` (mínimo
 # permitido por `EnemyStats.move_speed`), el enemigo tarda ~6.4s (~384
 # frames) en atravesar por completo la franja de 64px de "RangoMelee" desde
 # `MELEE_TOP_OFFSET` — 400 frames cubre ese cruce completo con margen.
@@ -548,12 +550,13 @@ func test_reload_preserves_accumulated_morale_instead_of_resetting_it() -> void:
 	EconomyManager.collected_ammo = original_collected_ammo
 
 
-## --- Derrota del soldado: Edge Case de `spec.md` (T051, depende de T050) ---
+## --- Derrota del soldado: Edge Case de `spec.md` (T051, T052, T053) ---
 ##
 ## `take_damage()`, `_current_health`, `set_grid_cell()` y `soldier_defeated`
-## TODAVÍA NO existen en `soldado.gd` — todos los tests de esta sección DEBEN
-## fallar hasta que se implementen T052 (contrato de daño/derrota) y, para
-## los dos últimos, también T053 (el `Enemigo` real atacando activamente).
+## los implementa T052 (contrato de daño/derrota); los dos últimos tests de
+## esta sección, además, ejercitan a un `Enemigo` real atacando activamente
+## dentro de "RangoMelee" (T053). Las tres tareas están implementadas y
+## aprobadas por `qa-validator`.
 
 func test_soldier_current_health_is_initialized_from_stats_max_health() -> void:
 	# Given/When: un soldado recién desplegado con un max_health de producción
