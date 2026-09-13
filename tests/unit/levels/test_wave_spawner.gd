@@ -38,11 +38,36 @@ const SPAWN_POSITION := Vector2(300.0, 20.0)
 
 var _spawner: WaveSpawner
 
+# T044 (`godot-tester`, hallazgo durante verificación de T044): desde que
+# `GameStateManager._ready()` se conecta a `WaveManager.all_waves_completed`
+# (autoload real, `docs/ARCHITECTURE.md` §4.2), cualquier test de este
+# archivo que complete la única oleada de su propio `WaveManager.start_waves([...])`
+# dispara `all_waves_completed` sobre el `WaveManager` REAL y deja al
+# `GameStateManager` REAL en `WON` de forma permanente para el resto de la
+# corrida de GUT (mismo proceso, mismo autoload compartido entre archivos) —
+# ej. `test_defeating_the_spawned_enemy_notifies_wave_manager()` y
+# `test_defeating_the_spawned_enemy_recycles_it_into_the_pool_instead_of_destroying_it()`.
+# Esto invalida el supuesto documentado en la cabecera de este archivo ("no
+# hay dependencia de orden... confirmado corriendo la suite completa en
+# ambos órdenes"), que era cierto antes de que existiera esa conexión
+# `_ready()`. Se guarda/restaura `GameStateManager._current_state` alrededor
+# de cada test de este archivo (mismo patrón usado para
+# `EconomyManager.collected_ammo` en `tests/unit/levels/test_nivel_montecalvo.gd`)
+# para no contaminar otros archivos de test (ej.
+# `tests/unit/systems/test_autoloads_registration.gd`, que asume el estado
+# inicial `PLAYING` del singleton real).
+var _original_game_state: int
+
 
 func before_each() -> void:
+	_original_game_state = GameStateManager._current_state
 	_spawner = WaveSpawner.new()
 	add_child_autofree(_spawner)
 	_spawner.setup(load(ENEMY_SCENE_PATH), 0, SPAWN_POSITION)
+
+
+func after_each() -> void:
+	GameStateManager._current_state = _original_game_state
 
 
 ## Construye un WaveSpawnEntry de prueba con spawn_interval mínimo (0.05s,

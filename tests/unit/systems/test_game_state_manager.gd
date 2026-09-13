@@ -195,9 +195,16 @@ func test_report_reached_defended_position_from_playing_emits_game_state_changed
 
 	_game_state_manager.report_reached_defended_position()
 
+	# Nota: `assert_signal_emitted_with_parameters` NO acepta un texto
+	# descriptivo como 4to argumento posicional (su firma real es
+	# (object, signal_name, expected_parameters, index) — el 4to parámetro es
+	# un índice de emisión, no un mensaje; ver `addons/gut/test.gd`). Pasar un
+	# String ahí provoca un error interno de GUT ("Invalid operands 'String'
+	# and 'int'") que hace fallar el assert espuriamente. Corregido para
+	# igualar el patrón ya usado en el resto de la suite (ej.
+	# `test_economy_manager.gd`, `test_wave_manager.gd`): sin texto adicional.
 	assert_signal_emitted_with_parameters(
-		_game_state_manager, "game_state_changed", [_game_state_manager.GameState.LOST],
-		"game_state_changed debe emitirse con el nuevo estado LOST (contracts/signals.md)"
+		_game_state_manager, "game_state_changed", [_game_state_manager.GameState.LOST]
 	)
 
 
@@ -260,9 +267,10 @@ func test_on_all_waves_completed_from_playing_emits_game_state_changed_with_won(
 
 	_game_state_manager._on_all_waves_completed()
 
+	# Ver nota en test_report_reached_defended_position_from_playing_emits_game_state_changed_with_lost
+	# sobre por qué no se pasa un texto como 4to argumento aquí.
 	assert_signal_emitted_with_parameters(
-		_game_state_manager, "game_state_changed", [_game_state_manager.GameState.WON],
-		"game_state_changed debe emitirse con el nuevo estado WON (contracts/signals.md)"
+		_game_state_manager, "game_state_changed", [_game_state_manager.GameState.WON]
 	)
 
 

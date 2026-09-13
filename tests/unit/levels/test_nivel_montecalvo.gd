@@ -306,6 +306,19 @@ func test_deploy_on_free_cell_without_enough_ammo_does_not_deploy_and_signals_re
 ## de `--headless` documentada en `docs/ARCHITECTURE.md` §6 no aplica aquí),
 ## así que puede probarse de punta a punta con el mecanismo real.
 
+## T044 (hallazgo de `godot-tester`): `_on_posicion_defendida_body_entered()`
+## ahora también llama al MÉTODO REAL `GameStateManager.report_reached_defended_position()`
+## sobre el autoload registrado en `project.godot` (no una instancia local
+## aislada) — a diferencia de `tests/unit/systems/test_game_state_manager.gd`
+## (T038), que solo prueba una instancia propia vía `load().new()`. Como
+## `GameStateManager` es un singleton real compartido por TODO el proceso de
+## GUT (todos los archivos de test de una misma corrida), cualquier test que
+## dispare esta cadena real y no restaure el estado después dejaría el
+## autoload en `LOST` para el resto de la suite — mismo riesgo de
+## contaminación cruzada que ya se maneja explícitamente en este archivo para
+## `EconomyManager.collected_ammo` (ver comentario de esa sección más abajo).
+## Se guarda/restaura `GameStateManager._current_state` alrededor de esta
+## prueba por la misma razón.
 func test_enemigo_que_alcanza_posicion_defendida_fuera_del_carril_del_soldado_emite_la_senal() -> void:
 	# Given: el nivel real cargado, más un Enemigo adicional (no el colocado
 	# a mano en T027) en un carril lateral (x=200) deliberadamente fuera de
@@ -314,6 +327,7 @@ func test_enemigo_que_alcanza_posicion_defendida_fuera_del_carril_del_soldado_em
 	# "PosicionDefendida" (T043) del combate automático del soldado (ya
 	# cubierto por otros tests): este enemigo debe llegar VIVO a la posición
 	# defendida, sin haber sido siquiera detectado en el camino.
+	var original_game_state: int = GameStateManager._current_state
 	var level := _load_level()
 	var enemigo: Enemigo = load(ENEMY_SCENE_PATH).instantiate()
 	add_child_autofree(enemigo)
@@ -341,6 +355,67 @@ func test_enemigo_que_alcanza_posicion_defendida_fuera_del_carril_del_soldado_em
 		enemigo, "enemy_defeated",
 		"precondición del escenario: el enemigo lateral debe llegar vivo a PosicionDefendida, sin ser detectado/eliminado por el soldado de otro carril"
 	)
+
+	# Cleanup: restaurar el estado real del singleton compartido entre
+	# tests/archivos (ver nota de cabecera de este test).
+	GameStateManager._current_state = original_game_state
+
+
+## --- T044 (`spec.md` User Story 3, Acceptance Scenario 3; FR-013; cobertura
+## obligatoria de `constitution.md` Principio II — "condiciones de
+## victoria/derrota"): cadena de punta a punta con instancias REALES ---
+##
+## A diferencia del test anterior (que solo verifica que el propio `Enemigo`
+## emite su señal de instancia `reached_defended_position`) y de
+## `tests/unit/systems/test_game_state_manager.gd` (T038, que prueba el
+## comportamiento de `GameStateManager` de forma aislada contra una instancia
+## propia vía `load().new()`, nunca contra el autoload real ni contra la
+## `Area2D` real del nivel), este test ejercita la cadena COMPLETA con todas
+## las piezas reales: `Nivel_MonteCalvo.tscn` real, un `Enemigo` real que
+## avanza por física real, la `Area2D` "PosicionDefendida" real, y el
+## autoload `GameStateManager` real (registrado en `project.godot`,
+## verificado por `tests/unit/systems/test_autoloads_registration.gd`) — sin
+## ningún soldado que lo detenga en su carril, replicando el escenario de
+## derrota real que el jugador experimentaría en partida. Se justifica como
+## test adicional porque ninguna combinación de los tests existentes cubre
+## este camino real de punta a punta por transitividad: T038 nunca toca el
+## autoload real ni la Area2D real, y el test T043 de arriba nunca toca
+## GameStateManager en absoluto.
+func test_enemigo_real_que_alcanza_posicion_defendida_termina_la_partida_en_derrota_de_punta_a_punta() -> void:
+	# Given: el nivel real cargado, con el autoload GameStateManager real
+	# arrancando en PLAYING (precondición explícita, no asumida — ver nota de
+	# cabecera del test anterior sobre por qué se guarda/restaura este estado)
+	var original_game_state: int = GameStateManager._current_state
+	GameStateManager._current_state = GameStateManager.GameState.PLAYING
+	watch_signals(GameStateManager)
+
+	var level := _load_level()
+	var enemigo: Enemigo = load(ENEMY_SCENE_PATH).instantiate()
+	add_child_autofree(enemigo)
+	enemigo.global_position = Vector2(200, 550) # carril lateral, fuera de rango del Soldado (ver test anterior)
+
+	# When: el Enemigo real avanza por su cuenta hasta alcanzar la Area2D real
+	# "PosicionDefendida" del nivel real, sin ninguna acción del jugador
+	await wait_physics_frames(170)
+
+	# Then: el autoload REAL GameStateManager (no una instancia aislada)
+	# efectivamente transicionó a LOST y emitió las señales del contrato
+	# (spec.md US3 AS3, FR-013, contracts/signals.md)
+	assert_eq(
+		GameStateManager._current_state, GameStateManager.GameState.LOST,
+		"un Enemigo real alcanzando la Area2D real 'PosicionDefendida' debe terminar la partida real en derrota de punta a punta (spec.md US3 AS3)"
+	)
+	assert_signal_emitted(
+		GameStateManager, "game_lost",
+		"el autoload real GameStateManager debe emitir game_lost ante la derrota real de punta a punta"
+	)
+	assert_signal_emitted_with_parameters(
+		GameStateManager, "game_state_changed", [GameStateManager.GameState.LOST]
+	)
+
+	# Cleanup: restaurar el estado real del singleton compartido entre
+	# tests/archivos (ver nota de cabecera del test anterior).
+	GameStateManager._current_state = original_game_state
 
 
 ## Nota de investigación (hallazgo lateral, no bloqueante para T043): un
