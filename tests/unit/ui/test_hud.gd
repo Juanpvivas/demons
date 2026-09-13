@@ -18,6 +18,27 @@ extends GutTest
 ## GDScript el guion bajo es solo convención, no impone visibilidad real, y
 ## no hay una API pública alternativa para leer el texto mostrado en un
 ## `Label` de una escena concreta (no reutilizable) como esta.
+##
+## T045 (más abajo): mismas convenciones para las dos responsabilidades que
+## agrega esa tarea (`spec.md` User Story 3) — aviso de "oleada por llegar"
+## (`WaveManager.wave_started`) y pantalla de victoria/derrota
+## (`GameStateManager.game_won`/`game_lost`).
+##
+## `WaveManager` y `GameStateManager` son también autoloads reales
+## compartidos entre archivos de test (`project.godot`, T010/T040). A
+## diferencia de `EconomyManager.collected_ammo` (un simple `int` mutado y
+## restaurado), aquí se emite la señal DIRECTAMENTE sobre el autoload real
+## (`WaveManager.wave_started.emit(n)`, `GameStateManager.game_won.emit()`,
+## `GameStateManager.game_lost.emit()`) en vez de pasar por el método que
+## dispara la lógica de negocio real (`start_waves()`,
+## `report_reached_defended_position()`, `_on_all_waves_completed()`) —
+## mismo patrón ya usado más abajo para el segundo rechazo de munición
+## (`EconomyManager.deploy_or_reload_rejected.emit(...)`). Esto aísla el
+## test del HUD de la lógica de esos otros autoloads (ya cubierta por
+## `test_wave_manager.gd`/`test_game_state_manager.gd`) y evita dejar al
+## autoload real en un estado mutado que afecte a otros archivos de test:
+## emitir la señal a mano no cambia `current_wave_index` ni `_current_state`
+## internos, así que no requiere restaurar nada al terminar.
 
 const HUD_SCENE_PATH := "res://scenes/ui/HUD.tscn"
 
@@ -201,3 +222,159 @@ func test_new_rejection_while_previous_message_still_visible_keeps_it_visible_an
 
 	# Cleanup: restaurar el pool global compartido entre tests/archivos.
 	EconomyManager.collected_ammo = original_collected_ammo
+
+
+## --- T045: estado inicial oculto (spec.md US3, Principio III de
+## --- constitution.md — ningún aviso debe aparecer antes de que ocurra el
+## --- evento que lo dispara) ---
+
+func test_wave_label_starts_hidden_on_ready() -> void:
+	_spawn_hud()
+
+	assert_false(
+		_hud._wave_label.visible,
+		"el aviso de oleada por llegar debe empezar oculto en _ready()"
+	)
+
+
+func test_game_over_screen_starts_hidden_on_ready() -> void:
+	_spawn_hud()
+
+	assert_false(
+		_hud._game_over_screen.visible,
+		"la pantalla de victoria/derrota debe empezar oculta en _ready()"
+	)
+
+
+## --- T045: aviso de "oleada por llegar" (WaveManager.wave_started,
+## --- contracts/signals.md, Principio III de constitution.md) ---
+
+func test_wave_label_becomes_visible_with_wave_number_on_wave_started() -> void:
+	# Given: un HUD ya instanciado, con el aviso de oleada oculto
+	_spawn_hud()
+	assert_false(
+		_hud._wave_label.visible,
+		"precondición del test: el aviso de oleada debe empezar oculto"
+	)
+
+	# When: WaveManager anuncia el comienzo de una nueva oleada
+	WaveManager.wave_started.emit(3)
+
+	# Then: el aviso se hace visible con el número de oleada (Principio III:
+	# ninguna oleada nueva debe ser una transición silenciosa)
+	assert_true(
+		_hud._wave_label.visible,
+		"el aviso de oleada debe volverse visible al recibir wave_started"
+	)
+	assert_string_contains(
+		_hud._wave_label.text, "3",
+		"el aviso de oleada debe mostrar el número de la oleada que comienza"
+	)
+
+
+func test_wave_label_hides_when_wave_message_timer_times_out() -> void:
+	# Given: un HUD con el aviso de oleada ya visible
+	_spawn_hud()
+	WaveManager.wave_started.emit(1)
+	assert_true(
+		_hud._wave_label.visible,
+		"precondición del test: el aviso de oleada debe estar visible antes del timeout"
+	)
+
+	# When: el temporizador de ocultamiento expira (mismo patrón que
+	# RejectionMessageTimer: se emite `timeout` directamente sobre el propio
+	# Timer del HUD ya instanciado, sin depender de tiempo real de wall-clock)
+	_hud._wave_message_timer.emit_signal("timeout")
+
+	# Then: el aviso se oculta automáticamente
+	assert_false(
+		_hud._wave_label.visible,
+		"el aviso de oleada debe ocultarse cuando WaveMessageTimer emite timeout"
+	)
+
+
+## Mismo patrón discriminante que
+## `test_new_rejection_while_previous_message_still_visible_keeps_it_visible_and_replaces_text`
+## (T036): en vez de depender de tiempo real de wall-clock para verificar que
+## el temporizador se reinicia desde un valor parcial (`Timer.time_left` es
+## de solo lectura, sin forma determinista de fast-forward), se verifica el
+## comportamiento observable que importa: un segundo `wave_started` mientras
+## el aviso anterior sigue visible no lo oculta a mitad de camino, y
+## reemplaza su texto por el de la oleada más reciente.
+func test_new_wave_started_while_previous_message_still_visible_keeps_it_visible_and_replaces_text() -> void:
+	# Given: un HUD con un primer aviso de oleada ya visible
+	_spawn_hud()
+	WaveManager.wave_started.emit(1)
+	assert_true(
+		_hud._wave_label.visible,
+		"precondición del test: el primer aviso de oleada debe estar visible"
+	)
+
+	# When: comienza otra oleada antes de que el primer aviso se oculte
+	WaveManager.wave_started.emit(2)
+
+	# Then: el aviso sigue visible (no se oculta a mitad de camino) y su
+	# texto se reemplaza por el de la oleada más reciente
+	assert_true(
+		_hud._wave_label.visible,
+		"el aviso de oleada debe seguir visible tras un segundo wave_started mientras el anterior no expiró"
+	)
+	assert_string_contains(
+		_hud._wave_label.text, "2",
+		"un nuevo wave_started debe reemplazar el texto del aviso anterior con el número de oleada más reciente"
+	)
+
+
+## --- T045: pantallas de victoria/derrota (GameStateManager.game_won /
+## --- game_lost, contracts/signals.md, spec.md US3 Acceptance Scenarios 2 y
+## --- 3) ---
+
+func test_game_over_screen_shows_victoria_on_game_won() -> void:
+	# Given: un HUD ya instanciado, con la pantalla de fin de partida oculta
+	_spawn_hud()
+	assert_false(
+		_hud._game_over_screen.visible,
+		"precondición del test: la pantalla de fin de partida debe empezar oculta"
+	)
+
+	# When: GameStateManager anuncia la condición de victoria (spec.md US3
+	# Acceptance Scenario 2: "todos los enemigos de todas las oleadas
+	# programadas son derrotados... el jugador recibe una condición de
+	# victoria")
+	GameStateManager.game_won.emit()
+
+	# Then: la pantalla de fin de partida se hace visible con el texto de
+	# victoria
+	assert_true(
+		_hud._game_over_screen.visible,
+		"la pantalla de fin de partida debe volverse visible al recibir game_won"
+	)
+	assert_eq(
+		_hud._game_over_label.text, "VICTORIA",
+		"la pantalla de fin de partida debe mostrar el mensaje de victoria"
+	)
+
+
+func test_game_over_screen_shows_derrota_on_game_lost() -> void:
+	# Given: un HUD ya instanciado, con la pantalla de fin de partida oculta
+	_spawn_hud()
+	assert_false(
+		_hud._game_over_screen.visible,
+		"precondición del test: la pantalla de fin de partida debe empezar oculta"
+	)
+
+	# When: GameStateManager anuncia la condición de derrota (spec.md US3
+	# Acceptance Scenario 3: "un enemigo alcanza la posición defendida... la
+	# partida termina en derrota para el jugador")
+	GameStateManager.game_lost.emit()
+
+	# Then: la pantalla de fin de partida se hace visible con el texto de
+	# derrota
+	assert_true(
+		_hud._game_over_screen.visible,
+		"la pantalla de fin de partida debe volverse visible al recibir game_lost"
+	)
+	assert_eq(
+		_hud._game_over_label.text, "DERROTA",
+		"la pantalla de fin de partida debe mostrar el mensaje de derrota"
+	)
