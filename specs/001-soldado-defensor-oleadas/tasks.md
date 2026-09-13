@@ -125,7 +125,7 @@ Proyecto único Godot 4.7 (GDScript). Rutas relativas a `res://` — ver
 ### Tests for User Story 3 (GUT) ⚠️
 
 - [X] T037 [P] [US3] Test `test_wave_manager.gd` en `tests/unit/systems/test_wave_manager.gd`: secuencia de oleadas, emisión de `wave_started`/`wave_completed`/`all_waves_completed` — cubre "generación de oleadas" de `constitution.md` Principio II (depende de T007; DEBE fallar antes de implementar `wave_manager.gd`)
-- [ ] T038 [P] [US3] Test `test_game_state_manager.gd` en `tests/unit/systems/test_game_state_manager.gd`: `game_lost` al recibir `reached_defended_position`, `game_won` al recibir `all_waves_completed` — cubre "condiciones de victoria/derrota" de `constitution.md` Principio II (depende de T009)
+- [X] T038 [P] [US3] Test `test_game_state_manager.gd` en `tests/unit/systems/test_game_state_manager.gd`: `game_lost` al recibir `reached_defended_position`, `game_won` al recibir `all_waves_completed` — cubre "condiciones de victoria/derrota" de `constitution.md` Principio II (depende de T009)
 
 ### Implementation for User Story 3
 
@@ -159,7 +159,7 @@ agregar las tareas ahora, dentro de esta misma feature, en vez de tocar
 
 **Checkpoint**: un `Soldado` puede ser derrotado y su celda se libera — el bloqueo físico que impedía alcanzar "PosicionDefendida" queda resuelto sin tocar `collision_layer`/`collision_mask`.
 
-- [ ] T044 [US3] `GameStateManager`: escuchar `reached_defended_position` → `game_lost`; escuchar `all_waves_completed` → `game_won` (depende de T009, T039, T043, T052-T054 para que la derrota sea alcanzable en juego real)
+- [X] T044 [US3] `GameStateManager`: escuchar `reached_defended_position` → `game_lost`; escuchar `all_waves_completed` → `game_won` (depende de T009, T039, T043, T052-T054 para que la derrota sea alcanzable en juego real)
 - [ ] T045 [US3] `hud.gd`: feedback de "oleada por llegar" (`wave_started`) y pantallas de victoria/derrota (`game_won`/`game_lost`) (depende de T036, T044)
 
 **Checkpoint**: las tres user stories funcionan juntas — MVP completo de la feature.
