@@ -1,5 +1,7 @@
 # Demonios de las Trincheras
 
+[![CI](https://github.com/Juanpvivas/demons/actions/workflows/ci.yml/badge.svg)](https://github.com/Juanpvivas/demons/actions/workflows/ci.yml)
+
 Tower defense / lane defense 2D en Godot 4.x, inspirado en la historia real
 del Batallón Colombia en la Guerra de Corea (apodados "los demonios de las
 trincheras" por su ferocidad en combate cuerpo a cuerpo tras quedarse sin
@@ -38,6 +40,16 @@ Los tests automatizados usan **GUT** (Godot Unit Testing), instalado en
 `res://tests/unit/`, organizados por dominio (`units/`, `enemies/`,
 `systems/`, `levels/`) — ver `docs/ARCHITECTURE.md` §6 para la convención
 completa y las limitaciones conocidas de correr tests bajo `--headless`.
+
+## Integración continua
+
+Cada push y cada Pull Request disparan `.github/workflows/ci.yml`: corre la
+suite GUT completa y valida que el proyecto importa limpio en modo headless.
+Un PR con tests rotos o errores de importación queda marcado en rojo, y se
+comenta automáticamente en el PR si el pipeline falla. Los issues y PRs
+nuevos se etiquetan automáticamente (`.github/workflows/label.yml`) y
+reciben un mensaje de bienvenida en su primera contribución
+(`.github/workflows/welcome.yml`).
 
 ## Pipeline de desarrollo
 

@@ -1,0 +1,6 @@
+# Config de actions/labeler — etiqueta PRs según qué archivos tocan.
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "docs/**"
+          - "**/*.md"
