@@ -152,6 +152,21 @@ Reglas complementarias:
 - Toda conexión de señal (`.connect(...)`) se hace en `_ready()` (o se
   cablea en el editor) — nunca dentro de `_process()`/`_physics_process()`
   ni en callbacks puntuales.
+- **Excepción explícita a la regla anterior, para instancias creadas en
+  tiempo de ejecución:** cuando el nodo que emite la señal no existe todavía
+  al correr el `_ready()` del nodo que la escucha (una instancia creada
+  dinámicamente — un enemigo del pool, un soldado desplegado por el
+  jugador), la conexión se hace en el mismo punto del código donde esa
+  instancia se crea/registra, no en un `_ready()` genérico posterior que
+  itere después sobre todas las instancias existentes. Dos ejemplos
+  concretos ya en el repo, mismo patrón: `wave_spawner.gd:189`
+  (`enemy.enemy_defeated.connect(_on_enemy_defeated.bind(enemy))`, dentro de
+  `_on_enemy_pool_instance_created()`, T042) y `nivel_monte_calvo.gd`
+  (`nuevo_soldado.soldier_defeated.connect(_on_soldado_defeated)`, dentro de
+  `_try_deploy_soldado()`, T054) — este último conecta también, por
+  consistencia, la señal del soldado colocado a mano en el propio `_ready()`
+  del nivel, en el mismo punto donde ese soldado en concreto se registra
+  como ocupante del tablero.
 - Referencias a nodos hijos propios (ej. `Soldado.gd` accediendo a sus
   `Area2D` "DeteccionRango"/"RangoMelee") se cachean una sola vez con
   `@onready var` al inicio del script. `get_node()`/`$Path` **nunca** se
@@ -439,3 +454,4 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
 | 2026-09-12 | §4.1: completada la descripción de `WaveManager` (`start_waves`, `get_current_wave`, señal `all_waves_completed` faltante) tras su implementación en T039 de `001-soldado-defensor-oleadas` (validada por `qa-validator`, 25/25 tests de T037 en verde); se gradúa como convención explícita de proyecto el patrón "autoload orquestador no instancia ni temporiza, un spawner externo se lo notifica vía `notify_*()`", ya presente en `EconomyManager.notify_pickup_spawned` (T032) y ahora repetido en `WaveManager.notify_enemy_defeated` (T039) |
 | 2026-09-12 | §4.5: completada la nota sobre hooks de `ObjectPool` que ya nombraba a T026/T042 como caso relevante — tras la implementación real de T042 (`WaveSpawner`/`Enemigo`, validada por `qa-validator`), se documenta que esa implementación concreta no usó `on_pool_acquired()`/`on_pool_released()` sino un método explícito propio (`prepare_for_spawn()`) llamado por el dueño del pool justo después de `acquire()`, porque `acquire()` no admite argumentos y el hook automático se dispararía antes de tener los datos correctos del spawn. Se deja como guía para pools futuros con la misma necesidad. |
 | 2026-09-12 | §4.2: graduada como convención de alcance de proyecto la regla "una `Area2D` detectora debe pertenecer al lado estático de la interacción, no al que se mueve con `move_and_slide()`" — hallazgo de motor confirmado de forma empírica por `qa-validator` durante T053 de `001-soldado-defensor-oleadas` (una `Area2D` hija de un `CharacterBody2D` que llama `move_and_slide()` no actualiza de forma fiable sus overlaps contra un `StaticBody2D`). §5: agregada nota de que el síntoma práctico que motivó la observación sobre `collision_layer`/`collision_mask` (un `Soldado` indestructible bloqueando el carril) quedó resuelto por T050-T053 sin tocar capas de colisión — la ausencia de convención explícita documentada ahí sigue vigente. |
+| 2026-09-12 | §4.2: agregada excepción explícita a la regla de "conectar señales siempre en `_ready()`" para instancias creadas en tiempo de ejecución (conectar en el punto de creación/registro de la instancia, no en un `_ready()` genérico posterior) — convención ya presente de forma implícita en `wave_spawner.gd` (T042) y confirmada por segunda vez, de forma independiente, en `nivel_monte_calvo.gd` (T054, `001-soldado-defensor-oleadas`, validado por `qa-validator`), que la aplicó tanto al soldado colocado a mano como a los desplegados dinámicamente. Se gradúa aquí por ser un patrón repetido en dos features/puntos distintos del código, de alcance de proyecto. |
