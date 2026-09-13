@@ -1,0 +1,35 @@
+name: Label
+
+# Etiquetado automático: issues por palabras clave en título/cuerpo
+# (.github/labeler-issues.yml), PRs por archivos tocados (.github/labeler.yml).
+on:
+  issues:
+    types: [opened, edited]
+  pull_request_target:
+    types: [opened, synchronize]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  label-issue:
+    name: Etiquetar issue por contenido
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: github/issue-labeler@v3.4
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/labeler-issues.yml
+          enable-versioned-regex: false
+
+  label-pr:
+    name: Etiquetar PR por archivos tocados
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@v5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}

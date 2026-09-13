@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scenes/levels/ammo_pickup.gd" id="1_ammo_pickup"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pickup"]
+radius = 20.0
+
+[sub_resource type="Gradient" id="Gradient_pickup_sprite"]
+colors = PackedColorArray(1, 0.85, 0.1, 1, 1, 0.85, 0.1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_pickup_sprite"]
+gradient = SubResource("Gradient_pickup_sprite")
+width = 32
+height = 32
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_pickup"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("GradientTexture2D_pickup_sprite")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="AmmoPickup" type="Area2D"]
+input_pickable = true
+monitoring = false
+monitorable = false
+script = ExtResource("1_ammo_pickup")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_pickup")
+animation = &"default"
+autoplay = "default"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_pickup")

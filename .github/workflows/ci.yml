@@ -1,0 +1,77 @@
+name: CI
+
+# Integración continua: corre la suite GUT completa y valida que el proyecto
+# importa/compila limpio en cada push y en cada Pull Request.
+# Ver docs/ARCHITECTURE.md §6 (Testing) para la convención de tests del
+# proyecto, y CLAUDE.md §GodotPrompter para las skills usadas al escribir
+# este workflow.
+on:
+  push:
+  pull_request:
+
+env:
+  # Debe coincidir con la versión de Godot usada localmente (ver project.godot
+  # config/features y la versión reportada por el binario mono instalado).
+  GODOT_VERSION: "4.7.1"
+
+jobs:
+  test:
+    name: Tests (GUT)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Godot ${{ env.GODOT_VERSION }} (mono)
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: true
+
+      - name: Correr la suite GUT completa (res://tests/unit)
+        run: >
+          godot --headless --path . -s addons/gut/gut_cmdln.gd
+          -gdir=res://tests/unit -ginclude_subdirs=true -gexit
+
+  build:
+    name: Build (validación de importación)
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Godot ${{ env.GODOT_VERSION }} (mono)
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: true
+
+      # El proyecto todavía no tiene export_presets.cfg (no se exporta a
+      # ninguna plataforma todavía, ver docs/ARCHITECTURE.md §7). Mientras
+      # tanto, "compilar" se valida importando el proyecto completo en modo
+      # headless: falla si hay errores de parseo en .gd, Resources rotos, o
+      # escenas que no cargan. Cuando exista export_presets.cfg, reemplazar
+      # este paso por un `--export-release` real a la plantilla que
+      # corresponda (ver skill godot-prompter:export-pipeline).
+      - name: Importar el proyecto (headless)
+        run: godot --headless --path . --import --quit-after 2
+
+  notify-on-failure:
+    name: Notificar fallo en el PR
+    runs-on: ubuntu-latest
+    needs: [test, build]
+    if: failure() && github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Comentar en el PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '⚠️ El pipeline de CI falló en este PR (tests y/o build). Revisá la pestaña **Checks** de este PR para el detalle antes de pedir revisión.'
+            })
