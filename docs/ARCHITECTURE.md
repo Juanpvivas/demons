@@ -117,6 +117,23 @@ escena. Dos ejemplos concretos ya en el repo, mismo patrón:
   necesita saber cuántos enemigos totales componen la oleada (suma de
   `count` de sus `WaveSpawnEntry`) y cuántos fueron notificados como
   derrotados.
+- `GameStateManager.report_reached_defended_position()` (T044,
+  `001-soldado-defensor-oleadas`): mismo patrón exacto aplicado a la
+  derrota — `nivel_monte_calvo.gd` detecta que un `Enemigo` entró en la
+  `Area2D` "PosicionDefendida" y llama a este método en vez de que
+  `GameStateManager` se conecte a la señal de instancia
+  `Enemigo.reached_defended_position` (imposible desde `_ready()` de un
+  autoload, que corre antes de que exista ningún `Enemigo`). Nota de
+  nomenclatura menor, no bloqueante (`qa-validator`, T044): el resto de
+  ejemplos de este patrón usa el prefijo `notify_*()`
+  (`notify_pickup_spawned`, `notify_enemy_defeated`, y el propio
+  `Enemigo.notify_reached_defended_position()` de este mismo flujo); este
+  método se llamó `report_*()` en su lugar. El nombre sigue siendo claro y
+  la tarea que lo introdujo ya está aprobada, así que no amerita reabrirla
+  solo por esto — queda documentado aquí como inconsistencia cosmética de
+  nombre para quien busque el patrón `notify_*()` de forma literal, y
+  como candidato opcional a una futura tarea de limpieza si el equipo
+  decide unificarlo.
 
 Cada `Soldado` y `Enemigo` mantiene su **propio estado local** (munición
 actual, moral acumulada, modo activo) — eso vive en variables propias del
@@ -409,6 +426,16 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   de simular el evento crudo — deja sin cubrir solo la conversión de
   coordenadas en sí (pantalla → mundo → celda) y el filtro de tipo de
   evento, sin lógica de negocio real.
+- **Hueco de cobertura conocido, no bloqueante (T044,
+  `001-soldado-defensor-oleadas`):** existe un test de integración de
+  punta a punta con instancias reales para la condición de derrota
+  (`test_enemigo_real_que_alcanza_posicion_defendida_termina_la_partida_en_derrota_de_punta_a_punta`
+  en `tests/unit/levels/test_nivel_montecalvo.gd`), pero no su simétrico
+  para victoria (un `WaveManager` real completando todas sus oleadas y
+  disparando `GameStateManager.game_won` sobre el autoload real, no solo
+  evidencia indirecta). Señalado por `qa-validator` al aprobar T044;
+  queda como nota para una futura tarea de `godot-tester`, no bloquea
+  nada hoy.
 
 ## 7. Consideraciones multiplataforma
 
@@ -455,3 +482,5 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
 | 2026-09-12 | §4.5: completada la nota sobre hooks de `ObjectPool` que ya nombraba a T026/T042 como caso relevante — tras la implementación real de T042 (`WaveSpawner`/`Enemigo`, validada por `qa-validator`), se documenta que esa implementación concreta no usó `on_pool_acquired()`/`on_pool_released()` sino un método explícito propio (`prepare_for_spawn()`) llamado por el dueño del pool justo después de `acquire()`, porque `acquire()` no admite argumentos y el hook automático se dispararía antes de tener los datos correctos del spawn. Se deja como guía para pools futuros con la misma necesidad. |
 | 2026-09-12 | §4.2: graduada como convención de alcance de proyecto la regla "una `Area2D` detectora debe pertenecer al lado estático de la interacción, no al que se mueve con `move_and_slide()`" — hallazgo de motor confirmado de forma empírica por `qa-validator` durante T053 de `001-soldado-defensor-oleadas` (una `Area2D` hija de un `CharacterBody2D` que llama `move_and_slide()` no actualiza de forma fiable sus overlaps contra un `StaticBody2D`). §5: agregada nota de que el síntoma práctico que motivó la observación sobre `collision_layer`/`collision_mask` (un `Soldado` indestructible bloqueando el carril) quedó resuelto por T050-T053 sin tocar capas de colisión — la ausencia de convención explícita documentada ahí sigue vigente. |
 | 2026-09-12 | §4.2: agregada excepción explícita a la regla de "conectar señales siempre en `_ready()`" para instancias creadas en tiempo de ejecución (conectar en el punto de creación/registro de la instancia, no en un `_ready()` genérico posterior) — convención ya presente de forma implícita en `wave_spawner.gd` (T042) y confirmada por segunda vez, de forma independiente, en `nivel_monte_calvo.gd` (T054, `001-soldado-defensor-oleadas`, validado por `qa-validator`), que la aplicó tanto al soldado colocado a mano como a los desplegados dinámicamente. Se gradúa aquí por ser un patrón repetido en dos features/puntos distintos del código, de alcance de proyecto. |
+| 2026-09-12 | §4.1: agregado `GameStateManager.report_reached_defended_position()` (T044, `001-soldado-defensor-oleadas`, aprobado por `qa-validator`) como tercer ejemplo del patrón "autoload orquestador no instancia, un nodo de nivel se lo notifica vía método público" — cierra de punta a punta la condición de derrota (`Enemigo` alcanza real, físicamente, la posición defendida Y `GameStateManager` real transiciona a `LOST`, con test de integración de instancias reales en `test_nivel_montecalvo.gd`). Se documenta también, sin bloquear nada, la inconsistencia cosmética de nombre `report_*()` vs. el prefijo `notify_*()` usado por los otros dos ejemplos del mismo patrón (observación de `qa-validator`, no ameritó reabrir T044). |
+| 2026-09-12 | §6: agregado hueco de cobertura de test conocido y no bloqueante — falta el simétrico de victoria (con `WaveManager`/`GameStateManager` reales) al test de integración de derrota de punta a punta agregado en T044 de `001-soldado-defensor-oleadas`. |

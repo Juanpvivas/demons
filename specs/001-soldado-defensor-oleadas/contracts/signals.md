@@ -22,7 +22,21 @@ señal es un punto de enganche obligatorio para HUD/audio/animación.
 | Señal | Payload | Cuándo se emite | Quién debe escuchar |
 |---|---|---|---|
 | `enemy_defeated` | `ammo_dropped: int`, `position: Vector2` | Al llegar `_current_health` a 0, por disparo o machete. FR-007. | `EconomyManager` (spawnea pickup / suma al pool — ver `research.md` §3), soldado que dio el golpe final (suma moral, FR-006). |
-| `reached_defended_position` | — | El `Enemigo` entra en la `Area2D` de la posición defendida. FR-013. | `GameStateManager` (termina partida en derrota). |
+| `reached_defended_position` | — | El `Enemigo` entra en la `Area2D` de la posición defendida. FR-013. | `GameStateManager` (termina partida en derrota)¹. |
+
+¹ "Quién debe escuchar" no significa aquí un `.connect()` literal a esta
+señal de instancia. `GameStateManager` es un autoload cuyo `_ready()` corre
+una sola vez al arrancar el juego, antes de que exista ningún `Enemigo` al
+que conectarse (`docs/ARCHITECTURE.md` §4.2). En su lugar se usa el mismo
+patrón ya documentado en `docs/ARCHITECTURE.md` §4.1 para
+`EconomyManager.notify_pickup_spawned()`: quien detecta el evento en tiempo
+real (`nivel_monte_calvo.gd`, al recibir `body_entered` en la `Area2D`
+"PosicionDefendida") llama directamente a un método público de
+`GameStateManager` (`report_reached_defended_position()`, T044). El
+resultado final — la partida termina en derrota — es el mismo que
+describe esta fila; solo el mecanismo de entrega no es una conexión de
+señal. Detalle completo en el comentario de cabecera de
+`autoloads/game_state_manager.gd`.
 
 ## `EconomyManager` (autoload)
 
