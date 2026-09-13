@@ -144,11 +144,33 @@ var _soldado_script: Script
 var _soldado: Node
 var _stats: Resource
 
+# Capturados por conexión propia a `soldier_defeated` (no por `watch_signals`)
+# en `test_soldier_is_defeated_by_a_real_enemy_attacking_within_rango_melee`
+# — mismo patrón ya usado en `test_soldado_enemigo_integration.gd`
+# (`_on_enemy_defeated`) por dos motivos: (1) tras 400 frames de física de
+# espera, el `Soldado` puede quedar totalmente liberado de memoria para
+# cuando se hace la aserción, y `assert_signal_emitted`/`get_signal_parameters`
+# de GUT no pueden leer el historial de señales de un `Object` ya freed; (2)
+# un lambda de GDScript captura las variables locales de la función POR
+# VALOR en el momento de su creación — mutarlas dentro del lambda NO se
+# refleja en la variable de la función que lo creó (comprobado
+# empíricamente), así que la única forma correcta de capturar el payload es
+# con variables de instancia y un método dedicado, como aquí.
+var _soldier_defeated_emitted: bool = false
+var _soldier_defeated_cell: Vector2i = Vector2i(-1, -1)
+
 
 func before_each() -> void:
 	_soldado_script = load(SOLDADO_SCRIPT_PATH)
 	_soldado = null
 	_stats = null
+	_soldier_defeated_emitted = false
+	_soldier_defeated_cell = Vector2i(-1, -1)
+
+
+func _on_soldier_defeated(cell: Vector2i) -> void:
+	_soldier_defeated_emitted = true
+	_soldier_defeated_cell = cell
 
 
 ## Crea un `UnitStats` con los defaults de este archivo (más los overrides
@@ -656,7 +678,27 @@ func test_soldier_is_defeated_by_a_real_enemy_attacking_within_rango_melee() -> 
 	_spawn_soldado({"max_health": 10})
 	var expected_cell := Vector2i(1, 2)
 	_soldado.call("set_grid_cell", expected_cell)
-	watch_signals(_soldado)
+	# NO se usa watch_signals()/assert_signal_emitted() aquí a propósito:
+	# `FRAMES_TO_DEFEAT_SOLDIER` (400 frames) es una ventana lo bastante
+	# amplia como para que, tras la muerte del soldado, transcurran muchos
+	# frames de física adicionales antes de esta aserción — tiempo de sobra
+	# para que el `queue_free()` diferido de `_die()` termine de liberar el
+	# nodo POR COMPLETO de memoria (no solo "pendiente de liberar"). Un
+	# objeto totalmente liberado ya no puede responder ni siquiera a
+	# `get_signal_list()` (lo que usa `assert_signal_emitted` internamente
+	# para verificar que la señal existe), y GUT reporta el falso negativo
+	# "Object <Freed Object> does not have the signal [...]" en vez de
+	# evaluar si se emitió o no. Mismo problema ya identificado y resuelto en
+	# `test_soldado_enemigo_integration.gd` (ver su comentario de cabecera
+	# sobre `_on_enemy_defeated`): se captura el payload conectando la señal
+	# manualmente ANTES de que el nodo pueda morir, en vez de depender de la
+	# infraestructura de watch_signals de GUT sobre un nodo que va a dejar de
+	# existir. Se conecta a un MÉTODO DE INSTANCIA (`_on_soldier_defeated`),
+	# no a un lambda: un lambda captura `expected_cell`/variables locales por
+	# valor, y mutar variables locales dentro de un lambda no se propaga a la
+	# función que lo creó (comprobado empíricamente) — ver comentario junto a
+	# `_soldier_defeated_emitted` en la cabecera de este archivo.
+	_soldado.connect("soldier_defeated", _on_soldier_defeated)
 
 	# When: un Enemigo real entra en su "RangoMelee" y permanece el tiempo
 	# suficiente para atacarlo activamente (Edge Case de derrota de
@@ -667,15 +709,58 @@ func test_soldier_is_defeated_by_a_real_enemy_attacking_within_rango_melee() -> 
 
 	# Then: el soldado real fue derrotado por el ataque real del enemigo —
 	# emite soldier_defeated con su celda y queda liberado del árbol
-	assert_signal_emitted(
-		_soldado, "soldier_defeated",
+	assert_true(
+		_soldier_defeated_emitted,
 		"un Enemigo real atacando dentro de RangoMelee debe derrotar al soldado (T052+T053)"
 	)
 	assert_eq(
-		get_signal_parameters(_soldado, "soldier_defeated")[0], expected_cell,
+		_soldier_defeated_cell, expected_cell,
 		"soldier_defeated debe reportar la grid_cell del soldado derrotado por el enemigo real"
 	)
 	assert_false(
 		is_instance_valid(_soldado),
 		"el soldado derrotado por el enemigo real debe liberarse del árbol"
+	)
+
+
+## T053 (rehecha), cobertura del supuesto de implementación NO ejercitado por
+## el test anterior (con un solo enemigo en rango, "solo al objetivo actual" y
+## "a todos los candidatos" son indistinguibles): `soldado.gd`
+## `_process_incoming_melee_damage()` documenta explícitamente que aplica el
+## daño entrante de CADA `Enemigo` presente en `_melee_candidates`, no solo de
+## `_current_melee_target` (a diferencia del ataque saliente del propio
+## soldado, que sí respeta "sin dividir fuego"). Usa `enemigo_double.gd` (no
+## un `Enemigo` real) porque no es necesario que se muevan ni que la fuente
+## del daño sea creíble en términos de gameplay — solo que ambos permanezcan
+## simultáneamente dentro de "RangoMelee" con un `get_melee_damage()`
+## distinguible cada uno, para poder sumar el daño esperado con precisión.
+func test_soldier_takes_incoming_melee_damage_from_every_candidate_present_not_only_the_current_target() -> void:
+	# Given: un soldado con salud de sobra y dos enemigos distintos,
+	# simultáneamente dentro de "RangoMelee", cada uno con un melee_damage
+	# distinguible
+	_spawn_soldado({"max_health": 1000})
+	var enemy_a := EnemigoDouble.new()
+	enemy_a.health = 1000
+	enemy_a.melee_damage = 4
+	add_child_autofree(enemy_a)
+	enemy_a.global_position = _soldado.global_position + Vector2(-20, -40)
+
+	var enemy_b := EnemigoDouble.new()
+	enemy_b.health = 1000
+	enemy_b.melee_damage = 7
+	add_child_autofree(enemy_b)
+	enemy_b.global_position = _soldado.global_position + Vector2(20, -40)
+
+	# When: transcurre tiempo suficiente para que ambos sean detectados y
+	# reciba exactamente el primer golpe de cada uno (_incoming_melee_cooldown
+	# arranca en 0.0; el segundo ciclo de ataque requiere ~60 frames más a
+	# _INCOMING_MELEE_ATTACK_INTERVAL=1.0s, muy por fuera de esta ventana)
+	await wait_physics_frames(FRAMES_TO_DETECT)
+
+	# Then: el soldado perdió la SUMA de ambos melee_damage (4 + 7 = 11), no
+	# solo el del enemigo elegido como _current_melee_target — confirma que
+	# `_process_incoming_melee_damage()` recorre TODOS los `_melee_candidates`
+	assert_eq(
+		_soldado.get("_current_health"), 1000 - 11,
+		"el soldado debe recibir el daño de CADA enemigo presente en RangoMelee simultáneamente, no solo del objetivo actual de su propio ataque"
 	)
