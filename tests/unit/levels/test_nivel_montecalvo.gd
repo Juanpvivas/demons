@@ -549,3 +549,122 @@ func test_deploy_on_already_occupied_cell_does_not_deploy_or_spend_ammo() -> voi
 
 	# Cleanup: restaurar el pool global compartido entre tests/archivos.
 	EconomyManager.collected_ammo = original_collected_ammo
+
+
+## --- T054 (`spec.md` Edge Case de derrota del Soldado: "libera esa
+## posición del tablero"): derrotar un Soldado del nivel (colocado a mano o
+## desplegado) debe liberar su celda en `_board_manager` ---
+##
+## `soldier_defeated` se emite de forma SÍNCRONA dentro de `take_damage()`
+## (`soldado.gd._die()`, antes de `queue_free()`), así que
+## `_on_soldado_defeated()` (`nivel_monte_calvo.gd`) ya corrió -y
+## `_board_manager.free_cell()` ya se aplicó- para cuando `take_damage()`
+## retorna: no hace falta `await` de ningún frame para observar el efecto.
+
+func test_soldado_inicial_colocado_a_mano_defeated_libera_su_celda_en_board_manager() -> void:
+	# Given: el nivel real cargado, con el Soldado inicial (T027) ya
+	# registrado como ocupante de su celda desde _ready() (T054)
+	var level := _load_level()
+	var soldado: Soldado = level.get_node("Soldado")
+	var board: BoardManager = level.get("_board_manager")
+	assert_false(
+		board.is_cell_free(OCCUPIED_TEST_CELL),
+		"precondición del test: la celda del Soldado inicial debe empezar ocupada"
+	)
+
+	# When: el Soldado inicial es derrotado (daño suficiente para agotar toda
+	# su salud de producción en una sola llamada)
+	soldado.take_damage(soldado.stats.max_health)
+
+	# Then: su celda queda libre en el BoardManager del nivel (spec.md Edge
+	# Case: "libera esa posición del tablero")
+	assert_true(
+		board.is_cell_free(OCCUPIED_TEST_CELL),
+		"al derrotar al Soldado inicial colocado a mano, su celda debe quedar libre en BoardManager (T054)"
+	)
+	assert_null(
+		board.get_occupant(OCCUPIED_TEST_CELL),
+		"tras la derrota, BoardManager.get_occupant() de esa celda debe volver a ser null"
+	)
+
+
+func test_soldado_desplegado_defeated_libera_su_celda_en_board_manager() -> void:
+	# Given: el nivel real cargado y un Soldado nuevo desplegado en una celda
+	# libre (T035)
+	var level := _load_level()
+	var original_collected_ammo: int = EconomyManager.collected_ammo
+	var deploy_cost: int = level.soldado_deploy_stats.deploy_ammo_cost
+	EconomyManager.add_ammo(deploy_cost + 999)
+
+	var board: BoardManager = level.get("_board_manager")
+	level.call("_try_deploy_soldado", FREE_TEST_CELL)
+	var soldado_desplegado: Soldado = board.get_occupant(FREE_TEST_CELL)
+	assert_not_null(
+		soldado_desplegado,
+		"precondición del test: el despliegue debe haber registrado un Soldado como ocupante de la celda"
+	)
+
+	# When: el Soldado desplegado es derrotado
+	soldado_desplegado.take_damage(soldado_desplegado.stats.max_health)
+
+	# Then: su celda vuelve a quedar libre en el BoardManager del nivel
+	assert_true(
+		board.is_cell_free(FREE_TEST_CELL),
+		"al derrotar a un Soldado desplegado dinámicamente, su celda debe quedar libre en BoardManager (T054)"
+	)
+	assert_null(
+		board.get_occupant(FREE_TEST_CELL),
+		"tras la derrota, BoardManager.get_occupant() de esa celda debe volver a ser null"
+	)
+
+	# Cleanup: restaurar el pool global compartido entre tests/archivos.
+	EconomyManager.collected_ammo = original_collected_ammo
+
+
+func test_celda_liberada_tras_derrota_puede_volver_a_desplegarse_un_nuevo_soldado() -> void:
+	# Given: el nivel real cargado, un Soldado desplegado en una celda libre,
+	# y luego derrotado (cierra el ciclo completo del Edge Case: la celda no
+	# solo se marca libre internamente, sino que vuelve a estar disponible
+	# para el jugador)
+	var level := _load_level()
+	var original_collected_ammo: int = EconomyManager.collected_ammo
+	var deploy_cost: int = level.soldado_deploy_stats.deploy_ammo_cost
+	EconomyManager.add_ammo(2 * deploy_cost + 999)
+
+	var board: BoardManager = level.get("_board_manager")
+	level.call("_try_deploy_soldado", FREE_TEST_CELL)
+	var primer_soldado: Soldado = board.get_occupant(FREE_TEST_CELL)
+	primer_soldado.take_damage(primer_soldado.stats.max_health)
+	assert_true(
+		board.is_cell_free(FREE_TEST_CELL),
+		"precondición del test: la celda debe quedar libre tras derrotar al primer Soldado desplegado ahí"
+	)
+	var children_before_redeploy: int = level.get_child_count()
+
+	# When: el jugador despliega un segundo Soldado nuevo sobre esa misma
+	# celda, ahora liberada
+	level.call("_try_deploy_soldado", FREE_TEST_CELL)
+
+	# Then: el segundo despliegue tiene éxito (la celda vuelve a estar
+	# disponible para el jugador, cerrando el ciclo completo del Edge Case)
+	assert_eq(
+		level.get_child_count(), children_before_redeploy + 1,
+		"un segundo despliegue sobre la celda liberada debe agregar un nuevo Soldado al nivel"
+	)
+	assert_false(
+		board.is_cell_free(FREE_TEST_CELL),
+		"tras el segundo despliegue exitoso, la celda debe quedar ocupada de nuevo"
+	)
+	var segundo_soldado: Node = board.get_occupant(FREE_TEST_CELL)
+	assert_not_null(segundo_soldado, "el segundo Soldado debe quedar registrado como ocupante de la celda")
+	assert_true(
+		segundo_soldado is Soldado,
+		"el nodo instanciado en el segundo despliegue debe ser una instancia de Soldado.tscn"
+	)
+	assert_ne(
+		segundo_soldado, primer_soldado,
+		"el segundo Soldado desplegado debe ser una instancia distinta del primero (derrotado)"
+	)
+
+	# Cleanup: restaurar el pool global compartido entre tests/archivos.
+	EconomyManager.collected_ammo = original_collected_ammo
