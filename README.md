@@ -53,12 +53,13 @@ reciben un mensaje de bienvenida en su primera contribución
 
 ## Builds de prueba
 
-- **Android**: cada push a `main` exporta un APK debug y lo sube a
+- **Android**: cada push a `main` exporta un APK debug (verificado en
+  local: firma correctamente y pasa `apksigner verify`) y lo sube a
   **Firebase App Distribution** (`.github/workflows/deploy-android-testers.yml`).
-  Necesita los secrets `FIREBASE_ANDROID_APP_ID` y `FIREBASE_SERVICE_ACCOUNT`
-  configurados en el repo (Settings → Secrets and variables → Actions) —
-  hasta que existan, el workflow falla en el paso de subida con un error
-  claro. Package: `com.juanpvivas.demons`.
+  Package: `com.juanpvivas.demons`. Los secrets `FIREBASE_ANDROID_APP_ID` y
+  `FIREBASE_SERVICE_ACCOUNT` ya están configurados en el repo (Settings →
+  Secrets and variables → Actions) — falta confirmar que un run real del
+  workflow sube el APK a Firebase con éxito.
 - **iOS**: pendiente de una membresía de Apple Developer Program activa.
   Cuando esté lista, se agrega un preset iOS + un workflow que suba a
   TestFlight (vía App Store Connect API key, sin intervención manual).
