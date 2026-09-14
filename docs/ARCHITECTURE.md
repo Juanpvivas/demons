@@ -456,7 +456,13 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   dispositivos móviles y PC.
 - Presets de exportación por plataforma se versionan en
   `export_presets.cfg`, sin credenciales ni keystores/certificados dentro
-  del repositorio.
+  del repositorio. Primer preset real: **Android** (`package/unique_name`
+  `com.juanpvivas.demons`), usado por
+  `.github/workflows/deploy-android-testers.yml` para exportar un APK debug
+  y subirlo a Firebase App Distribution en cada push a `main` — ver ese
+  archivo para el detalle y los secrets de CI requeridos. iOS/TestFlight
+  queda pendiente de un preset propio hasta tener la membresía de Apple
+  Developer activa.
 
 ## 8. Relación con Spec Kit
 

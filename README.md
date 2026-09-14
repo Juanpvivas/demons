@@ -51,6 +51,18 @@ nuevos se etiquetan automáticamente (`.github/workflows/label.yml`) y
 reciben un mensaje de bienvenida en su primera contribución
 (`.github/workflows/welcome.yml`).
 
+## Builds de prueba
+
+- **Android**: cada push a `main` exporta un APK debug y lo sube a
+  **Firebase App Distribution** (`.github/workflows/deploy-android-testers.yml`).
+  Necesita los secrets `FIREBASE_ANDROID_APP_ID` y `FIREBASE_SERVICE_ACCOUNT`
+  configurados en el repo (Settings → Secrets and variables → Actions) —
+  hasta que existan, el workflow falla en el paso de subida con un error
+  claro. Package: `com.juanpvivas.demons`.
+- **iOS**: pendiente de una membresía de Apple Developer Program activa.
+  Cuando esté lista, se agrega un preset iOS + un workflow que suba a
+  TestFlight (vía App Store Connect API key, sin intervención manual).
+
 ## Pipeline de desarrollo
 
 Este proyecto usa un pipeline de subagentes especializados de Claude Code

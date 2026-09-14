@@ -1,0 +1,79 @@
+name: Deploy Android test build
+
+# Exporta un APK de Android (debug, apto para testing interno — no requiere
+# keystore de release) y lo sube a Firebase App Distribution para que los
+# testers lo instalen en su celular. Ver godot-prompter:export-pipeline
+# (sección Android) para la referencia del preset usado.
+#
+# Requiere estos secrets en el repo (Settings → Secrets and variables →
+# Actions) — mientras no existan, este workflow falla con un error claro
+# apenas llega al paso que los necesita:
+#   FIREBASE_ANDROID_APP_ID      -> App ID de Firebase (formato
+#                                    "1:XXXXXXXXXX:android:xxxxxxxxxxxxxxxx")
+#   FIREBASE_SERVICE_ACCOUNT     -> contenido completo del .json de la
+#                                    cuenta de servicio (Firebase Console →
+#                                    Configuración del proyecto → Cuentas de
+#                                    servicio → Generar nueva clave privada)
+#
+# Variable opcional (Settings → Secrets and variables → Actions → Variables):
+#   FIREBASE_TESTER_GROUP        -> nombre del grupo de testers en Firebase
+#                                    App Distribution (si no existe, subir
+#                                    sin grupo y agregar testers a mano
+#                                    desde la consola de Firebase la primera
+#                                    vez).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+env:
+  GODOT_VERSION: "4.7.1"
+
+jobs:
+  deploy-android:
+    name: Exportar APK y subir a Firebase App Distribution
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # para poder usar git describe en las notas de release
+
+      - name: Setup Godot ${{ env.GODOT_VERSION }} (mono)
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: true
+          include-templates: true
+
+      - name: Setup JDK (requerido por el export de Android de Godot)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: "platform-tools build-tools;34.0.0"
+
+      - name: Crear directorio de salida
+        run: mkdir -p build/android
+
+      - name: Exportar APK de Android (debug, para testing interno)
+        run: >
+          godot --headless --export-debug "Android" build/android/demons.apk
+
+      - name: Notas de release desde git
+        id: notes
+        run: |
+          echo "text=$(git log -1 --pretty=format:'%h — %s')" >> "$GITHUB_OUTPUT"
+
+      - name: Subir a Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_ANDROID_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          groups: ${{ vars.FIREBASE_TESTER_GROUP }}
+          file: build/android/demons.apk
+          releaseNotes: ${{ steps.notes.outputs.text }}
