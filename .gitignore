@@ -2,5 +2,8 @@
 .godot/
 /android/
 
+# Local export output — never commit built binaries
+/build/
+
 # macOS
 .DS_Store
