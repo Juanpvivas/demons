@@ -47,6 +47,20 @@ jobs:
       - name: Exportar proyecto Xcode de iOS (Godot no firma; export_project_only=true)
         run: godot --headless --export-release "iOS" build/ios/demons.ipa
 
+      - name: Forzar firma automática en el .pbxproj (Godot siempre genera Manual + perfil vacío)
+        # Verificado en local: con CODE_SIGN_STYLE=Manual y el perfil de
+        # aprovisionamiento vacío (que es lo único que Godot sabe generar,
+        # no hay opción de preset para "automatic"), xcodebuild nunca puede
+        # firmar solo, ni con -allowProvisioningUpdates. Y si además queda
+        # un CODE_SIGN_IDENTITY fijo ("iPhone Distribution"/"iPhone
+        # Developer"), choca con el modo automático. Se fuerzan ambos acá,
+        # después del export de Godot y antes de xcodebuild.
+        run: |
+          PBXPROJ="build/ios/demons.xcodeproj/project.pbxproj"
+          sed -i '' 's/CODE_SIGN_STYLE = "Manual";/CODE_SIGN_STYLE = "Automatic";/g' "$PBXPROJ"
+          sed -i '' 's/CODE_SIGN_IDENTITY = "iPhone Developer";/CODE_SIGN_IDENTITY = "-";/g' "$PBXPROJ"
+          sed -i '' 's/CODE_SIGN_IDENTITY = "iPhone Distribution";/CODE_SIGN_IDENTITY = "-";/g' "$PBXPROJ"
+
       - name: Importar certificado de distribución en un keychain temporal
         uses: apple-actions/import-codesign-certs@v3
         with:
