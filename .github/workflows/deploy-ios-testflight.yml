@@ -52,20 +52,29 @@ jobs:
         # aprovisionamiento vacío (que es lo único que Godot sabe generar,
         # no hay opción de preset para "automatic"), xcodebuild nunca puede
         # firmar solo, ni con -allowProvisioningUpdates. Se fuerza el estilo
-        # acá, después del export de Godot y antes de xcodebuild. El
-        # CODE_SIGN_IDENTITY fijo que deja Godot ("iPhone Distribution"/
-        # "iPhone Developer") se elimina en vez de reemplazarse: con
-        # CODE_SIGN_STYLE=Automatic + DEVELOPMENT_TEAM (viene de
-        # app_store_team_id en el preset) + el certificado de distribución
-        # ya importado, xcodebuild resuelve solo la identidad de firma.
-        # Fijarla a mano a "-" (ad hoc) rompe el archive: Apple ya no
-        # permite firma ad hoc al archivar con SDKs de iOS recientes
-        # ("Ad Hoc code signing is not allowed with SDK 'iOS 26.5'").
+        # acá, después del export de Godot y antes de xcodebuild.
+        #
+        # El CODE_SIGN_IDENTITY fijo que deja Godot usa los nombres legacy
+        # ("iPhone Distribution"/"iPhone Developer"). Se reemplazan por los
+        # nombres modernos ("Apple Distribution"/"Apple Development") en vez
+        # de borrarlos o fijarlos a "-":
+        #   - Fijarlos a "-" (ad hoc) rompe el archive: Apple ya no permite
+        #     firma ad hoc con SDKs de iOS recientes ("Ad Hoc code signing
+        #     is not allowed with SDK 'iOS 26.5'").
+        #   - Borrar la línea entera tampoco sirve: con CODE_SIGN_STYLE=
+        #     Automatic y sin ninguna pista de identidad, Xcode asume por
+        #     default "Apple Development" incluso para el archive de
+        #     Release, y termina pidiendo un perfil de Development (que
+        #     requiere dispositivos registrados) en vez de uno de
+        #     Distribución — falla con "Your team has no devices from
+        #     which to generate a provisioning profile".
+        # "Apple Distribution" además es el mismo tipo de certificado que
+        # se importa como APPLE_DISTRIBUTION_CERT_P12 más abajo.
         run: |
           PBXPROJ="build/ios/demons.xcodeproj/project.pbxproj"
           sed -i '' 's/CODE_SIGN_STYLE = "Manual";/CODE_SIGN_STYLE = "Automatic";/g' "$PBXPROJ"
-          sed -i '' '/CODE_SIGN_IDENTITY = "iPhone Developer";/d' "$PBXPROJ"
-          sed -i '' '/CODE_SIGN_IDENTITY = "iPhone Distribution";/d' "$PBXPROJ"
+          sed -i '' 's/CODE_SIGN_IDENTITY = "iPhone Developer";/CODE_SIGN_IDENTITY = "Apple Development";/g' "$PBXPROJ"
+          sed -i '' 's/CODE_SIGN_IDENTITY = "iPhone Distribution";/CODE_SIGN_IDENTITY = "Apple Distribution";/g' "$PBXPROJ"
 
       - name: Importar certificado de distribución en un keychain temporal
         uses: apple-actions/import-codesign-certs@v3
