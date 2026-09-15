@@ -2,14 +2,31 @@ name: Deploy iOS test build
 
 # Exporta el proyecto Xcode de iOS (Godot, sin firmar — ver el comentario
 # de cabecera de export_presets.cfg sobre por qué Godot no invoca
-# xcodebuild él mismo), lo archiva y firma con xcodebuild usando la
-# App Store Connect API Key (firma/perfil automáticos, sin sesión
-# interactiva), y lo sube a TestFlight. Corre en un runner macOS — más
-# lento y con cuota de minutos más cara que los runners Linux, por eso no
-# se dispara en cada push de prueba, solo en push a `main` y manual.
+# xcodebuild él mismo), lo archiva y firma con xcodebuild usando firma
+# MANUAL (certificado + provisioning profile ya creados de antemano), y
+# lo sube a TestFlight. Corre en un runner macOS — más lento y con cuota
+# de minutos más cara que los runners Linux, por eso no se dispara en
+# cada push de prueba, solo en push a `main` y manual.
+#
+# Por qué firma Manual y no Automatic: se probó extensamente en local
+# contra Xcode real (Automatic con y sin CODE_SIGN_IDENTITY forzado, con
+# distintos valores, con y sin -destination, con la sintaxis calificada
+# por SDK) y en CI con -allowProvisioningUpdates + API Key. Conclusión,
+# corroborada en https://developer.apple.com/forums/thread/713058 y
+# https://github.com/flutter/flutter/issues/139212: xcodebuild archive
+# con CODE_SIGN_STYLE=Automatic SIEMPRE intenta firmar primero con una
+# identidad de Development (la firma de distribución real se aplicaría
+# recién al exportar), y crear ese perfil de Development requiere al
+# menos un dispositivo iOS/iPadOS registrado en la cuenta — algo que no
+# siempre existe (p.ej. sin ningún iPhone/iPad a mano). Firmar Manual con
+# un provisioning profile de "App Store Connect" (tipo Distribución) creado
+# una sola vez a mano evita ese paso intermedio por completo: los perfiles
+# de distribución nunca requieren dispositivos.
 #
 # Requiere estos secrets (Settings → Secrets and variables → Actions):
 #   APP_STORE_CONNECT_API_KEY       -> contenido del archivo .p8 de la API Key
+#                                       (solo se usa para subir a TestFlight,
+#                                       no para firmar)
 #   APP_STORE_CONNECT_ISSUER_ID     -> Issuer ID (mismo para todas las keys del team)
 #   APP_STORE_CONNECT_KEY_ID        -> Key ID de esta API Key puntual
 #   APPLE_DISTRIBUTION_CERT_P12     -> certificado "Apple Distribution" + clave
@@ -17,6 +34,17 @@ name: Deploy iOS test build
 #                                       como .p12, codificado en base64
 #                                       (`base64 -i archivo.p12 | tr -d '\n'`)
 #   APPLE_DISTRIBUTION_CERT_PASSWORD -> contraseña puesta al exportar ese .p12
+#   APPLE_DISTRIBUTION_PROVISIONING_PROFILE -> el .mobileprovision de tipo
+#                                       "App Store Connect" (Distribution),
+#                                       creado a mano una vez en
+#                                       Certificates, Identifiers & Profiles
+#                                       para el App ID de esta app y firmado
+#                                       con el certificado de arriba,
+#                                       codificado en base64
+#                                       (`base64 -i archivo.mobileprovision | tr -d '\n'`).
+#                                       Si se regenera, actualizar también
+#                                       PROVISIONING_PROFILE_SPECIFIER más
+#                                       abajo si cambia el nombre del perfil.
 on:
   push:
     branches: [main]
@@ -47,37 +75,17 @@ jobs:
       - name: Exportar proyecto Xcode de iOS (Godot no firma; export_project_only=true)
         run: godot --headless --export-release "iOS" build/ios/demons.ipa
 
-      - name: Forzar firma automática en el .pbxproj (Godot siempre genera Manual + perfil vacío)
-        # Verificado en local: con CODE_SIGN_STYLE=Manual y el perfil de
-        # aprovisionamiento vacío (que es lo único que Godot sabe generar,
-        # no hay opción de preset para "automatic"), xcodebuild nunca puede
-        # firmar solo, ni con -allowProvisioningUpdates. Se fuerza el estilo
-        # acá, después del export de Godot y antes de xcodebuild.
-        #
-        # El CODE_SIGN_IDENTITY fijo que deja Godot ("iPhone Distribution"/
-        # "iPhone Developer") se elimina en vez de reemplazarse. Probado en
-        # local contra Xcode real (con y sin -destination, con la sintaxis
-        # calificada por SDK, quitando PROVISIONING_PROFILE(_SPECIFIER)
-        # vacíos que deja Godot): fijar cualquier identidad de Distribución
-        # a mano ("-", "iPhone Distribution" o "Apple Distribution") choca
-        # con que xcodebuild SIEMPRE intenta firmar el archive con una
-        # identidad de Development primero (la firma de distribución real
-        # se aplica después, al exportar con exportOptionsPlist) — ver
-        # https://developer.apple.com/forums/thread/713058. Con una
-        # identidad de Distribución fijada a mano, xcodebuild lo rechaza:
-        # "is automatically signed for development, but a conflicting code
-        # signing identity ... has been manually specified". Dejando que
-        # Automatic use su default (Apple Development) sin forzar nada,
-        # -allowProvisioningUpdates + la API Key pueden crear el perfil de
-        # Development que pide el archive — para eso el team necesita al
-        # menos un dispositivo registrado en Certificates, Identifiers &
-        # Profiles (si no, falla con "Your team has no devices from which
-        # to generate a provisioning profile").
+      - name: Forzar firma manual en el .pbxproj (Godot deja el perfil vacío)
+        # Godot ya exporta con CODE_SIGN_STYLE=Manual (no hace falta
+        # tocarlo) pero deja CODE_SIGN_IDENTITY en el nombre legacy
+        # ("iPhone Distribution") y PROVISIONING_PROFILE_SPECIFIER vacío.
+        # Se apunta la identidad al nombre moderno que coincide con el
+        # certificado importado más abajo, y el specifier al perfil de
+        # Distribución instalado en el paso anterior.
         run: |
           PBXPROJ="build/ios/demons.xcodeproj/project.pbxproj"
-          sed -i '' 's/CODE_SIGN_STYLE = "Manual";/CODE_SIGN_STYLE = "Automatic";/g' "$PBXPROJ"
-          sed -i '' '/CODE_SIGN_IDENTITY = "iPhone Developer";/d' "$PBXPROJ"
-          sed -i '' '/CODE_SIGN_IDENTITY = "iPhone Distribution";/d' "$PBXPROJ"
+          sed -i '' 's/CODE_SIGN_IDENTITY = "iPhone Distribution";/CODE_SIGN_IDENTITY = "Apple Distribution";/g' "$PBXPROJ"
+          sed -i '' 's/PROVISIONING_PROFILE_SPECIFIER = "";/PROVISIONING_PROFILE_SPECIFIER = "CI TestFlight Distribution";/g' "$PBXPROJ"
 
       - name: Importar certificado de distribución en un keychain temporal
         uses: apple-actions/import-codesign-certs@v3
@@ -85,24 +93,26 @@ jobs:
           p12-file-base64: ${{ secrets.APPLE_DISTRIBUTION_CERT_P12 }}
           p12-password: ${{ secrets.APPLE_DISTRIBUTION_CERT_PASSWORD }}
 
-      - name: Guardar la App Store Connect API Key donde xcodebuild la espera
+      - name: Instalar el provisioning profile de distribución
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "${{ secrets.APPLE_DISTRIBUTION_PROVISIONING_PROFILE }}" | base64 --decode > \
+            ~/Library/MobileDevice/Provisioning\ Profiles/CITestFlightDistribution.mobileprovision
+
+      - name: Guardar la App Store Connect API Key donde xcrun altool la espera
         run: |
           mkdir -p ~/.appstoreconnect/private_keys
           printf '%s' "${{ secrets.APP_STORE_CONNECT_API_KEY }}" > \
             ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_KEY_ID }}.p8
 
-      - name: Archivar con xcodebuild (firma y perfil automáticos vía API Key)
+      - name: Archivar con xcodebuild (firma manual, certificado y perfil ya instalados)
         working-directory: build/ios
         run: |
           xcodebuild archive \
             -project demons.xcodeproj \
             -scheme demons \
             -configuration Release \
-            -archivePath "$RUNNER_TEMP/demons.xcarchive" \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_KEY_ID }}.p8 \
-            -authenticationKeyID ${{ secrets.APP_STORE_CONNECT_KEY_ID }} \
-            -authenticationKeyIssuerID ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+            -archivePath "$RUNNER_TEMP/demons.xcarchive"
 
       - name: Crear exportOptions.plist
         run: |
@@ -116,7 +126,12 @@ jobs:
             <key>teamID</key>
             <string>${{ env.APPLE_TEAM_ID }}</string>
             <key>signingStyle</key>
-            <string>automatic</string>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.juanpvivas.demons</key>
+              <string>CI TestFlight Distribution</string>
+            </dict>
           </dict>
           </plist>
           PLIST
@@ -126,11 +141,7 @@ jobs:
           xcodebuild -exportArchive \
             -archivePath "$RUNNER_TEMP/demons.xcarchive" \
             -exportPath "$RUNNER_TEMP/export" \
-            -exportOptionsPlist "$RUNNER_TEMP/exportOptions.plist" \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_KEY_ID }}.p8 \
-            -authenticationKeyID ${{ secrets.APP_STORE_CONNECT_KEY_ID }} \
-            -authenticationKeyIssuerID ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+            -exportOptionsPlist "$RUNNER_TEMP/exportOptions.plist"
 
       - name: Subir a TestFlight
         run: |
