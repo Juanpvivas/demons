@@ -60,9 +60,15 @@ reciben un mensaje de bienvenida en su primera contribución
   `FIREBASE_SERVICE_ACCOUNT` ya están configurados en el repo (Settings →
   Secrets and variables → Actions) — falta confirmar que un run real del
   workflow sube el APK a Firebase con éxito.
-- **iOS**: pendiente de una membresía de Apple Developer Program activa.
-  Cuando esté lista, se agrega un preset iOS + un workflow que suba a
-  TestFlight (vía App Store Connect API key, sin intervención manual).
+- **iOS**: cada push a `main` exporta el proyecto Xcode (Godot;
+  verificado en local que genera limpio con Xcode 27 y Team ID
+  `XA43X2P8W2`), lo archiva/firma con `xcodebuild` usando la App Store
+  Connect API Key (firma y perfil automáticos, sin intervención manual) y
+  lo sube a **TestFlight**
+  (`.github/workflows/deploy-ios-testflight.yml`). El build+firma+subida
+  en sí (a diferencia del proyecto Xcode) no se pudo probar en local — esta
+  sesión no tiene acceso al keychain para usar la clave privada del
+  certificado — así que esa parte se valida con el primer run real en CI.
 
 ## Pipeline de desarrollo
 
