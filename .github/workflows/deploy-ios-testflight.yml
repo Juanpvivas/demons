@@ -54,27 +54,30 @@ jobs:
         # firmar solo, ni con -allowProvisioningUpdates. Se fuerza el estilo
         # acá, después del export de Godot y antes de xcodebuild.
         #
-        # El CODE_SIGN_IDENTITY fijo que deja Godot usa los nombres legacy
-        # ("iPhone Distribution"/"iPhone Developer"). Se reemplazan por los
-        # nombres modernos ("Apple Distribution"/"Apple Development") en vez
-        # de borrarlos o fijarlos a "-":
-        #   - Fijarlos a "-" (ad hoc) rompe el archive: Apple ya no permite
-        #     firma ad hoc con SDKs de iOS recientes ("Ad Hoc code signing
-        #     is not allowed with SDK 'iOS 26.5'").
-        #   - Borrar la línea entera tampoco sirve: con CODE_SIGN_STYLE=
-        #     Automatic y sin ninguna pista de identidad, Xcode asume por
-        #     default "Apple Development" incluso para el archive de
-        #     Release, y termina pidiendo un perfil de Development (que
-        #     requiere dispositivos registrados) en vez de uno de
-        #     Distribución — falla con "Your team has no devices from
-        #     which to generate a provisioning profile".
-        # "Apple Distribution" además es el mismo tipo de certificado que
-        # se importa como APPLE_DISTRIBUTION_CERT_P12 más abajo.
+        # El CODE_SIGN_IDENTITY fijo que deja Godot ("iPhone Distribution"/
+        # "iPhone Developer") se elimina en vez de reemplazarse. Probado en
+        # local contra Xcode real (con y sin -destination, con la sintaxis
+        # calificada por SDK, quitando PROVISIONING_PROFILE(_SPECIFIER)
+        # vacíos que deja Godot): fijar cualquier identidad de Distribución
+        # a mano ("-", "iPhone Distribution" o "Apple Distribution") choca
+        # con que xcodebuild SIEMPRE intenta firmar el archive con una
+        # identidad de Development primero (la firma de distribución real
+        # se aplica después, al exportar con exportOptionsPlist) — ver
+        # https://developer.apple.com/forums/thread/713058. Con una
+        # identidad de Distribución fijada a mano, xcodebuild lo rechaza:
+        # "is automatically signed for development, but a conflicting code
+        # signing identity ... has been manually specified". Dejando que
+        # Automatic use su default (Apple Development) sin forzar nada,
+        # -allowProvisioningUpdates + la API Key pueden crear el perfil de
+        # Development que pide el archive — para eso el team necesita al
+        # menos un dispositivo registrado en Certificates, Identifiers &
+        # Profiles (si no, falla con "Your team has no devices from which
+        # to generate a provisioning profile").
         run: |
           PBXPROJ="build/ios/demons.xcodeproj/project.pbxproj"
           sed -i '' 's/CODE_SIGN_STYLE = "Manual";/CODE_SIGN_STYLE = "Automatic";/g' "$PBXPROJ"
-          sed -i '' 's/CODE_SIGN_IDENTITY = "iPhone Developer";/CODE_SIGN_IDENTITY = "Apple Development";/g' "$PBXPROJ"
-          sed -i '' 's/CODE_SIGN_IDENTITY = "iPhone Distribution";/CODE_SIGN_IDENTITY = "Apple Distribution";/g' "$PBXPROJ"
+          sed -i '' '/CODE_SIGN_IDENTITY = "iPhone Developer";/d' "$PBXPROJ"
+          sed -i '' '/CODE_SIGN_IDENTITY = "iPhone Distribution";/d' "$PBXPROJ"
 
       - name: Importar certificado de distribución en un keychain temporal
         uses: apple-actions/import-codesign-certs@v3
