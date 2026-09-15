@@ -1,0 +1,109 @@
+name: Deploy iOS test build
+
+# Exporta el proyecto Xcode de iOS (Godot, sin firmar — ver el comentario
+# de cabecera de export_presets.cfg sobre por qué Godot no invoca
+# xcodebuild él mismo), lo archiva y firma con xcodebuild usando la
+# App Store Connect API Key (firma/perfil automáticos, sin sesión
+# interactiva), y lo sube a TestFlight. Corre en un runner macOS — más
+# lento y con cuota de minutos más cara que los runners Linux, por eso no
+# se dispara en cada push de prueba, solo en push a `main` y manual.
+#
+# Requiere estos secrets (Settings → Secrets and variables → Actions):
+#   APP_STORE_CONNECT_API_KEY       -> contenido del archivo .p8 de la API Key
+#   APP_STORE_CONNECT_ISSUER_ID     -> Issuer ID (mismo para todas las keys del team)
+#   APP_STORE_CONNECT_KEY_ID        -> Key ID de esta API Key puntual
+#   APPLE_DISTRIBUTION_CERT_P12     -> certificado "Apple Distribution" + clave
+#                                       privada, exportado desde Keychain Access
+#                                       como .p12, codificado en base64
+#                                       (`base64 -i archivo.p12 | tr -d '\n'`)
+#   APPLE_DISTRIBUTION_CERT_PASSWORD -> contraseña puesta al exportar ese .p12
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+env:
+  GODOT_VERSION: "4.7.1"
+  APPLE_TEAM_ID: "XA43X2P8W2"
+
+jobs:
+  deploy-ios:
+    name: Exportar, firmar y subir a TestFlight
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Godot ${{ env.GODOT_VERSION }} (mono)
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: true
+          include-templates: true
+
+      - name: Crear directorio de salida
+        run: mkdir -p build/ios
+
+      - name: Exportar proyecto Xcode de iOS (Godot no firma; export_project_only=true)
+        run: godot --headless --export-release "iOS" build/ios/demons.ipa
+
+      - name: Importar certificado de distribución en un keychain temporal
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.APPLE_DISTRIBUTION_CERT_P12 }}
+          p12-password: ${{ secrets.APPLE_DISTRIBUTION_CERT_PASSWORD }}
+
+      - name: Guardar la App Store Connect API Key donde xcodebuild la espera
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          printf '%s' "${{ secrets.APP_STORE_CONNECT_API_KEY }}" > \
+            ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_KEY_ID }}.p8
+
+      - name: Archivar con xcodebuild (firma y perfil automáticos vía API Key)
+        working-directory: build/ios
+        run: |
+          xcodebuild archive \
+            -project demons.xcodeproj \
+            -scheme demons \
+            -configuration Release \
+            -archivePath "$RUNNER_TEMP/demons.xcarchive" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_KEY_ID }}.p8 \
+            -authenticationKeyID ${{ secrets.APP_STORE_CONNECT_KEY_ID }} \
+            -authenticationKeyIssuerID ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+
+      - name: Crear exportOptions.plist
+        run: |
+          cat > "$RUNNER_TEMP/exportOptions.plist" << PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store-connect</string>
+            <key>teamID</key>
+            <string>${{ env.APPLE_TEAM_ID }}</string>
+            <key>signingStyle</key>
+            <string>automatic</string>
+          </dict>
+          </plist>
+          PLIST
+
+      - name: Exportar el .ipa desde el archive
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/demons.xcarchive" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -exportOptionsPlist "$RUNNER_TEMP/exportOptions.plist" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_KEY_ID }}.p8 \
+            -authenticationKeyID ${{ secrets.APP_STORE_CONNECT_KEY_ID }} \
+            -authenticationKeyIssuerID ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+
+      - name: Subir a TestFlight
+        run: |
+          xcrun altool --upload-app \
+            -f "$RUNNER_TEMP/export/demons.ipa" \
+            -t ios \
+            --apiKey ${{ secrets.APP_STORE_CONNECT_KEY_ID }} \
+            --apiIssuer ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
