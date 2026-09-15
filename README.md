@@ -62,13 +62,27 @@ reciben un mensaje de bienvenida en su primera contribución
   workflow sube el APK a Firebase con éxito.
 - **iOS**: cada push a `main` exporta el proyecto Xcode (Godot;
   verificado en local que genera limpio con Xcode 27 y Team ID
-  `XA43X2P8W2`), lo archiva/firma con `xcodebuild` usando la App Store
-  Connect API Key (firma y perfil automáticos, sin intervención manual) y
-  lo sube a **TestFlight**
-  (`.github/workflows/deploy-ios-testflight.yml`). El build+firma+subida
-  en sí (a diferencia del proyecto Xcode) no se pudo probar en local — esta
-  sesión no tiene acceso al keychain para usar la clave privada del
-  certificado — así que esa parte se valida con el primer run real en CI.
+  `XA43X2P8W2`), lo archiva/firma con `xcodebuild` y lo sube a
+  **TestFlight** (`.github/workflows/deploy-ios-testflight.yml`) —
+  verificado con un run real en CI. El pipeline en sí es 100% automático
+  (un push a `main` dispara todo solo), pero la **firma de código es
+  Manual, no Automatic**: usa un certificado y un provisioning profile de
+  distribución ya creados de antemano (secrets `APPLE_DISTRIBUTION_CERT_P12`
+  y `APPLE_DISTRIBUTION_PROVISIONING_PROFILE`), en vez de dejar que Xcode
+  los gestione solo en cada corrida. Se eligió así porque la firma
+  Automatic en xcodebuild headless insiste en pedir primero un perfil de
+  Development (que requiere un dispositivo iOS/iPadOS registrado en la
+  cuenta) antes de llegar a la firma de distribución real — ver
+  [`deploy-ios-testflight.yml`](.github/workflows/deploy-ios-testflight.yml)
+  para el detalle y las fuentes.
+  **Mantenimiento pendiente**: el provisioning profile `CI TestFlight
+  Distribution` expira el **15 de septiembre de 2027** (vigencia de 1 año,
+  normal en Apple). Antes de esa fecha — o si se agrega alguna capability
+  nueva a la app (push notifications, etc.) — hay que regenerarlo a mano en
+  [Certificates, Identifiers & Profiles](https://developer.apple.com/account/resources/profiles/list)
+  y actualizar el secret `APPLE_DISTRIBUTION_PROVISIONING_PROFILE` (además
+  de `PROVISIONING_PROFILE_SPECIFIER` en el workflow, si cambia el nombre
+  del perfil).
 
 ## Pipeline de desarrollo
 
