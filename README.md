@@ -84,6 +84,14 @@ reciben un mensaje de bienvenida en su primera contribución
   de `PROVISIONING_PROFILE_SPECIFIER` en el workflow, si cambia el nombre
   del perfil).
 
+**Antes de mergear a `main`, subí la versión**: ambos workflows de arriba
+fallan a propósito (paso "Verificar que la versión ... cambió desde el
+último deploy exitoso") si `export_presets.cfg` no tiene un bump de
+`version/code`/`version/name` (Android) o
+`application/version`/`application/short_version` (iOS) desde el último
+deploy exitoso — no está permitido re-subir el mismo build sin cambiar la
+versión. Ver `docs/ARCHITECTURE.md` §7 para el detalle de la política.
+
 ## Pipeline de desarrollo
 
 Este proyecto usa un pipeline de subagentes especializados de Claude Code

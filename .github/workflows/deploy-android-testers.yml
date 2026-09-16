@@ -29,6 +29,10 @@ on:
 env:
   GODOT_VERSION: "4.7.1"
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   deploy-android:
     name: Exportar APK y subir a Firebase App Distribution
@@ -37,7 +41,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # para poder usar git describe en las notas de release
+          fetch-depth: 0 # para poder usar git describe en las notas de release, y para comparar contra el commit del último deploy exitoso
+
+      - name: Verificar que la versión de Android cambió desde el último deploy exitoso
+        # Firebase App Distribution no rechaza un versionCode repetido como
+        # sí lo hace TestFlight, pero subir el mismo build una y otra vez
+        # sin cambiar la versión no aporta nada y confunde a los testers
+        # sobre cuál build están probando. Este paso solo corre en push
+        # automático a `main` — un workflow_dispatch manual (para
+        # reintentar o depurar el pipeline en sí) lo saltea a propósito.
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LAST_SHA=$(gh run list --workflow "Deploy Android test build" --status success --branch main --limit 1 --json headSha --jq '.[0].headSha // empty')
+          if [ -z "$LAST_SHA" ]; then
+            echo "No hay un deploy de Android exitoso previo registrado; se permite este build."
+            exit 0
+          fi
+          CHANGED=$(git diff "$LAST_SHA" HEAD -- export_presets.cfg | grep -E '^[+-](version/code|version/name)=' || true)
+          if [ -z "$CHANGED" ]; then
+            echo "::error::La versión de Android (version/code / version/name en export_presets.cfg) no cambió desde el último deploy exitoso a Firebase ($LAST_SHA). Subí la versión antes de mergear a main — ver docs/ARCHITECTURE.md §7."
+            exit 1
+          fi
+          echo "Versión de Android cambió desde $LAST_SHA, se permite el deploy:"
+          echo "$CHANGED"
 
       - name: Setup Godot ${{ env.GODOT_VERSION }} (mono)
         uses: chickensoft-games/setup-godot@v2
