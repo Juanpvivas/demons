@@ -456,13 +456,25 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   dispositivos móviles y PC.
 - Presets de exportación por plataforma se versionan en
   `export_presets.cfg`, sin credenciales ni keystores/certificados dentro
-  del repositorio. Primer preset real: **Android** (`package/unique_name`
-  `com.juanpvivas.demons`), usado por
-  `.github/workflows/deploy-android-testers.yml` para exportar un APK debug
-  y subirlo a Firebase App Distribution en cada push a `main` — ver ese
-  archivo para el detalle y los secrets de CI requeridos. iOS/TestFlight
-  queda pendiente de un preset propio hasta tener la membresía de Apple
-  Developer activa.
+  del repositorio. Cada push a `main` exporta y sube automáticamente un
+  build de prueba a **Android/Firebase App Distribution**
+  (`.github/workflows/deploy-android-testers.yml`) y a **iOS/TestFlight**
+  (`.github/workflows/deploy-ios-testflight.yml`) — ver esos archivos para
+  el detalle y los secrets de CI requeridos.
+
+- **Política de versionado para releases de prueba**: ambos workflows de
+  deploy tienen un paso que compara `version/code`/`version/name`
+  (Android) o `application/version`/`application/short_version` (iOS) en
+  `export_presets.cfg` contra el commit del último deploy exitoso de ese
+  mismo workflow, y **fallan a propósito si la versión no cambió** — no
+  está permitido re-subir el mismo build sin bump de versión (TestFlight
+  directamente lo rechaza; Firebase lo permite pero confunde a los
+  testers sobre qué build están probando). Antes de mergear a `main` una
+  feature/spec que deba llegar a los testers, hay que subir la versión
+  correspondiente en `export_presets.cfg`. Este chequeo solo corre en
+  push automático — un `workflow_dispatch` manual lo saltea a propósito,
+  para poder reintentar o depurar el pipeline de deploy en sí sin
+  necesidad de un bump de versión artificial.
 
 ## 8. Relación con Spec Kit
 
@@ -495,3 +507,4 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
 | 2026-09-12 | §4.1: agregado `GameStateManager.report_reached_defended_position()` (T044, `001-soldado-defensor-oleadas`, aprobado por `qa-validator`) como tercer ejemplo del patrón "autoload orquestador no instancia, un nodo de nivel se lo notifica vía método público" — cierra de punta a punta la condición de derrota (`Enemigo` alcanza real, físicamente, la posición defendida Y `GameStateManager` real transiciona a `LOST`, con test de integración de instancias reales en `test_nivel_montecalvo.gd`). Se documenta también, sin bloquear nada, la inconsistencia cosmética de nombre `report_*()` vs. el prefijo `notify_*()` usado por los otros dos ejemplos del mismo patrón (observación de `qa-validator`, no ameritó reabrir T044). |
 | 2026-09-12 | §6: agregado hueco de cobertura de test conocido y no bloqueante — falta el simétrico de victoria (con `WaveManager`/`GameStateManager` reales) al test de integración de derrota de punta a punta agregado en T044 de `001-soldado-defensor-oleadas`. |
 | 2026-09-13 | §6: cerrado el hueco de cobertura anterior — T046 de `001-soldado-defensor-oleadas` (validado por `qa-validator`) agrega el test simétrico de victoria de punta a punta con instancias reales (`Nivel_MonteCalvo.tscn`/`WaveManager`/`WaveSpawner`/`GameStateManager` reales, oleada de prueba acortada), cerrando la Fase Final de la feature. Consolidación de fin de feature: se confirma que las graduaciones de T050-T054 (gap de derrota del `Soldado`) y del hallazgo de motor de T053 (§4.2) ya estaban correctamente integradas, sin duplicados. |
+| 2026-09-15 | §7: sincronizado con la realidad — iOS/TestFlight ya no está pendiente, quedó operativo (`.github/workflows/deploy-ios-testflight.yml`, firma Manual en vez de Automatic, ver ese archivo para el detalle). Se agrega la política de versionado: ambos workflows de deploy de prueba ahora fallan a propósito si `export_presets.cfg` no tiene un bump de versión desde el último deploy exitoso — se detectó en esta sesión que el pipeline estaba re-subiendo repetidamente la misma versión (1.0/build 1) a TestFlight y Firebase sin ningún control. |

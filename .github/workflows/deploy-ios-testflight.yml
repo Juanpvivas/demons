@@ -54,6 +54,10 @@ env:
   GODOT_VERSION: "4.7.1"
   APPLE_TEAM_ID: "XA43X2P8W2"
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   deploy-ios:
     name: Exportar, firmar y subir a TestFlight
@@ -61,6 +65,32 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # necesario para poder comparar contra el commit del último deploy exitoso
+
+      - name: Verificar que la versión de iOS cambió desde el último deploy exitoso
+        # TestFlight rechaza subir el mismo build number dos veces para la
+        # misma versión, y aunque no lo rechazara, no tiene sentido gastar
+        # minutos de runner macOS re-empaquetando exactamente lo mismo que
+        # ya está en TestFlight. Este paso solo corre en push automático a
+        # `main` — un workflow_dispatch manual (para reintentar o depurar el
+        # pipeline en sí, como en esta misma sesión) lo saltea a propósito.
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LAST_SHA=$(gh run list --workflow "Deploy iOS test build" --status success --branch main --limit 1 --json headSha --jq '.[0].headSha // empty')
+          if [ -z "$LAST_SHA" ]; then
+            echo "No hay un deploy de iOS exitoso previo registrado; se permite este build."
+            exit 0
+          fi
+          CHANGED=$(git diff "$LAST_SHA" HEAD -- export_presets.cfg | grep -E '^[+-](application/version|application/short_version)=' || true)
+          if [ -z "$CHANGED" ]; then
+            echo "::error::La versión de iOS (application/version / application/short_version en export_presets.cfg) no cambió desde el último deploy exitoso a TestFlight ($LAST_SHA). Subí la versión antes de mergear a main — ver docs/ARCHITECTURE.md §7."
+            exit 1
+          fi
+          echo "Versión de iOS cambió desde $LAST_SHA, se permite el deploy:"
+          echo "$CHANGED"
 
       - name: Setup Godot ${{ env.GODOT_VERSION }} (mono)
         uses: chickensoft-games/setup-godot@v2
