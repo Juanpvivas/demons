@@ -37,7 +37,7 @@ ZIP y manifest; `specs/003-web-itchio/evidence/` para reportes versionables,
 excluido de importación mediante `.gdignore`.
 
 **Testing**: Suite GUT existente, importación limpia, inspección de export/PCK,
-navegador visible con clic OS, Chrome en Xiaomi físico con toque, smoke manual
+navegador visible con clic mediante CUA del navegador, Chrome en Xiaomi físico con toque, smoke manual
 de producción y pruebas separadas de victoria/derrota. Si emerge lógica nueva,
 RED específico antes de implementación, luego GREEN y QA independiente.
 
@@ -86,6 +86,14 @@ resuelve ese gate antes de implementación; la lectura final de este plan usa
 juego. Preparación documental lista para revisión de QA del conjunto. El paso
 a ejecución requiere su veredicto; implementación, mediciones y aceptación
 continúan pendientes aunque la política documental ya esté aprobada.
+
+**Aclaración del método de entrada (QA, 2026-10-15)**: las acciones de
+escritorio se realizan mediante CUA del navegador, con coordenadas tomadas
+de una captura del canvas real. Se registra la cadena evento de entrada →
+Godot → resultado, contrastando saldo y celdas antes/después. No se usan
+`HTMLElement.click()`, `dispatchEvent` ni llamadas a métodos del juego
+para producir el resultado. Esto mantiene los casos funcionales y los
+umbrales de evidencia; Android continúa con toque físico.
 
 ## Diseño técnico
 

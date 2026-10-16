@@ -39,7 +39,7 @@ byte a byte entre plataformas; sí exige mismo contenido funcional trazable.
 |---|---|
 | Entorno | navegador y versión, OS, modelo físico y versión, renderer real |
 | Geometría | tamaño CSS del canvas, tamaño físico/densidad, orientación |
-| Interacción | clic OS o toque físico; no intercambiar esas etiquetas |
+| Interacción | clic mediante CUA del navegador o toque físico; no intercambiar esas etiquetas |
 | Caso | ID W01–W12 del contrato, estado previo, acción y resultado |
 | Medición | duración, carga fría/caliente, frame times/cadencia, método |
 | Resultado | PASS, FAIL o NOT RUN con causa y artefacto enlazado |

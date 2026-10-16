@@ -55,8 +55,8 @@ y Android físico, sin cambiar reglas o añadir controles.
 **Criterio independiente**: W02–W10 aplicables, con saldo/ocupación y estado
 previo suficientes para distinguir cada rechazo; smoke manual hasta terminal.
 
-- [ ] T007 [US2] godot-tester: ejecutar W02–W10 en navegador visible con clic OS y Chrome Xiaomi horizontal, incluyendo cuatro casos controlados, resize con clic posterior, iframe local, regreso de pestaña, recarga y partida manual hasta terminal; documentar `specs/003-web-itchio/evidence/web-interaction.md`, matriz/capturas y victoria/derrota GUT separadas; depende de T006 aprobada; si detecta bug, registrar reproducción y detener la corrección hasta nuevas tareas RED/dev/GREEN, sin parchear implementación.
-- [ ] T008 [US2] qa-validator: revisar spec, hashes y `specs/003-web-itchio/evidence/web-interaction.md` por W02–W10/FR-003/004/005; distinguir toque físico, clic OS y pruebas automatizadas, verificar rechazo por ocupación con fondos y sin fondos en celda libre; emitir PASS/FAIL/NOT RUN por caso, sin modificar checkout; depende de T007 y de la aprobación de cualquier corrección añadida.
+- [ ] T007 [US2] godot-tester: ejecutar W02–W10 en navegador visible con clic mediante CUA del navegador y Chrome Xiaomi horizontal, incluyendo cuatro casos controlados, resize con clic posterior, iframe local, regreso de pestaña, recarga y partida manual hasta terminal; documentar `specs/003-web-itchio/evidence/web-interaction.md`, matriz/capturas y victoria/derrota GUT separadas; depende de T006 aprobada; si detecta bug, registrar reproducción y detener la corrección hasta nuevas tareas RED/dev/GREEN, sin parchear implementación.
+- [ ] T008 [US2] qa-validator: revisar spec, hashes y `specs/003-web-itchio/evidence/web-interaction.md` por W02–W10/FR-003/004/005; distinguir toque físico, clic mediante CUA del navegador y pruebas automatizadas, verificar rechazo por ocupación con fondos y sin fondos en celda libre; emitir PASS/FAIL/NOT RUN por caso, sin modificar checkout; depende de T007 y de la aprobación de cualquier corrección añadida.
 
 ## Fase 4: Historia de usuario3 — Paquete listo para cargar (Prioridad: P2)
 

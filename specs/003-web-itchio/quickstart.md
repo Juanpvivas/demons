@@ -45,10 +45,16 @@ HTTPS. No abrir el HTML como archivo local ni servir la raíz del repositorio.
 ## 3. Escritorio
 
 Ejecutar W01–W06 y W08–W12 de [la matriz](contracts/web-delivery.md), registrar
-canvas 1152×648 y 960×540, escala real y acciones por ratón OS. Probar también
+canvas 1152×648 y 960×540, escala real y acciones por clic mediante CUA del navegador. Probar también
 un iframe local con esas dimensiones; no afirmar que eso es una publicación en
 itch.io. Registrar consola/red, capturas y tiempos de carga en tres sesiones
 nuevas, distinguiendo caché fría de caliente.
+
+Para cada clic mediante CUA del navegador, tomar las coordenadas de una
+captura del canvas real y registrar evento → Godot → resultado con saldo
+y celdas antes/después. No usar `HTMLElement.click()`, `dispatchEvent` ni
+métodos del juego para producir la acción. Esta aclaración de método no
+sustituye la evidencia funcional exigida ni el toque físico de Android.
 
 ## 4. Android navegador
 
