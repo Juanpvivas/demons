@@ -1,0 +1,82 @@
+[gd_resource type="SpriteFrames" load_steps=10 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/units/monte_calvo/soldado_atlas.png" id="1_atlas"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rifle_idle"]
+atlas = ExtResource("1_atlas")
+region = Rect2(59, 47, 171, 215)
+margin = Rect2(131.2255, 20.4025, 213, 41)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rifle_shot"]
+atlas = ExtResource("1_atlas")
+region = Rect2(310, 43, 178, 218)
+margin = Rect2(131.4205, 17.5569, 206, 38)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_melee_idle"]
+atlas = ExtResource("1_atlas")
+region = Rect2(553, 44, 195, 220)
+margin = Rect2(120.7294, 15.0936, 189, 36)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_melee_attack"]
+atlas = ExtResource("1_atlas")
+region = Rect2(783, 40, 221, 231)
+margin = Rect2(116.0868, 4.7441, 163, 25)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_defeat_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(36, 302, 174, 177)
+margin = Rect2(115.7294, 58.9425, 210, 79)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_defeat_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(298, 316, 176, 163)
+margin = Rect2(139.9121, 72.9425, 208, 93)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_defeat_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(510, 349, 227, 138)
+margin = Rect2(116.6922, 97.2841, 157, 118)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_defeat_4"]
+atlas = ExtResource("1_atlas")
+region = Rect2(762, 367, 249, 114)
+margin = Rect2(122.2165, 121.0564, 135, 142)
+filter_clip = true
+
+[resource]
+animations = [{
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_rifle_idle")}],
+"loop": true,
+"name": &"rifle_idle",
+"speed": 1.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_rifle_shot")}],
+"loop": false,
+"name": &"rifle_shot",
+"speed": 6.25
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_melee_idle")}],
+"loop": true,
+"name": &"melee_idle",
+"speed": 1.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_melee_attack")}],
+"loop": false,
+"name": &"melee_attack",
+"speed": 4.1666667
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_defeat_1")}, {
+"duration": 1.0, "texture": SubResource("AtlasTexture_defeat_2")}, {
+"duration": 1.0, "texture": SubResource("AtlasTexture_defeat_3")}, {
+"duration": 1.0, "texture": SubResource("AtlasTexture_defeat_4")}],
+"loop": false,
+"name": &"defeat",
+"speed": 10.0
+}]
