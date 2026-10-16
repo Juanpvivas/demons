@@ -1,0 +1,72 @@
+schema_version: '1.0'
+workflow:
+  id: demons-preparation
+  name: 'Demons: preparación antes de agentes'
+  version: 1.0.0
+  author: Demonios de las Trincheras
+  description: Especificación, plan y tareas con revisión; termina antes de la ejecución por agentes.
+requires:
+  speckit_version: '>=1.0.1'
+  integrations:
+    any:
+    - alquimia
+    - claude
+    - copilot
+    - gemini
+    - opencode
+inputs:
+  spec:
+    type: string
+    required: true
+    prompt: Describe what you want to build
+  integration:
+    type: string
+    default: auto
+    prompt: Integration to use (e.g. claude, copilot, gemini; 'auto' uses the project's initialized integration)
+  scope:
+    type: string
+    default: full
+    enum:
+    - full
+    - backend-only
+    - frontend-only
+steps:
+- id: specify
+  command: speckit.specify
+  integration: '{{ inputs.integration }}'
+  input:
+    args: '{{ inputs.spec }}'
+- id: review-spec
+  type: gate
+  message: Review the generated spec before planning.
+  options:
+  - approve
+  - reject
+  on_reject: abort
+- id: plan
+  command: speckit.plan
+  integration: '{{ inputs.integration }}'
+  input:
+    args: '{{ inputs.spec }}'
+- id: review-plan
+  type: gate
+  message: Review the plan before generating tasks.
+  options:
+  - approve
+  - reject
+  on_reject: abort
+- id: tasks
+  command: speckit.tasks
+  integration: '{{ inputs.integration }}'
+  input:
+    args: '{{ inputs.spec }}'
+- id: review-tasks-and-handoff
+  type: gate
+  message: Review the prepared tasks and RED/GREEN dependencies against docs/DEVELOPMENT_WORKFLOW.md.
+    This workflow ends here. To execute the feature, use /implementar-feature <feature-id> or the equivalent
+    project orchestrator; the agents implement, test, and validate. Approval of this gate does not start
+    implementation.
+  options:
+  - approve
+  - reject
+  on_reject: abort

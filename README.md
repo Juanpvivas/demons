@@ -28,7 +28,11 @@ de punta a punta del proyecto (`Nivel_MonteCalvo.tscn`).
 
 | Documento | Contenido |
 |---|---|
-| `constitution.md` | Principios no negociables (calidad, testing, UX, rendimiento) |
+| [AGENTS.md](AGENTS.md) | Instrucciones compartidas para asistentes de IA y flujo de trabajo |
+| [CLAUDE.md](CLAUDE.md) | Punto de entrada de Claude; importa `AGENTS.md` |
+| [docs/DEVELOPMENT_WORKFLOW.md](docs/DEVELOPMENT_WORKFLOW.md) | Preparación con Spec Kit, ejecución por agentes y ciclo TDD |
+| [tools/speckit/README.md](tools/speckit/README.md) | Preset propio, workflow de preparación y verificación tras actualizar Spec Kit |
+| [.specify/memory/constitution.md](.specify/memory/constitution.md) | Principios no negociables (calidad, testing, UX, rendimiento) |
 | `docs/SPEC.md` | Diseño del juego: mecánicas, economía, contexto histórico, alcance del MVP |
 | `docs/ARCHITECTURE.md` | Convenciones técnicas: estructura de carpetas, nombres, patrones |
 | `specs/<feature>/` | Requisitos, plan técnico y tareas de cada feature (Spec Kit) |
@@ -94,7 +98,26 @@ versión. Ver `docs/ARCHITECTURE.md` §7 para el detalle de la política.
 
 ## Pipeline de desarrollo
 
-Este proyecto usa un pipeline de subagentes especializados de Claude Code
-(`dev-godot` → `godot-tester` → `qa-validator` → `docs-writer`, coordinados
-por `project-orchestrator`). Ver `CLAUDE.md` para el punto de entrada
-(`/implementar-feature <feature-id>`) y el flujo completo.
+**Spec Kit prepara la especificación, el plan y las tareas; los agentes
+implementan, prueban y validan.** El workflow de Spec Kit termina al revisar
+las tareas mediante el workflow **`demons-preparation`**. La ejecución pertenece
+a `project-orchestrator`, que coordina
+`godot-tester` (RED) → `dev-godot` → `godot-tester` (GREEN) → `qa-validator`
+→ `docs-writer`. Solo el orquestador marca tareas después de la aprobación
+independiente de QA. Para arte o documentación sin lógica nueva, la
+verificación se adapta a sus criterios de aceptación.
+
+[AGENTS.md](AGENTS.md) es la entrada compartida y
+[docs/DEVELOPMENT_WORKFLOW.md](docs/DEVELOPMENT_WORKFLOW.md) detalla TDD,
+dependencias, roles y cierre. Sus definiciones se mantienen en
+`.claude/agents/`. En Claude Code se inicia la implementación con
+`/implementar-feature <feature-id>`; `speckit-implement` es solo un aviso de
+compatibilidad y no ejecuta trabajo. [CLAUDE.md](CLAUDE.md) importa la guía
+común. En otras herramientas, usa delegación equivalente y carga `AGENTS.md`
+explícitamente si no se descubre automáticamente.
+
+Las personalizaciones de Spec Kit se mantienen como fuente en el preset local
+`demons-agent-tdd`, bajo `tools/speckit/`. Sus copias instaladas y las skills
+generadas se comprueban con `python3 tools/speckit/verify.py`. Consulta la
+[guía de mantenimiento](tools/speckit/README.md) antes de actualizar archivos
+del proyecto; los agentes y la guía común permanecen fuera de los archivos core.

@@ -1,15 +1,33 @@
 ---
-name: "speckit-checklist"
-description: "Generate a custom checklist for the current feature based on user requirements."
-argument-hint: "Domain or focus area for the checklist"
-compatibility: "Requires spec-kit project structure with .specify/ directory"
+name: speckit-checklist
+description: Generate a custom checklist for the current feature based on user requirements.
+compatibility: Requires spec-kit project structure with .specify/ directory
 metadata:
-  author: "github-spec-kit"
-  source: "templates/commands/checklist.md"
+  author: github-spec-kit
+  source: preset:demons-agent-tdd
+argument-hint: Domain or focus area for the checklist
 user-invocable: true
 disable-model-invocation: false
 ---
 
+# Speckit Checklist Skill
+
+## Project boundary — preparation only
+
+Read `docs/DEVELOPMENT_WORKFLOW.md` (relative to the repository root)
+and `AGENTS.md` before using this skill. Spec Kit prepares specifications, plans,
+tasks, and their supporting documents. Agents perform implementation, testing,
+and independent validation; this skill never starts that execution stage.
+
+Do not create or modify game code, scenes, assets, or tests; do not run builds,
+playtests, or test suites, mark implementation tasks `[X]`, or invoke
+`speckit-implement`. Apply this boundary before any hook instructions below:
+execute only hooks whose preparation scope is known, and skip/report hooks that
+would implement, test, validate delivery, or dispatch implementation agents.
+When preparation is complete, report readiness and the agent entry point
+`/implementar-feature <feature-id>` (or the equivalent orchestrator in another
+tool), without invoking it from this skill. Each command retains its narrower
+scope and any read-only constraints below.
 
 ## Checklist Purpose: "Unit Tests for English"
 

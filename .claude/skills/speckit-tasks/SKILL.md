@@ -1,15 +1,34 @@
 ---
-name: "speckit-tasks"
-description: "Generate an actionable, dependency-ordered tasks.md for the feature based on available design artifacts."
-argument-hint: "Optional task generation constraints"
-compatibility: "Requires spec-kit project structure with .specify/ directory"
+name: speckit-tasks
+description: Generate an actionable, dependency-ordered tasks.md for the feature based
+  on available design artifacts.
+compatibility: Requires spec-kit project structure with .specify/ directory
 metadata:
-  author: "github-spec-kit"
-  source: "templates/commands/tasks.md"
+  author: github-spec-kit
+  source: preset:demons-agent-tdd
+argument-hint: Optional task generation constraints
 user-invocable: true
 disable-model-invocation: false
 ---
 
+# Speckit Tasks Skill
+
+## Project boundary — preparation only
+
+Read `docs/DEVELOPMENT_WORKFLOW.md` (relative to the repository root)
+and `AGENTS.md` before using this skill. Spec Kit prepares specifications, plans,
+tasks, and their supporting documents. Agents perform implementation, testing,
+and independent validation; this skill never starts that execution stage.
+
+Do not create or modify game code, scenes, assets, or tests; do not run builds,
+playtests, or test suites, mark implementation tasks `[X]`, or invoke
+`speckit-implement`. Apply this boundary before any hook instructions below:
+execute only hooks whose preparation scope is known, and skip/report hooks that
+would implement, test, validate delivery, or dispatch implementation agents.
+When preparation is complete, report readiness and the agent entry point
+`/implementar-feature <feature-id>` (or the equivalent orchestrator in another
+tool), without invoking it from this skill. Each command retains its narrower
+scope and any read-only constraints below.
 
 ## User Input
 
@@ -76,12 +95,12 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Create parallel execution examples per user story
    - Validate task completeness (each user story has all needed tasks, independently testable)
 
-4. **Generate tasks.md**: Use TASKS_TEMPLATE_CONTENT (from the JSON output above) as the structure. For compatibility with older setup scripts that omit TASKS_TEMPLATE_CONTENT, read TASKS_TEMPLATE instead. Fill with:
+4. **Generate or update tasks.md**: Read an existing tasks.md before writing. Preserve its task IDs, checkbox states, approval history, and verification evidence; never reset or renumber existing tasks, or certify historical RED retroactively. Add new tasks with unused IDs for the approved scope and make execution order explicit through dependencies. Use TASKS_TEMPLATE_CONTENT (from the JSON output above) as the structure. For compatibility with older setup scripts that omit TASKS_TEMPLATE_CONTENT, read TASKS_TEMPLATE instead. Fill with:
    - Correct feature name from plan.md
    - Phase 1: Setup tasks (project initialization)
    - Phase 2: Foundational tasks (blocking prerequisites for all user stories)
    - Phase 3+: One phase per user story (in priority order from spec.md)
-   - Each phase includes: story goal, independent test criteria, tests (if requested), implementation tasks
+   - Each phase includes: story goal, independent test criteria, required RED test tasks, implementation/GREEN tasks, and justified non-code work
    - Final Phase: Polish & cross-cutting concerns
    - All tasks must follow the strict checklist format (see Task Generation Rules below)
    - Clear file paths for each task
@@ -142,7 +161,39 @@ The tasks.md should be immediately executable - each task must be specific enoug
 
 **CRITICAL**: Tasks MUST be organized by user story to enable independent implementation and testing.
 
-**Tests are OPTIONAL**: Only generate test tasks if explicitly requested in the feature specification or if user requests TDD approach.
+**Gameplay tests are mandatory**: Generate automated coverage for the gameplay
+areas required by Constitution II (damage, ammunition consumption/collection,
+morale, victory/defeat, and waves) whenever the feature changes that behavior,
+even if the feature does not repeat the testing requirement. Add other tests
+when a concrete behavior or regression risk justifies them. Pure art,
+documentation, or setup work without testable behavior needs appropriate
+inspection/manual verification, not artificial RED failures.
+
+### Execution ownership and TDD dependencies
+
+Spec Kit only writes the plan and tasks; the orchestrator assigns execution
+according to `docs/DEVELOPMENT_WORKFLOW.md` (relative to the repository root).
+
+- For each new or changed testable behavior, create a `godot-tester` RED task
+  before the corresponding `dev-godot` implementation/GREEN task. Put ownership
+  and RED/GREEN purpose in the description; preserve the normal task format.
+- RED depends only on already available contracts, data, and a working test
+  harness, never on the behavior it is meant to guide. If the harness or minimum
+  callable interface is missing, add a prerequisite setup task limited to that
+  infrastructure. Do not create circular RED/implementation dependencies.
+- RED evidence must fail for the intended unmet acceptance scenario, not an
+  unrelated import, parser, setup, or environment error. `qa-validator` may
+  approve the RED task and the orchestrator may mark only that task `[X]` for
+  a valid expected failure. This does not approve implementation or GREEN.
+- The dependent implementation task is implemented by `dev-godot`, verified
+  GREEN by `godot-tester`, independently reviewed by `qa-validator`, then
+  documented by `docs-writer`. Only the orchestrator marks it `[X]` after QA.
+- Explicit test-only tasks stay with `godot-tester`; documentation-only tasks
+  stay with `docs-writer`. Other tasks follow their appropriate role and
+  relevant verification without inventing an obligatory RED phase.
+- Include dependencies and acceptance evidence in the descriptions. The RED
+  test and its implementation/GREEN task are sequential, never `[P]` with
+  each other. Use `[P]` only for independent files and prerequisites.
 
 ### Checklist Format (REQUIRED)
 
@@ -154,8 +205,8 @@ Every task MUST strictly follow this format:
 
 **Format Components**:
 
-1. **Checkbox**: ALWAYS start with `- [ ]` (markdown checkbox)
-2. **Task ID**: Sequential number (T001, T002, T003...) in execution order
+1. **Checkbox**: NEW tasks always start with `- [ ]` (markdown checkbox). This rule does not reset existing tasks; preserve their recorded states and evidence when updating or regenerating the document.
+2. **Task ID**: Use the next unused sequential number (T001, T002, T003...) for new tasks. Preserve existing IDs without renumbering; dependencies determine execution order when later work is appended.
 3. **[P] marker**: Include ONLY if task is parallelizable (different files, no dependencies on incomplete tasks)
 4. **[Story] label**: REQUIRED for user story phase tasks only
    - Format: [US1], [US2], [US3], etc. (maps to user stories from spec.md)
@@ -184,12 +235,12 @@ Every task MUST strictly follow this format:
      - Models needed for that story
      - Services needed for that story
      - Interfaces/UI needed for that story
-     - If tests requested: Tests specific to that story
+     - Constitution-required gameplay coverage plus other justified tests for that story
    - Mark story dependencies (most stories should be independent)
 
 2. **From Contracts**:
    - Map each interface contract → to the user story it serves
-   - If tests requested: Each interface contract → contract test task [P] before implementation in that story's phase
+   - Each testable behavior contract → RED test task before its implementation/GREEN task in that story's phase; justify other contract tests
 
 3. **From Data Model**:
    - Map each entity to the user story(ies) that need it
@@ -206,12 +257,15 @@ Every task MUST strictly follow this format:
 - **Phase 1**: Setup (project initialization)
 - **Phase 2**: Foundational (blocking prerequisites - MUST complete before user stories)
 - **Phase 3+**: User Stories in priority order (P1, P2, P3...)
-  - Within each story: Tests (if requested) → Models → Services → Endpoints → Integration
+  - Within each story: required harness/contracts → tester RED → implementation → tester GREEN → independent QA → documentation; preserve dependencies between behaviors
   - Each phase should be a complete, independently testable increment
 - **Final Phase**: Polish & Cross-Cutting Concerns
 
 ## Done When
 
-- [ ] tasks.md generated with all phases, task IDs, and file paths
+- [ ] tasks.md generated with phases, IDs, file paths, role ownership, and acyclic RED/GREEN dependencies
+- [ ] Constitution-required gameplay coverage is planned and non-testable work has suitable verification
+- [ ] Existing task IDs, states, approval history, and evidence remain intact; no retrospective RED certification
+- [ ] The next action is handed off to the project agents without invoking implementation
 - [ ] Extension hooks dispatched or skipped according to the rules in Mandatory Post-Execution Hooks above
 - [ ] Completion reported to user with task count, story breakdown, and MVP scope

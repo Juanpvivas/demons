@@ -5,6 +5,27 @@ metadata:
   type: project
 ---
 
+## Alcance de este registro y política vigente (2026-10-15)
+
+Este archivo conserva el historial de la feature 001 y sus aprobaciones; no
+ordena repetir su implementación ni acredita TDD retroactivo. Conserva los
+`[X]` y la evidencia existentes. Para trabajo nuevo, lee `AGENTS.md`,
+`.specify/memory/constitution.md` y `docs/DEVELOPMENT_WORKFLOW.md`: Spec Kit
+prepara los documentos; los agentes ejecutan tester RED → desarrollo → tester
+GREEN/regresión → QA en solo lectura → documentación. Solo el orquestador
+marca `[X]` tras QA, según el alcance del veredicto.
+
+**La mutación temporal de `soldado.gd` por QA que se relata abajo es un
+antecedente histórico, no una práctica permitida sobre el checkout validado.**
+QA no modifica fuentes, pruebas, documentos ni tareas de ese checkout. Puede
+repetir pruebas existentes para confirmar evidencia y realizar comprobaciones
+puntuales en un directorio temporal fuera del proyecto; una mutación solo se
+hace en una copia temporal aislada. El tester mantiene la propiedad de las
+pruebas y de RED/GREEN. No se reescribe el historial para ocultar esa diferencia
+con la política actual.
+
+## Historial de la corrección
+
 Durante `001-soldado-defensor-oleadas`, el edge case de derrota del `Soldado` (FR-013/Acceptance Scenario 3 de US3, `spec.md` línea 76) resultó tener **dos causas raíz distintas**, descubiertas en dos rondas separadas de auditoría. **Ambas están cerradas a 2026-09-12.**
 
 ## Causa 1 (T043, resuelta 2026-09-12): soldado sin mecanismo de derrota + bloqueo físico

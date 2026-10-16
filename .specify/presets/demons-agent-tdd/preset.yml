@@ -1,0 +1,86 @@
+schema_version: '1.0'
+preset:
+  id: demons-agent-tdd
+  name: 'Demons: preparación y agentes con TDD'
+  version: 1.0.1
+  description: Spec Kit prepara especificaciones, planes y tareas; los agentes implementan con RED/GREEN
+    y QA independiente.
+  author: Demonios de las Trincheras
+requires:
+  speckit_version: '>=1.0.1'
+provides:
+  templates:
+  - type: command
+    name: speckit.analyze
+    file: commands/speckit.analyze.md
+    description: Perform a non-destructive cross-artifact consistency and quality analysis across spec.md,
+      plan.md, and tasks.md after task generation.
+    strategy: replace
+  - type: command
+    name: speckit.checklist
+    file: commands/speckit.checklist.md
+    description: Generate a custom checklist for the current feature based on user requirements.
+    strategy: replace
+  - type: command
+    name: speckit.clarify
+    file: commands/speckit.clarify.md
+    description: Identify underspecified areas in the current feature spec by asking up to 5 highly targeted
+      clarification questions and encoding answers back into the spec.
+    strategy: replace
+  - type: command
+    name: speckit.constitution
+    file: commands/speckit.constitution.md
+    description: Create or update the project constitution from interactive or provided principle inputs.
+    strategy: replace
+  - type: command
+    name: speckit.converge
+    file: commands/speckit.converge.md
+    description: Prepare a static gap analysis and proposed follow-up tasks for an existing feature; does
+      not implement, run tests, or replace agent validation.
+    strategy: replace
+  - type: command
+    name: speckit.implement
+    file: commands/speckit.implement.md
+    description: Compatibility guard for the retired Spec Kit implementation command; routes requests
+      to the project agents without executing work.
+    strategy: replace
+  - type: command
+    name: speckit.plan
+    file: commands/speckit.plan.md
+    description: Execute the implementation planning workflow using the plan template to generate design
+      artifacts.
+    strategy: replace
+  - type: command
+    name: speckit.specify
+    file: commands/speckit.specify.md
+    description: Create or update the feature specification from a natural language feature description.
+    strategy: replace
+  - type: command
+    name: speckit.tasks
+    file: commands/speckit.tasks.md
+    description: Generate an actionable, dependency-ordered tasks.md for the feature based on available
+      design artifacts.
+    strategy: replace
+  - type: command
+    name: speckit.taskstoissues
+    file: commands/speckit.taskstoissues.md
+    description: Prepare one feature-level GitHub Issue draft from spec, plan, and tasks; never queries
+      or creates external Issues or starts implementation.
+    strategy: replace
+  - type: template
+    name: spec-template
+    file: templates/spec-template.md
+    strategy: replace
+  - type: template
+    name: plan-template
+    file: templates/plan-template.md
+    strategy: replace
+  - type: template
+    name: tasks-template
+    file: templates/tasks-template.md
+    strategy: replace
+tags:
+- godot
+- tdd
+- agents
+- preparation

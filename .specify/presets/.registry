@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "presets": {
+    "demons-agent-tdd": {
+      "version": "1.0.1",
+      "source": "local",
+      "manifest_hash": "sha256:dcfbd982e965e19b556e841cf35cdb86b5742e5b500d0828b5c7269b65f389cc",
+      "enabled": true,
+      "priority": 5,
+      "registered_commands": {
+        "claude": [
+          "speckit.analyze",
+          "speckit.checklist",
+          "speckit.clarify",
+          "speckit.constitution",
+          "speckit.converge",
+          "speckit.implement",
+          "speckit.plan",
+          "speckit.specify",
+          "speckit.tasks",
+          "speckit.taskstoissues"
+        ]
+      },
+      "registered_skills": {
+        "claude": [
+          "speckit-analyze",
+          "speckit-checklist",
+          "speckit-clarify",
+          "speckit-constitution",
+          "speckit-converge",
+          "speckit-implement",
+          "speckit-plan",
+          "speckit-specify",
+          "speckit-tasks",
+          "speckit-taskstoissues"
+        ]
+      },
+      "installed_at": "2026-10-15T23:43:59.669498+00:00"
+    }
+  }
+}

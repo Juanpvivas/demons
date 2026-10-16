@@ -1,21 +1,18 @@
 <!--
 Sync Impact Report
-- Version change: (ninguna previa) → 1.0.0
-- Ratificación inicial de la constitución del proyecto.
-- Principios añadidos:
-  - I. Calidad de Código
-  - II. Estándares de Testing
-  - III. Consistencia de Experiencia de Usuario
-  - IV. Requisitos de Rendimiento
-  (Se definieron 4 principios, no 5, a solicitud explícita del usuario — se omite
-   la quinta sección de principio del template en vez de dejarla como placeholder.)
-- Secciones añadidas: Restricciones Técnicas, Flujo de Trabajo de Desarrollo, Governance
-- Secciones eliminadas: ninguna (documento inicial)
-- Plantillas dependientes: pendientes de verificar contra esta versión cuando se
-  generen (plan-template, spec-template, tasks-template) — no se modifican en este paso.
-- TODOs diferidos:
-  - TODO(PERFORMANCE_LOAD_TIME_TARGET): tiempo máximo de carga de nivel pendiente
-    de definir tras benchmarking en dispositivo Android de gama media objetivo.
+- Version change: 1.0.0 → 1.1.0
+- Motivo: decisión de la persona (2026-10-15): Spec Kit prepara documentos;
+  los agentes implementan, prueban y validan, manteniendo TDD.
+- Principios modificados: II. Estándares de Testing: explicita RED antes de
+  desarrollo y GREEN antes de aprobar implementación; QA independiente.
+- Flujo actualizado: preparación Spec Kit separada de ejecución por agentes;
+  solo el orquestador marca tareas aprobadas; sin implementación genérica.
+- Referencias sincronizadas: AGENTS.md, CLAUDE.md, README.md,
+  docs/DEVELOPMENT_WORKFLOW.md, docs/ARCHITECTURE.md, roles y comando en
+  .claude/, skills/plantillas/workflow de Spec Kit y notas de proceso de 001.
+- Se conservan los cuatro principios originales y la ratificación inicial.
+- TODO diferido sin cambios: PERFORMANCE_LOAD_TIME_TARGET, pendiente de medir
+  en dispositivo Android de referencia.
 -->
 
 # Demonios de las Trincheras Constitution
@@ -48,6 +45,15 @@ comparte con testers externos sin pasar antes un "smoke test" manual: el juego
 abre, el nivel carga, y se puede jugar de principio a fin sin errores críticos ni
 cierres inesperados. Todo cambio de balance (daño, costos, cadencia de oleadas)
 DEBE validarse con al menos una sesión de playtesting manual antes de mergear.
+Para cambios de comportamiento, el desarrollo DEBE seguir TDD: el tester
+escribe y ejecuta una prueba que falle por el requisito ausente (RED), el
+agente de desarrollo implementa y el tester confirma GREEN y la regresión
+pertinente. Errores de entorno/importación no constituyen RED. QA valida de
+forma independiente antes de aprobar la implementación. Una tarea dedicada
+solo a pruebas RED puede aprobarse por su fallo esperado válido, sin aprobar
+el comportamiento aún pendiente. Arte o documentación sin lógica nueva se
+validan con criterios pertinentes, sin fabricar pruebas o fallos artificiales.
+El detalle operativo está en `docs/DEVELOPMENT_WORKFLOW.md`.
 **Razón**: el sistema de economía dual (munición + moral) tiene varias reglas de
 interacción no triviales (ej. qué pasa con la moral acumulada al recargar); sin
 pruebas, los cambios futuros pueden reintroducir bugs de balance ya resueltos.
@@ -96,14 +102,21 @@ rendimiento en la máquina de desarrollo.
 
 ## Flujo de Trabajo de Desarrollo
 
-- El proyecto usa Spec Kit como flujo de trabajo: `/speckit-specify` para
-  especificar una feature, `/speckit-plan` para el plan de implementación,
-  `/speckit-tasks` para desglosar tareas, y `/speckit-implement` para
-  ejecutarlas. `/speckit-clarify` y `/speckit-analyze` se usan como pasos
-  opcionales de reducción de riesgo antes de planear/implementar.
-- El `SPEC.md` construido antes de adoptar Spec Kit sirve como contexto de
-  diseño de referencia hasta que su contenido se migre formalmente a specs de
-  feature individuales vía `/speckit-specify`.
+- Spec Kit se usa para **preparación**: especificación (`speckit-specify`),
+  aclaraciones (`speckit-clarify`), planificación (`speckit-plan`), tareas
+  (`speckit-tasks`), checklists y análisis de consistencia (`speckit-analyze`).
+  No implementa gameplay ni ejecuta pruebas, y no aprueba tareas. El comando
+  heredado `speckit-implement` solo informa de la entrega a los agentes.
+- La **ejecución** corresponde a los agentes del proyecto, coordinados por
+  `project-orchestrator`: tester RED → desarrollo → tester GREEN → QA →
+  documentación. El orquestador clasifica las tareas de pruebas,
+  implementación, arte y documentación según
+  `docs/DEVELOPMENT_WORKFLOW.md`. En Claude Code, el punto de entrada es
+  `/implementar-feature <feature-id>`; otras herramientas usan delegación
+  equivalente. Solo el orquestador marca `[X]` después de `APROBADO` de QA.
+- El diseño general en `docs/SPEC.md` sirve de referencia para los specs de
+  cada feature. Una lista generada de tareas no prueba implementación ni
+  sustituye su validación independiente.
 - Ningún cambio de balance o mecánica central se implementa directamente sin
   pasar, al menos informalmente, por una revisión contra esta constitución.
 
@@ -123,4 +136,4 @@ listo para implementar. Cualquier complejidad técnica que viole un principio
 DEBE justificarse explícitamente en el documento correspondiente (plan o spec)
 o rechazarse.
 
-**Version**: 1.0.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-08-13
+**Version**: 1.1.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-15
