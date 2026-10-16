@@ -47,13 +47,10 @@ jobs:
           version: ${{ env.GODOT_VERSION }}
           use-dotnet: true
 
-      # El proyecto todavía no tiene export_presets.cfg (no se exporta a
-      # ninguna plataforma todavía, ver docs/ARCHITECTURE.md §7). Mientras
-      # tanto, "compilar" se valida importando el proyecto completo en modo
-      # headless: falla si hay errores de parseo en .gd, Resources rotos, o
-      # escenas que no cargan. Cuando exista export_presets.cfg, reemplazar
-      # este paso por un `--export-release` real a la plantilla que
-      # corresponda (ver skill godot-prompter:export-pipeline).
+      # Esta comprobacion de importacion se conserva junto a la suite GUT.
+      # Los exports por destino tienen workflows separados: Web genera un
+      # artefacto descargable; Android/iOS mantienen su distribucion existente.
+      # Ver docs/ARCHITECTURE.md §7 y export-web.yml.
       - name: Importar el proyecto (headless)
         run: godot --headless --path . --import --quit-after 2
 

@@ -1,0 +1,60 @@
+name: Export Web artifact
+
+# Construye un ZIP para carga manual en itch.io; no publica el juego.
+# La aceptacion requiere tambien CI (GUT + importacion) y QA del navegador.
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  GODOT_VERSION: "4.7.1"
+
+concurrency:
+  group: web-export-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  export-web:
+    name: Exportar y empaquetar Web
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Godot estandar ${{ env.GODOT_VERSION }}
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: false
+          include-templates: true
+
+      - name: Generar paquete Web y manifiesto
+        env:
+          GODOT_WEB_BIN: godot
+        run: tools/web/export.sh
+
+      - name: Adjuntar ZIP y manifiesto
+        uses: actions/upload-artifact@v4
+        with:
+          name: demons-web-${{ github.sha }}
+          path: |
+            build/demons-web.zip
+            build/web-manifest.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Adjuntar logs de exportacion
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: demons-web-logs-${{ github.sha }}
+          path: |
+            build/web-import.log
+            build/web-export.log
+          if-no-files-found: ignore
+          retention-days: 14

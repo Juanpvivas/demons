@@ -1,0 +1,18 @@
+Demonios de las Trincheras — avisos de esta demo Web
+
+Esta demo utiliza Godot Engine 4.7.1. Los textos oficiales se distribuyen en:
+- GODOT_LICENSE.txt: licencia del motor.
+- GODOT_COPYRIGHT.txt: atribuciones y licencias de componentes de terceros.
+
+Fuentes de esas copias, sin modificaciones:
+https://github.com/godotengine/godot/blob/4.7.1-stable/LICENSE.txt
+https://github.com/godotengine/godot/blob/4.7.1-stable/COPYRIGHT.txt
+https://docs.godotengine.org/en/4.7/about/complying_with_licenses.html
+
+El terreno, las montañas y las trincheras de Monte Calvo se generaron para
+este proyecto el 15 de octubre de 2026 con la herramienta de imágenes de
+Codex, siguiendo la dirección visual aprobada por su responsable.
+
+Estos avisos describen el motor, sus componentes y la procedencia del arte.
+No asignan una licencia de software libre al código, al arte o a la propiedad
+intelectual propia de Demonios de las Trincheras.
