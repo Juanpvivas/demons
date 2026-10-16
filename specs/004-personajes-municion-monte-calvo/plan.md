@@ -41,8 +41,10 @@ PC nativo solo desarrollo/pruebas. Renderer/presets/input/cámara intactos.
 Web separada; carga fría/caliente, frame times y memoria frente a baseline.
 
 **Constraints**: actores 48×48, caja 32×32/collider radio 20 y física intactos.
-Atlases hasta 1024² por actor y caja hasta 256²: máximo 8.25 MiB RGBA8 estimados,
-sin equivaler a VRAM real. Compartir frames de derrota con el efecto.
+Texturas importadas de ejecución hasta 1024² por actor y caja hasta 256²:
+máximo 8.25 MiB RGBA8 estimados, sin equivaler a VRAM real. El PNG original del
+soldado conserva 1774×887; su importación limita la textura a 1024×512 y los
+recortes usan esas coordenadas. Compartir frames de derrota con el efecto.
 
 **Scale/Scope**: un diseño por bando, dos modos del soldado, una caja, dos
 presentadores y un pool visual mínimo; sin HUD, audio, proyectiles o terreno.

@@ -81,7 +81,10 @@ Caja opaca/motivo dentro de 32×32 centrados, radio 20 intacto; sin aureola/etiq
 que prometa área interactiva extra. Bandos distintos por silueta/uniforme;
 caja por forma/cartuchos/contraste sobre suelo y junto a trincheras.
 
-Atlas actor ≤ 1024² por bando, caja ≤ 256²; alfa y regiones sin vecinos/halos.
+Textura importada de ejecución: atlas actor ≤ 1024² por bando, caja ≤ 256²;
+alfa y regiones sin vecinos/halos. El límite corresponde a la textura importada,
+no al PNG original conservado. Soldado: original 1774×887, textura importada
+1024×512; regiones de AtlasTexture en coordenadas de esta última.
 Compartir texturas/frames; lossless, borde alfa, sin mipmaps/repetición, lineal local.
 No hornear terreno/HUD. SOURCES para 100 % de recursos: original, origen/herramienta,
 transformaciones, condiciones de uso/atribución.

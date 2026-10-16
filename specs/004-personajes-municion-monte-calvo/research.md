@@ -64,7 +64,11 @@ Diez ciclos y dos instancias deben discriminar el comportamiento.
 
 ## 6. Arte compartido de solo lectura
 
-**Decisión**: PNG RGBA/frames por dominio; atlas hasta 1024² por actor, caja 256².
+**Decisión**: PNG RGBA/frames por dominio; texturas importadas de ejecución hasta
+1024² por actor, caja 256². El soldado conserva el PNG original de 1774×887;
+la importación nativa limita su textura a 1024×512 y los recortes usan las
+coordenadas importadas, según su `SOURCES.md`. El límite no exige reducir el
+archivo original ni estimar la memoria de ejecución a partir de él.
 Lossless, borde alfa, sin mipmaps/repetición, filtro lineal local. Reusar frames
 de derrota. Máximo 8.25 MiB RGBA8 estimados, pendiente de memoria real.
 SOURCES recoge original, autor/herramienta/fuente, transformaciones, permisos/
