@@ -1,14 +1,16 @@
 # Validación final parcial — 003 Web / candidato4a2915c
 
-2026-10-15 local. **Candidato WIP verificable**: corrección de input, build y
-Chrome escritorio aprobados de forma acotada por QA; Android físico, matriz
-completa y gate de rendimiento siguen pendientes. No es aceptación global
-de003, publicación en itch.io ni cierre histórico de002.
+2026-10-15/16, Bogotá. **Candidato verificable con límites de validación**:
+corrección de input, build y Chrome escritorio aprobados de forma acotada
+por QA; W02–W05 físicos observados y la corroboración de producción/retorno
+móvil también aprobados en T007/T008 con el alcance descrito.
+Los gates constitucionales no medidos siguen abiertos; no es publicación
+en itch.io ni cierre histórico de002.
 
-Actualización móvil2026-10-16: [preflight horizontal y estado de espera](android-validation.md).
-La persona activó el giro y completó interacción física. QA aprobó W02–W05
-en la copia observada; producción Android y retorno de pestaña siguen pendientes.
-No se repitieron GUT ni exportación.
+Actualización móvil2026-10-16: [toques físicos y producción](android-validation.md).
+La persona confirmó «Funcionó y pude volver al juego»; el wrapper registra
+una ejecución con ocultación y regreso sin recarga observada. No se repitieron
+GUT ni exportación.
 
 ## Artefacto y pruebas conservadas
 
@@ -40,24 +42,26 @@ columna no se extiende a Android ni a los límites pendientes de otra.
 Android **PASS observado** corresponde solo a la copia con diagnóstico: W02
 11→14/2→2, W03 12→2/1→2, W04 14→14/1→1 y W05 0→0/1→1, todos
 PLAYING y con condiciones previas discriminantes. El [reporte móvil](android-validation.md)
-contiene coordenadas reales y PRE/POST; el ZIP sin observador aún no se repitió
-en el teléfono. Las cifras de evidencia de las otras filas siguen describiendo
-escritorio salvo que el reporte móvil las amplíe.
+contiene coordenadas reales y PRE/POST. El ZIP sin observador se repitió
+con corroboración humana favorable de recoger/desplegar y regreso registrado.
+No se atribuyen al ZIP saldos/estado ocultos ni se repiten W04/W05 como
+nuevos controles de producción. Las cifras de las otras filas describen
+escritorio salvo ampliación explícita del reporte móvil.
 
 | Caso | Chrome escritorio155.0.8059.84 | Android Chrome154.0.8037.94 | Evidencia/límite |
 |---|---|---|---|
-| W01 arranque | **PASS** | NOT RUN | Tres cargas del candidato final sin errores: directa, iframe960 y iframe1152; [resumen](desktop-validation-summary.json) y consola/capturas enlazadas abajo |
+| W01 arranque | **PASS** | **Verificado local** | Tres cargas finales de escritorio; producción móvil visible y funcional según relato/captura; [escritorio](desktop-validation-summary.json), [móvil](android-production-summary.json) |
 | W02 recoger una vez sin desplegar | **PASS acotado** | **PASS observado** | Observador PLAYING: único pickup natural,12→15/soldados1→1; producción confirma visualmente desaparición sin nueva unidad; [T017](t017-green.md) |
 | W03 celda libre con fondos | **PASS acotado** | **PASS observado** | Observador PLAYING:15→5/soldados1→2; producción confirma el despliegue explícito; no atribuir saldo oculto al ZIP |
 | W04 ocupada con fondos | **PASS acotado** | **PASS observado** | Celda6,5, saldo12≥10, permanece12 y1soldado; registro PRE/POST durante PLAYING |
 | W05 libre sin fondos | **PASS acotado** | **PASS observado** | Celda2,5, saldo0, rechazo y ningún gasto/unidad; registro PRE/POST |
-| W06 tamaños/resize/clic/iframe | **PASS acotado** | NOT RUN | Resize y clic verificados con estado observado; iframe y producción corroborados; detalles abajo |
-| W07 Android horizontal/toque | No aplica | **PARCIAL observado** | Horizontal2400×1080 y toque físico W02–W05 durante PLAYING confirmados; producción/retorno pendientes; [reporte móvil](android-validation.md) |
-| W08 partida manual hasta terminal | **PARCIAL** | **PARCIAL observado** | Interacciones CUA durante PLAYING y LOST observado a33.840s; producción sin cierre/error, pero no expone estado terminal; no se acredita victoria manual ni smoke humano móvil |
+| W06 tamaños/resize/clic/iframe | **PASS acotado** | **Horizontal observado** | Escritorio resize/clic/iframe; Android horizontal2400×1080 con toques, no rotación durante partida ni aspecto universal |
+| W07 Android horizontal/toque | No aplica | **APROBADO acotado** | W02–W05 físicos durante PLAYING y corroboración manual de producción; [reporte móvil](android-validation.md) |
+| W08 partida manual hasta terminal | **APROBADO observado** | **APROBADO observado** | Partida manual con datos idénticos hasta LOST en copia de solo lectura; ZIP sin HUD terminal, no se atribuye estado oculto ni victoria manual |
 | W09 victoria/derrota automatizadas | **PASS automatizado nativo** | No sustituye Android | Ambas transiciones en suite189; no es una partida manual Web |
-| W10 pestaña/regreso/recarga/audio | **PARCIAL** | NOT RUN | Recargas crean partida nueva; cambio efectivo a segundo plano y regreso NOT RUN por herramienta; no hay audio en recursos actuales |
-| W11 limpio/ZIP/PCK/extraído | **PASS local** | Arranque móvil pendiente | Candidato reconstruido/extraído y servido por HTTP; CI remoto NOT RUN |
-| W12 carga/rendimiento/memoria | **PARCIAL** | **PARCIAL observado** | Proceso observado y cadencia del contenedor medidos, memoria/caché fría pendientes; no certifica gate constitucional |
+| W10 pestaña/regreso/recarga/audio | **PARCIAL: foco NOT RUN** | **APROBADO retorno** | Recargas nuevas sesiones en escritorio; Android un run/uniframe-load, hidden3.6535s y4.9536s→visible con relato de otra pestaña; sin audio actual |
+| W11 limpio/ZIP/PCK/extraído | **PASS local** | Arranque local verificado | Candidato reconstruido/extraído y servido por HTTP; CI remoto NOT RUN |
+| W12 carga/rendimiento/memoria | **Medido con límites** | **Medido con límites** | Proceso observado, rAF externo, Navigation/ResourceTiming y heapJS disponible; cold/memoria exclusiva/VRAM/60estables no certificados |
 
 La instrumentación de saldo usa exclusivamente una copia temporal de la misma
 fuente, sin mutar estado de juego. Los resultados de producción se describen
@@ -85,7 +89,7 @@ esa distinción para marcar casos globales completos.
    [1152](w06-frame-1152.html), [observado960](w06-frame-960-observed.html).
    Esto no constituye una página subida a itch.io.
 
-Todas las cargas finales registraron Compatibility/WebGL2, single-threaded,
+Las cargas finales de escritorio registraron Compatibility/WebGL2, single-threaded,
 sin GDExtension y sin errores críticos/archivos ausentes. Mismo perfil/caché;
 no se llamó «fría» a una recarga.
 
@@ -96,15 +100,21 @@ partida natural luego emitió **LOST a33.840s**, sin cierre. La captura de
 diagnóstico permite ver ese estado: [terminal](w08-observed-terminal.jpg),
 [log completo](w08-w12-observer-desktop.json). No se alteraron oleadas ni se
 forzó victoria/derrota. El ZIP carece de una pantalla terminal integrada,
-limitación previa fuera del alcance de003; por ello W08 conserva el límite
-de observación anterior.
+limitación previa fuera del alcance de003. W08 se fundamenta en juego manual
+con datos de producción hasta terminal observado, sin exigir HUD nuevo ni
+inventar el estado final oculto del ZIP. En Android las dos sesiones físicas
+con datos idénticos también emitieron LOST natural; [raw y límites](android-validation.md).
 
 Para W10, crear una pestaña adicional dejó ambos documentos reportados
 `visible`; no produjo cambio de foco verificable. La API de gestión rechazó
 `tabs.update({active:true})` como propiedad no soportada. Se cerró la pestaña
 temporal y no se recurrió a AX nativo ni a vías alternativas no autorizadas.
-[Registro de limitación](w10-tool-limitation.json). No se declara PASS del
-cambio a segundo plano. Recargas/nuevas sesiones sí quedaron observadas.
+[Registro de limitación](w10-tool-limitation.json). Esa limitación se conserva
+para **escritorio**. Android añadió registro de otra pestaña/regreso: mismo
+run12:39:35.789Z, un inicio/una cargaiframe, dos intervalos hidden3.6535s y
+4.9536s y vuelta a visible. El relato humano y la captura corroboran regreso
+sin recarga observada; [datos originales](android-production-summary.json).
+No se infiere la política interna de pausa/suspensión del juego.
 
 ## Rendimiento: método y cifras disponibles
 
@@ -124,7 +134,7 @@ cambio a segundo plano. Recargas/nuevas sesiones sí quedaron observadas.
   con viewport de prueba; no equivalen a una sesión física libre de herramientas.
   El perfil/caché existente se conservó. La tabla de tres cargas registra el
   intervalo hasta el log de renderer, que **no es tiempo hasta primer pixel**.
-- Memoria JS/VRAM/PSS y carga con caché fría: **NOT RUN**. No se inventan cifras
+- En escritorio, memoria JS/VRAM/PSS y caché fría: **NOT RUN**. No se inventan cifras
   ni se equipara memoria del proceso completo de Chrome con la del juego.
 
 Estas muestras registran cadencia disponible, incluidos picos; **no certifican
@@ -133,35 +143,35 @@ de Android/Web iOS. El gate de rendimiento permanece abierto.
 
 Android observado, dos sesiones con30.061/30.050s de proceso: media60.144/60.101FPS,
 p95 16.667ms en ambas y máximos133.333/144.133ms. Estos picos y la instrumentación
-impiden afirmar60FPS estables; descarga/compilación, memoria y producción
-permanecen pendientes. [Valores originales y método](android-validation.md).
+impiden afirmar60FPS estables. Android **producción sin observador**:
+ventana objetivo30s de rAFpadre,1201intervalos/media55.258callbacks/s, p9516.6ms,
+máximo1835.7ms, incluye carga/interrupciones. No son FPS del juego.
+IframeHTML75.2ms desde botón, Navigation69.6ms; WASM responseEnd1295.8ms y
+PCK336.2ms, sin afirmar primer frame ni caché fría. HeapJS no estándar
+redondeado10000000bytes; no memoria exclusiva, WASMtotal, PSS o VRAM.
+[Valores originales y método](android-validation.md),
+[datos de producción](android-production-summary.json).
 
-## Dispositivos y siguiente comprobación
+## Dispositivos y alcance móvil
 
-Xiaomi2107113SG, Android14, Chrome154.0.8037.94, conectado por USB y reenvío
-temporal del puerto8063. Página `http://localhost:8063/phone-gate.html` espera
-inicio manual; botones **«Comenzar prueba observada»** y **«Comenzar producción»**.
-[Preflight histórico2026-10-15](android-preflight-blocked.png): vertical y aviso
-de notificaciones. El2026-10-16 la persona cerró el aviso y activó giro;
-[preflight horizontal](android-landscape-preflight.png) confirma2400×1080,
-CSS795×306 e iframe795×232. El intento anterior del agente de ajustar
-orientación fue rechazado por Android; no cambió ajustes ni otorgó permisos.
-La sesión ya presente estaba PERDIDA/sin gestos. Las dos ventanas de grabación terminaron antes de los gestos posteriores.
-La respuesta humana «Completé la secuencia» permitió recuperar del buffer
-dos sesiones nuevas con PRE/POST: QA aprobó W02–W05 observados. La captura
-posterior es terminal y no sustituye esos registros durante PLAYING.
-[Reporte y límites actuales](android-validation.md).
+Xiaomi2107113SG, Android14, Chrome154.0.8037.94, horizontal2400×1080 por acción
+humana. Se preservó su giro automático; el intento anterior del agente de
+ajustarlo fue rechazado por Android y no cambió ajustes/permisos. Las viejas
+grabaciones de espera no se confunden con los toques posteriores.
 
-Tras verificar el preflight horizontal, secuencia prevista: A con0 (W05),
-recoger hasta≥12, B ocupada (W04), otro amarillo con≥10 (W02), A libre (W03).
-El contador temporal de solo lectura muestra reserva/soldados y PRE→POST;
-el build de producción se repite después sin él. No usar un rechazo con
-saldo2 para atribuir un PASS a ocupación. Los casos observados ya se acreditaron con sus coordenadas reales; el
-recorrido no siguió literalmente todos los marcadores A/B. Producción sin
-observador y cambio de pestaña/regreso siguen pendientes.
+[Reporte Android](android-validation.md) enlaza PRE/POST físicos aprobados,
+cronología de visibilidad de producción y sus capturas. La producción se
+sirvió desde el ZIP exacto extraído dentro de un [wrapper temporal](phone-production-check.html),
+con botón humano, sin observador dentro del juego. El wrapper solo mide su
+propia página; no lee otras pestañas ni modifica el HTML exportado. No se
+inyectó entrada por ADB, no se forzó victoria/derrota y no hubo nuevos builds,
+suites o grabaciones rutinarias. Los lectores ya están cerrados.
 
 Firefox no instalado; Safari macOS instalado pero sin superficie de control
 habilitada en esta validación; Web iOS sin dispositivo físico. **NOT RUN**
 para los tres, sin extrapolar Chrome. No se hicieron instalaciones adicionales
-ni publicación remota. T007/T008/T012/T013 permanecen pendientes de su matriz
-y veredictos; solo el orquestador actualiza tareas.
+ni publicación remota. T007/T008 están **APROBADOS con alcance acotado** por QA: W08 manual observado
+hasta LOST con datos idénticos y W10 regreso Android más recarga escritorio.
+El foco de escritorio permanece NOT RUN. Este conjunto se entrega para la
+revisión T012/T013 con los límites de rendimiento y plataformas anteriores;
+solo el orquestador actualiza tareas. No se cierra002.

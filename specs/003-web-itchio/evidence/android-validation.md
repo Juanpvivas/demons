@@ -1,8 +1,10 @@
 # Android Chrome — observación física y pendientes de producción
 
-2026-10-16, Bogotá. **W02–W05 aprobados por QA en la copia observada**; W07
-parcial. Producción sin observador y cambio de pestaña/regreso siguen pendientes.
-T007/T012 no se cierran con este reporte. No se repitieron exportación ni GUT.
+2026-10-16, Bogotá. **W02–W05 aprobados por QA en la copia observada**.
+Después la persona probó el ZIP sin observador y confirmó **«Funcionó y pude
+volver al juego»**. Se recuperó una ejecución de producción con ocultación y
+regreso sin recarga observada. QA aprobó **T007/T008 con alcance acotado**; T012/T013 se revisan con las
+medidas y límites de este reporte. Este reporte no marca tareas. No se repitieron exportación ni GUT.
 Fuente `4a2915c`, ZIP SHA256
 `205d3916f21ce8c2b29eaf4bbbd804908dab7e9c93356355f4a335212eabfd71`;
 script de nivel `4e89dce236868c4203079e06937b5c8dbcbbd564382f373d2216d4aa8c700d7f`.
@@ -77,25 +79,90 @@ picos; estas muestras iniciales no certifican60FPS estables, diez oleadas ni
 la categoría/antigüedad del dispositivo constitucional de referencia. No se
 midió memoria del juego/VRAM ni se equiparó PSS de Chrome con ella.
 
-## Pendientes y preparación para repetir producción
+## Producción sin observador y regreso de pestaña
 
-W01 de producción Android, corroboración W02–W05 sin observador, W06 adaptación
-completa, W07 de producción, W10 otra pestaña/regreso y W12 de producción
-siguen pendientes. El paquete extraído sin observador sigue listo en
-`http://localhost:8063/production/`. Se abrió un wrapper temporal nuevo
-`http://localhost:8063/phone-production-check.html`, sin iframe inicial ni
-autostart; botón único **«Comenzar producción»**. [Fuente](phone-production-check.html),
-[preflight sin partida](android-production-gate-ready.png),
-[handoff y límites](android-production-gate-ready.json). El paquete y su HTML
-exportado no se modificaron. La página propia guarda/loguea Navigation/Resource
-Timing, ventana de30s de callbacks rAF del contenedor (noFPS del juego), heapJS
-Chromium si existe (no memoria exclusiva del juego) y su visibilitychange.
-Persiste únicamente su clave localStorage y consoleWEB_PROBE para recuperar
-tras respuesta humana demorada, sin observar otra pestaña. No hay listener
-ni grabación activos. La persona recibió pasos de corroboración visual y
-abrir otra pestaña cinco segundos antes de volver; respuesta pendiente.
-No se repiten los cuatro casos observados ya concluyentes. El ZIP no expone
-saldo/estado: no se le atribuirán valores exactos de la copia observada.
+Se cargó el paquete extraído exacto desde `/production/` dentro de un wrapper
+externo. La persona recibió pasos de recoger cuatro amarillos y otro antes
+de desplegar, comprobar visualmente que recoger no crea una unidad, desplegar
+en suelo libre a la izquierda del blanco en su fila y abrir otra pestaña de
+Chrome unos cinco segundos antes de volver sin recargar. Respondió:
+**«Funcionó y pude volver al juego»**. Este relato es corroboración manual
+favorable a esos pasos; no acredita saldos, conteos por gesto ni estado terminal
+ocultos del ZIP. W04/W05 exactos pertenecen a la prueba observada, no se
+repitieron como nuevos controles de producción.
+
+[Registros pasivos originales](android-production-probe.jsonl),
+[derivado de producción](android-production-summary.json),
+[captura al volver](android-production-return-current.png).
+Trece mensajes únicos, SHA256
+`b74f7d4ee1b1949b9dbd4926254c60f2e543e62a33710da3722dc2f9101b0c08`.
+Se deduplicaron por `run_id`/`start_utc`, timestamp y contenido. El buffer se
+recuperó sin recargar, seleccionando solo `/phone-production-check.html` y
+filtrando `WEB_PROBE`/`WEB_PROBE_RESTORED` mediante `Runtime.enable`; no se
+consultó contenido de otras pestañas ni se inyectó entrada. Listener cerrado.
+
+Hay **una ejecución** `2026-10-16T12:39:35.789Z`, startUTC12:39:35.798Z, con
+un registro de inicio humano y un evento de carga del iframe. Cronología:
+
+| Estado de nuestra página | UTC | Desde el inicio |
+|---|---|---:|
+| visible |12:39:35.798|0ms|
+| hidden |12:39:57.601|21802.8ms|
+| visible |12:40:01.255|25456.3ms|
+| hidden |12:40:02.253|26454.6ms|
+| visible |12:40:07.206|31408.2ms|
+
+Los intervalos ocultos duraron **3.6535s y4.9536s**, respectivamente; el segundo
+se aproxima a los cinco segundos pedidos. Se conserva el mismo run y no hay
+nuevo inicio/carga de iframe observado. La visibilidad acredita el ocultamiento
+y retorno de nuestra página; el relato identifica la acción como abrir otra
+pestaña, sin que la instrumentación lea esa pestaña. No prueba política interna
+de suspensión/pausa del motor ni reanuda un estado terminal oculto.
+
+La captura12:41:16Z muestra el juego de producción visible, sin A/B/HUD del
+observador, un blanco a la izquierda, un amarillo y la cronología del wrapper.
+No es una captura de todos los gestos ni permite saber el saldo/resultado final.
+Se mantuvo horizontal2400×1080, CSS795×306, iframe795×230.
+
+## Carga, cadencia y memoria disponibles de producción
+
+El [wrapper temporal](phone-production-check.html) solo añade telemetría fuera
+del iframe. No modifica el HTML exportado, el ZIP ni el juego. Los valores
+originales se conservan en el [derivado](android-production-summary.json):
+
+- Evento de documento del iframe a **75.2ms** desde el botón; NavigationTiming
+  del HTML **69.6ms**. Son carga del documento, **no primer frame del juego**.
+- Recursos de esa navegación: WASM39513091bytes, responseEnd **1295.8ms**
+  (duración1227ms); PCK4702200bytes, responseEnd **336.2ms**
+  (duración267.1ms). El transferSize reportado supera encodedBodySize en300bytes
+  por recurso. Son tiempos del HTTP local por USB y el perfil/caché existente;
+  **no carga fría verificada**, compilación total ni latencia de itch.io.
+- Ventana objetivo30s del **rAF del contenedor**:1201 intervalos, suma de
+  deltas visibles21734.4ms, media **55.258callbacks/s**, p50 **16.5ms**,
+  p95 **16.6ms**, máximo **1835.7ms**. Incluye carga inicial, esperas del
+  navegador e interrupciones de visibilidad; terminó a30843.1ms desde el
+  botón. Los intervalos ocultos se separan al reiniciar la referencia temporal.
+  **No mide FPS ni frame times renderizados del juego**.
+- `performance.memory` de Chromium devolvió usedJSHeapSize/totalJSHeapSize
+  **10000000bytes** y límite1940000000bytes. Es una estimación no estándar y
+  redondeada del heapJS; **no memoria exclusiva del juego, totalWASM, PSS ni
+  VRAM**. No se sustituyeron esas magnitudes por este número.
+
+## Alcance restante
+
+La copia observada acredita entrada/estado controlados y partida manual con
+los mismos datos de producción hasta LOST; la ejecución sin observador añade
+corroboración humana de recoger/desplegar y prueba pasiva de regreso visible.
+QA aprobó la cobertura T007/T008 con los límites descritos, sin inventar
+una pantalla terminal nueva.
+W08 declara LOST observado en la copia con datos idénticos y no victoria ni
+resultado terminal oculto del paquete sin HUD.
+
+W12 tiene medidas de las sesiones disponibles de Android y escritorio, con
+método y límites explícitos. Carga con caché fría verificada, memoria exclusiva
+del juego/VRAM/PSS y rendimiento sostenido constitucional siguen **NOT RUN**.
+Firefox, Safari y Web iOS mantienen su estado previo según disponibilidad.
+No se publicó ni difundió el ZIP en itch.io y no se cerró la feature histórica002.
 
 ## Preparación anterior conservada
 

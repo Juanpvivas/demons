@@ -495,7 +495,7 @@
           }
         }
       ],
-      "result": "PASS observed physical input; production corroboration pending"
+      "result": "PASS observed physical input; exact counters belong only to observer. Later production corroboration is recorded in android-production-summary.json."
     },
     "W03": {
       "session": 3,
@@ -884,7 +884,7 @@
           }
         }
       ],
-      "result": "PASS observed physical input; production corroboration pending"
+      "result": "PASS observed physical input; exact counters belong only to observer. Later production corroboration is recorded in android-production-summary.json."
     },
     "W04": {
       "session": 3,
@@ -1478,7 +1478,7 @@
           }
         }
       ],
-      "result": "PASS observed physical input; production corroboration pending"
+      "result": "PASS observed physical input; exact counters belong only to observer. Later production corroboration is recorded in android-production-summary.json."
     },
     "W05": {
       "session": 4,
@@ -1787,7 +1787,7 @@
           }
         }
       ],
-      "result": "PASS observed physical input; production corroboration pending"
+      "result": "PASS observed physical input; exact counters belong only to observer. Later production corroboration is recorded in android-production-summary.json."
     }
   },
   "observed_performance": [
@@ -2116,7 +2116,7 @@
     "Exact A/B intended marker sequence not reproduced literally; actual gestures and occupancy establish each functional case.",
     "W02 pickup center576,442 is cell6,4; gesture570.89,453.4 is free cell5,4.",
     "Recorded videos preceded these sessions and do not evidence current touches. Current screenshots are post-terminal.",
-    "Instrumentation adds read-only labels/logging. Production without observer and visibility return remain pending.",
+    "Instrumentation adds read-only labels/logging. Later production/visibility corroboration is recorded separately in android-production-summary.json.",
     "Observer process FPS/delta exclude browser download/compile and do not certify stable60FPS or reference constitutional device."
   ]
 }

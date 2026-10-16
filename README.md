@@ -17,9 +17,11 @@ No se prevén instaladores propios para Windows, macOS o Linux; el editor y
 la ejecución nativa local en computador siguen siendo herramientas de desarrollo.
 
 La feature [`003-web-itchio`](specs/003-web-itchio/spec.md) ya dispone de un
-paquete Web WIP con arranque local y generación aprobados de forma acotada.
-La interacción Web, el smoke y el rendimiento siguen pendientes; no está
-publicado en el portal ni listo para difusión externa. Consulta la
+paquete Web revisado localmente, con entrega aceptada por QA en Chrome de
+escritorio y Xiaomi horizontal: generación, interacción y smoke observados,
+corroboración visual de producción móvil y regreso sin recarga observada. Rendimiento sostenido,
+carga fría, memoria exclusiva y los entornos no probados conservan pendientes.
+El juego no está publicado en el portal. Consulta la
 [guía de exportación y estado de validación](docs/WEB_EXPORT.md).
 
 ## Estado actual
@@ -84,8 +86,10 @@ reciben un mensaje de bienvenida en su primera contribución
 - **Web / itch.io**: `tools/web/export.sh` genera `build/demons-web.zip` y su
   manifiesto; exportación local, PCK y arranque del ZIP extraído verificados.
   El workflow `export-web.yml` adjunta artefactos sin publicar; todavía no
-  tiene un run remoto acreditado. La demo sigue WIP hasta completar entrada,
-  smoke y mediciones. [Guía y matriz real](docs/WEB_EXPORT.md).
+  tiene un run remoto acreditado. Entrada y smoke están aprobados en su
+  alcance y QA aceptó la entrega 003; la demo sigue en desarrollo, con las
+  mediciones y los entornos no certificados identificados explícitamente.
+  [Guía y matriz real](docs/WEB_EXPORT.md).
 - **Android**: cada push a `main` exporta un APK debug (verificado en
   local: firma correctamente y pasa `apksigner verify`) y lo sube a
   **Firebase App Distribution** (`.github/workflows/deploy-android-testers.yml`).

@@ -1,12 +1,11 @@
 # Exportación Web para itch.io
 
-**Estado al 2026-10-16: paquete WIP generado, con arranque y corrección de entrada
-aprobados en escritorio y cuatro casos físicos Android aprobados en copia
-observada.** La matriz completa y la corroboración móvil sin observador siguen
-pendientes; smoke y rendimiento cuentan con evidencia parcial.
-Este documento es un borrador
-parcial de T011, pendiente de completar tras T008 y de revisión documental QA;
-no declara la demo lista para testers externos ni publicada en itch.io.
+**Estado al 2026-10-16: paquete revisado localmente y entrega 003 aceptada por
+QA en Chrome de escritorio y Xiaomi/Chrome horizontal.** Incluye interacción,
+corroboración visual de producción y partidas manuales observadas hasta LOST.
+El regreso Android conserva el mismo run sin recarga observada; foco de
+escritorio, otros navegadores y rendimiento sostenido mantienen sus límites.
+La demo sigue en desarrollo y no está publicada en itch.io.
 
 ## Requisitos
 
@@ -116,20 +115,20 @@ El tester comprobó además el clic después de redimensionar de 1152×648 a
 960×540: el punto CSS `(200,440)` correspondió a mundo `(240,528)`, celda `(2,5)`, y produjo
 un solo despliegue, **12→2 durante PLAYING**.
 [Registro W06](../specs/003-web-itchio/evidence/w06-resize-click.json).
-Estas verificaciones de escritorio no completan T007/T008; el alcance físico
-Android se registra por separado a continuación.
+T007/T008 están aprobadas con alcance acotado a Chrome escritorio y Xiaomi
+horizontal; el alcance físico Android se registra por separado a continuación.
 
 | Entorno/caso | Estado y alcance actual |
 |---|---|
 | Chrome 155.0.8059.84 en computador | W01 PASS: tres cargas del candidato final, directa e iframes de 960/1152; sin prueba de caché fría. |
 | Canvas 1152×648 y 960×540 | W06 PASS acotado: render, clic después de resize e iframe con correspondencia mundo/celda y cobro único registrados. |
-| W02–W05 de escritorio | PASS controlado con copia observadora y repetición visual acotada sin observador; corrección T016/T017/T018 aprobada. T007/T008 globales continúan pendientes. |
-| Chrome 154.0.8037.94 en Xiaomi físico | W02–W05 PASS aprobados en copia observada, durante JUGANDO; producción sin observador y W07 completo pendientes. |
-| W10 recarga/cambio de pestaña | Recarga reportada correcta; cambio real de pestaña NOT RUN por límite de herramienta. W10 completo continúa pendiente. |
+| W02–W05 de escritorio | PASS controlado con copia observadora y repetición visual acotada sin observador; T007/T008 y corrección T016/T017/T018 aprobadas. |
+| Chrome 154.0.8037.94 en Xiaomi físico | W02–W07 aceptados en su alcance horizontal; W02–W05 observados y producción corroborada por la persona, sin atribuir saldo oculto al ZIP. |
+| W10 recarga/cambio de pestaña | PASS de regreso Android en el mismo run sin recarga observada y de recarga escritorio. Cambio real de pestaña en escritorio NOT RUN. |
 | Firefox y Safari macOS | NOT RUN en esta entrega; sin soporte anunciado por extrapolación. |
 | Navegador iOS | NOT RUN; sin soporte anunciado por extrapolación. |
-| W08 partida Web hasta terminal | PARCIAL: acciones durante PLAYING y LOST natural observado a 33.840 s; el ZIP sin observador no muestra el estado terminal. |
-| W12 carga/rendimiento/memoria | PARCIAL: escritorio y Android observados; producción Android, carga fría y memoria pendientes. No acredita 60 FPS estables. |
+| W08 partida Web hasta terminal | PASS acotado: partidas manuales observadas hasta LOST con los mismos datos, más corroboración visual de producción. El ZIP sin observador no muestra el estado terminal; no se acredita victoria manual. |
+| W12 carga/rendimiento/memoria | PARCIAL: muestras de proceso observado y métricas de navegador en producción; carga fría y memoria exclusiva del juego pendientes. No acredita 60 FPS estables. |
 | Workflow Web en GitHub Actions | NOT RUN remoto; sus pasos de generación se verificaron localmente. |
 
 Fuentes: [arranque T005](../specs/003-web-itchio/evidence/web-startup.md),
@@ -143,8 +142,16 @@ En Android se comprobaron por toque humano los cuatro casos: recoger **11→14
 sin nueva unidad**, desplegar **12→2 con una unidad**, rechazar una celda
 ocupada con reserva 14 sin gasto y rechazar una libre con reserva 0. Los pares
 touch/mouse emulado se agrupan como un gesto físico. La observación de solo
-lectura no modifica el juego; aún falta corroborar el ZIP sin ese observador.
+lectura no modifica el juego.
 [Reporte Android y evidencia PRE/POST](../specs/003-web-itchio/evidence/android-validation.md).
+
+En producción sin observador, la persona confirmó **«Funcionó y pude volver
+al juego»** tras recoger, desplegar y cambiar de pestaña. El registro temporal
+del contenedor conserva un solo inicio/carga y el mismo `run_id`, con dos
+intervalos hidden→visible de **3.654 s y 4.954 s**, sin recarga observada.
+Esto corrobora la interacción visual y el retorno, sin añadir saldos,
+ocupación o estado terminal que el ZIP no muestra.
+[Resumen de producción móvil](../specs/003-web-itchio/evidence/android-production-summary.json).
 
 La [validación final parcial](../specs/003-web-itchio/evidence/final-validation.md)
 registra una muestra de proceso Godot **instrumentada de 30.0197 s**:
@@ -156,9 +163,19 @@ medias **60.144/60.101 FPS**, p95 **16.667 ms** y máximos **133.333/144.133 ms*
 incluyen instrumentación y excluyen descarga/compilación. Ninguna muestra
 certifica 60 FPS estables; el gate constitucional sigue pendiente.
 
+La medición móvil de producción conserva la caché: documento del iframe
+cargado a **75.2 ms** desde el inicio y respuesta WASM de **1227 ms**;
+no son tiempo al primer píxel ni a la partida lista. La muestra del contenedor
+registró **55.26 callbacks rAF/s**, incluyendo carga, pausas y cambios de
+visibilidad, y **10 MB estimados de heap JavaScript de Chromium**. Ese heap
+puede estar cuantizado y no representa memoria exclusiva del juego, WASM,
+PSS o VRAM; los callbacks tampoco son FPS del juego. Carga fría y medición
+de memoria del juego siguen pendientes.
+
 El [seguimiento WIP de 003](../specs/003-web-itchio/evidence/implementation-status.md)
-registra 12/18 tareas aprobadas y los seis gates aún pendientes. Este borrador
-no sustituye QA global ni la consolidación final de la feature.
+consolida el alcance aceptado y los límites globales. El estado vigente de
+aprobación se consulta en [tasks.md](../specs/003-web-itchio/tasks.md); solo el
+orquestador marca tareas después de QA.
 
 ## Artefacto de CI
 
@@ -171,7 +188,8 @@ itch.io ni requiere secretos de esa cuenta.
 
 ## Preparar una carga manual posterior en itch.io
 
-Cuando el smoke y la validación de entrada estén aprobados:
+La entrada y el smoke están aprobados en el alcance indicado. Para una carga
+manual posterior, conservando los límites de rendimiento y soporte declarados:
 
 1. En la página del juego elegir **HTML Game** y cargar `demons-web.zip`.
 2. Marcar que se ejecuta en navegador; comenzar con **Click to play**, iframe

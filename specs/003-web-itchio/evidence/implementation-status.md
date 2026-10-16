@@ -1,17 +1,21 @@
-# 003 — Entrega Web WIP y validación parcial
+# 003 — Entrega Web revisada y alcance de validación
 
-**Fecha**: 2026-10-16, Bogotá. **Rol**: docs-writer, borrador de seguimiento.
+**Fecha**: 2026-10-16, Bogotá. **Rol**: docs-writer, consolidación T014 para QA.
 **Issue**: [#14](https://github.com/Juanpvivas/demons/issues/14).
-**Estado**: implementación disponible para revisión local; aceptación global
-pendiente. Este reporte no completa T011/T014, no marca tareas ni constituye
-consolidación final. No hay publicación en itch.io ni PR final de la feature.
+**Estado**: entrega 003 aceptada por QA en su alcance Web para Chrome de
+escritorio y este Xiaomi horizontal. La demo sigue en desarrollo con límites
+globales de medición y soporte explícitos. Este documento consolida lo
+aprobado; su dictamen y marcado corresponden a QA y al orquestador.
+No hay publicación en itch.io; esta consolidación no hace merge ni difusión.
 
 ## Progreso aprobado
 
-[Tasks](../tasks.md) conserva **12/18 tareas aprobadas** por QA y marcadas por
-el orquestador: T001–T006, T009/T010 y T015–T018. Siguen pendientes T007, T008,
-T011, T012, T013 y T014. La documentación de entrega se mantiene como borrador
-hasta contar con la matriz y los gates restantes.
+[Tasks](../tasks.md) es la fuente vigente de aprobaciones y checkboxes.
+QA aprobó T011/T012 y la revisión T013: trazabilidad FR-001–012/SC-001–007
+completa para esta entrega acotada. Los informes de medición y sus límites
+permiten aceptar 003 sin certificar rendimiento sostenido o entornos no
+probados. T014 consolida esos hechos para su dictamen documental; solo el
+orquestador marca la tarea tras QA. No se amplía soporte por extrapolación.
 
 - Política: constitución 2.0.0, Web más apps Android/iOS; ejecución nativa de
   computador sigue disponible para desarrollar/probar. Se conservan el flujo
@@ -59,11 +63,11 @@ seguimiento se excluyen del paquete; editarlos no atribuye un nuevo build.
 | W06 resize/iframe | PASS acotado: clic correcto después de 1152×648→960×540; CSS (200,440)→mundo (240,528), celda (2,5), saldo 12→2 y una unidad durante PLAYING. También iframe con offset y corroboración visual de producción. |
 | GUT de la corrección | 6/6 focalizados, 36 aserciones; suite 189/189, 532 aserciones, 3 avisos conocidos. Dispatch real SubViewport, no toque físico. |
 | W10 recarga | PASS parcial reportado por tester; no completa regreso real de otra pestaña. |
-| W10 cambio real de pestaña | NOT RUN por límite de la herramienta disponible. No simularlo con una llamada DOM. |
-| Chrome Android físico W02–W05/W07 | W02–W05 PASS aprobados por QA en copia observada, durante JUGANDO; pares touch/mouse agrupados por gesto humano. Producción sin observador y W07 completo pendientes. |
+| W10 cambio real de pestaña | PASS Android: confirmación humana y hidden→visible en el mismo run sin recarga observada. Escritorio continúa NOT RUN por límite de herramienta. |
+| Chrome Android físico W02–W07 | Aceptados en el alcance horizontal; W02–W05 observados y recogida/despliegue/regreso de producción corroborados visualmente por la persona, sin saldos ocultos atribuidos al ZIP. |
 | Firefox, Safari macOS, navegador iOS | NOT RUN. Sin soporte anunciado por extrapolación. |
-| W08 smoke manual Web | PARCIAL: interacciones durante PLAYING y LOST natural observado a 33.840 s, sin cierre. Producción sin observador no expone estado terminal; no acredita victoria manual ni smoke móvil. |
-| W12 carga/rendimiento/memoria Web | PARCIAL: escritorio y Android observado medidos; producción Android, carga fría y memoria pendientes. Gate constitucional sin certificar. |
+| W08 smoke manual Web | PASS acotado: partidas manuales observadas hasta LOST con datos idénticos de producción, más corroboración visual sin observador. No se atribuye terminal oculto al ZIP ni victoria manual. |
+| W12 carga/rendimiento/memoria Web | PARCIAL: escritorio, Android observado y métricas del contenedor móvil de producción; carga fría y memoria exclusiva del juego pendientes. Gate constitucional sin certificar. |
 | CI Web remoto | NOT RUN; sí se verificó localmente el procedimiento de generación y empaquetado. |
 
 El [informe GREEN](t017-green.md) contiene las pruebas aceptadas y separa los
@@ -89,21 +93,38 @@ y [registros de las sesiones](android-observed-sessions.jsonl).
 Dos muestras Android instrumentadas de unos 30 s registraron medias
 **60.144/60.101 FPS**, p95 **16.667 ms** y máximos **133.333/144.133 ms**.
 Excluyen descarga y compilación, no prueban diez oleadas ni 60 FPS estables.
-Carga fría, memoria y mediciones de producción Android siguen pendientes.
+Carga fría y memoria exclusiva del juego siguen pendientes.
 
-## Lo que falta para cerrar
+En producción móvil la persona confirmó **«Funcionó y pude volver al juego»**.
+Los [13 registros del wrapper](android-production-probe.jsonl), resumidos en
+[producción móvil](android-production-summary.json), conservan un único
+inicio/carga y el mismo run, con ocultaciones de **3.654/4.954 s** y regreso,
+sin recarga observada. Es corroboración visual humana de recogida/despliegue
+y retorno, separada de los saldos/celdas PRE/POST de la copia observada.
 
-Corroborar Android sin observador, completar la matriz de entrada/adaptación y
-navegadores según disponibilidad, W10 real y los gates de smoke/rendimiento;
-registrar límites con su estado exacto. Después corresponden QA global T013 y
-consolidación T014. No se promueve o fusiona un PR ni se publica una página
-por generar un ZIP WIP.
+Métricas con caché conservada: carga del documento iframe a **75.2 ms** desde
+inicio, respuesta WASM **1227 ms**, contenedor **55.26 callbacks rAF/s** y heap
+JavaScript estimado **10 MB**. Ni el documento listo ni el tiempo de respuesta
+son primer píxel/partida lista; rAF no mide FPS del juego y el heap Chromium
+puede estar cuantizado y no representa memoria exclusiva del juego, WASM,
+PSS o VRAM. El registro incluye carga y cambios de visibilidad. Los nuevos
+resultados de producción y el retorno recibieron aprobación acotada en
+T007/T008; no cierran los gates globales.
+
+## Límites globales y seguimiento
+
+Permanecen sin certificar el rendimiento sostenido y dispositivo constitucional
+de referencia, carga fría, memoria exclusiva del juego, otros navegadores y
+run CI remoto. El foco de escritorio sigue NOT RUN; el retorno Android sí
+está aprobado. T012 acredita mediciones reales con límites, no suprime esos
+pendientes globales. La aceptación de 003 no implica publicación, merge,
+victoria manual ni terminal visible en el ZIP sin observador.
 
 La feature 002 permanece abierta con sus gates propios de iOS, entrada y
 rendimiento; este cambio de destinos y la corrección de 003 no cierran su
 historial. [Estado de 002](../../002-monte-calvo-terreno-trincheras/evidence/implementation-status.md).
 
 La [guía de operador](../../../docs/WEB_EXPORT.md) explica generación, avisos y
-futura carga manual en itch.io. Su sección móvil permanece condicionada a
-validación real; el paquete no se difunde a testers externos sin el smoke
-exigido por la constitución.
+futura carga manual en itch.io. La entrada y el smoke tienen aprobación
+acotada; la guía no convierte esos resultados en soporte universal ni en
+certificación de rendimiento sostenido.

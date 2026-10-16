@@ -353,11 +353,12 @@ documento y no habilitan un sistema nuevo que excluya un destino. Una futura
 excepción exige comprobar compatibilidad y enmendar la constitución.
 [Restricción oficial de Godot](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html).
 
-La sección `[dotnet]` heredada de `project.godot` no demuestra por sí sola
-una dependencia C# ni una exportación Web válida. El ejecutable del editor
-local puede ser .NET; la preparación de exportación Web usará la edición
-estándar y plantillas de la misma versión. Configurar y verificar esa ruta
-es trabajo de la feature 003, todavía pendiente de evidencia.
+La sección `[dotnet]` heredada de `project.godot` no implica una dependencia
+C# del gameplay. La exportación Web usa Godot estándar oficial **4.7.1** y
+templates de esa misma versión, verificados en la feature 003. La edición
+Mono local se conserva para desarrollo/pruebas nativos. La aceptación Web
+es acotada a los navegadores y dispositivos de su matriz, no universal.
+[Herramientas y evidencia](../specs/003-web-itchio/evidence/toolchain.md).
 
 ## 5. Composición de escenas (ejemplo concreto)
 
@@ -448,18 +449,38 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   directamente en la lógica de gameplay, para que las aplicaciones móviles
   y Web compartan la misma capa de lógica con toque o ratón. Ejemplo ya en
   el repo (`project.godot`, `001-soldado-defensor-oleadas`/T003): las
-  acciones `select_cell` y `collect_pickup` mapean mouse click y touch tap
-  al mismo evento lógico, sin tecla de teclado asociada; la distinción de
-  qué gesto significa cada una queda en la lógica de gameplay, no en el
-  `InputMap`.
+  acciones `select_cell` y `collect_pickup` conservan entradas mouse/touch,
+  sin tecla de teclado asociada. En la ruta Android comprobada, las acciones
+  llegan mediante el mouse emulado del toque; no se debe descartarlo ni
+  suponer que `InputEventScreenTouch` activa por sí solo esas acciones.
+  La distinción entre recoger y desplegar pertenece al enrutamiento del nivel.
+- **Precedencia de recolección validada en 003/T015–T018:** Godot procesa
+  `_unhandled_input()` antes del physics picking. El nivel consulta si el
+  punto cae sobre una `AmmoPickup` visible/pickable y cede ese evento al
+  picking, evitando desplegar/cobrar con el mismo gesto. No recoge desde el
+  nivel ni modifica las recompensas de pickups solapadas. La consulta usa
+  las formas reales con física 2D en el hilo principal actual; activar un
+  hilo separado exigiría revisar ese acceso. RED de dispatch real, GREEN
+  normal/emulado y comprobación física Android respaldan esta convención.
+  [Corrección y regresión](../specs/003-web-itchio/evidence/t017-green.md).
 - UI (`HUD.tscn`) usa contenedores con anclas relativas, no posiciones fijas
   en píxeles, para adaptarse a distintas resoluciones y aspect ratios entre
   aplicaciones móviles y navegadores de computador/móvil.
-- **Ruta gráfica propuesta para 003, pendiente de implementación y
-  validación:** conservar `Mobile` como método nativo y configurar
-  `Compatibility` mediante un ajuste específico para Web. Este destino
-  requiere WebGL 2.0; no se presupone que una captura del editor valide su
-  resultado. [Exportación Web oficial](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html).
+- **Ruta gráfica implementada y validada en 003:** `Mobile` se conserva como
+  método nativo y `rendering/renderer/rendering_method.web="gl_compatibility"`
+  selecciona Compatibility/WebGL 2.0 para Web. El preset `Web` exporta con un
+  hilo, sin GDExtension ni PWA y canvas adaptativo. La evidencia proviene del
+  navegador y del Xiaomi horizontal; una captura del editor no la sustituye.
+  [Guía y alcance validado](WEB_EXPORT.md).
+- **Paquete Web:** `tools/web/export.sh`, con `GODOT_WEB_BIN` estándar 4.7.1,
+  produce `build/web/index.html`, sus compañeros, ZIP y manifest exterior.
+  Incluye recursos de producción con exclusiones de internos: seleccionar
+  solo escenas omitió clases y oleadas cargadas desde scripts. El contenido
+  real del PCK, sus diez oleadas y las licencias se inspeccionan además del ZIP.
+  `build/.gdignore` evita importar la salida; los artefactos no se versionan.
+  El workflow `export-web.yml` adjunta un ZIP descargable, sin publicar en
+  itch.io; sus pasos se verificaron localmente y su run remoto queda NOT RUN.
+  El CI existente conserva GUT/importación y los deploys nativos no cambiaron.
 - Las verificaciones Web identifican navegador, sistema/dispositivo, tamaño,
   entrada y renderer. Deben comprobar carga, partida, redimensionamiento y
   entrada dentro del navegador, incluida su presentación embebida cuando se
@@ -528,3 +549,4 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
 | 2026-09-15 | §7: sincronizado con la realidad — iOS/TestFlight ya no está pendiente, quedó operativo (`.github/workflows/deploy-ios-testflight.yml`, firma Manual en vez de Automatic, ver ese archivo para el detalle). Se agrega la política de versionado: ambos workflows de deploy de prueba ahora fallan a propósito si `export_presets.cfg` no tiene un bump de versión desde el último deploy exitoso — se detectó en esta sesión que el pipeline estaba re-subiendo repetidamente la misma versión (1.0/build 1) a TestFlight y Firebase sin ningún control. |
 | 2026-10-15 | §8: separación entre preparación Spec Kit y ejecución por agentes, TDD y referencia compartida de desarrollo; rutas de constitución actualizadas |
 | 2026-10-15 | §4.6/7: alineación con constitución 2.0.0 y destinos Web + Android/iOS; se retira la excepción C# incompatible con Web. Compatibility específico para Web y Mobile nativo se documentan como ruta pendiente de implementar/validar en 003; se conserva evidencia histórica PC. |
+| 2026-10-16 | §4.6/7: estado verificado de 003 en su alcance Web: estándar 4.7.1, Compatibility específico/un hilo, Mobile nativo conservado, ZIP/PCK/licencias y artefacto CI sin publicación. Se gradúa la precedencia pickup→despliegue validada con RED/GREEN y toque físico; las mediciones y entornos no certificados mantienen sus límites. |

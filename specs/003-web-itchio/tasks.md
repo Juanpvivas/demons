@@ -55,8 +55,8 @@ y Android físico, sin cambiar reglas o añadir controles.
 **Criterio independiente**: W02–W10 aplicables, con saldo/ocupación y estado
 previo suficientes para distinguir cada rechazo; smoke manual hasta terminal.
 
-- [ ] T007 [US2] godot-tester: ejecutar W02–W10 en navegador visible con clic mediante CUA del navegador y Chrome Xiaomi horizontal, incluyendo cuatro casos controlados, resize con clic posterior, iframe local, regreso de pestaña, recarga y partida manual hasta terminal; documentar `specs/003-web-itchio/evidence/web-interaction.md`, matriz/capturas y victoria/derrota GUT separadas; depende de T006 aprobada; si detecta bug, registrar reproducción y detener la corrección hasta nuevas tareas RED/dev/GREEN, sin parchear implementación.
-- [ ] T008 [US2] qa-validator: revisar spec, hashes y `specs/003-web-itchio/evidence/web-interaction.md` por W02–W10/FR-003/004/005; distinguir toque físico, clic mediante CUA del navegador y pruebas automatizadas, verificar rechazo por ocupación con fondos y sin fondos en celda libre; emitir PASS/FAIL/NOT RUN por caso, sin modificar checkout; depende de T007 y de la aprobación de cualquier corrección añadida.
+- [X] T007 [US2] godot-tester: ejecutar W02–W10 en navegador visible con clic mediante CUA del navegador y Chrome Xiaomi horizontal, incluyendo cuatro casos controlados, resize con clic posterior, iframe local, regreso de pestaña, recarga y partida manual hasta terminal; documentar `specs/003-web-itchio/evidence/web-interaction.md`, matriz/capturas y victoria/derrota GUT separadas; depende de T006 aprobada; si detecta bug, registrar reproducción y detener la corrección hasta nuevas tareas RED/dev/GREEN, sin parchear implementación.
+- [X] T008 [US2] qa-validator: revisar spec, hashes y `specs/003-web-itchio/evidence/web-interaction.md` por W02–W10/FR-003/004/005; distinguir toque físico, clic mediante CUA del navegador y pruebas automatizadas, verificar rechazo por ocupación con fondos y sin fondos en celda libre; emitir PASS/FAIL/NOT RUN por caso, sin modificar checkout; depende de T007 y de la aprobación de cualquier corrección añadida.
 
 ## Fase 4: Historia de usuario3 — Paquete listo para cargar (Prioridad: P2)
 
@@ -67,7 +67,7 @@ pero puede prepararse mientras US2 se prueba al no compartir archivos.
 
 - [X] T009 [P] [US3] dev-godot: crear `tools/web/export.sh` y `.github/workflows/export-web.yml` con Godot estándar 4.7.1, salida limpia, ZIP raíz con index.html y manifiesto exterior de SHA/revisión/dirty/tamaño; CI reutiliza el comando y adjunta artefacto sin butler/credenciales/publicación, conservando `ci.yml` GUT+import y deploys móviles; depende de T006 aprobada, sin ejecutar verificaciones por desarrollo.
 - [X] T010 [US3] godot-tester: comprobar `tools/web/export.sh` y `.github/workflows/export-web.yml` mediante generación desde copia limpia, listado exterior+PCK, extracción/servidor y manifest/hashes; registrar `specs/003-web-itchio/evidence/web-package.md`, límites portal/licencias/exclusiones y resultado local o run CI remoto real claramente separado; depende de T009 entregada, sin editar herramientas.
-- [ ] T011 [US3] docs-writer: redactar `docs/WEB_EXPORT.md` con requisitos y pasos locales/CI realmente verificados, archivo ZIP obtenido, itch.io HTML Game/Click to play/iframe 1152×648/Mobile Friendly condicionado a evidencia y estado de navegadores; enlazar desde `README.md`, sin afirmar subida/publicación ni intervenir cuenta; depende de T008 y T010 disponibles para QA, y conserva alcance de sus veredictos.
+- [X] T011 [US3] docs-writer: redactar `docs/WEB_EXPORT.md` con requisitos y pasos locales/CI realmente verificados, archivo ZIP obtenido, itch.io HTML Game/Click to play/iframe 1152×648/Mobile Friendly condicionado a evidencia y estado de navegadores; enlazar desde `README.md`, sin afirmar subida/publicación ni intervenir cuenta; depende de T008 y T010 disponibles para QA, y conserva alcance de sus veredictos.
 
 ## Corrección necesaria de FR-003: recoger sin desplegar
 
@@ -87,9 +87,9 @@ aprobado y el nuevo ZIP. Son **14 tareas iniciales + 4 de corrección requerida*
 
 ## Fase final: Regresión, rendimiento y cierre
 
-- [ ] T012 godot-tester: verificar estado final en `specs/003-web-itchio/evidence/final-validation.md` con importación limpia/GUT completo, hashes de reglas/arte/nativos y W12 medido en escritorio+Chrome Android (carga, duración, condiciones y frame times/cadencia/memoria disponible); repetir smoke si el paquete cambió desde T007, registrar Firefox/Safari/Web iOS según disponibilidad y gates constitucionales pendientes sin adjudicarles PASS; depende de T008, T010 y T011 entregada, sin revalidación histórica ficticia de 002.
-- [ ] T013 qa-validator: revisar conjunto final y trazabilidad FR-001–012/SC-001–007 en `specs/003-web-itchio/`, `tools/web/`, `.github/workflows/export-web.yml` y `docs/WEB_EXPORT.md`; contrastar reporte final, ZIP/PCK, licencia, invariantes y matriz real, distinguiendo artefacto WIP, aceptación web acotada y gates de difusión/rendimiento; depende de T012, no marca tareas ni corrige archivos.
-- [ ] T014 docs-writer: consolidar solo decisiones/evidencia aprobadas de 003 en `docs/WEB_EXPORT.md`, `README.md`, `docs/ARCHITECTURE.md` y `specs/003-web-itchio/evidence/implementation-status.md`, con vínculoIssue #14, ruta/hashZIP, matriz y pendientes exactos; depende del veredicto T013, qa-validator revisa este diff documental y confirma que no cambió el build probado antes del marcado por el orquestador.
+- [X] T012 godot-tester: verificar estado final en `specs/003-web-itchio/evidence/final-validation.md` con importación limpia/GUT completo, hashes de reglas/arte/nativos y W12 medido en escritorio+Chrome Android (carga, duración, condiciones y frame times/cadencia/memoria disponible); repetir smoke si el paquete cambió desde T007, registrar Firefox/Safari/Web iOS según disponibilidad y gates constitucionales pendientes sin adjudicarles PASS; depende de T008, T010 y T011 entregada, sin revalidación histórica ficticia de 002.
+- [X] T013 qa-validator: revisar conjunto final y trazabilidad FR-001–012/SC-001–007 en `specs/003-web-itchio/`, `tools/web/`, `.github/workflows/export-web.yml` y `docs/WEB_EXPORT.md`; contrastar reporte final, ZIP/PCK, licencia, invariantes y matriz real, distinguiendo artefacto WIP, aceptación web acotada y gates de difusión/rendimiento; depende de T012, no marca tareas ni corrige archivos.
+- [X] T014 docs-writer: consolidar solo decisiones/evidencia aprobadas de 003 en `docs/WEB_EXPORT.md`, `README.md`, `docs/ARCHITECTURE.md` y `specs/003-web-itchio/evidence/implementation-status.md`, con vínculoIssue #14, ruta/hashZIP, matriz y pendientes exactos; depende del veredicto T013, qa-validator revisa este diff documental y confirma que no cambió el build probado antes del marcado por el orquestador.
 
 ## Dependencias y ejecución
 
@@ -214,3 +214,38 @@ T001 ─┬─ T002 ─┐
   visual en producción sin observador y el regreso real de pestaña siguen
   pendientes; no se completan T007/T008 ni el gate de rendimiento. Se mantienen
   **12/18 tareas aprobadas** y el mismo candidato de fuente `4a2915c`.
+
+- 2026-10-16: **APROBADO T007/T008** por QA para Chrome escritorio y el Xiaomi
+  horizontal. Los cuatro casos físicos observados quedan corroborados por la
+  prueba humana en producción; W08 acredita partidas manuales hasta LOST con
+  datos idénticos en copia de solo lectura, sin atribuir el terminal oculto al
+  ZIP. W10 combina regreso Android en el mismo run sin recarga observada y
+  recarga nueva de escritorio; foco de escritorio sigue NOT RUN. Evidencia:
+  [interacción consolidada](evidence/web-interaction.md) y
+  [producción Android](evidence/android-production-summary.json). **14/18**
+  tareas aprobadas; rendimiento sostenido y aceptación global siguen pendientes.
+
+- 2026-10-16: **APROBADO T011/T012** por QA: guía, README y seguimiento
+  sincronizados con T007/T008; import limpio, GUT189/189 e invariantes del mismo
+  candidato conservados, con medidas reales de escritorio/Android y métodos
+  explícitos. W12 acredita el informe de medición, no certifica60FPS sostenidos,
+  carga fría, memoria exclusiva ni entornos/CI remoto no ejecutados.
+  [Guía](../../docs/WEB_EXPORT.md), [reporte final](evidence/final-validation.md).
+  **16/18** tareas aprobadas; se abre T013 y se preserva la validación global
+  pendiente, sin modificar el juego ni repetir ejecuciones por documentación.
+
+- 2026-10-16: **APROBADO T013** por QA: trazabilidad FR001–012/SC001–007
+  completa para la entrega Web acotada de003. SC006, el plan y el contrato
+  permiten cerrar sus tareas con métodos y límites explícitos; esto no
+  certifica60FPS sostenidos, el dispositivo constitucional de referencia,
+  carga fría, memoria exclusiva ni los entornos/CI remoto NOT RUN. El smoke
+  manual observado satisface el alcance acordado. **17/18**; habilitada T014
+  y después PR en borrador. Sin cierre de002, merge ni publicación en itch.io.
+
+- 2026-10-16: **APROBADO T014** por QA: README, guía de exportación,
+  arquitectura, seguimiento y estado de SPEC sincronizados con la entrega
+  acotada. ZIP, script y prueba mantienen sus hashes; no hubo nueva ejecución
+  por los cambios documentales. **18/18 tareas de003 aprobadas**. Se prepara
+  commit y PR en borrador sobre `codex/002-monte-calvo-terreno-trincheras`, con
+  dependencia explícita; 002, rendimiento global, merge y publicación conservan
+  sus límites y decisiones pendientes.
