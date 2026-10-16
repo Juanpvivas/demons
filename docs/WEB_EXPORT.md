@@ -13,8 +13,12 @@ La demo sigue en desarrollo y no está publicada en itch.io.
 está incorporada en la rama Web. La constitución 2.1.0 conserva tanto los
 destinos Web/Android/iOS como la referencia Xiaomi exclusiva de 002. Los
 resultados de navegador y el [seguimiento de 003](../specs/003-web-itchio/tasks.md)
-siguen siendo propios: esta integración necesita comprobaciones del nuevo
-estado y no hereda una certificación de rendimiento Web.
+siguen siendo propios. El [informe de integración aprobado por QA](../specs/003-web-itchio/evidence/main-integration.md)
+acredita el nuevo paquete y su equivalencia, conservando el smoke y las
+interacciones anteriores. No se repitieron pruebas de navegador, teléfono o
+GUT local; los [Checks del PR #15](https://github.com/Juanpvivas/demons/pull/15/checks)
+identifican el CI de cada revisión publicada. No se hereda una certificación
+de rendimiento Web.
 
 ## Requisitos
 
@@ -84,6 +88,16 @@ funcional, no identidad binaria. Esos paquetes son históricos y preceden la
 corrección de entrada descrita abajo.
 [Informe T010](../specs/003-web-itchio/evidence/web-package.md).
 
+El **candidato integrado verificado** (2026-10-16), exportado desde el snapshot
+limpio `7309d8fa211637afbd68c4d73181758ee2840a93`, mide **14 893 307 bytes**, SHA-256
+`f3b60dfa20ddbc277c12335a10ab43f92b2f676474659a560dfc6c8ab515dc78`.
+Importación y exportación finalizaron en 0. Conserva los 12 miembros del ZIP,
+las 78 rutas del PCK y las tres licencias; solo cambian IDs internos generados
+al compilar seis escenas. QA confirmó la equivalencia para reutilizar las
+interacciones y el smoke anteriores en su alcance acotado.
+[Informe](../specs/003-web-itchio/evidence/main-integration.md) y
+[manifiesto del candidato integrado](../specs/003-web-itchio/evidence/main-integration-manifest.json).
+
 El **paquete local histórico anterior a esta integración** (2026-10-16),
 generado desde copia limpia de `4a2915c`, mide
 **14 893 307 bytes** (aproximadamente 14.89 MB), con SHA256
@@ -139,11 +153,11 @@ horizontal; el alcance físico Android se registra por separado a continuación.
 | Navegador iOS | NOT RUN; sin soporte anunciado por extrapolación. |
 | W08 partida Web hasta terminal | PASS acotado: partidas manuales observadas hasta LOST con los mismos datos, más corroboración visual de producción. El ZIP sin observador no muestra el estado terminal; no se acredita victoria manual. |
 | W12 carga/rendimiento/memoria | PARCIAL: muestras de proceso observado y métricas de navegador en producción; carga fría y memoria exclusiva del juego pendientes. No acredita 60 FPS estables. |
-| Workflow Web en GitHub Actions | SUCCESS remoto anterior a la integración de main; el nuevo estado aún debe comprobarse. Véase el run y el paquete identificados abajo. |
+| Workflow Web en GitHub Actions | SUCCESS histórico identificado abajo; para cada revisión publicada, consultar los [Checks del PR #15](https://github.com/Juanpvivas/demons/pull/15/checks). |
 
 Fuentes: [arranque T005](../specs/003-web-itchio/evidence/web-startup.md),
 [paquete T010](../specs/003-web-itchio/evidence/web-package.md) y los registros
-T017 enlazados arriba. GUT pasa ahora 189/189; la prueba focalizada utiliza
+T017 enlazados arriba. La regresión anterior pasó 189/189; la prueba focalizada utiliza
 dispatch real en SubViewport, sin sustituir las interacciones del navegador
 ni el toque físico.
 La feature 002 ya quedó aprobada e integrada en main; su aceptación nativa no
@@ -204,8 +218,10 @@ al merge virtual `a3aef472aa80b966e06029970a5274e50b51c47d` de la cabeza
 Tester y QA comprobaron sus 12 miembros, las 78 rutas del PCK y las licencias
 y exclusiones; no se repitieron interacciones de navegador con ese paquete.
 Es distinto del ZIP local histórico de `4a2915c` indicado arriba. Ambos
-preceden el merge del cierre de 002; no acreditan el nuevo HEAD, cuyo paquete,
-CI y QA deben identificarse al terminar sus comprobaciones.
+preceden el merge del cierre de 002; el candidato integrado de `7309d8f` se
+identifica por separado en esta guía y su informe. Los
+[Checks del PR #15](https://github.com/Juanpvivas/demons/pull/15/checks) permiten
+comprobar el CI de la revisión publicada, sin atribuirle esos éxitos históricos.
 El workflow no publica en itch.io ni requiere secretos de esa cuenta.
 
 ## Preparar una carga manual posterior en itch.io

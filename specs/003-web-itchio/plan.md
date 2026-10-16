@@ -5,10 +5,20 @@
 **Input**: `specs/003-web-itchio/spec.md`.
 **Issue**: [#14](https://github.com/Juanpvivas/demons/issues/14).
 
-**Note**: Spec Kit prepara este documento; la ejecución pertenece a los agentes
+**Note — preparación original (2026-10-15)**: Spec Kit prepara este documento; la ejecución pertenece a los agentes
 según `docs/DEVELOPMENT_WORKFLOW.md`. No se ejecutaron builds o pruebas desde
 esta preparación. El orquestador ya preparó la rama desde `b670d86`, que
 contiene el arte WIP de 002 y depende de la integración Spec Kit de PR #12.
+
+**Estado actualizado (2026-10-16)**: [003 tiene 18/18 tareas aprobadas](tasks.md)
+en su alcance Chrome escritorio/Xiaomi horizontal. 002 quedó cerrada mediante
+el [PR #16](https://github.com/Juanpvivas/demons/pull/16); el merge de main
+`7309d8f` conserva ambas entregas y su [paquete integrado está verificado por QA](evidence/main-integration.md).
+La constitución 2.1.0 reúne Web/GDScript de 2.0.0 y la referencia Xiaomi
+exclusiva de 002 de 1.2.0, sin extenderla a Web. Los requisitos de este plan
+conservan su alcance; la aceptación no acredita otros navegadores, Web iOS ni
+rendimiento sostenido. Consulta los [Checks del PR #15](https://github.com/Juanpvivas/demons/pull/15/checks)
+para el CI de cada revisión publicada. No hay publicación en itch.io.
 
 ## Summary
 
@@ -19,9 +29,10 @@ Android/iOS nativos, gameplay, arte e InputMap. Comprobar arranque, interacción
 real por clic/toque, resizing y partida, y documentar la matriz efectivamente
 probada. No publicar, operar cuenta o configurar monetización.
 
-La persona confirmó el cambio de prioridad hacia Web. 002 continúa abierta:
-su evidencia histórica PC/Android nativo y sus gates iOS/rendimiento no se
-reescriben, heredan como cerrados ni convierten en aceptación Web.
+**Contexto de preparación original:** la persona confirmó el cambio de prioridad
+hacia Web mientras 002 continuaba abierta. Su evidencia y sus gates no se
+reescribieron ni se convirtieron en aceptación Web. El cierre posterior de 002
+y la integración actual se identifican arriba.
 
 ## Technical Context
 
@@ -63,15 +74,16 @@ mano ni incluir herramientas de desarrollo en el PCK. No publicar a itch.io.
 workflow de exportación; sin HUD/tutorial/menú nuevo, guardado, multijugador,
 cuenta, pagos o catálogo de nuevos niveles. Máximo 14 tareas iniciales.
 
-## Constitution Check
+## Constitution Check (preparación original)
 
 *GATE antes de investigación y reevaluado tras el diseño.*
 
 La lectura inicial detectó la versión 1.1.0 con PC nativo y excepción C#:
 **no autorizaba declarar el plan listo** con el alcance Web. La enmienda
 **2.0.0**, escrita por docs-writer y revisada por QA durante la preparación,
-resuelve ese gate antes de implementación; la lectura final de este plan usa
-2.0.0 y conserva el Sync Impact Report de la enmienda.
+resolvió ese gate antes de implementación; la lectura final de la preparación
+usó 2.0.0 y conservó su Sync Impact Report. La integración actual combina esa
+decisión con la enmienda 1.2.0 de main en la constitución 2.1.0.
 
 | Principio/restricción | Cumplimiento previsto y evidencia de ejecución |
 |---|---|
@@ -82,7 +94,7 @@ resuelve ese gate antes de implementación; la lectura final de este plan usa
 | Restricciones de plataforma | Web + Android + iOS; nada de instaladores nativos PC de producto. Override gráfico solo Web. |
 | Governance y workflow | Enmienda 2.0.0 previa; Spec Kit solo prepara. Agentes con roles separados, solo orquestador marca tras QA. |
 
-**Resultado postdiseño**: no se planifica excepción constitucional ni cambio de
+**Resultado postdiseño (histórico, 2026-10-15)**: no se planifica excepción constitucional ni cambio de
 juego. Preparación documental lista para revisión de QA del conjunto. El paso
 a ejecución requiere su veredicto; implementación, mediciones y aceptación
 continúan pendientes aunque la política documental ya esté aprobada.

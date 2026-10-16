@@ -44,7 +44,9 @@ distingue PC, Android e iPad Simulator; la excepción de rendimiento del Xiaomi
 es exclusiva de 002 y no certifica Web. La rama 003 incorpora ese cierre sin
 convertir las pruebas nativas en pruebas de navegador. Su
 [seguimiento propio](specs/003-web-itchio/tasks.md) conserva el alcance aceptado;
-la nueva integración debe comprobarse antes de entregar el PR #15 actualizado.
+el [informe de integración](specs/003-web-itchio/evidence/main-integration.md)
+registra el nuevo paquete aprobado por QA desde `7309d8f`, su equivalencia con
+la entrega anterior y los límites que se conservan.
 
 ## Requisitos
 
@@ -94,8 +96,10 @@ reciben un mensaje de bienvenida en su primera contribución
   El workflow `export-web.yml` adjunta artefactos sin publicar; la
   [exportación remota anterior](https://github.com/Juanpvivas/demons/actions/runs/38903800209)
   y el [CI anterior](https://github.com/Juanpvivas/demons/actions/runs/38903800369)
-  terminaron correctamente antes de integrar el cierre de 002. Las nuevas
-  comprobaciones del estado integrado quedan pendientes. Entrada y smoke están aprobados en su
+  terminaron correctamente antes de integrar el cierre de 002. El paquete
+  integrado quedó verificado; consulta los
+  [Checks del PR #15](https://github.com/Juanpvivas/demons/pull/15/checks)
+  para el CI de cada revisión publicada. Entrada y smoke están aprobados en su
   alcance y QA aceptó la entrega 003; la demo sigue en desarrollo, con las
   mediciones y los entornos no certificados identificados explícitamente.
   [Guía y matriz real](docs/WEB_EXPORT.md).

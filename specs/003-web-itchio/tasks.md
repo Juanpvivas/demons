@@ -8,10 +8,13 @@ description: "Plan de tareas Web/itch.io con roles, conservación de gameplay y 
 `data-model.md`, `contracts/web-delivery.md` y `quickstart.md`.
 **Flujo**: `docs/DEVELOPMENT_WORKFLOW.md` desde la raíz del repositorio.
 **Execution Branch**: `codex/003-web-itchio`, preparada una sola vez por el
-orquestador desde `b670d86`.
+orquestador desde `b670d86`; incorpora `main` del PR #16 mediante `7309d8f`.
 **Issue**: [#14](https://github.com/Juanpvivas/demons/issues/14).
-**Estado**: preparación Spec Kit aprobada por `qa-validator`; ejecución por
-agentes en curso. La prioridad Web no cierra ni reescribe 002.
+**Estado**: entrega Web acotada aprobada por QA, **18/18 tareas**. Integración
+con `main` verificada en el [informe](evidence/main-integration.md); los Checks
+del [PR #15](https://github.com/Juanpvivas/demons/pull/15) corresponden a cada
+revisión publicada. 002 quedó cerrada por la fusión del PR #16; sus límites
+nativos no se extrapolan a Web. Fusión y publicación siguen siendo pasos separados.
 
 ## Formato y aprobación
 
@@ -249,3 +252,27 @@ T001 ─┬─ T002 ─┐
   commit y PR en borrador sobre `codex/002-monte-calvo-terreno-trincheras`, con
   dependencia explícita; 002, rendimiento global, merge y publicación conservan
   sus límites y decisiones pendientes.
+
+## Integración de main tras el PR #16 — 2026-10-16
+
+La persona autorizó actualizar el PR #15 y dejarlo para revisión, sin fusionarlo.
+Se incorporó `main` (`0cc19d0`) en `7309d8f`, conservando el historial y las
+18 aprobaciones anteriores. QA aprobó la resolución documental: constitución
+2.1.0 reúne Web/GDScript y la referencia Xiaomi exclusiva de 002; diseño y
+arquitectura conservan el arte y el arreglo I4 aprobados. No hay lógica nueva,
+por lo que no se fabrica otro RED ni se repite la matriz física por rutina.
+
+Tester y QA confirmaron **364/364 fuentes protegidas idénticas** a ambos padres,
+InputMap y presets nativos conservados. Importación y exportación limpias del
+snapshot integrado terminaron con código 0. El ZIP contiene 12 miembros y 78 recursos;
+solo difieren 51 identificadores internos generados en seis escenas compiladas,
+sin cambios funcionales. QA rederivó el diagnóstico y aprobó el paquete y la
+reutilización de la evidencia de interacción. [Informe compacto y manifiesto](evidence/main-integration.md).
+
+Los dos archivos nuevos conservan 89 líneas de evidencia mínima reproducible;
+los registros extensos quedan fuera del diff y se declara su retención. Este
+registro no atribuye a la nueva revisión los éxitos de CI anteriores: el
+orquestador comprobará GUT/importación y exportación de la última punta publicada
+antes de promover el PR, y enlazará los resultados reales en su descripción.
+Se mantienen los límites de navegadores, rendimiento y ausencia de publicación.
+No se crean tareas ni se cambian checkboxes por esta sincronización documental.

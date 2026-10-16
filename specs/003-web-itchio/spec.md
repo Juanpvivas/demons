@@ -6,9 +6,19 @@
 
 **Created**: 2026-10-15
 
-**Status**: Preparación; implementación y aceptación pendientes
+**Status**: Entrega acotada aprobada por QA (18/18 tareas); integración de main verificada; sin publicación
 
 **Input**: «Sí, creo que tenemos que hacer que funcione en web para poder subir el juego al portal itch.io».
+
+**Estado al 2026-10-16**: la [entrega de 003](tasks.md) está aprobada en su
+alcance Chrome escritorio/Xiaomi horizontal. 002 quedó cerrada mediante el
+[PR #16](https://github.com/Juanpvivas/demons/pull/16), y su integración en
+`7309d8f` tiene [paquete y equivalencia aprobados](evidence/main-integration.md).
+La constitución 2.1.0 combina las decisiones anteriores de plataformas y la
+referencia Xiaomi exclusiva de 002; no amplía soporte ni certifica rendimiento
+sostenido Web. Los [Checks del PR #15](https://github.com/Juanpvivas/demons/pull/15/checks)
+identifican el CI de cada revisión publicada. Se conservan abajo los requisitos
+y el contexto de preparación original, sin atribuirles resultados nuevos.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -185,8 +195,9 @@ la lista exacta de navegadores/dispositivos probados.
 
 ## Assumptions
 
-- La prioridad cambia a habilitar web para itch.io. La feature 002 mantiene su
-  estado histórico y sus validaciones pendientes; esta feature no la cierra.
+- **Contexto de preparación original (2026-10-15):** la prioridad cambió a
+  habilitar Web para itch.io mientras 002 conservaba validaciones pendientes;
+  esa preparación no la cerraba. Su cierre posterior se identifica arriba.
 - El primer objetivo publicable es una demo de Monte Calvo actual, no una
   promesa de juego terminado. El HUD ausente, controles nuevos de recarga,
   tutorial, menú, guardado, nuevas unidades y balance quedan fuera de alcance.
