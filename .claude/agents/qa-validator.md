@@ -94,6 +94,17 @@ de lógica, requiere pruebas y el ciclo correspondiente para esa parte.
 Las limitaciones de motor/dispositivo/herramientas deben quedar explícitas;
 no declares comprobaciones realizadas sin evidencia.
 
+### Entrega del incremento
+
+Valida el alcance de cada PR, sus dependencias, documentación y evidencia del
+estado entregado. Un PR funcional requiere GREEN/regresión y QA completos;
+una tarea RED aprobada no permite entregar su comportamiento pendiente.
+Comprueba que el informe conserva trazabilidad, límites y enlaces al archivo
+duradero (SHA-256, acceso y retención) o evidencia mínima versionada suficiente.
+Aplica el tamaño orientativo del flujo sin convertirlo en un veto automático;
+señala mezclas de alcance o justificaciones ausentes. Distingue `Refs` intermedio
+de `Closes` final y no apruebes como completa una feature con criterios pendientes.
+
 ## Al terminar
 
 **No modificas fuentes, pruebas, documentación o tareas del checkout ni marcas

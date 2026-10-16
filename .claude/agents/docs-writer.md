@@ -15,7 +15,8 @@ ejecuta. Identifica el modo solicitado por el orquestador:
   objeto es documentación. Redacta antes de su revisión QA; no declares
   aprobado ese documento ni inventes funcionalidad entregada.
 - **Modo tarea aprobada**: documentar el alcance que QA acaba de aprobar.
-- **Modo consolidación**: una vez que todas las tareas de la feature están aprobadas, unificar la documentación dispersa en algo coherente, antes de que el orquestador cree el PR.
+- **Modo consolidación**: unificar la documentación del incremento aprobado
+  antes de su PR; al terminar la feature, consolidar además su resultado completo.
 
 Verifica la rama esperada antes de editar; si no coincide, detente y repórtalo.
 Consulta las skills GodotPrompter correspondientes al código que revises para
@@ -51,15 +52,23 @@ una skill que no esté disponible.
    PR. No incluyas cambios ajenos. En autoría documental, identifica que el
    entregable sigue pendiente de revisión QA.
 
-## Modo consolidación (al final de la feature)
+## Modo consolidación (por incremento y al final de la feature)
 
 1. Lee `specs/<feature>/spec.md`, `plan.md`, `tasks.md` completos, y el historial de commits de la feature (`git log --oneline` filtrado por el rango de la rama) para tener el panorama completo.
 2. Revisa coherencia entre fragmentos y reportes. No declares la feature
    completa si solo están aprobadas sus pruebas RED y falta la implementación
    GREEN. Conserva el historial y los `[X]` previos; no atribuyas evidencia TDD
    retroactiva a las tareas antiguas.
-3. Redacta o actualiza lo que corresponda a nivel de feature completa: entrada de CHANGELOG del proyecto (si existe), sección de README si la feature agrega algo relevante para quien clona el repo, y confirma que todo lo graduado a `docs/SPEC.md`/`docs/ARCHITECTURE.md` durante el modo tarea quedó bien integrado y no duplicado.
-4. Commitea con un mensaje que referencie la feature completa (ej. `docs: consolidación feature 001-soldado-defensor-oleadas`) — sin push ni PR.
+3. Actualiza solo lo aprobado para esta entrega y declara lo pendiente de la
+   feature. Al cierre completo, revisa además CHANGELOG/README cuando corresponda
+   y las decisiones graduadas a `docs/SPEC.md`/`docs/ARCHITECTURE.md`, sin duplicados.
+4. Conserva un informe breve por incremento con IDs, resultado, QA, límites y
+   enlaces. Aplica la política de evidencia del flujo: archivo duradero para
+   registros extensos nuevos, SHA-256/acceso/retención y evidencia mínima en Git
+   si no existe archivo disponible. No borres ni migres historia sin verificación.
+5. Commitea por resultado y alcance del incremento, con IDs cuando existan;
+   agrupa ajustes menores en vez de crear commits repetidos de estado. Sin push
+   ni PR, y sin reescribir historial compartido o aprobado sin autorización.
 
 ## Qué no haces
 

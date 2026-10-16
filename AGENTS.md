@@ -79,12 +79,31 @@ implementación relacionada. La implementación solo se completa con GREEN y
 Para arte o documentación sin lógica nueva, usa criterios visuales o
 verificaciones documentales apropiadas, sin exigir pruebas artificiales.
 
-El orquestador revisa checklists, reutiliza el Issue (abierto o cerrado) y
-prepara la rama una sola vez. Ante `RECHAZADO`, devuelve el trabajo al rol
+Una feature de Spec Kit puede entregarse en **varios PR pequeños**. El
+orquestador define incrementos coherentes con sus IDs y dependencias, reutiliza
+un Issue por feature y prepara una rama por incremento. Cada PR funcional
+incluye su ciclo TDD completo, QA y documentación; aprobar RED no autoriza
+fusionarlo con implementación pendiente. Arte y documentos conservan su
+validación proporcional. No esperes a terminar toda la feature para entregar
+un incremento aprobado.
+
+El flujo detalla el tamaño orientativo, los commits por resultado y la evidencia
+mínima que se conserva en Git. Los registros extensos nuevos se enlazan desde
+un archivo duradero con SHA-256, acceso y retención comprobables; si no existe,
+se versiona la evidencia mínima suficiente. Conserva las evidencias históricas.
+Los PR intermedios usan `Refs #<issue>`; solo el último, cuando todos los
+criterios estén cumplidos, usa `Closes #<issue>`.
+
+El orquestador revisa checklists y mantiene la rama durante cada ciclo.
+Ante `RECHAZADO`, devuelve el trabajo al rol
 responsable; al tercer rechazo consecutivo de una tarea o ante `AMBIGUO`,
-escala a la persona. Al cerrar la feature, consolida documentación y
-verificaciones, publica la rama y crea el PR **en borrador**, vinculado al
-Issue. La persona decide promoverlo o fusionarlo.
+escala a la persona. Al entregar cada incremento, consolida documentación y
+verificaciones, publica la rama y crea un PR **en borrador**, con descripción
+breve y vinculado al Issue. Solo una petición explícita de la persona permite
+promoverlo a revisión; nunca se fusiona automáticamente. Recomienda a la
+persona `Squash and merge` para dejar un commit por PR en `main`, conservando
+la trazabilidad RED/GREEN en el informe; no reescribas historial compartido o
+aprobado sin autorización.
 
 Las consultas y correcciones documentales puntuales conservan su alcance;
 no disparan automáticamente la implementación de una feature.
@@ -148,3 +167,4 @@ no afirmes haberla aplicado ni sustituyas su consulta por conocimiento genérico
 | 2026-10-15 | Instrucciones comunes trasladadas a `AGENTS.md`, con adaptación a otras herramientas y ruta real de la constitución |
 | 2026-10-15 | Spec Kit limitado a preparación; ejecución por agentes con TDD RED → desarrollo → GREEN → QA y guía operativa compartida |
 | 2026-10-15 | Personalizaciones trasladadas al preset local `demons-agent-tdd`, con workflow propio `demons-preparation` y verificador de instalación |
+| 2026-10-16 | Entregas por incrementos con PR pequeños, TDD y QA completos, evidencia proporcional y cierre del Issue solo al completar la feature |

@@ -24,7 +24,7 @@ que usen otros mecanismos de delegación.
    pendientes, los presenta y obtiene la decisión de la persona antes de
    implementar. Reutiliza el Issue de la feature, incluidos los cerrados
    (`gh issue list --state all --search "<feature-id> in:title"`), y prepara
-   la rama una sola vez. Los agentes reciben la rama Git real esperada.
+   una rama por incremento. Los agentes reciben la rama Git real esperada.
 4. El orquestador clasifica las tareas y ordena sus dependencias. Una tarea
    de pruebas no se asigna primero a quien tiene prohibido escribir pruebas.
    Al delegar, entrega IDs, criterios de aceptación, archivos, rama esperada,
@@ -110,6 +110,63 @@ o la corrección de un bug que esa prueba deba guiar.
 - Ejecuta secuencialmente trabajos sobre los mismos archivos, incluso si
   estaban marcados `[P]`. No cambies de rama entre etapas del ciclo.
 
+## Incrementos y PR pequeños
+
+Una feature de Spec Kit puede abarcar varios PR. Antes de implementar, el
+orquestador delimita cada incremento por un resultado coherente, sus IDs de
+tareas, dependencias y verificaciones. No requiere completar toda la feature
+para entregar una parte aprobada. Conserva IDs y estados; dividir entregas no
+autoriza ampliar alcance ni inventar tareas.
+
+- Cada PR de comportamiento incluye pruebas RED previas, implementación,
+  GREEN/regresión pertinente, QA independiente y documentación del resultado.
+  Una tarea RED aprobada puede constar en el seguimiento, pero no entregarse
+  para fusionar mientras su comportamiento siga pendiente. Arte o documentos
+  sin lógica nueva usan la verificación proporcional del flujo.
+- Una rama por incremento, preparada solo por el orquestador desde `main`
+  actualizado por defecto. Si depende de otro PR, declara esa dependencia y
+  su base; vuelve a comprobar el diff y QA al integrar la base. No cambies de
+  rama durante el ciclo ni acumules incrementos independientes en una entrega.
+- Orientación: hasta **400 líneas manuales cambiadas y 20 archivos relevantes**
+  por PR. Cuenta adiciones y eliminaciones; declara aparte arte binario y
+  archivos generados. Si se supera, divide por resultados comprobables o
+  justifica brevemente por qué el cambio es indivisible. Es una guía de
+  revisión, no un nuevo permiso ni motivo para fragmentar TDD o saltar QA.
+- Commits por resultado legible, con IDs cuando existan; agrupa ajustes menores
+  y evita commits repetidos de estado o registros. Conserva el estado probado
+  y la secuencia RED/GREEN en el informe, incluso si la persona elige
+  `Squash and merge` para dejar un commit por PR en `main`. No reescribas
+  historial compartido o aprobado sin autorización.
+- Reutiliza un Issue por feature. Los PR intermedios llevan `Refs #<n>` y
+  explican qué queda pendiente; solo el último usa `Closes #<n>` cuando todos
+  los criterios de aceptación estén cumplidos. No cierres el Issue con una
+  entrega parcial ni reabras trabajo histórico por reorganizar el flujo.
+
+El cuerpo del PR se redacta en español y permite entender el cambio sin leer
+la conversación: qué cambia y por qué, IDs/Issue, cómo probarlo, resultado de
+QA y límites. Enlaza el informe detallado y los documentos de la feature;
+evita copiar cronologías, logs o listas enteras de tareas.
+
+## Evidencia suficiente y conservada
+
+En Git conserva un informe breve por incremento: alcance y criterios,
+revisión o hashes del estado probado, comandos/pasos reproducibles, versiones
+relevantes, resultados RED/GREEN o visuales, veredicto QA y límites. Añade solo
+las capturas clave que ayuden a revisarlo. No reconstruyas evidencia histórica.
+
+Los logs completos, JSON y capturas repetidas nuevos se guardan en un archivo
+duradero enlazado desde ese informe, con SHA-256, acceso verificado para quienes
+revisan y política de retención explícita que cubra la vida soportada de la
+entrega. Los artifacts de CI que caducan no pueden ser la única copia. Si no
+hay un archivo duradero disponible, versiona el conjunto mínimo que permita
+reproducir y auditar el resultado, justificando su inclusión. Capturar la salida
+completa no obliga a incorporarla toda al diff.
+
+Esta política no permite borrar evidencias ya versionadas ni romper sus enlaces.
+Cualquier migración histórica requiere conservar y verificar contenido, hashes
+y acceso antes de sustituir referencias. QA comprueba la evidencia; reducir el
+diff nunca sustituye una validación ni oculta un fallo.
+
 ## Rechazos, cierre y límites
 
 `RECHAZADO` vuelve al agente responsable: errores de implementación a desarrollo,
@@ -117,13 +174,20 @@ errores de pruebas al tester y errores documentales a documentación. Ante
 `AMBIGUO`, presenta la decisión faltante a la persona. Al tercer rechazo
 consecutivo de una misma tarea, escala en lugar de seguir reintentando.
 
-Al cerrar una feature, el tester confirma la suite completa de GUT y las
-verificaciones manuales exigidas por la constitución. Documentación consolida
-las decisiones y el orquestador publica la rama y crea el PR **en borrador**,
-en español y vinculado al Issue. Comprueba además la política de versiones de
+En cada incremento, el tester confirma GREEN y la regresión pertinente, más las
+verificaciones manuales exigidas por su alcance y la constitución. Documentación
+consolida ese resultado y QA revisa el estado que se entregará. Al cerrar la
+feature, confirma además la suite completa de GUT y todas sus verificaciones
+obligatorias. Reutiliza evidencia válida del mismo estado; no repitas pruebas
+por rutina ni presentes una regresión parcial como cierre completo.
+
+El orquestador publica la rama y crea el PR **en borrador**, en español y
+vinculado al Issue según sea una entrega intermedia o final. Comprueba además
+la política de versiones de
 [ARCHITECTURE.md §7](ARCHITECTURE.md#7-consideraciones-multiplataforma) cuando
-el cambio vaya a distribuirse a testers. La persona decide promover o fusionar
-el PR; ningún agente lo hace automáticamente.
+el cambio vaya a distribuirse a testers. Solo una petición explícita de la
+persona permite promover el PR a revisión; ningún agente lo fusiona
+automáticamente.
 
 La adaptación a otra IA conserva estas responsabilidades, evidencias y orden.
 Si falta delegación, GUT o una skill requerida, informa la limitación concreta
@@ -151,3 +215,4 @@ comprobar que sus comandos y plantillas siguen activos tras una actualización.
 |---|---|
 | 2026-10-15 | Separación explícita entre preparación Spec Kit y ejecución por agentes; ciclo TDD y tratamiento de tareas RED, arte y documentación |
 | 2026-10-15 | Personalizaciones empaquetadas en un preset local y workflow independiente; mantenimiento fuera de los archivos core |
+| 2026-10-16 | Incrementos con PR pequeños, ciclos TDD/QA completos, descripciones y commits legibles, archivo duradero de evidencia y cierre final del Issue |

@@ -47,6 +47,9 @@ Spec Kit prepara spec, plan y tareas; no uses ni precargues `speckit-implement`.
   realizar el tester. Si incluyen lógica nueva, separa ese comportamiento para
   que siga RED → implementación → GREEN.
 - Implementa únicamente el alcance de la tarea asignada. Si notas trabajo adicional necesario que no está en la tarea, repórtalo al final — no lo implementes sin que se te asigne explícitamente, para no descoordinar el pipeline del orquestador.
+- Respeta el incremento acordado para un PR pequeño: no acumules trabajo de
+  otras entregas. Reporta si hace falta dividir o justificar su tamaño sin
+  separar el comportamiento de sus pruebas GREEN y QA.
 - Sigue las convenciones de nombres de `docs/ARCHITECTURE.md` §3 sin excepción (PascalCase para escenas/clases, snake_case para scripts/señales/recursos).
 - Los datos de balance (stats de soldados, enemigos, oleadas) van como `Resource` (`.tres`), nunca hardcodeados en el script — principio no negociable del proyecto.
 - Usa GDScript salvo que la tarea indique explícitamente C# (`docs/SPEC.md` §5).
@@ -58,7 +61,10 @@ Spec Kit prepara spec, plan y tareas; no uses ni precargues `speckit-implement`.
   ejecuta GREEN y realiza la regresión pertinente. No debilites una aserción ni
   cambies el requisito para que tu código encaje. Si algo es difícil de testear,
   descríbelo en el reporte; las verificaciones las hace el tester.
-- Commitea tus cambios localmente con un mensaje claro que referencie el ID de la tarea (ej. `T003: implementar transición fusil→machete`), pero no hagas push ni abras PR — eso lo hace el orquestador al final del flujo completo.
+- Commitea por resultado con un mensaje claro y el ID de la tarea (ej.
+  `T003: implementar transición fusil→machete`); agrupa ajustes menores del
+  mismo resultado. No hagas push ni abras PR: lo hace el orquestador al entregar
+  el incremento aprobado. No reescribas historial compartido o aprobado sin autorización.
 - **No marques la tarea `[X]` en `tasks.md`.** Solo el orquestador puede hacerlo,
   tras el veredicto `APROBADO` de `qa-validator`. Para implementación se requiere
   GREEN y la regresión pertinente del tester; un RED de pruebas aprobado no
