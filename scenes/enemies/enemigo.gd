@@ -78,6 +78,9 @@ const _AMMO_PICKUP_SCENE: PackedScene = preload("res://scenes/levels/AmmoPickup.
 ## del alcance de esta tarea) pueda generar una pickup en ese punto.
 signal enemy_defeated(ammo_dropped: int, position: Vector2)
 
+## Contrato observacional reservado; su emisión pertenece a I2.
+signal defeat_visual_requested(snapshot: Dictionary)
+
 ## T043 (`contracts/signals.md`, FR-013): este enemigo alcanzó la "posición
 ## defendida" sin haber sido detenido por ningún soldado. No la emite este
 ## script por sí solo — la detección de la zona vive en el nivel

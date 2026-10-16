@@ -77,6 +77,9 @@ signal moral_changed(new_morale: float)
 ## `BoardManager`) la libere.
 signal soldier_defeated(grid_cell: Vector2i)
 
+## Contrato observacional de derrota; su emisión se implementa tras RED.
+signal defeat_visual_requested(snapshot: Dictionary)
+
 ## Modo de combate activo (`docs/ARCHITECTURE.md` §4.4).
 enum SoldierMode { RIFLE, MELEE }
 
