@@ -36,9 +36,15 @@ dificultad con condiciones de victoria y derrota. Es el primer nivel jugable
 de punta a punta del proyecto (`Nivel_MonteCalvo.tscn`).
 
 La primera iteración visual de Monte Calvo está integrada en la feature
-[`002-monte-calvo-terreno-trincheras`](specs/002-monte-calvo-terreno-trincheras/evidence/implementation-status.md),
-que continúa abierta con validaciones pendientes. El cambio de destinos no
-cierra esas tareas ni convierte sus pruebas nativas en pruebas Web.
+[`002-monte-calvo-terreno-trincheras`](specs/002-monte-calvo-terreno-trincheras/tasks.md),
+aprobada con 22/22 tareas e integrada en `main` mediante el
+[PR #16](https://github.com/Juanpvivas/demons/pull/16). Su
+[matriz nativa](specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
+distingue PC, Android e iPad Simulator; la excepción de rendimiento del Xiaomi
+es exclusiva de 002 y no certifica Web. La rama 003 incorpora ese cierre sin
+convertir las pruebas nativas en pruebas de navegador. Su
+[seguimiento propio](specs/003-web-itchio/tasks.md) conserva el alcance aceptado;
+la nueva integración debe comprobarse antes de entregar el PR #15 actualizado.
 
 ## Requisitos
 
@@ -57,7 +63,7 @@ cierra esas tareas ni convierte sus pruebas nativas en pruebas Web.
 | [CLAUDE.md](CLAUDE.md) | Punto de entrada de Claude; importa `AGENTS.md` |
 | [docs/DEVELOPMENT_WORKFLOW.md](docs/DEVELOPMENT_WORKFLOW.md) | Preparación con Spec Kit, ejecución por agentes y ciclo TDD |
 | [tools/speckit/README.md](tools/speckit/README.md) | Preset propio, workflow de preparación y verificación tras actualizar Spec Kit |
-| [docs/WEB_EXPORT.md](docs/WEB_EXPORT.md) | Generación del ZIP Web WIP, comprobaciones y futura carga manual en itch.io |
+| [docs/WEB_EXPORT.md](docs/WEB_EXPORT.md) | Generación del ZIP Web, paquetes identificados, comprobaciones y futura carga manual en itch.io |
 | [.specify/memory/constitution.md](.specify/memory/constitution.md) | Principios no negociables (calidad, testing, UX, rendimiento) |
 | `docs/SPEC.md` | Diseño del juego: mecánicas, economía, contexto histórico, alcance del MVP |
 | `docs/ARCHITECTURE.md` | Convenciones técnicas: estructura de carpetas, nombres, patrones |
@@ -85,8 +91,11 @@ reciben un mensaje de bienvenida en su primera contribución
 
 - **Web / itch.io**: `tools/web/export.sh` genera `build/demons-web.zip` y su
   manifiesto; exportación local, PCK y arranque del ZIP extraído verificados.
-  El workflow `export-web.yml` adjunta artefactos sin publicar; todavía no
-  tiene un run remoto acreditado. Entrada y smoke están aprobados en su
+  El workflow `export-web.yml` adjunta artefactos sin publicar; la
+  [exportación remota anterior](https://github.com/Juanpvivas/demons/actions/runs/38903800209)
+  y el [CI anterior](https://github.com/Juanpvivas/demons/actions/runs/38903800369)
+  terminaron correctamente antes de integrar el cierre de 002. Las nuevas
+  comprobaciones del estado integrado quedan pendientes. Entrada y smoke están aprobados en su
   alcance y QA aceptó la entrega 003; la demo sigue en desarrollo, con las
   mediciones y los entornos no certificados identificados explícitamente.
   [Guía y matriz real](docs/WEB_EXPORT.md).

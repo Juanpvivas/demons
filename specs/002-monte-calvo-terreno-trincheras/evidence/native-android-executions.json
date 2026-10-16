@@ -1,0 +1,130 @@
+[
+  {
+    "variant": "baseline",
+    "source_revision": "a473585ca62e3d35fa1d81d47e052646826032c3",
+    "start_utc": "2026-10-16T14:40:40.459996+00:00",
+    "apk_sha256": "7051eea97ba52b976451092e665523447597786285ce62b9574b1905f169b789",
+    "steps": [
+      {
+        "action": "install debug temporary APK",
+        "exit": 0,
+        "output": "Serving...\nPerforming Incremental Install\nSuccess\nInstall command complete in 1281 ms\n",
+        "stderr": "All files should be loaded. Notifying the device.\n"
+      },
+      {
+        "action": "launch autoplay",
+        "command": "am start -W -n com.juanpvivas.demons/com.godot.game.GodotAppLauncher",
+        "exit": 0,
+        "output": "Starting: Intent { cmp=com.juanpvivas.demons/com.godot.game.GodotAppLauncher }\nStatus: ok\nLaunchState: COLD\nActivity: com.juanpvivas.demons/com.godot.game.GodotApp\nTotalTime: 613\nWaitTime: 621\nComplete\n",
+        "stderr": ""
+      },
+      {
+        "action": "screenshot",
+        "target_seconds": 8,
+        "actual_seconds": 8.063,
+        "own_package_foreground": true,
+        "exit": 0,
+        "stderr": ""
+      },
+      {
+        "action": "screenshot",
+        "target_seconds": 18,
+        "actual_seconds": 18.138,
+        "own_package_foreground": true,
+        "exit": 0,
+        "stderr": ""
+      },
+      {
+        "action": "screenshot",
+        "target_seconds": 30,
+        "actual_seconds": 30.132,
+        "own_package_foreground": true,
+        "exit": 0,
+        "stderr": ""
+      },
+      {
+        "action": "read passive Godot telemetry",
+        "exit": 0,
+        "stderr": ""
+      },
+      {
+        "action": "read package PSS",
+        "exit": 0,
+        "stderr": ""
+      },
+      {
+        "action": "read own process log",
+        "exit": 0,
+        "stderr": ""
+      }
+    ],
+    "input_injection": false,
+    "recording": false,
+    "elapsed_seconds": 38.657,
+    "end_utc": "2026-10-16T14:41:20.576726+00:00"
+  },
+  {
+    "variant": "final",
+    "source_revision": "a473585ca62e3d35fa1d81d47e052646826032c3",
+    "start_utc": "2026-10-16T14:41:20.577453+00:00",
+    "apk_sha256": "37b465acac5f194954994e496e796e7bc65f397a1cfe1864bb84360a9d8388f3",
+    "steps": [
+      {
+        "action": "install debug temporary APK",
+        "exit": 0,
+        "output": "Serving...\nPerforming Incremental Install\nSuccess\nInstall command complete in 1232 ms\n",
+        "stderr": "All files should be loaded. Notifying the device.\n"
+      },
+      {
+        "action": "launch autoplay",
+        "command": "am start -W -n com.juanpvivas.demons/com.godot.game.GodotAppLauncher",
+        "exit": 0,
+        "output": "Starting: Intent { cmp=com.juanpvivas.demons/com.godot.game.GodotAppLauncher }\nStatus: ok\nLaunchState: COLD\nActivity: com.juanpvivas.demons/com.godot.game.GodotApp\nTotalTime: 487\nWaitTime: 539\nComplete\n",
+        "stderr": ""
+      },
+      {
+        "action": "screenshot",
+        "target_seconds": 8,
+        "actual_seconds": 8.058,
+        "own_package_foreground": true,
+        "exit": 0,
+        "stderr": ""
+      },
+      {
+        "action": "screenshot",
+        "target_seconds": 18,
+        "actual_seconds": 18.152,
+        "own_package_foreground": true,
+        "exit": 0,
+        "stderr": ""
+      },
+      {
+        "action": "screenshot",
+        "target_seconds": 30,
+        "actual_seconds": 30.117,
+        "own_package_foreground": true,
+        "exit": 0,
+        "stderr": ""
+      },
+      {
+        "action": "read passive Godot telemetry",
+        "exit": 0,
+        "stderr": ""
+      },
+      {
+        "action": "read package PSS",
+        "exit": 0,
+        "stderr": ""
+      },
+      {
+        "action": "read own process log",
+        "exit": 0,
+        "stderr": ""
+      }
+    ],
+    "input_injection": false,
+    "recording": false,
+    "elapsed_seconds": 38.597,
+    "end_utc": "2026-10-16T14:42:00.583126+00:00"
+  }
+]

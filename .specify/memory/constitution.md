@@ -1,23 +1,28 @@
 <!--
 Sync Impact Report
-- Version change: 1.1.0 → 2.0.0 (MAJOR)
-- Motivo: decisión de la persona (2026-10-15): priorizar Web para publicar
-  en itch.io, conservando aplicaciones Android/iOS; retirar instaladores
-  Windows/macOS/Linux como destinos del producto.
-- Principios modificados: III. Consistencia de Experiencia de Usuario:
-  Web en computador y móvil sustituye al destino PC nativo. I. Calidad de
-  Código: guía GDScript para el juego compartido, sin dependencia C#/.NET.
-- Restricciones modificadas: Web + Android + iOS; no introducir lenguaje
-  o dependencia que impida exportar el mismo gameplay a Web. La anterior
-  excepción de C# por rendimiento queda retirada. MAJOR porque redefine
-  el contrato de plataformas de un principio existente.
-- Referencias sincronizadas: AGENTS.md, README.md, docs/SPEC.md,
-  docs/ARCHITECTURE.md. La preparación de 003-web-itchio aplica esta versión;
-  los documentos/evidencias históricos de 001 y 002 se conservan.
-- Configuración y validación Web pendientes de implementación/evidencia;
-  la enmienda no acredita exportación, publicación ni cierre de 002.
-- Se mantienen TDD, QA independiente, separación Spec Kit/agentes,
-  los 60 FPS en Android de referencia y la ratificación inicial.
+- Version change: 2.0.0 + 1.2.0 → 2.1.0 (MINOR sobre 2.0.0).
+- Motivo: integrar las dos decisiones humanas ya aprobadas, sin sustituir una
+  por la otra: Web para itch.io y apps Android/iOS (2026-10-15, enmienda 2.0.0),
+  y Xiaomi 11T Pro 2107113SG de 2021 como referencia provisional exclusiva de
+  002 (2026-10-16, enmienda 1.2.0 integrada en main con PR #16).
+- Se conservan I/III y las restricciones de 2.0.0: GDScript compartido,
+  Web + Android + iOS; PC nativo queda para desarrollo/pruebas. La excepción
+  previa C#/.NET no vuelve a habilitarse.
+- Se integra en IV la excepción 1.2.0 como ampliación de la guía de 2.0.0.
+  No se modifica el objetivo de 60 FPS estables ni la referencia nominal
+  global de gama media Android de los últimos ~3 años. La excepción no
+  acredita 003/Web, iOS, otros teléfonos ni rendimiento emulado.
+- La aprobación nativa de 002 y sus límites se conservan en su matriz e informe
+  de rendimiento. La aceptación Web de 003 sigue limitada a su propia matriz;
+  ni la enmienda ni el merge certifican rendimiento sostenido Web.
+- Referencias integradas: docs/SPEC.md, docs/ARCHITECTURE.md, README.md y
+  docs/WEB_EXPORT.md. Los documentos/evidencias de 001, 002 y 003 conservan
+  sus versiones y resultados históricos; esta integración no los revalida.
+- Sin cambios en los cuatro principios, TDD, QA independiente, separación
+  Spec Kit/agentes o ratificación inicial. Se mantienen las enmiendas previas
+  y se requiere revisar la evidencia del estado integrado antes de entregar.
+- Templates y comandos de preparación leen la constitución en ejecución;
+  no requieren regeneración por esta integración documental.
 - TODO diferido sin cambios: PERFORMANCE_LOAD_TIME_TARGET, pendiente de medir
   en dispositivo Android de referencia.
 -->
@@ -96,6 +101,18 @@ en el editor o en un navegador de computador no sustituye esa medición.
 Las features Web DEBEN registrar además carga y rendimiento en los navegadores
 y dispositivos de su matriz de aceptación; no se extrapolan los resultados
 del ejecutable nativo al navegador del mismo dispositivo.
+
+**Referencia provisional exclusiva de la feature 002 (2026-10-16):** por decisión
+explícita de la persona, el Xiaomi 11T Pro físico, modelo `2107113SG` de 2021,
+se admite como dispositivo de referencia provisional para aceptar
+`002-monte-calvo-terreno-trincheras`. Se DEBEN conservar los 60 FPS estables
+durante gameplay típico y la revisión independiente de QA sobre las mediciones
+y sus limitaciones. Esta autorización cambia solo la referencia de esa feature;
+no aprueba el rendimiento observado ni exime estabilidad. La referencia nominal
+global de gama media Android de los últimos ~3 años permanece vigente. No se
+extrapola esta aceptación provisional a otros teléfonos, a la feature 003,
+a iOS ni al rendimiento de emuladores o simuladores.
+
 **Razón**: como es un juego 2D pensado para escalar a hordas de enemigos en
 pantalla, el rendimiento en el hardware más débil del público objetivo (móviles
 de gama media/baja) es lo que determina si el juego es jugable, no el
@@ -152,4 +169,4 @@ listo para implementar. Cualquier complejidad técnica que viole un principio
 DEBE justificarse explícitamente en el documento correspondiente (plan o spec)
 o rechazarse.
 
-**Version**: 2.0.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-15
+**Version**: 2.1.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-16

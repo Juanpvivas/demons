@@ -1,0 +1,11 @@
+--- original temporary Compatibility/project.godot
++++ temporary iOS file-logging/project.godot
+@@ -58,3 +58,8 @@
+ rendering_device/driver.windows="d3d12"
+ renderer/rendering_method="gl_compatibility"
+ textures/vram_compression/import_etc2_astc=true
++
++[debug]
++
++file_logging/enable_file_logging=true
++file_logging/log_path="user://logs/godot.log"

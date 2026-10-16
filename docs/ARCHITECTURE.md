@@ -22,7 +22,7 @@ res://
 ├── scenes/
 │   ├── units/                # Soldado.tscn y futuras variantes de unidades
 │   ├── enemies/               # EnemigoBase.tscn y variantes
-│   ├── levels/                 # Nivel_MonteCalvo.tscn, futuros niveles
+│   ├── levels/                 # Nivel_MonteCalvo.tscn, MonteCalvoVisual.tscn, futuros niveles
 │   └── ui/                     # HUD.tscn, menús, pantallas de victoria/derrota
 ├── resources/
 │   ├── schemas/                # Scripts base de Resource (class_name UnitStats,
@@ -38,6 +38,7 @@ res://
 │   ├── sprites/
 │   │   ├── units/
 │   │   ├── enemies/
+│   │   ├── levels/             # monte_calvo/: PNG, .import y procedencia del entorno
 │   │   └── ui/
 │   ├── audio/
 │   │   ├── sfx/
@@ -346,7 +347,8 @@ referencia pendiente en el mismo frame.
 
 ### 4.6 Compatibilidad del lenguaje con Web
 
-El juego compartido usa GDScript. La constitución 2.0.0 retira la excepción
+El juego compartido usa GDScript. La enmienda 2.0.0, conservada en la
+constitución 2.1.0, retira la excepción
 anterior de introducir C# por rendimiento: Godot 4 no exporta actualmente
 proyectos C# a Web. Las convenciones C# previas quedan como historial del
 documento y no habilitan un sistema nuevo que excluya un destino. Una futura
@@ -371,10 +373,45 @@ es acotada a los navegadores y dispositivos de su matriz, no universal.
 - **`EnemigoBase.tscn`**: `CharacterBody2D` raíz (los enemigos sí avanzan
   por el carril con `move_and_slide()`), con `soldado.gd` reemplazado
   por `enemigo.gd`, estructura de hijos análoga.
-- **`Nivel_MonteCalvo.tscn`**: `TileMap` (grid de posiciones) +
-  `WaveSpawner` (nodo `Timer` + cola de spawns, alimentado por un Resource
-  de oleadas) + puntos de spawn + instancia de `HUD.tscn` como
-  `CanvasLayer`.
+- **`Nivel_MonteCalvo.tscn`**: raíz `Node2D`, `Tablero` (`TileMap` con
+  celdas de 96×96), soldado y enemigo iniciales, `PosicionDefendida` e
+  instancia hija de `MonteCalvoVisual.tscn`. El script crea `WaveSpawner`
+  en `_ready()` y lo configura con la secuencia de Resources de oleadas;
+  `wave_spawn_position` fija el punto de aparición. El nivel actual no
+  instancia `HUD.tscn`: tampoco integra controles de recarga ni pantallas
+  de victoria/derrota, aunque los métodos y estados correspondientes tienen
+  cobertura automatizada. Véanse el [contrato](../specs/002-monte-calvo-terreno-trincheras/contracts/visual-boundary.md)
+  y el [smoke](../specs/002-monte-calvo-terreno-trincheras/evidence/smoke.md).
+
+### 5.1 Entorno decorativo separado del nivel
+
+La presentación ambiental se compone en una subescena propia para poder
+modificarla sin alterar la geometría, el input o la lógica del nivel.
+`MonteCalvoVisual.tscn`, aprobada en `002-monte-calvo-terreno-trincheras`,
+concreta este patrón con una raíz `Node2D` de transformación identidad y
+`z_index=-10`. Sus grupos `Suelo`, `FondoMontanas`, `Bordes` y `Trincheras`
+usan z relativo 0–3: el entorno completo queda en z efectivo −10…−7,
+por detrás de los actores y pickups.
+
+La escena contiene únicamente composición estática de `Node2D` y `Sprite2D`:
+una hoja de terreno sin repetición, montañas con alfa, un cielo de
+`GradientTexture2D` y piezas de trincheras/bordes que comparten seis regiones
+`AtlasTexture`. Los tres PNG y sus `.import` viven en
+`assets/sprites/levels/monte_calvo/`; se versionan los originales y ajustes,
+con importación lossless, corrección del borde alfa y sin mipmaps en esta
+iteración. `.godot/` sigue siendo caché regenerable. La [procedencia y regiones](../assets/sprites/levels/monte_calvo/SOURCES.md)
+documentan los recursos sin convertir la imagen de referencia en un fondo
+con personajes o interfaz incrustados.
+
+El entorno carece de scripts, señales, controles, física, navegación o cámara
+propios. Sus trincheras no otorgan cobertura ni restringen colocación. El arte
+se adapta a las posiciones existentes, incluido el soldado inicial y el snap
+de los nuevos despliegues; `BoardManager` conserva ocupación/liberación sin
+límites finitos del tablero. No se migró `TileMap`, no se cambió el stretch
+`canvas_items`/`expand` y no se añadieron efectos animados, luces o parallax.
+La [comparación de US3](../specs/002-monte-calvo-terreno-trincheras/evidence/us3.md)
+y la [matriz de pantallas/entrada](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
+registran los encuadres comprobados y el recorte inferior existente.
 
 **Nota sobre `collision_layer`/`collision_mask` (sin convención propia
 todavía):** ninguna escena del proyecto (`Soldado.tscn`, `EnemigoBase.tscn`)
@@ -423,6 +460,14 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   de simular el evento crudo — deja sin cubrir solo la conversión de
   coordenadas en sí (pantalla → mundo → celda) y el filtro de tipo de
   evento, sin lógica de negocio real.
+- **Precedencia de pickup y despliegue** (`002-monte-calvo-terreno-trincheras`,
+  T019–T022): seis casos en `tests/unit/levels/test_pickup_input_routing.gd`
+  comprueban la ruta normal/emulada y que la recolección no gaste ni cree
+  un soldado adicional. El [ciclo RED/GREEN nativo](../specs/002-monte-calvo-terreno-trincheras/evidence/t021-green.md)
+  terminó con 189/189 pruebas y 532 aserciones en la suite completa, tras
+  importación limpia. Es un resultado fechado de esa entrega, distinto de
+  los gestos de SO antes/después registrados en la matriz nativa; GUT no
+  certifica por sí solo picking, stretch o toque físico.
 - **Cerrado (T046, `001-soldado-defensor-oleadas`):** el hueco de cobertura
   señalado en T044 (existía cobertura de punta a punta con instancias
   reales para la condición de derrota, pero no su simétrico para victoria)
@@ -454,15 +499,18 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   llegan mediante el mouse emulado del toque; no se debe descartarlo ni
   suponer que `InputEventScreenTouch` activa por sí solo esas acciones.
   La distinción entre recoger y desplegar pertenece al enrutamiento del nivel.
-- **Precedencia de recolección validada en 003/T015–T018:** Godot procesa
+- **Precedencia de recolección validada en 003/T015–T018 y 002/T019–T022:** Godot procesa
   `_unhandled_input()` antes del physics picking. El nivel consulta si el
   punto cae sobre una `AmmoPickup` visible/pickable y cede ese evento al
-  picking, evitando desplegar/cobrar con el mismo gesto. No recoge desde el
+  picking, evitando desplegar/cobrar con el mismo gesto. Sin pickup conserva
+  ocupación y gasto normal. No cambia InputMap, radio ni coordenadas. No recoge desde el
   nivel ni modifica las recompensas de pickups solapadas. La consulta usa
   las formas reales con física 2D en el hilo principal actual; activar un
   hilo separado exigiría revisar ese acceso. RED de dispatch real, GREEN
   normal/emulado y comprobación física Android respaldan esta convención.
-  [Corrección y regresión](../specs/003-web-itchio/evidence/t017-green.md).
+  [Corrección Web](../specs/003-web-itchio/evidence/t017-green.md) y
+  [regresión nativa](../specs/002-monte-calvo-terreno-trincheras/evidence/t021-green.md),
+  con validaciones de entrada propias de cada plataforma.
 - UI (`HUD.tscn`) usa contenedores con anclas relativas, no posiciones fijas
   en píxeles, para adaptarse a distintas resoluciones y aspect ratios entre
   aplicaciones móviles y navegadores de computador/móvil.
@@ -479,7 +527,9 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   real del PCK, sus diez oleadas y las licencias se inspeccionan además del ZIP.
   `build/.gdignore` evita importar la salida; los artefactos no se versionan.
   El workflow `export-web.yml` adjunta un ZIP descargable, sin publicar en
-  itch.io; sus pasos se verificaron localmente y su run remoto queda NOT RUN.
+  itch.io. Su [run remoto anterior](https://github.com/Juanpvivas/demons/actions/runs/38903800209)
+  terminó con SUCCESS antes de integrar el cierre de 002; el nuevo estado debe
+  comprobarse por separado. [Paquetes y alcance](WEB_EXPORT.md#artefacto-de-ci).
   El CI existente conserva GUT/importación y los deploys nativos no cambiaron.
 - Las verificaciones Web identifican navegador, sistema/dispositivo, tamaño,
   entrada y renderer. Deben comprobar carga, partida, redimensionamiento y
@@ -493,6 +543,17 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   (`.github/workflows/deploy-android-testers.yml`) y a **iOS/TestFlight**
   (`.github/workflows/deploy-ios-testflight.yml`) — ver esos archivos para
   el detalle y los secrets de CI requeridos.
+
+La [validación nativa de 002](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
+separa ratón PC, gestos de SO en Android Emulator, muestreo humano Xiaomi y
+gestos humanos sobre iPad Simulator. iPad usó Compatibility en copias temporales;
+los presets y el renderer Mobile de producción permanecieron intactos. No se
+acredita hardware iOS ni se toma el SoftwareRenderer del simulador como
+rendimiento de un iPhone. La [aceptación de rendimiento](../specs/002-monte-calvo-terreno-trincheras/evidence/performance.md)
+se limita a 002/Xiaomi 11T Pro físico provisional por la enmienda 1.2.0,
+conservada en la constitución 2.1.0,
+con los picos y límites del instrumento conservados; no se extrapola a otros
+dispositivos o features.
 
 - **Política de versionado para releases de prueba**: ambos workflows de
   deploy tienen un paso que compara `version/code`/`version/name`
@@ -550,3 +611,5 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
 | 2026-10-15 | §8: separación entre preparación Spec Kit y ejecución por agentes, TDD y referencia compartida de desarrollo; rutas de constitución actualizadas |
 | 2026-10-15 | §4.6/7: alineación con constitución 2.0.0 y destinos Web + Android/iOS; se retira la excepción C# incompatible con Web. Compatibility específico para Web y Mobile nativo se documentan como ruta pendiente de implementar/validar en 003; se conserva evidencia histórica PC. |
 | 2026-10-16 | §4.6/7: estado verificado de 003 en su alcance Web: estándar 4.7.1, Compatibility específico/un hilo, Mobile nativo conservado, ZIP/PCK/licencias y artefacto CI sin publicación. Se gradúa la precedencia pickup→despliegue validada con RED/GREEN y toque físico; las mediciones y entornos no certificados mantienen sus límites. |
+| 2026-10-16 | T017 de `002-monte-calvo-terreno-trincheras`, tras QA T016: §2/§5 documentan la subescena visual estática aislada y sus recursos; se corrige la descripción del nivel para reflejar WaveSpawner creado por código y ausencia de HUD integrado. §6/§7 documentan la precedencia de pickup→despliegue aprobada con TDD y distinguen regresión de entrada real, con límites de iPad Simulator y Xiaomi provisional. |
+| 2026-10-16 | Integración de main tras PR #16: se preservan la escena visual y la validación nativa 002 junto con Web/Compatibility de 003; constitución 2.1.0 combina sus decisiones sin extrapolar pruebas ni rendimiento entre plataformas. |

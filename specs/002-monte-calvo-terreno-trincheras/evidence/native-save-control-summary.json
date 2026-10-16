@@ -1,0 +1,531 @@
+{
+  "recorded_at_utc": "2026-10-16T15:15:11.725411+00:00",
+  "purpose": "Single narrow diagnostic requested by QA for 54 FPS coincident with synchronous telemetry JSON save at35s; no game performance certification",
+  "status": "Control completed; awaits independent QA interpretation",
+  "source_revision": "a473585ca62e3d35fa1d81d47e052646826032c3",
+  "sole_source_delta": "_native_elapsed >=35.0 -> >=45.0 in passive telemetry; exact unified diff retained",
+  "control_manifest": "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/control-manifest.json",
+  "control_manifest_sha256": "669819c87ba20618e1901ef79e1386a20345b347bef51c2737274842f084240a",
+  "diff_file": "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/telemetry-duration.diff",
+  "diff_sha256": "786276162b44d61c05314d89ae564a8b4c25ddceb5dc66ca0d3a7dd6effd3108",
+  "original_telemetry_sha256": "2fbdb3c09e002b9d35cf85da77ef20bd715b266a824341c4f793729372578634",
+  "control_telemetry_sha256": "3b21aaa02beb63701d564d1f8876c2e9bad576f42d749e801bf0290963ebaa52",
+  "game_script_sha256": "4e89dce236868c4203079e06937b5c8dbcbbd564382f373d2216d4aa8c700d7f",
+  "observer_base_sha256": "c628c721ec12ba7c922545787134bae6b86808dbdc9d0c5669945b4e3d15fc90",
+  "project_and_presets_unchanged": true,
+  "preconditions": {
+    "wakefulness": "mWakefulness=Awake",
+    "resumed_activity": [
+      "topResumedActivity=ActivityRecord{61e6d61 u0 com.juanpvivas.demons/com.godot.game.GodotAppLauncher t436}"
+    ],
+    "battery": [
+      "AC powered: true",
+      "USB powered: false",
+      "Wireless powered: false",
+      "level: 100",
+      "temperature: 340"
+    ],
+    "rotation_automatic": "1",
+    "user_rotation": "0",
+    "model": "2107113SG",
+    "android_version": "14"
+  },
+  "transport": "adb -d, USB only; no emulator or Wi-Fi",
+  "input": {
+    "requested_human_input": false,
+    "injected": false,
+    "logged_input_pre_events": 0,
+    "global_logcat_cleared": false,
+    "log_filter": "--pid=20944"
+  },
+  "run": {
+    "pid": 20944,
+    "observed_wait_seconds": 47.005238292,
+    "input_injected": false,
+    "human_input_requested": false,
+    "logger_filter": "--pid=20944",
+    "global_logcat_cleared": false,
+    "rows": 2695,
+    "last_saved_elapsed": 45.0023226666683
+  },
+  "game_state_enum": {
+    "0": "PLAYING",
+    "1": "PAUSED",
+    "2": "WON",
+    "3": "LOST"
+  },
+  "original_human": {
+    "log": "native-save-control-original-human.log",
+    "log_sha256": "a9ec4ac7c325a69ab1bc5552aea981934b1094383a4a42513c7616cad6041169",
+    "telemetry": "native-android-final-human-telemetry.json",
+    "telemetry_sha256": "b23682aec92c5eae0e2f1b42a2a9308860ddb7266f73948548a0f60301a53a96",
+    "write_threshold_seconds": 35,
+    "saved_events": [
+      {
+        "log_line": 320,
+        "rows": 2099,
+        "epoch_seconds": 1792161979.824
+      }
+    ],
+    "window_34_37": {
+      "requested_elapsed_seconds_inclusive": [
+        34,
+        37
+      ],
+      "logged_elapsed_seconds": [
+        34.0001786666658,
+        35.0001786666657,
+        36.0026073333323,
+        37.0006343333323
+      ],
+      "engine_fps_samples": [
+        60.0,
+        61.0,
+        54.0,
+        61.0
+      ],
+      "game_states": [
+        0
+      ],
+      "max_process_ms": 114.607,
+      "samples": [
+        {
+          "delta_ms": 16.6666666666667,
+          "draw_calls_reported": 17.0,
+          "elapsed_seconds": 34.0001786666658,
+          "engine_fps": 60.0,
+          "game_state": 0,
+          "physics_process_ms": 4.023,
+          "process_ms": 15.421,
+          "render_setup_cpu_ms": 0.045,
+          "texture_mem_bytes": 31886720.0,
+          "video_mem_bytes": 64742464.0,
+          "viewport_render_cpu_ms": 0.649999976158142,
+          "viewport_render_gpu_ms": 2.77800011634827,
+          "log_line": 317
+        },
+        {
+          "delta_ms": 16.6666666666667,
+          "draw_calls_reported": 18.0,
+          "elapsed_seconds": 35.0001786666657,
+          "engine_fps": 61.0,
+          "game_state": 0,
+          "physics_process_ms": 5.719,
+          "process_ms": 17.938,
+          "render_setup_cpu_ms": 0.046,
+          "texture_mem_bytes": 31886720.0,
+          "video_mem_bytes": 64742464.0,
+          "viewport_render_cpu_ms": 0.669000029563904,
+          "viewport_render_gpu_ms": 2.91000008583069,
+          "log_line": 319
+        },
+        {
+          "delta_ms": 15.7846666666667,
+          "draw_calls_reported": 18.0,
+          "elapsed_seconds": 36.0026073333323,
+          "engine_fps": 54.0,
+          "game_state": 0,
+          "physics_process_ms": 2.654,
+          "process_ms": 114.607,
+          "render_setup_cpu_ms": 0.044,
+          "texture_mem_bytes": 31886720.0,
+          "video_mem_bytes": 64742464.0,
+          "viewport_render_cpu_ms": 0.685000002384186,
+          "viewport_render_gpu_ms": 2.80699992179871,
+          "log_line": 323
+        },
+        {
+          "delta_ms": 16.666,
+          "draw_calls_reported": 18.0,
+          "elapsed_seconds": 37.0006343333323,
+          "engine_fps": 61.0,
+          "game_state": 0,
+          "physics_process_ms": 4.355,
+          "process_ms": 17.482,
+          "render_setup_cpu_ms": 0.045,
+          "texture_mem_bytes": 31886720.0,
+          "video_mem_bytes": 64742464.0,
+          "viewport_render_cpu_ms": 0.674000024795532,
+          "viewport_render_gpu_ms": 2.78099989891052,
+          "log_line": 325
+        }
+      ],
+      "all_integer_seconds_logged": true
+    },
+    "window_45_47": {
+      "requested_elapsed_seconds_inclusive": [
+        45,
+        47
+      ],
+      "logged_elapsed_seconds": [
+        45.0003143333327,
+        46.0002743333327,
+        47.0002343333328
+      ],
+      "engine_fps_samples": [
+        61.0,
+        60.0,
+        61.0
+      ],
+      "game_states": [
+        0
+      ],
+      "max_process_ms": 18.34,
+      "samples": [
+        {
+          "delta_ms": 16.666,
+          "draw_calls_reported": 19.0,
+          "elapsed_seconds": 45.0003143333327,
+          "engine_fps": 61.0,
+          "game_state": 0,
+          "physics_process_ms": 3.605,
+          "process_ms": 15.68,
+          "render_setup_cpu_ms": 0.045,
+          "texture_mem_bytes": 31886720.0,
+          "video_mem_bytes": 64742464.0,
+          "viewport_render_cpu_ms": 0.721000015735626,
+          "viewport_render_gpu_ms": 2.80800008773804,
+          "log_line": 352
+        },
+        {
+          "delta_ms": 16.666,
+          "draw_calls_reported": 19.0,
+          "elapsed_seconds": 46.0002743333327,
+          "engine_fps": 60.0,
+          "game_state": 0,
+          "physics_process_ms": 3.838,
+          "process_ms": 18.34,
+          "render_setup_cpu_ms": 0.042,
+          "texture_mem_bytes": 31886720.0,
+          "video_mem_bytes": 64742464.0,
+          "viewport_render_cpu_ms": 0.870000004768372,
+          "viewport_render_gpu_ms": 2.81399989128113,
+          "log_line": 355
+        },
+        {
+          "delta_ms": 16.666,
+          "draw_calls_reported": 19.0,
+          "elapsed_seconds": 47.0002343333328,
+          "engine_fps": 61.0,
+          "game_state": 0,
+          "physics_process_ms": 3.575,
+          "process_ms": 17.31,
+          "render_setup_cpu_ms": 0.043,
+          "texture_mem_bytes": 31886720.0,
+          "video_mem_bytes": 64742464.0,
+          "viewport_render_cpu_ms": 0.723999977111816,
+          "viewport_render_gpu_ms": 2.78900003433228,
+          "log_line": 358
+        }
+      ],
+      "all_integer_seconds_logged": true
+    },
+    "note": "Physical human gameplay; PLAYING at both compared windows; original files read only, not overwritten",
+    "source_log_temporary": "/private/tmp/monte-calvo-validation-002-v333ghu2/android-final-human-logcat.txt",
+    "filtered_existing_log_relation": {
+      "raw": "native-save-control-original-human.log",
+      "raw_sha256": "a9ec4ac7c325a69ab1bc5552aea981934b1094383a4a42513c7616cad6041169",
+      "raw_lines": 440,
+      "existing_filtered": "native-android-final-human.log",
+      "existing_filtered_sha256": "0b280d0b4db33c0b242fc9ed3ba502ea111cc88587063adbbef7d47ff8336633",
+      "filtered_lines": 207,
+      "all_filtered_lines_exist_exactly_in_raw": true,
+      "same_sha256": false,
+      "human_telemetry_matches_existing_versioned_file": true
+    }
+  },
+  "control": {
+    "log": "native-save-control.log",
+    "log_sha256": "c454a5a937d44e0afb112b17401bc850e345426002c777382724e15c72caae90",
+    "telemetry": "native-save-control-telemetry.json",
+    "telemetry_sha256": "5ba2a9df140607756e774cf65670ca81518cb119cebec44c795396efa69fa7d8",
+    "write_threshold_seconds": 45,
+    "saved_events": [
+      {
+        "log_line": 271,
+        "rows": 2695,
+        "epoch_seconds": 1792163550.304
+      }
+    ],
+    "window_34_37": {
+      "requested_elapsed_seconds_inclusive": [
+        34,
+        37
+      ],
+      "logged_elapsed_seconds": [
+        34.0027626666678,
+        35.0027226666678,
+        36.0026826666679,
+        37.0026426666679
+      ],
+      "engine_fps_samples": [
+        61.0,
+        60.0,
+        60.0,
+        61.0
+      ],
+      "game_states": [
+        3
+      ],
+      "max_process_ms": 16.833,
+      "samples": [
+        {
+          "delta_ms": 16.666,
+          "draw_calls_reported": 19.0,
+          "elapsed_seconds": 34.0027626666678,
+          "engine_fps": 61.0,
+          "game_state": 3,
+          "physics_process_ms": 3.572,
+          "process_ms": 16.443,
+          "render_setup_cpu_ms": 0.056,
+          "texture_mem_bytes": 31886720.0,
+          "video_mem_bytes": 64742464.0,
+          "viewport_render_cpu_ms": 1.80200004577637,
+          "viewport_render_gpu_ms": 2.89299988746643,
+          "log_line": 246
+        },
+        {
+          "delta_ms": 16.666,
+          "draw_calls_reported": 19.0,
+          "elapsed_seconds": 35.0027226666678,
+          "engine_fps": 60.0,
+          "game_state": 3,
+          "physics_process_ms": 9.096,
+          "process_ms": 15.898,
+          "render_setup_cpu_ms": 0.046,
+          "texture_mem_bytes": 31886720.0,
+          "video_mem_bytes": 64742464.0,
+          "viewport_render_cpu_ms": 1.76499998569489,
+          "viewport_render_gpu_ms": 2.77900004386902,
+          "log_line": 248
+        },
+        {
+          "delta_ms": 16.666,
+          "draw_calls_reported": 19.0,
+          "elapsed_seconds": 36.0026826666679,
+          "engine_fps": 60.0,
+          "game_state": 3,
+          "physics_process_ms": 3.434,
+          "process_ms": 16.833,
+          "render_setup_cpu_ms": 0.045,
+          "texture_mem_bytes": 31886720.0,
+          "video_mem_bytes": 64742464.0,
+          "viewport_render_cpu_ms": 0.73199999332428,
+          "viewport_render_gpu_ms": 2.82399988174438,
+          "log_line": 251
+        },
+        {
+          "delta_ms": 16.666,
+          "draw_calls_reported": 17.0,
+          "elapsed_seconds": 37.0026426666679,
+          "engine_fps": 61.0,
+          "game_state": 3,
+          "physics_process_ms": 3.402,
+          "process_ms": 16.226,
+          "render_setup_cpu_ms": 0.041,
+          "texture_mem_bytes": 31886720.0,
+          "video_mem_bytes": 64742464.0,
+          "viewport_render_cpu_ms": 0.670000016689301,
+          "viewport_render_gpu_ms": 2.80200004577637,
+          "log_line": 253
+        }
+      ],
+      "all_integer_seconds_logged": true
+    },
+    "window_45_47": {
+      "requested_elapsed_seconds_inclusive": [
+        45,
+        47
+      ],
+      "logged_elapsed_seconds": [
+        45.0023226666683,
+        46.0020526666683
+      ],
+      "engine_fps_samples": [
+        60.0,
+        55.0
+      ],
+      "game_states": [
+        3
+      ],
+      "max_process_ms": 111.074,
+      "samples": [
+        {
+          "delta_ms": 16.666,
+          "draw_calls_reported": 17.0,
+          "elapsed_seconds": 45.0023226666683,
+          "engine_fps": 60.0,
+          "game_state": 3,
+          "physics_process_ms": 3.783,
+          "process_ms": 16.423,
+          "render_setup_cpu_ms": 0.04,
+          "texture_mem_bytes": 31886720.0,
+          "video_mem_bytes": 64742464.0,
+          "viewport_render_cpu_ms": 0.637000024318695,
+          "viewport_render_gpu_ms": 2.76300001144409,
+          "log_line": 270
+        },
+        {
+          "delta_ms": 16.6666666666667,
+          "draw_calls_reported": 17.0,
+          "elapsed_seconds": 46.0020526666683,
+          "engine_fps": 55.0,
+          "game_state": 3,
+          "physics_process_ms": 3.387,
+          "process_ms": 111.074,
+          "render_setup_cpu_ms": 0.047,
+          "texture_mem_bytes": 31886720.0,
+          "video_mem_bytes": 64742464.0,
+          "viewport_render_cpu_ms": 1.32799994945526,
+          "viewport_render_gpu_ms": 2.84899997711182,
+          "log_line": 274
+        }
+      ],
+      "all_integer_seconds_logged": false
+    },
+    "first_lost_integer_second_sample": 34.0027626666678,
+    "snapshots_after5_below60fps": [
+      {
+        "elapsed_seconds": 46.0020526666683,
+        "engine_fps": 55.0,
+        "process_ms": 111.074,
+        "game_state": 3,
+        "log_line": 274
+      }
+    ],
+    "runtime_error_matches": [],
+    "source_log_temporary": "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/control-own-pid.log"
+  },
+  "inference": "Moving the sole synchronous save threshold by10s moves the FPS/process spike from36s(54FPS,114.607ms) to46s(55FPS,111.074ms), while34\u201337s control samples stay60\u201361FPS. This is consistent with observer serialization/write overhead; states differ (controlLOST, humanPLAYING), so it is not an equivalent gameplay benchmark or conclusive exclusion of all game spikes.",
+  "limits": [
+    "47.005s host wait completed once; last one-second control snapshot46.002s, no47s snapshot captured; no retry",
+    "Saved per-frame JSON stops at45.002s before synchronous save, so45\u201347 post-save data comes only from per-second own-PID log",
+    "Godot delta_ms is engine delta, not an independent physical frame pacing trace",
+    "Xiaomi2107113SG is not the constitutional nominal midrange of last~3years; no SC007/global60FPS PASS",
+    "No changes to game, clocks, handlers, input, resources, project, preset, version or signing configuration",
+    "No GUT rerun, new benchmark, PC/iPad/nativeUI activity by auxiliary"
+  ],
+  "exports": {
+    "control_import_exit": 0,
+    "control_export_exit": 0,
+    "normal_import_exit": 0,
+    "normal_export_exit": 0,
+    "export_setup_warning": "Both export logs contain one existing ERROR Cannot set object script; exports returned0, APK signatures verified and control runtime emitted expected source logs; no attempt to repair unrelated GUT/editor setup",
+    "apk_verification": {
+      "control-final": {
+        "path": "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/control-final.apk",
+        "bytes": 34784047,
+        "sha256": "74b1cbe2ab27b513349d6d4cc49f29215f1ab28cad3999bbc26006cb6dadc57e",
+        "instrumentation_archive_paths": [
+          "assets/_native_telemetry.gdc",
+          "assets/_observation_base.gdc",
+          "assets/_native_telemetry.gd.remap",
+          "assets/_observation_base.gd.remap"
+        ],
+        "signature_verification": "apksigner37.0.0 verify --verbose EXIT0; v2/v3 true"
+      },
+      "restore-normal": {
+        "path": "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/restore-normal.apk",
+        "bytes": 34771453,
+        "sha256": "ca5c8a276970ca05ede0cb7d599bc75b77352374768c003aa6d7012343cfdf89",
+        "instrumentation_archive_paths": [],
+        "signature_verification": "apksigner37.0.0 verify --verbose EXIT0; v2/v3 true"
+      },
+      "control_existing_source_changes_after_import_export": [],
+      "android-final-human-logcat.txt": {
+        "path": "/private/tmp/monte-calvo-validation-002-v333ghu2/android-final-human-logcat.txt",
+        "sha256": "a9ec4ac7c325a69ab1bc5552aea981934b1094383a4a42513c7616cad6041169",
+        "unchanged": "read only; no overwrite performed"
+      },
+      "android-final-human-telemetry.json": {
+        "path": "/private/tmp/monte-calvo-validation-002-v333ghu2/android-final-human-telemetry.json",
+        "sha256": "b23682aec92c5eae0e2f1b42a2a9308860ddb7266f73948548a0f60301a53a96",
+        "unchanged": "read only; no overwrite performed"
+      }
+    }
+  },
+  "restoration": {
+    "source_manifest": "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/restore-normal-manifest.json",
+    "source_manifest_sha256": "8ba16c50ae1a833d7e7355710438f73a30cc2723d57612d0d93844fd474ebea1",
+    "verified_source_files_after_export": 367,
+    "source_differences": [],
+    "observer_nodes": false,
+    "apk_instrumentation_archive_paths": [],
+    "install_result": {
+      "args": [
+        "install",
+        "-r",
+        "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/restore-normal.apk"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.5233587499999999,
+      "stdout": "Serving...\nPerforming Incremental Install\nSuccess\nInstall command complete in 1496 ms\n",
+      "stderr": "All files should be loaded. Notifying the device.\n",
+      "utc": "2026-10-16T15:12:33.354301+00:00"
+    },
+    "launched_normal_apk": false,
+    "post_restore_pidof": {
+      "exit_code": 1,
+      "stdout": ""
+    },
+    "device_settings_written": false
+  },
+  "artifacts_sha256": {
+    "control-own-pid.log": "c454a5a937d44e0afb112b17401bc850e345426002c777382724e15c72caae90",
+    "control-native-telemetry.json": "5ba2a9df140607756e774cf65670ca81518cb119cebec44c795396efa69fa7d8",
+    "control-run-metadata.json": "9d665deb1cfa96b40be49435e56021cd67cd553b54133e3dec9206e2706c3bb5",
+    "adb-executions.json": "8f6b37f96fed14ba717f76cb4d67639a5d687f7e55b960afbdac1a55a5155082",
+    "preconditions.json": "eba26292c6c5441e85db8cbf510ad9de3a3cdd113192a13b2389f534f80e1fe1",
+    "restore-install-result.json": "17c552b106d00f18346b82555a8300eecbba43c3e961eca88f1cdb0594409852",
+    "control-import.log": "1176df33c82f0bb782a0f9a6bb983d567dcde9d790fbe6af82838c8c4d96e2e1",
+    "control-export.log": "4b72b57cc06ad3f04a26dbc4e4c3b457fedd93fbcf2d59168f1d249756aef22b",
+    "restore-import.log": "39edbe83ce85bf1fe463e8fe7dbdc333875e11ce4e3f3f587a48a626d3d4f721",
+    "restore-export.log": "db17008efb9282f4f65b41f751fb1a5a63116f7ab0ef8c269258894f48d873d4"
+  },
+  "versioned_evidence": {
+    "native-save-control.log": {
+      "source": "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/control-own-pid.log",
+      "sha256": "c454a5a937d44e0afb112b17401bc850e345426002c777382724e15c72caae90"
+    },
+    "native-save-control-telemetry.json": {
+      "source": "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/control-native-telemetry.json",
+      "sha256": "5ba2a9df140607756e774cf65670ca81518cb119cebec44c795396efa69fa7d8"
+    },
+    "native-save-control-duration.diff": {
+      "source": "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/telemetry-duration.diff",
+      "sha256": "786276162b44d61c05314d89ae564a8b4c25ddceb5dc66ca0d3a7dd6effd3108"
+    },
+    "native-save-control-telemetry-source.txt": {
+      "source": "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/telemetry-control.gd",
+      "sha256": "3b21aaa02beb63701d564d1f8876c2e9bad576f42d749e801bf0290963ebaa52"
+    },
+    "native-save-control-adb-executions.json": {
+      "source": "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/adb-executions.json",
+      "sha256": "8f6b37f96fed14ba717f76cb4d67639a5d687f7e55b960afbdac1a55a5155082"
+    },
+    "native-save-control-import.log": {
+      "source": "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/control-import.log",
+      "sha256": "1176df33c82f0bb782a0f9a6bb983d567dcde9d790fbe6af82838c8c4d96e2e1"
+    },
+    "native-save-control-export.log": {
+      "source": "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/control-export.log",
+      "sha256": "4b72b57cc06ad3f04a26dbc4e4c3b457fedd93fbcf2d59168f1d249756aef22b"
+    },
+    "native-save-control-restore-import.log": {
+      "source": "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/restore-import.log",
+      "sha256": "39edbe83ce85bf1fe463e8fe7dbdc333875e11ce4e3f3f587a48a626d3d4f721"
+    },
+    "native-save-control-restore-export.log": {
+      "source": "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/restore-export.log",
+      "sha256": "db17008efb9282f4f65b41f751fb1a5a63116f7ab0ef8c269258894f48d873d4"
+    },
+    "native-save-control-original-human.log": {
+      "source": "/private/tmp/monte-calvo-validation-002-v333ghu2/android-final-human-logcat.txt",
+      "sha256": "a9ec4ac7c325a69ab1bc5552aea981934b1094383a4a42513c7616cad6041169"
+    },
+    "native-save-control-provenance.json": {
+      "sha256": "294dfd184c9e21e5645ad80ca5cf2e9278cbfded5fedeff97a184917f7aca9d9"
+    }
+  },
+  "readable_report": "native-save-control.md"
+}

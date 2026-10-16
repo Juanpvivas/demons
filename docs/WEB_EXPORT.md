@@ -7,6 +7,15 @@ El regreso Android conserva el mismo run sin recarga observada; foco de
 escritorio, otros navegadores y rendimiento sostenido mantienen sus límites.
 La demo sigue en desarrollo y no está publicada en itch.io.
 
+**Integración de main tras PR #16 (2026-10-16):** 002 quedó aprobada con
+[22/22 tareas](../specs/002-monte-calvo-terreno-trincheras/tasks.md) y su
+[matriz nativa](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
+está incorporada en la rama Web. La constitución 2.1.0 conserva tanto los
+destinos Web/Android/iOS como la referencia Xiaomi exclusiva de 002. Los
+resultados de navegador y el [seguimiento de 003](../specs/003-web-itchio/tasks.md)
+siguen siendo propios: esta integración necesita comprobaciones del nuevo
+estado y no hereda una certificación de rendimiento Web.
+
 ## Requisitos
 
 - Godot **estándar oficial 4.7.1 stable**, con sus templates de exportación de
@@ -75,13 +84,14 @@ funcional, no identidad binaria. Esos paquetes son históricos y preceden la
 corrección de entrada descrita abajo.
 [Informe T010](../specs/003-web-itchio/evidence/web-package.md).
 
-El **candidato WIP actual**, generado desde copia limpia de `4a2915c`, mide
+El **paquete local histórico anterior a esta integración** (2026-10-16),
+generado desde copia limpia de `4a2915c`, mide
 **14 893 307 bytes** (aproximadamente 14.89 MB), con SHA256
 `205d3916f21ce8c2b29eaf4bbbd804908dab7e9c93356355f4a335212eabfd71`.
 QA comprobó su integridad: 12 miembros, incluidos 3 avisos de distribución,
 PCK de 78 rutas y hashes coincidentes. El tamaño extraído es 44 652 145 bytes.
 Esta comprobación no aprueba por sí sola la interacción de US2 ni la difusión.
-[Manifest actual](../specs/003-web-itchio/evidence/t017-web-manifest.json) y
+[Manifiesto de ese paquete](../specs/003-web-itchio/evidence/t017-web-manifest.json) y
 [verificación del paquete](../specs/003-web-itchio/evidence/t017-package-verification.json).
 
 ### Corrección de recogida y despliegue aprobada en escritorio
@@ -129,14 +139,15 @@ horizontal; el alcance físico Android se registra por separado a continuación.
 | Navegador iOS | NOT RUN; sin soporte anunciado por extrapolación. |
 | W08 partida Web hasta terminal | PASS acotado: partidas manuales observadas hasta LOST con los mismos datos, más corroboración visual de producción. El ZIP sin observador no muestra el estado terminal; no se acredita victoria manual. |
 | W12 carga/rendimiento/memoria | PARCIAL: muestras de proceso observado y métricas de navegador en producción; carga fría y memoria exclusiva del juego pendientes. No acredita 60 FPS estables. |
-| Workflow Web en GitHub Actions | NOT RUN remoto; sus pasos de generación se verificaron localmente. |
+| Workflow Web en GitHub Actions | SUCCESS remoto anterior a la integración de main; el nuevo estado aún debe comprobarse. Véase el run y el paquete identificados abajo. |
 
 Fuentes: [arranque T005](../specs/003-web-itchio/evidence/web-startup.md),
 [paquete T010](../specs/003-web-itchio/evidence/web-package.md) y los registros
 T017 enlazados arriba. GUT pasa ahora 189/189; la prueba focalizada utiliza
 dispatch real en SubViewport, sin sustituir las interacciones del navegador
 ni el toque físico.
-La feature 002 continúa abierta con sus propios pendientes.
+La feature 002 ya quedó aprobada e integrada en main; su aceptación nativa no
+sustituye las verificaciones Web del estado integrado.
 
 En Android se comprobaron por toque humano los cuatro casos: recoger **11→14
 sin nueva unidad**, desplegar **12→2 con una unidad**, rechazar una celda
@@ -172,7 +183,7 @@ puede estar cuantizado y no representa memoria exclusiva del juego, WASM,
 PSS o VRAM; los callbacks tampoco son FPS del juego. Carga fría y medición
 de memoria del juego siguen pendientes.
 
-El [seguimiento WIP de 003](../specs/003-web-itchio/evidence/implementation-status.md)
+El [informe de la entrega anterior de 003](../specs/003-web-itchio/evidence/implementation-status.md)
 consolida el alcance aceptado y los límites globales. El estado vigente de
 aprobación se consulta en [tasks.md](../specs/003-web-itchio/tasks.md); solo el
 orquestador marca tareas después de QA.
@@ -183,8 +194,19 @@ orquestador marca tareas después de QA.
 activación manual. Instala Godot estándar 4.7.1 con templates y ejecuta el
 mismo script; adjunta `demons-web-<SHA>` con ZIP/manifest y un artefacto separado
 de logs. El CI existente mantiene GUT/importación y los deploys móviles.
-Todavía no hay un run remoto acreditado de este workflow Web. No publica en
-itch.io ni requiere secretos de esa cuenta.
+La [exportación Web remota](https://github.com/Juanpvivas/demons/actions/runs/38903800209)
+y el [CI del PR](https://github.com/Juanpvivas/demons/actions/runs/38903800369)
+terminaron con SUCCESS antes de esta integración. El paquete remoto corresponde
+al merge virtual `a3aef472aa80b966e06029970a5274e50b51c47d` de la cabeza
+`9e32f1a` sobre la base anterior `b670d86`: artifact `12046938477`, nombre
+`demons-web-a3aef472aa80b966e06029970a5274e50b51c47d`, **14 893 929 bytes**, SHA-256
+`b3eccb236968f719f827c8c0ef6eb6e04fbfe15bc605623826745828110b97fb`.
+Tester y QA comprobaron sus 12 miembros, las 78 rutas del PCK y las licencias
+y exclusiones; no se repitieron interacciones de navegador con ese paquete.
+Es distinto del ZIP local histórico de `4a2915c` indicado arriba. Ambos
+preceden el merge del cierre de 002; no acreditan el nuevo HEAD, cuyo paquete,
+CI y QA deben identificarse al terminar sus comprobaciones.
+El workflow no publica en itch.io ni requiere secretos de esa cuenta.
 
 ## Preparar una carga manual posterior en itch.io
 

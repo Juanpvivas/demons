@@ -41,3 +41,23 @@ No hay clic OS real acreditado en esta iteración. La consulta UI usada en T001 
 V3/V4 siguen pendientes para esta integración. [Android baseline real anterior al arte](android-baseline.md) está disponible; los toques ADB fueron rechazados por INJECT_EVENTS y no constituyen resultado de interacción. El orquestador reservó comparación Android del arte para el estado final con trincheras, evitando reinstalar incrementos de rutina. iOS físico no está disponible. No se reclama cumplimiento móvil, 60FPS estables o aceptación final SC005–007.
 
 **Resultado del tester**: regresión pertinente y conservación estática superadas; la matriz de entrada real de T008 **no está completa** con estos datos. Se entrega a QA como evidencia PC con pendientes explícitos. Ningún checkbox se marca desde testing, ni se atribuye una aprobación final al simple paso de la suite.
+
+## Reanudación nativa 2026-10-16 — estado corregido a473585
+
+El diagnóstico I4 preexistente, anterior y posterior al arte, se conserva en [T019RED](t019-red.md); su arreglo separado y GREEN/QA constan en [T021](t021-green.md). Son189/189pruebas y532aserciones, importación limpia0 e invariantes95/97 originales; las únicas excepciones protegidas son la instancia visual y el arregloI4 aprobado. No se reconstruyeREDhistórico del arte.
+
+[AndroidEmulator antes/después](native-avd-input.md), aprobado porQA en su vía: I1sobretrinchera15→5/+1, I2ocupada12→12/sinunidad, I3libre0→0, I4UNpickup12→15/singasto/unidad extra, I9másalládelcentro11→1/+1; PRE/POSTPLAYING, mismofix y gestosSDK solo emulador. No equivalen a un dedo físico. [Xiaomi humano](native-android-input.md): I1/I3 observados, I2/I4 físicos no demostrados; se conservan honestamente sin convertir carencia de cobertura en fallo.
+
+RatónPC: la recuperaciónCUA sí produjo I3PLAYING y recogidas de reserva0→3→6→9; los gestos posteriores llegaronyaLOST y no apruebanI1/I2/I4. Se preparan appsDEBUG independientes para iniciohumano, sin otrobucle de sesiones caducadas. [iPadSimulator](native-ipad-setup.md): build/render y registro persistente confirmados, gestoV4 pendiente de sesiónhumana. HardwareiOS no probado. La matrizT008/T009 aún no está completa; ningúncheckbox se cambia desde testing.
+
+### Actualización V4 aprobada — 2026-10-16
+
+QA aprobó el mínimo de entrada iPadSimulator/Compatibility: [FINAL I1/I3](native-ipad-final-human.md), picking básico, geometría y [comparación I4 BASE](native-ipad-baseline-human.md)/[FINAL](native-ipad-final-i4-human.md). En ambas composiciones, mismo arreglo a473585, celda6,4 libre y un pickup3 con reserva12→15, sin gasto ni unidad adicional, PRE/POST PLAYING. La persona operó el frontend; el registro muestra mouse y touch correlacionados como un gesto. No se usaron handlers ni cambios de estado.
+
+I2/I9 iPad siguen no demostrados; AVD aporta su cobertura touch autorizada sin presentarla como iOS. Hardware iOS no probado. El pendiente operativo de entrada es el ratón PC antes/después con fondos/ocupación discriminantes; sus apps temporales tendrán registros independientes y no se han iniciado. Estado por vía en [matriz consolidada](native-validation-matrix.md). No se marcan tareas.
+
+## Estado vigente tras comparación PC — 2026-10-16
+
+QA aprobó el mínimo de ratón humano antes/después: [BASE I2sesión1](native-pc-base-cd-human.md), [BASE I1/I4/I9sesión2](native-pc-base-cd-human-run2.md) y [FINAL I1/I2/I4/I9](native-pc-arte-cd-human.md), con fondos suficientes, ocupación/centro correctos y PRE/POSTPLAYING. I3previo se conserva sin repetir una rama ya comprobada. BASEincluye pickupúnico3 junto al frente con10→13/sinunidad; FINALI4discriminante conserva12→15/sinunidad. Los eventos posterioresLOST permanecenraw pero no acreditan interacciónactiva.
+
+Se completó la evidencia asignada al tester para T008, con [matriz consolidada](native-validation-matrix.md), AVDcontrolado antes/después, muestreoXiaomi, mínimoV4iPad y core189/189 ya aprobados en sus alcances. No significa PASSfísicoI2/I4Xiaomi oI2/I9iPad ni hardwareiOS. Quedan las auditorías de entrega y documentación porQA/orquestador, sin nuevas ejecuciones rutinarias ni checkboxesdesde testing. Las secciones de2026-10-15 y actualizaciones anteriores conservan sus pendientes de aquelmomento como historial.

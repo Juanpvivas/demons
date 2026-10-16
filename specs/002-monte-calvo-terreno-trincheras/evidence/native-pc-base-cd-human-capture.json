@@ -1,0 +1,19 @@
+{
+  "app_url": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/apps-cd-readable/MonteCalvo_Base002.app",
+  "bounds": {
+    "Height": 356,
+    "Width": 576,
+    "X": 224,
+    "Y": 152
+  },
+  "bundle_identifier": "com.juanpvivas.demons.validation002.base.cd",
+  "event_actions": false,
+  "image_height": 712,
+  "image_width": 1152,
+  "owner": "MonteCalvo_Base002",
+  "owner_pid": 75525,
+  "screen_capture_already_granted": true,
+  "title": "MonteCalvo_Base002 (DEBUG)",
+  "window_id": 8068,
+  "capture_method": "Public ScreenCaptureKit own-bundle/path-verified window only; no focus/input"
+}

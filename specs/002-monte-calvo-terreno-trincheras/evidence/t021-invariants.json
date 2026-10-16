@@ -1,0 +1,22 @@
+{
+  "revision": "a473585ca62e3d35fa1d81d47e052646826032c3",
+  "original_protected_count": 97,
+  "identical_original_count": 95,
+  "changed_original": [
+    "scenes/levels/Nivel_MonteCalvo.tscn",
+    "scenes/levels/nivel_monte_calvo.gd"
+  ],
+  "missing": [],
+  "original_scene_nodes_and_properties_preserved": true,
+  "permitted_scene_additions": [
+    "load_steps6to7",
+    "oneext_resourceMonteCalvoVisual",
+    "onechildinstanceMonteCalvoVisual"
+  ],
+  "art_scene_sha256": "43eec852955409b76a172a756cdceaa33689d123a2f8b580880a752925b22be2",
+  "fixed_script_sha256": "4e89dce236868c4203079e06937b5c8dbcbbd564382f373d2216d4aa8c700d7f",
+  "test_sha256": "ac55c141e87f74939d3432dccf89caa62a888b149e0db69df4f8ae1ef9e34dbd",
+  "test_uid_sha256": "d04d09db66592adb6ca9699779850af4a071aed17a727c10544548aabf3ca56d",
+  "comparative_baseline_fixed_script_matches": true,
+  "original_tests_inputmap_presets_stats_and_geometry": "Original protected files match except two explicitly permitted; no original tests changed."
+}

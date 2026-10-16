@@ -1,0 +1,22 @@
+{
+  "baseline": {
+    "apk": "/private/tmp/monte-calvo-validation-002-v333ghu2/native-baseline.apk",
+    "bytes": 30134165,
+    "sha256": "7051eea97ba52b976451092e665523447597786285ce62b9574b1905f169b789",
+    "source_revision": "a473585ca62e3d35fa1d81d47e052646826032c3",
+    "source_script_sha256": "4e89dce236868c4203079e06937b5c8dbcbbd564382f373d2216d4aa8c700d7f",
+    "observer_sha256": "c628c721ec12ba7c922545787134bae6b86808dbdc9d0c5669945b4e3d15fc90",
+    "telemetry_sha256": "2fbdb3c09e002b9d35cf85da77ef20bd715b266a824341c4f793729372578634",
+    "scope": "instrumented temporary native Mobile copy, production project/preset unchanged"
+  },
+  "final": {
+    "apk": "/private/tmp/monte-calvo-validation-002-v333ghu2/native-final.apk",
+    "bytes": 34784047,
+    "sha256": "37b465acac5f194954994e496e796e7bc65f397a1cfe1864bb84360a9d8388f3",
+    "source_revision": "a473585ca62e3d35fa1d81d47e052646826032c3",
+    "source_script_sha256": "4e89dce236868c4203079e06937b5c8dbcbbd564382f373d2216d4aa8c700d7f",
+    "observer_sha256": "c628c721ec12ba7c922545787134bae6b86808dbdc9d0c5669945b4e3d15fc90",
+    "telemetry_sha256": "2fbdb3c09e002b9d35cf85da77ef20bd715b266a824341c4f793729372578634",
+    "scope": "instrumented temporary native Mobile copy, production project/preset unchanged"
+  }
+}

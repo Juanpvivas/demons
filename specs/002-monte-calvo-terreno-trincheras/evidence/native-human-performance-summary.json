@@ -1,0 +1,200 @@
+{
+  "source": "a473585, instrumented native final37b465\u2026",
+  "raw_sha256": "a9ec4ac7c325a69ab1bc5552aea981934b1094383a4a42513c7616cad6041169",
+  "method": "Existing human session, no new run. One-second NATIVE_TELEMETRY snapshots after first35s; full per-frame file stops before synchronous save. No new Android commands.",
+  "all_playing_seconds": {
+    "min": 0.133333333333333,
+    "max": 50.0001143333329,
+    "rows": 51
+  },
+  "all_playing_fps": {
+    "n": 51,
+    "min": 1.0,
+    "p50": 60.0,
+    "p95": 61.0,
+    "max": 61.0
+  },
+  "fps_below60_after5s": [
+    {
+      "delta_ms": 15.7846666666667,
+      "draw_calls_reported": 18.0,
+      "elapsed_seconds": 36.0026073333323,
+      "engine_fps": 54.0,
+      "game_state": 0,
+      "physics_process_ms": 2.654,
+      "process_ms": 114.607,
+      "render_setup_cpu_ms": 0.044,
+      "texture_mem_bytes": 31886720.0,
+      "video_mem_bytes": 64742464.0,
+      "viewport_render_cpu_ms": 0.685000002384186,
+      "viewport_render_gpu_ms": 2.80699992179871,
+      "log_epoch_seconds": 1792161980.824
+    }
+  ],
+  "save": [
+    {
+      "epoch_seconds": 1792161979.824,
+      "line": "1792161979.824 30347 21522 I godot   : NATIVE_TELEMETRY_SAVED rows=2099"
+    }
+  ],
+  "selection": "PLAYING5<=t<35 and37<=t<=50.1; removes startup and save frame plus subsequent FPS-monitor bucket; raw preserved, no causal proof",
+  "selected_stats": {
+    "engine_fps": {
+      "n": 44,
+      "min": 60.0,
+      "p50": 60.0,
+      "p95": 61.0,
+      "max": 61.0
+    },
+    "delta_ms": {
+      "n": 44,
+      "min": 16.119,
+      "p50": 16.666,
+      "p95": 16.6666666666667,
+      "max": 16.6666666666667
+    },
+    "process_ms": {
+      "n": 44,
+      "min": 15.421,
+      "p50": 16.616,
+      "p95": 18.828,
+      "max": 20.043
+    },
+    "physics_process_ms": {
+      "n": 44,
+      "min": 0.451,
+      "p50": 3.327,
+      "p95": 4.815,
+      "max": 8.53
+    },
+    "render_setup_cpu_ms": {
+      "n": 44,
+      "min": 0.015,
+      "p50": 0.045,
+      "p95": 0.055,
+      "max": 0.144
+    },
+    "viewport_render_cpu_ms": {
+      "n": 44,
+      "min": 0.0850000008940697,
+      "p50": 0.689999997615814,
+      "p95": 1.59800004959106,
+      "max": 2.58599996566772
+    },
+    "viewport_render_gpu_ms": {
+      "n": 44,
+      "min": 2.19000005722046,
+      "p50": 2.79999995231628,
+      "p95": 2.85500001907349,
+      "max": 2.97300004959106
+    },
+    "texture_mem_bytes": {
+      "n": 44,
+      "min": 31886720.0,
+      "p50": 31886720.0,
+      "p95": 31886720.0,
+      "max": 31886720.0
+    },
+    "video_mem_bytes": {
+      "n": 44,
+      "min": 64742464.0,
+      "p50": 64742464.0,
+      "p95": 64742464.0,
+      "max": 64742464.0
+    }
+  },
+  "selected_sample_count": 44,
+  "around_save": [
+    {
+      "delta_ms": 16.6666666666667,
+      "draw_calls_reported": 19.0,
+      "elapsed_seconds": 33.0001786666658,
+      "engine_fps": 61.0,
+      "game_state": 0,
+      "physics_process_ms": 4.481,
+      "process_ms": 15.749,
+      "render_setup_cpu_ms": 0.053,
+      "texture_mem_bytes": 31886720.0,
+      "video_mem_bytes": 64742464.0,
+      "viewport_render_cpu_ms": 1.50399994850159,
+      "viewport_render_gpu_ms": 2.85199999809265,
+      "log_epoch_seconds": 1792161977.735
+    },
+    {
+      "delta_ms": 16.6666666666667,
+      "draw_calls_reported": 17.0,
+      "elapsed_seconds": 34.0001786666658,
+      "engine_fps": 60.0,
+      "game_state": 0,
+      "physics_process_ms": 4.023,
+      "process_ms": 15.421,
+      "render_setup_cpu_ms": 0.045,
+      "texture_mem_bytes": 31886720.0,
+      "video_mem_bytes": 64742464.0,
+      "viewport_render_cpu_ms": 0.649999976158142,
+      "viewport_render_gpu_ms": 2.77800011634827,
+      "log_epoch_seconds": 1792161978.727
+    },
+    {
+      "delta_ms": 16.6666666666667,
+      "draw_calls_reported": 18.0,
+      "elapsed_seconds": 35.0001786666657,
+      "engine_fps": 61.0,
+      "game_state": 0,
+      "physics_process_ms": 5.719,
+      "process_ms": 17.938,
+      "render_setup_cpu_ms": 0.046,
+      "texture_mem_bytes": 31886720.0,
+      "video_mem_bytes": 64742464.0,
+      "viewport_render_cpu_ms": 0.669000029563904,
+      "viewport_render_gpu_ms": 2.91000008583069,
+      "log_epoch_seconds": 1792161979.717
+    },
+    {
+      "delta_ms": 15.7846666666667,
+      "draw_calls_reported": 18.0,
+      "elapsed_seconds": 36.0026073333323,
+      "engine_fps": 54.0,
+      "game_state": 0,
+      "physics_process_ms": 2.654,
+      "process_ms": 114.607,
+      "render_setup_cpu_ms": 0.044,
+      "texture_mem_bytes": 31886720.0,
+      "video_mem_bytes": 64742464.0,
+      "viewport_render_cpu_ms": 0.685000002384186,
+      "viewport_render_gpu_ms": 2.80699992179871,
+      "log_epoch_seconds": 1792161980.824
+    },
+    {
+      "delta_ms": 16.666,
+      "draw_calls_reported": 18.0,
+      "elapsed_seconds": 37.0006343333323,
+      "engine_fps": 61.0,
+      "game_state": 0,
+      "physics_process_ms": 4.355,
+      "process_ms": 17.482,
+      "render_setup_cpu_ms": 0.045,
+      "texture_mem_bytes": 31886720.0,
+      "video_mem_bytes": 64742464.0,
+      "viewport_render_cpu_ms": 0.674000024795532,
+      "viewport_render_gpu_ms": 2.78099989891052,
+      "log_epoch_seconds": 1792161981.816
+    },
+    {
+      "delta_ms": 16.666,
+      "draw_calls_reported": 18.0,
+      "elapsed_seconds": 38.0005943333324,
+      "engine_fps": 60.0,
+      "game_state": 0,
+      "physics_process_ms": 0.92,
+      "process_ms": 17.148,
+      "render_setup_cpu_ms": 0.144,
+      "texture_mem_bytes": 31886720.0,
+      "video_mem_bytes": 64742464.0,
+      "viewport_render_cpu_ms": 0.694999992847443,
+      "viewport_render_gpu_ms": 2.82999992370605,
+      "log_epoch_seconds": 1792161982.808
+    }
+  ],
+  "caveat": "Window excludes a probable measurement perturbation. Not equivalent to an uninstrumented session or proof of all-frame60FPS. Save45 control completed separately: native-save-control.md; observed valley moved to46s, controlLOST versus humanPLAYING retained."
+}

@@ -1,0 +1,33 @@
+{
+  "accessibility_already_granted" : false,
+  "actions_posted" : false,
+  "event_post_already_granted" : false,
+  "own_windows" : [
+    {
+      "bounds" : {
+        "Height" : 20,
+        "Width" : 66,
+        "X" : 333,
+        "Y" : 85
+      },
+      "owner" : "Godot",
+      "pid" : 68459,
+      "title" : "Window",
+      "window_id" : 7798
+    },
+    {
+      "bounds" : {
+        "Height" : 356,
+        "Width" : 576,
+        "X" : 327,
+        "Y" : 79
+      },
+      "owner" : "Godot",
+      "pid" : 68459,
+      "title" : "demons (DEBUG)",
+      "window_id" : 7761
+    }
+  ],
+  "permission_requests" : false,
+  "screen_capture_already_granted" : true
+}

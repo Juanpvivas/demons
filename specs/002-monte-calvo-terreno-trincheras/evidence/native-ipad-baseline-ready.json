@@ -1,0 +1,44 @@
+{
+  "prepared_utc": "2026-10-16T15:38:33.883914+00:00",
+  "variant": "BASE no art with exact same I4 fix and read-only logger",
+  "source_revision": "a473585",
+  "app": "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-filelog-app-baseline/demons.app",
+  "pck_sha256": "55076ebcf908c6613f081f66382e693cdd351703552dcc90f40c412fc4df4ceb",
+  "binary_sha256": "5fa85885290eb55f547b4a8fcba086e50256b2e01d4ba2e5a5909b654882f034",
+  "no_launch": true,
+  "no_input": true,
+  "final_evidence_frozen_first": "native-ipad-final-human.log/derived/report",
+  "steps": [
+    {
+      "command": [
+        "terminate",
+        "802157DE-BEA4-455D-89E7-A4DE6388D3FE",
+        "com.juanpvivas.demons"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "install",
+        "802157DE-BEA4-455D-89E7-A4DE6388D3FE",
+        "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-filelog-app-baseline/demons.app"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "get_app_container",
+        "802157DE-BEA4-455D-89E7-A4DE6388D3FE",
+        "com.juanpvivas.demons",
+        "app"
+      ],
+      "exit": 0,
+      "stdout": "/Users/juan.vivas/Library/Developer/CoreSimulator/Devices/802157DE-BEA4-455D-89E7-A4DE6388D3FE/data/Containers/Bundle/Application/C910625F-5CBA-42BF-B4FF-745B5D33298F/demons.app\n",
+      "stderr": ""
+    }
+  ]
+}

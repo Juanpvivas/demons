@@ -1,0 +1,206 @@
+{
+  "sample": "two serial native debug autoplay runs on physical Xiaomi 11T Pro (2107113SG), Android14, Mobile/Vulkan/Adreno660; instrumentation and scene geometry identical except visual branch",
+  "analysis_window": "elapsed5..30s and game_state0 PLAYING only",
+  "variants": {
+    "baseline": {
+      "raw_sha256": "3148b7fbcebb8f88bb1d30fbe793d638e213fca77a8f94aad1aa05a168d7b7f2",
+      "sample_count": 1506,
+      "all_row_count": 2101,
+      "renderer": "mobile",
+      "driver": "vulkan",
+      "gpu": "Adreno (TM) 660",
+      "first_post_draw": {
+        "engine_ticks_ms": 1054,
+        "observer_ready_to_post_draw_ms": 17.634,
+        "scope": "Godot engine clock and observer ready to first post draw; excludes OS launch before engine; filesystem cache uncontrolled"
+      },
+      "stats": {
+        "delta_ms": {
+          "min": 15.2777777777778,
+          "p50": 16.6666666666667,
+          "p95": 16.6666666666667,
+          "max": 16.6666666666667,
+          "mean": 16.596818061089213
+        },
+        "draw_calls_reported": {
+          "min": 14.0,
+          "p50": 16.0,
+          "p95": 16.0,
+          "max": 16.0,
+          "mean": 15.750332005312085
+        },
+        "engine_fps": {
+          "min": 60.0,
+          "p50": 61.0,
+          "p95": 61.0,
+          "max": 61.0,
+          "mean": 60.50863213811421
+        },
+        "physics_process_ms": {
+          "min": 0.43,
+          "p50": 2.371,
+          "p95": 3.934,
+          "max": 9.94,
+          "mean": 2.2295391766268313
+        },
+        "process_ms": {
+          "min": 15.801,
+          "p50": 16.923,
+          "p95": 22.753,
+          "max": 23.046,
+          "mean": 17.483187250996025
+        },
+        "render_setup_cpu_ms": {
+          "min": 0.009,
+          "p50": 0.04,
+          "p95": 0.059,
+          "max": 2.271,
+          "mean": 0.043308100929614825
+        },
+        "texture_mem_bytes": {
+          "min": 12656000.0,
+          "p50": 12656000.0,
+          "p95": 12656000.0,
+          "max": 12656000.0,
+          "mean": 12656000.0
+        },
+        "video_mem_bytes": {
+          "min": 39220288.0,
+          "p50": 39220288.0,
+          "p95": 39220288.0,
+          "max": 39220288.0,
+          "mean": 39220288.0
+        },
+        "viewport_render_cpu_ms": {
+          "min": 0.0640000030398369,
+          "p50": 0.554000020027161,
+          "p95": 1.27499997615814,
+          "max": 2.63299989700317,
+          "mean": 0.487347277541797
+        },
+        "viewport_render_gpu_ms": {
+          "min": 0.449999988079071,
+          "p50": 0.47299998998642,
+          "p95": 0.479999989271164,
+          "max": 2.1010000705719,
+          "mean": 0.4731826010057492
+        }
+      },
+      "observer_event_counts": {
+        "INITIAL": 1,
+        "SAMPLE": 16,
+        "PERFORMANCE": 7,
+        "TERMINAL_OR_STATE": 1
+      },
+      "max_soldiers_observed": 1,
+      "game_states_observed": [
+        0,
+        3
+      ],
+      "pss_kib": 267001
+    },
+    "final": {
+      "raw_sha256": "4a768624fbdd8ceb3943d271b7abcd9284109e0de9d5c3066ae1df89532d760b",
+      "sample_count": 1513,
+      "all_row_count": 2111,
+      "renderer": "mobile",
+      "driver": "vulkan",
+      "gpu": "Adreno (TM) 660",
+      "first_post_draw": {
+        "engine_ticks_ms": 1240,
+        "observer_ready_to_post_draw_ms": 18.018,
+        "scope": "Godot engine clock and observer ready to first post draw; excludes OS launch before engine; filesystem cache uncontrolled"
+      },
+      "stats": {
+        "delta_ms": {
+          "min": 15.2777777777778,
+          "p50": 16.393,
+          "p95": 16.6666666666667,
+          "max": 24.4526666666667,
+          "mean": 16.523456267900773
+        },
+        "draw_calls_reported": {
+          "min": 18.0,
+          "p50": 20.0,
+          "p95": 20.0,
+          "max": 20.0,
+          "mean": 19.751487111698612
+        },
+        "engine_fps": {
+          "min": 60.0,
+          "p50": 60.0,
+          "p95": 61.0,
+          "max": 61.0,
+          "mean": 60.47851949768671
+        },
+        "physics_process_ms": {
+          "min": 0.51,
+          "p50": 2.098,
+          "p95": 5.274,
+          "max": 5.912,
+          "mean": 2.399039656311952
+        },
+        "process_ms": {
+          "min": 16.077,
+          "p50": 16.619,
+          "p95": 18.281,
+          "max": 19.217,
+          "mean": 16.99323661599449
+        },
+        "render_setup_cpu_ms": {
+          "min": 0.01,
+          "p50": 0.042,
+          "p95": 0.06,
+          "max": 1.029,
+          "mean": 0.042451421017845305
+        },
+        "texture_mem_bytes": {
+          "min": 31886720.0,
+          "p50": 31886720.0,
+          "p95": 31886720.0,
+          "max": 31886720.0,
+          "mean": 31886720.0
+        },
+        "video_mem_bytes": {
+          "min": 64742464.0,
+          "p50": 64742464.0,
+          "p95": 64742464.0,
+          "max": 64742464.0,
+          "mean": 64742464.0
+        },
+        "viewport_render_cpu_ms": {
+          "min": 0.0820000022649765,
+          "p50": 0.656000018119812,
+          "p95": 1.44400000572205,
+          "max": 2.9779999256134,
+          "mean": 0.5785234633584488
+        },
+        "viewport_render_gpu_ms": {
+          "min": 1.47599995136261,
+          "p50": 2.64800000190735,
+          "p95": 2.85199999809265,
+          "max": 3.1470000743866,
+          "mean": 2.402745540380005
+        }
+      },
+      "observer_event_counts": {
+        "INITIAL": 1,
+        "SAMPLE": 16,
+        "PERFORMANCE": 7,
+        "TERMINAL_OR_STATE": 1
+      },
+      "max_soldiers_observed": 1,
+      "game_states_observed": [
+        0,
+        3
+      ],
+      "pss_kib": 278675
+    }
+  },
+  "limitations": [
+    "one run per visual variant, order baseline then final, caches/thermal scheduling uncontrolled",
+    "read-only overlay/profiling/file logging overhead present equally in both variants",
+    "not a 10-wave or sustained typical-session certification; no physical iOS",
+    "process_ms=engine process duration, not exclusive CPU utilization; texture/video memory=renderer counters, PSS=whole instrumented app"
+  ]
+}
