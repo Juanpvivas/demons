@@ -65,8 +65,8 @@ previo suficientes para distinguir cada rechazo; smoke manual hasta terminal.
 extraído; CI entrega artefacto sin publicación. US3 usa el exportador de US1,
 pero puede prepararse mientras US2 se prueba al no compartir archivos.
 
-- [ ] T009 [P] [US3] dev-godot: crear `tools/web/export.sh` y `.github/workflows/export-web.yml` con Godot estándar 4.7.1, salida limpia, ZIP raíz con index.html y manifiesto exterior de SHA/revisión/dirty/tamaño; CI reutiliza el comando y adjunta artefacto sin butler/credenciales/publicación, conservando `ci.yml` GUT+import y deploys móviles; depende de T006 aprobada, sin ejecutar verificaciones por desarrollo.
-- [ ] T010 [US3] godot-tester: comprobar `tools/web/export.sh` y `.github/workflows/export-web.yml` mediante generación desde copia limpia, listado exterior+PCK, extracción/servidor y manifest/hashes; registrar `specs/003-web-itchio/evidence/web-package.md`, límites portal/licencias/exclusiones y resultado local o run CI remoto real claramente separado; depende de T009 entregada, sin editar herramientas.
+- [X] T009 [P] [US3] dev-godot: crear `tools/web/export.sh` y `.github/workflows/export-web.yml` con Godot estándar 4.7.1, salida limpia, ZIP raíz con index.html y manifiesto exterior de SHA/revisión/dirty/tamaño; CI reutiliza el comando y adjunta artefacto sin butler/credenciales/publicación, conservando `ci.yml` GUT+import y deploys móviles; depende de T006 aprobada, sin ejecutar verificaciones por desarrollo.
+- [X] T010 [US3] godot-tester: comprobar `tools/web/export.sh` y `.github/workflows/export-web.yml` mediante generación desde copia limpia, listado exterior+PCK, extracción/servidor y manifest/hashes; registrar `specs/003-web-itchio/evidence/web-package.md`, límites portal/licencias/exclusiones y resultado local o run CI remoto real claramente separado; depende de T009 entregada, sin editar herramientas.
 - [ ] T011 [US3] docs-writer: redactar `docs/WEB_EXPORT.md` con requisitos y pasos locales/CI realmente verificados, archivo ZIP obtenido, itch.io HTML Game/Click to play/iframe 1152×648/Mobile Friendly condicionado a evidencia y estado de navegadores; enlazar desde `README.md`, sin afirmar subida/publicación ni intervenir cuenta; depende de T008 y T010 disponibles para QA, y conserva alcance de sus veredictos.
 
 ## Fase final: Regresión, rendimiento y cierre
@@ -140,3 +140,8 @@ T001 ─┬─ T002 ─┐
   exclusiones verificadas; 108/110 hashes intactos, solo dos configuraciones
   autorizadas difieren. [Arranque](evidence/web-startup.md). US2, Android Web,
   ZIP final, licencias y rendimiento siguen pendientes; habilitadas T007/T009.
+- 2026-10-15: `qa-validator` emitió **APROBADO T009/T010** para generación local
+  y W11: ambas salidas limpias, hashes de 12 miembros/ZIP, PCK de 78 recursos,
+  licencias y arranque extraído verificados. [Paquete](evidence/web-package.md).
+  No acredita CI remoto, US2, Android Web, smoke completo ni rendimiento;
+  el ZIP sigue como candidato WIP hasta completar las verificaciones restantes.
