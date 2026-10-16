@@ -4,7 +4,12 @@
 
 **Input**: Feature specification from `/specs/001-soldado-defensor-oleadas/spec.md`
 
-**Note**: This template is filled in by the `/speckit-plan` command; its definition describes the execution workflow.
+**Nota de proceso (2026-10-15)**: `/speckit-plan` prepara este plan de diseño;
+Spec Kit se usa para especificación, aclaraciones, planificación, tareas y
+análisis. La ejecución corresponde a los agentes del
+[flujo de desarrollo vigente](../../docs/DEVELOPMENT_WORKFLOW.md), no al
+implementador genérico de Spec Kit. Esta aclaración no modifica el alcance de
+la feature ni reconstruye evidencia RED histórica.
 
 ## Summary
 
@@ -40,7 +45,9 @@ procedurales, validación de colocación en grid) se resuelven en
 (sin guardado de partida en su alcance).
 
 **Testing**: GUT, `res://tests/unit/{units,enemies,systems}/`, estructura
-por dominio según `ARCHITECTURE.md` §6.
+por dominio según `ARCHITECTURE.md` §6. La lógica nueva o modificada sigue
+TDD (evidencia RED antes de GREEN, verificación por el tester y revisión
+independiente), conforme al [flujo vigente](../../docs/DEVELOPMENT_WORKFLOW.md).
 
 **Target Platform**: Android, iOS, PC (Windows/macOS/Linux) — las tres por
 igual, según `constitution.md` Restricciones Técnicas.

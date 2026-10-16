@@ -5,12 +5,12 @@
 > para cada feature (`specs/NNN-nombre/plan.md`) DEBEN seguir estas
 > convenciones; si una feature necesita desviarse de algo aquí definido, esa
 > desviación debe justificarse explícitamente en su propio plan, siguiendo el
-> principio de Governance de `constitution.md`.
+> principio de Governance de `.specify/memory/constitution.md`.
 
 ## 1. Propósito
 
 Evitar que cada feature reinvente su propia estructura de carpetas, nombres o
-patrones. `constitution.md` define los principios (el "por qué" y las reglas
+patrones. `.specify/memory/constitution.md` define los principios (el "por qué" y las reglas
 no negociables); este documento define el "cómo" concreto y compartido para
 implementarlos en Godot.
 
@@ -217,7 +217,7 @@ resolvió.
 
 ### 4.3 Datos como Resource, nunca hardcodeados
 
-Ya establecido como principio no negociable en `constitution.md`. Cada tipo
+Ya establecido como principio no negociable en `.specify/memory/constitution.md`. Cada tipo
 de soldado, enemigo u oleada se define como un `Resource` personalizado
 (`.tres`) con un script base (`class_name UnitStats extends Resource`, etc.)
 que declara sus campos tipados. Balancear el juego = editar archivos `.tres`
@@ -476,16 +476,23 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   para poder reintentar o depurar el pipeline de deploy en sí sin
   necesidad de un bump de versión artificial.
 
-## 8. Relación con Spec Kit
+## 8. Relación con Spec Kit y los agentes
 
-- Este documento es de **alcance de proyecto completo** y cambia poco.
-- `specs/NNN-feature/plan.md` (generado por `/speckit-plan`) es de
-  **alcance de una sola feature** y sí cambia con frecuencia. Un plan de
-  feature no debe repetir estas convenciones — debe asumirlas y solo
-  documentar las decisiones técnicas específicas de esa feature.
-- Si un plan de feature introduce un patrón nuevo que debería aplicar a
-  todo el proyecto (por ejemplo, adoptar formalmente un State Machine),
-  ese patrón se "gradúa" a este documento en una actualización posterior.
+- Spec Kit prepara la especificación, el plan, contratos y tareas. Su
+  workflow termina al revisar `tasks.md`; la ejecución pertenece a los
+  agentes, coordinados por `project-orchestrator`.
+- El flujo compartido está en
+  [DEVELOPMENT_WORKFLOW.md](DEVELOPMENT_WORKFLOW.md), enlazado desde
+  [AGENTS.md](../AGENTS.md). Para cambios de comportamiento se sigue TDD:
+  tester RED → desarrollo → tester GREEN → QA → documentación. Las tareas
+  exclusivamente de pruebas, arte o documentación se asignan según su tipo.
+- `speckit-implement` es solo un aviso de compatibilidad; no implementa,
+  ejecuta pruebas ni marca tareas. Solo el orquestador marca `[X]` tras QA.
+- Este documento contiene convenciones de **alcance de proyecto**.
+  `specs/NNN-feature/plan.md`, preparado por `speckit-plan`, contiene decisiones
+  de **una feature** y debe referenciar las convenciones comunes sin copiarlas.
+- Los patrones validados de alcance general se gradúan a este documento por
+  `docs-writer`, después de QA y según las responsabilidades del flujo común.
 
 ## 9. Historial de cambios
 
@@ -508,3 +515,4 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
 | 2026-09-12 | §6: agregado hueco de cobertura de test conocido y no bloqueante — falta el simétrico de victoria (con `WaveManager`/`GameStateManager` reales) al test de integración de derrota de punta a punta agregado en T044 de `001-soldado-defensor-oleadas`. |
 | 2026-09-13 | §6: cerrado el hueco de cobertura anterior — T046 de `001-soldado-defensor-oleadas` (validado por `qa-validator`) agrega el test simétrico de victoria de punta a punta con instancias reales (`Nivel_MonteCalvo.tscn`/`WaveManager`/`WaveSpawner`/`GameStateManager` reales, oleada de prueba acortada), cerrando la Fase Final de la feature. Consolidación de fin de feature: se confirma que las graduaciones de T050-T054 (gap de derrota del `Soldado`) y del hallazgo de motor de T053 (§4.2) ya estaban correctamente integradas, sin duplicados. |
 | 2026-09-15 | §7: sincronizado con la realidad — iOS/TestFlight ya no está pendiente, quedó operativo (`.github/workflows/deploy-ios-testflight.yml`, firma Manual en vez de Automatic, ver ese archivo para el detalle). Se agrega la política de versionado: ambos workflows de deploy de prueba ahora fallan a propósito si `export_presets.cfg` no tiene un bump de versión desde el último deploy exitoso — se detectó en esta sesión que el pipeline estaba re-subiendo repetidamente la misma versión (1.0/build 1) a TestFlight y Firebase sin ningún control. |
+| 2026-10-15 | §8: separación entre preparación Spec Kit y ejecución por agentes, TDD y referencia compartida de desarrollo; rutas de constitución actualizadas |

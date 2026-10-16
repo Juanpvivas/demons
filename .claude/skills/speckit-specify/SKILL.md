@@ -1,15 +1,34 @@
 ---
-name: "speckit-specify"
-description: "Create or update the feature specification from a natural language feature description."
-argument-hint: "Describe the feature you want to specify"
-compatibility: "Requires spec-kit project structure with .specify/ directory"
+name: speckit-specify
+description: Create or update the feature specification from a natural language feature
+  description.
+compatibility: Requires spec-kit project structure with .specify/ directory
 metadata:
-  author: "github-spec-kit"
-  source: "templates/commands/specify.md"
+  author: github-spec-kit
+  source: preset:demons-agent-tdd
+argument-hint: Describe the feature you want to specify
 user-invocable: true
 disable-model-invocation: false
 ---
 
+# Speckit Specify Skill
+
+## Project boundary — preparation only
+
+Read `docs/DEVELOPMENT_WORKFLOW.md` (relative to the repository root)
+and `AGENTS.md` before using this skill. Spec Kit prepares specifications, plans,
+tasks, and their supporting documents. Agents perform implementation, testing,
+and independent validation; this skill never starts that execution stage.
+
+Do not create or modify game code, scenes, assets, or tests; do not run builds,
+playtests, or test suites, mark implementation tasks `[X]`, or invoke
+`speckit-implement`. Apply this boundary before any hook instructions below:
+execute only hooks whose preparation scope is known, and skip/report hooks that
+would implement, test, validate delivery, or dispatch implementation agents.
+When preparation is complete, report readiness and the agent entry point
+`/implementar-feature <feature-id>` (or the equivalent orchestrator in another
+tool), without invoking it from this skill. Each command retains its narrower
+scope and any read-only constraints below.
 
 ## User Input
 
@@ -73,11 +92,12 @@ Given that feature description, do this:
      - "Create a dashboard for analytics" → "analytics-dashboard"
      - "Fix payment processing timeout bug" → "fix-payment-timeout"
 
-2. **Branch creation** (optional, via hook):
+2. **Keep feature identity separate from the branch**:
 
-   If a `before_specify` hook ran successfully in the Pre-Execution Checks above, it will have created/switched to a git branch and output JSON containing `BRANCH_NAME` and `FEATURE_NUM`. Note these values for reference, but the branch name does **not** dictate the spec directory name.
-
-   If the user explicitly provided `GIT_BRANCH_NAME`, pass it through to the hook so the branch script uses the exact value as the branch name (bypassing all prefix/suffix generation).
+   Spec Kit does not create or switch Git branches in this project. Preserve an
+   explicitly supplied intended branch as planning context; otherwise mark it
+   pending for the orchestrator. Skip branch-creation hooks under the project
+   boundary above. Feature directory creation is independent of branch naming.
 
 3. **Create the spec feature directory**:
 
@@ -278,7 +298,7 @@ Report completion to the user with:
 - Checklist results summary
 - Readiness for the next phase (`/speckit-clarify` or `/speckit-plan`)
 
-**NOTE:** Branch creation is handled by the `before_specify` hook (git extension). Spec directory and file creation are always handled by this core command.
+**NOTE:** The project orchestrator prepares the branch during execution. This command only prepares the feature directory and specification.
 
 ## Quick Guidelines
 

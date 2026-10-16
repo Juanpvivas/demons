@@ -1,15 +1,34 @@
 ---
-name: "speckit-constitution"
-description: "Create or update the project constitution from interactive or provided principle inputs."
-argument-hint: "Principles or values for the project constitution"
-compatibility: "Requires spec-kit project structure with .specify/ directory"
+name: speckit-constitution
+description: Create or update the project constitution from interactive or provided
+  principle inputs.
+compatibility: Requires spec-kit project structure with .specify/ directory
 metadata:
-  author: "github-spec-kit"
-  source: "templates/commands/constitution.md"
+  author: github-spec-kit
+  source: preset:demons-agent-tdd
+argument-hint: Principles or values for the project constitution
 user-invocable: true
 disable-model-invocation: false
 ---
 
+# Speckit Constitution Skill
+
+## Project boundary — preparation only
+
+Read `docs/DEVELOPMENT_WORKFLOW.md` (relative to the repository root)
+and `AGENTS.md` before using this skill. Spec Kit prepares specifications, plans,
+tasks, and their supporting documents. Agents perform implementation, testing,
+and independent validation; this skill never starts that execution stage.
+
+Do not create or modify game code, scenes, assets, or tests; do not run builds,
+playtests, or test suites, mark implementation tasks `[X]`, or invoke
+`speckit-implement`. Apply this boundary before any hook instructions below:
+execute only hooks whose preparation scope is known, and skip/report hooks that
+would implement, test, validate delivery, or dispatch implementation agents.
+When preparation is complete, report readiness and the agent entry point
+`/implementar-feature <feature-id>` (or the equivalent orchestrator in another
+tool), without invoking it from this skill. Each command retains its narrower
+scope and any read-only constraints below.
 
 ## User Input
 

@@ -1,15 +1,34 @@
 ---
-name: "speckit-analyze"
-description: "Perform a non-destructive cross-artifact consistency and quality analysis across spec.md, plan.md, and tasks.md after task generation."
-argument-hint: "Optional focus areas for analysis"
-compatibility: "Requires spec-kit project structure with .specify/ directory"
+name: speckit-analyze
+description: Perform a non-destructive cross-artifact consistency and quality analysis
+  across spec.md, plan.md, and tasks.md after task generation.
+compatibility: Requires spec-kit project structure with .specify/ directory
 metadata:
-  author: "github-spec-kit"
-  source: "templates/commands/analyze.md"
+  author: github-spec-kit
+  source: preset:demons-agent-tdd
+argument-hint: Optional focus areas for analysis
 user-invocable: true
 disable-model-invocation: false
 ---
 
+# Speckit Analyze Skill
+
+## Project boundary — preparation only
+
+Read `docs/DEVELOPMENT_WORKFLOW.md` (relative to the repository root)
+and `AGENTS.md` before using this skill. Spec Kit prepares specifications, plans,
+tasks, and their supporting documents. Agents perform implementation, testing,
+and independent validation; this skill never starts that execution stage.
+
+Do not create or modify game code, scenes, assets, or tests; do not run builds,
+playtests, or test suites, mark implementation tasks `[X]`, or invoke
+`speckit-implement`. Apply this boundary before any hook instructions below:
+execute only hooks whose preparation scope is known, and skip/report hooks that
+would implement, test, validate delivery, or dispatch implementation agents.
+When preparation is complete, report readiness and the agent entry point
+`/implementar-feature <feature-id>` (or the equivalent orchestrator in another
+tool), without invoking it from this skill. Each command retains its narrower
+scope and any read-only constraints below.
 
 ## User Input
 
@@ -199,7 +218,7 @@ Output a Markdown report (no file writes) with the following structure:
 
 At end of report, output a concise Next Actions block:
 
-- If CRITICAL issues exist: Recommend resolving before `/speckit-implement`
+- If CRITICAL issues exist: Recommend resolving before the agent implementation stage (`/implementar-feature <feature-id>` or the equivalent orchestrator)
 - If only LOW/MEDIUM: User may proceed, but provide improvement suggestions
 - Provide explicit command suggestions: e.g., "Run /speckit-specify with refinement", "Run /speckit-plan to adjust architecture", "Manually edit tasks.md to add coverage for 'performance-metrics'"
 

@@ -13,6 +13,13 @@ description: "Task list template for feature implementation"
 
 **Organization**: Tareas agrupadas por user story (P1/P2/P3 de `spec.md`) para permitir implementación y prueba independiente de cada una.
 
+**Nota de proceso (2026-10-15)**: esta lista conserva los IDs y estados `[X]`
+registrados durante la feature. Para trabajo nuevo o reanudado se aplica el
+[flujo de desarrollo vigente](../../docs/DEVELOPMENT_WORKFLOW.md): Spec Kit
+prepara los documentos y los agentes ejecutan las tareas según su tipo. Esta
+aclaración no reconstruye ni certifica evidencia RED histórica que no esté
+registrada; los estados existentes no equivalen a una nueva validación.
+
 ## Format: `[ID] [P?] [Story] Description`
 
 - **[P]**: se puede ejecutar en paralelo (archivos distintos, sin dependencias pendientes)
@@ -53,7 +60,7 @@ Proyecto único Godot 4.7 (GDScript). Rutas relativas a `res://` — ver
 - [X] T010 Registrar `EconomyManager` y `GameStateManager` como autoloads en `project.godot` (depende de T008, T009)
 - [X] T011 [P] Crear `ObjectPool` genérico en `core/object_pool.gd` por `docs/ARCHITECTURE.md` §4.5 (no autoload; reutilizable por enemigos y proyectiles)
 - [X] T012 [P] Crear `BoardManager` en `core/board_manager.gd` por `research.md` §5: `Dictionary[Vector2i, Node]` de celdas ocupadas, `is_cell_free(cell)`, `occupy_cell(cell, node)`, `free_cell(cell)`
-- [X] T013 [P] Test GUT `test_economy_manager.gd` en `tests/unit/systems/test_economy_manager.gd`: sumar/gastar munición, emisión de `ammo_pool_changed` — cubre "consumo/recolección de munición" de `constitution.md` Principio II (depende de T008; DEBE fallar antes de completar T008)
+- [X] T013 [P] Test GUT `test_economy_manager.gd` en `tests/unit/systems/test_economy_manager.gd`: sumar/gastar munición, emisión de `ammo_pool_changed` — cubre "consumo/recolección de munición" de `constitution.md` Principio II (requiere el contrato o esqueleto mínimo de T008 para cargar y ejecutar la prueba, no su lógica completa; DEBE fallar por el comportamiento pendiente antes de completar esa lógica de T008)
 - [X] T014 [P] Test GUT `test_board_manager.gd` en `tests/unit/systems/test_board_manager.gd`: `is_cell_free` refleja correctamente ocupación/liberación de celdas (depende de T012)
 
 **Checkpoint**: fundación lista — las user stories pueden empezar.
@@ -205,7 +212,7 @@ agregar las tareas ahora, dentro de esta misma feature, en vez de tocar
 - T013, T014 (tests foundational) en paralelo entre sí
 - Dentro de US1: T015/T016 (tests) en paralelo; T017/T018/T019/T025 (recursos/escenas) en paralelo; la cadena T020→T021→T022→T023→T024 es secuencial (mismo archivo `soldado.gd`)
 - Dentro de US2: T029/T030 en paralelo
-- Dentro de US3: T037/T038 en paralelo; T039/T041 en paralelo; T050/T051 en paralelo (recurso vs. test); T052 y T053 son secuenciales entre sí (T053 llama al `take_damage()` que T052 expone) aunque toquen archivos distintos; T054 depende de T052 completa
+- Dentro de US3: T037/T038 en paralelo; T039/T041 en paralelo; T050 antes de T051 (T051 depende del campo de datos agregado en T050); T052 y T053 son secuenciales entre sí (T053 llama al `take_damage()` que T052 expone y ambas tareas modifican `soldado.gd`); T054 depende de T052 completa
 
 ---
 
@@ -250,5 +257,5 @@ Task: "Crear scenes/enemies/EnemigoBase.tscn"
 - `[P]` = archivos distintos, sin dependencias pendientes entre sí
 - `[US1]`/`[US2]`/`[US3]` mapean cada tarea a su user story para trazabilidad
 - Los tests deben fallar antes de implementar (TDD, pedido explícito del usuario para esta feature)
-- Commitear después de cada tarea o grupo lógico — el pipeline de agentes (`dev-godot` → `godot-tester` → `qa-validator` → `docs-writer`) opera tarea por tarea, no por fase completa
+- Commitear después de cada tarea o grupo lógico — los agentes ejecutan cada tarea según el [flujo vigente](../../docs/DEVELOPMENT_WORKFLOW.md), no por fase completa. Para lógica nueva o modificada: `godot-tester` (RED) → `dev-godot` (GREEN) → `godot-tester` (verificación) → `qa-validator` → `docs-writer`. Las tareas de solo pruebas van al tester; una tarea RED no requiere implementar el comportamiento futuro para validar su evidencia.
 - Evitar: tareas vagas, conflictos de archivo simultáneos, dependencias cruzadas entre stories que rompan su independencia

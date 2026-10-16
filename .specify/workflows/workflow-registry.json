@@ -4,10 +4,18 @@
     "speckit": {
       "name": "Full SDD Cycle",
       "version": "1.0.0",
-      "description": "Runs specify \u2192 plan \u2192 tasks \u2192 implement with review gates",
+      "description": "Runs specify → plan → tasks → implement with review gates",
       "source": "bundled",
       "installed_at": "2026-08-13T20:07:20.646393+00:00",
       "updated_at": "2026-08-13T20:07:20.646402+00:00"
+    },
+    "demons-preparation": {
+      "name": "Demons: preparación antes de agentes",
+      "version": "1.0.0",
+      "description": "Especificación, plan y tareas con revisión; termina antes de la ejecución por agentes.",
+      "source": "tools/speckit/workflows/demons-preparation",
+      "installed_at": "2026-10-15T21:35:52.539815+00:00",
+      "updated_at": "2026-10-15T21:35:52.539880+00:00"
     }
   }
 }
