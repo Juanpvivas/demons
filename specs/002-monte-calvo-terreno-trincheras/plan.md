@@ -4,7 +4,7 @@
 
 **Input**: especificación preparada con el preset `demons-agent-tdd` 1.0.1. Plantilla de plan resuelta mediante `setup-plan.sh --json`, con `FEATURE_DIR` de esta feature.
 
-**Estado**: implementación por agentes autorizada por la persona el 2026-10-15 y en curso. Spec Kit preparó este documento; los agentes implementan, prueban y validan según [el flujo compartido](../../docs/DEVELOPMENT_WORKFLOW.md). Las dependencias y aprobaciones de tareas siguen vigentes; este estado no certifica resultados de ejecución.
+**Estado**: plan ejecutado por los agentes tras la autorización del 2026-10-15; validación completada el 2026-10-16 con 22/22 tareas aprobadas por QA en [tasks.md](tasks.md). Spec Kit preparó este documento; los agentes implementaron, probaron y validaron según [el flujo compartido](../../docs/DEVELOPMENT_WORKFLOW.md). La integración en main requiere revisión y fusión humanas del PR en borrador.
 
 ## Summary
 

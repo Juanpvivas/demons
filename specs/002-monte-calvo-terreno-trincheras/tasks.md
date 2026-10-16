@@ -6,7 +6,7 @@ description: "Primera iteración visual de Monte Calvo: terreno, conservación d
 
 **Feature ID**: `002-monte-calvo-terreno-trincheras`
 **Input**: [spec.md](spec.md), [plan.md](plan.md), [research.md](research.md), [data-model.md](data-model.md), [contrato](contracts/visual-boundary.md), [referencia](references/visual-reference.md) y [validación](quickstart.md).
-**Status**: ejecución iniciada por agentes; los checkboxes se actualizan solo tras QA y no certifican verificaciones pendientes.
+**Status**: ejecución y validación completadas por agentes el 2026-10-16; **22/22 tareas aprobadas por QA**. La integración en main queda sujeta a la revisión y fusión humanas del PR en borrador.
 **Execution Branch**: `codex/002-monte-calvo-terreno-trincheras`, preparada por el orquestador.
 **Issue**: [#13](https://github.com/Juanpvivas/demons/issues/13).
 **Dependency**: PR #12 (preset/flujo de agentes) fusionado, verificado el 2026-10-16; esta rama conserva su base y no modifica ese PR.
@@ -65,8 +65,8 @@ El alcance artístico es estático: revisión visual/de integración y regresió
 - [X] T014 godot-tester: ejecutar una partida completa y los escenarios separados de victoria/derrota de `specs/002-monte-calvo-terreno-trincheras/quickstart.md`; registrar resultados reales en `evidence/smoke.md`, distinguiendo señales/estado existentes de pantallas o controles que el nivel no tiene; depende de T013; una carencia previa se reporta y no se marca como aprobada.
 - [X] T015 godot-tester: medir antes/después en Android de referencia y completar la matriz PC/iOS de `specs/002-monte-calvo-terreno-trincheras/quickstart.md`; registrar dispositivo, resolución efectiva, FPS/tiempos de frame, memoria de texturas, carga y limitaciones en `evidence/performance.md`; depende de T014; no publicar builds ni cambiar versión/firma/exportaciones, y no declarar 60 FPS sin medición.
 - [X] T016 qa-validator: auditar `specs/002-monte-calvo-terreno-trincheras/spec.md`, `contracts/visual-boundary.md`, referencia, diff y reportes T012–T015 contra FR-001–013 y SC-001–007; depende de T015; emitir veredicto de entrega visual sin escribir archivos ni marcar tareas, dejando explícitos cualquier dispositivo o criterio pendiente.
-- [ ] T017 docs-writer, consolidación: documentar únicamente el arte y estructura aprobados en `docs/ARCHITECTURE.md` y el estado visual aplicable en `docs/SPEC.md`, enlazando evidencia de `specs/002-monte-calvo-terreno-trincheras/`; depende de T016 aprobada; no graduar nuevas mecánicas ni atribuir pruebas históricas no realizadas.
-- [ ] T018 qa-validator: revisar la consolidación en `docs/ARCHITECTURE.md`, `docs/SPEC.md` y evidencia final de `specs/002-monte-calvo-terreno-trincheras/`; depende de T017; confirmar que el estado de juego coincide con el verificado en T013–T015 y que esas evidencias siguen válidas, o devolver al tester solo las comprobaciones invalidadas; emitir veredicto sin modificar checkout o tareas.
+- [X] T017 docs-writer, consolidación: documentar únicamente el arte y estructura aprobados en `docs/ARCHITECTURE.md` y el estado visual aplicable en `docs/SPEC.md`, enlazando evidencia de `specs/002-monte-calvo-terreno-trincheras/`; depende de T016 aprobada; no graduar nuevas mecánicas ni atribuir pruebas históricas no realizadas.
+- [X] T018 qa-validator: revisar la consolidación en `docs/ARCHITECTURE.md`, `docs/SPEC.md` y evidencia final de `specs/002-monte-calvo-terreno-trincheras/`; depende de T017; confirmar que el estado de juego coincide con el verificado en T013–T015 y que esas evidencias siguen válidas, o devolver al tester solo las comprobaciones invalidadas; emitir veredicto sin modificar checkout o tareas.
 
 ## Dependencias y ejecución
 
@@ -221,3 +221,19 @@ Preparación documental aprobada por QA: simulador iOS autorizado para V4, hardw
   FR-001–013 y SC-001–007 sin hallazgos bloqueantes ni necesidad de repetir
   pruebas. Se marcan las nueve tareas en orden de dependencia: **20/22**.
   Habilitada T017; consolidación T017 y revisión T018 todavía pendientes.
+
+- 2026-10-16: QA **APROBÓ T017 y T018**. La consolidación en
+  [SPEC.md](../../docs/SPEC.md) y [ARCHITECTURE.md](../../docs/ARCHITECTURE.md)
+  refleja el entorno pictórico estático, la subescena aislada, la precedencia
+  de recolección y la estructura real del nivel sin HUD integrado. No amplía
+  las mecánicas ni las plataformas y conserva placeholders e interfaces pendientes.
+  Cero enlaces locales rotos; documentos sin errores de formato. QA confirmó
+  95/97 invariantes y10/10 hashes finales intactos; ninguna evidencia de
+  T013–T015 quedó invalidada, por lo que se reutilizan189/189 pruebas,
+  532 aserciones y el smoke aprobado. Los datos crudos conservan sus bytes
+  y espacios originales para mantener los hashes. **22/22 tareas aprobadas**.
+  La aceptación mantiene iOS Simulator Compatibility sin hardware iOS y
+  SC-007 limitado al Xiaomi provisional de002, con picos/avisos documentados.
+  Habilitada la publicación de la rama y el PR en borrador; la persona decide
+  promoverlo o fusionarlo. El issue13 permanece abierto hasta esa fusión y
+  la integración de Web continúa separada.

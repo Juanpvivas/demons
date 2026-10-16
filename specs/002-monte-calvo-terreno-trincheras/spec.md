@@ -6,7 +6,7 @@
 
 **Created**: 2026-10-15
 
-**Status**: implementación por agentes autorizada el 2026-10-15; en curso, pendiente de las verificaciones y aprobaciones de cada tarea.
+**Status**: implementación y validación por agentes completadas el 2026-10-16; 22/22 tareas aprobadas por QA según [el registro de ejecución](tasks.md). La integración en main requiere revisión y fusión humanas del PR en borrador.
 
 **Input**: «Usa Spec Kit para preparar la especificación, el plan y las tareas de la primera iteración visual del terreno y las trincheras, siguiendo la imagen y manteniendo las mecánicas actuales».
 
