@@ -77,9 +77,9 @@ ruta de entrada que permite recoger y desplegar con el mismo gesto. No es
 trabajo adicional de gameplay. Los IDs iniciales y sus aprobaciones se conservan.
 
 - [X] T015 godot-tester: reproducir W02 en el ZIP de producción y conservar observador de solo lectura y evidencia; escribir y ejecutar RED en `tests/unit/` con saldo suficiente, celda libre y pickup aislado usando la ruta real de eventos y picking, verificando recolección única, ausencia de gasto/despliegue y mouse/toque según el entorno; QA aprueba la prueba por su fallo esperado válido antes de T016. Sin modificar implementación.
-- [ ] T016 dev-godot: corregir únicamente el enrutamiento de recolección/despliegue en `scenes/levels/nivel_monte_calvo.gd` y, solo si es indispensable, `ammo_pickup.gd`, a partir de T015 RED aprobado y skills de input/2D; conservar cantidades, costos, ocupación, datos, InputMap y arte. No escribe ni ejecuta pruebas; depende de T015 aprobado.
-- [ ] T017 godot-tester: ejecutar GREEN de las mismas pruebas RED, regresión GUT completa y repetición real del gesto con fondos en navegador; reexportar el candidato tras el cambio, verificar hashes de invariantes permitiendo solo la corrección documentada y repetir verificaciones del paquete invalidadas por el nuevo código. Entregar evidencia RED/GREEN y limitaciones; depende de T016 entregada.
-- [ ] T018 qa-validator: revisar independientemente causa, diff mínimo, prueba RED válida, GREEN, regresión y evidencia del navegador; emitir veredicto sobre la corrección FR-003 antes de completar T007/T008. No modifica checkout ni marca tareas; depende de T017.
+- [X] T016 dev-godot: corregir únicamente el enrutamiento de recolección/despliegue en `scenes/levels/nivel_monte_calvo.gd` y, solo si es indispensable, `ammo_pickup.gd`, a partir de T015 RED aprobado y skills de input/2D; conservar cantidades, costos, ocupación, datos, InputMap y arte. No escribe ni ejecuta pruebas; depende de T015 aprobado.
+- [X] T017 godot-tester: ejecutar GREEN de las mismas pruebas RED, regresión GUT completa y repetición real del gesto con fondos en navegador; reexportar el candidato tras el cambio, verificar hashes de invariantes permitiendo solo la corrección documentada y repetir verificaciones del paquete invalidadas por el nuevo código. Entregar evidencia RED/GREEN y limitaciones; depende de T016 entregada.
+- [X] T018 qa-validator: revisar independientemente causa, diff mínimo, prueba RED válida, GREEN, regresión y evidencia del navegador; emitir veredicto sobre la corrección FR-003 antes de completar T007/T008. No modifica checkout ni marca tareas; depende de T017.
 
 T007 se completa después de esta corrección y de sus casos físicos Android;
 T008 conserva su revisión de toda US2. T011/T014 documentan el comportamiento
@@ -185,3 +185,8 @@ T001 ─┬─ T002 ─┐
   y **189/189 GUT** (532 aserciones, tres avisos históricos). Importación
   estándar y UID de prueba correctos. Se guarda candidato para export limpio;
   T016/T017/T018 no se marcan aún: resta la repetición real Web y QA.
+- 2026-10-15: **APROBADO T016/T017/T018** por QA, acotado a la corrección
+  FR-003 en código y escritorio Web: RED/GREEN 6/6, GUT 189/189, paquete
+  actualizado 4a2915c íntegro y W02/W03 durante PLAYING con repetición visual
+  en producción. W04/W05 controlados conservados. Android físico, resize,
+  iframe, smoke y rendimiento permanecen abiertos en T007/T008/T012.

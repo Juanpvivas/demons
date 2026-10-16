@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monte Calvo — prueba local</title>
+<style>
+html,body{margin:0;height:100%;height:100dvh;background:#15191d;color:#fff;font:14px system-ui}
+body{display:flex;flex-direction:column}header{padding:5px 10px;flex:none}
+button{font:inherit;font-weight:600;min-height:44px;margin-right:7px;padding:6px 14px;touch-action:manipulation}
+#metrics{font-size:12px;margin:3px 0}main{flex:1;min-height:0}iframe{display:block;width:100%;height:100%;border:0}
+#intro{padding:20px;line-height:1.5}strong{color:#8ee8ef}
+</style>
+<header>
+<button type="button" id="observed">Comenzar prueba observada</button>
+<button type="button" id="production">Comenzar producción</button>
+<div id="metrics"></div>
+</header>
+<main>
+<div id="intro">Prueba local de diagnóstico. Gira el teléfono a horizontal.<br>
+<strong>Espera las instrucciones antes de comenzar.</strong><br>
+La prueba observada añade solamente contadores y las letras A/B de referencia.
+Cada botón inicia una partida nueva. Producción no contiene esos contadores.</div>
+</main>
+<script>
+const main=document.querySelector('main'), metrics=document.querySelector('#metrics');
+let frameDeltas=[],lastFrame=0,running=false,startedAt=0;
+function dimensions(){const frame=main.querySelector('iframe');const b=frame?.getBoundingClientRect();const sorted=frameDeltas.toSorted((a,b)=>a-b),sum=sorted.reduce((a,b)=>a+b,0);const cadence=sorted.length?` · rAF padre ${(1000*sorted.length/sum).toFixed(1)}Hz p95 ${sorted[Math.floor((sorted.length-1)*.95)].toFixed(1)}ms n${sorted.length}`:'';metrics.textContent=`Ventana CSS ${innerWidth}×${innerHeight} · DPR ${devicePixelRatio}`+(b?` · iframe ${Math.round(b.width)}×${Math.round(b.height)}`:' · esperando inicio')+cadence;}
+function start(mode){main.replaceChildren();frameDeltas=[];lastFrame=0;startedAt=performance.now();running=true;const frame=document.createElement('iframe');frame.title='Monte Calvo '+mode;frame.allow='fullscreen; autoplay';frame.allowFullscreen=true;frame.src=mode+'/';main.append(frame);dimensions();}
+function tick(now){if(running&&lastFrame)frameDeltas.push(now-lastFrame);lastFrame=now;requestAnimationFrame(tick);}requestAnimationFrame(tick);setInterval(dimensions,1000);
+document.querySelector('#observed').addEventListener('click',()=>start('observed'));
+document.querySelector('#production').addEventListener('click',()=>start('production'));
+addEventListener('resize',dimensions);dimensions();
+</script>
+</html>

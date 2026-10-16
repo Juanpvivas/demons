@@ -1,0 +1,266 @@
+[
+  {
+    "level": "log",
+    "message": "Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org",
+    "timestamp": "2026-10-16T04:12:07.648Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+    "timestamp": "2026-10-16T04:12:07.709Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.",
+    "timestamp": "2026-10-16T04:12:07.735Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":0,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":10}]},\"kind\":\"INITIAL\",\"ticks_ms\":202}",
+    "timestamp": "2026-10-16T04:12:07.847Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":0,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":10}]},\"kind\":\"SAMPLE\",\"ticks_ms\":353}",
+    "timestamp": "2026-10-16T04:12:07.999Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":0,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":9}]},\"kind\":\"SAMPLE\",\"ticks_ms\":4202}",
+    "timestamp": "2026-10-16T04:12:11.849Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":0,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":8}]},\"kind\":\"SAMPLE\",\"ticks_ms\":4979}",
+    "timestamp": "2026-10-16T04:12:12.626Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":0,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,2],\"name\":\"AmmoPickup\",\"position\":[576.0,266.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":7}]},\"kind\":\"SAMPLE\",\"ticks_ms\":5754}",
+    "timestamp": "2026-10-16T04:12:13.401Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":0,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,2],\"name\":\"AmmoPickup\",\"position\":[576.0,266.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":6}]},\"kind\":\"SAMPLE\",\"ticks_ms\":6528}",
+    "timestamp": "2026-10-16T04:12:14.176Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":0,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,2],\"name\":\"AmmoPickup\",\"position\":[576.0,266.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":5}]},\"kind\":\"SAMPLE\",\"ticks_ms\":7045}",
+    "timestamp": "2026-10-16T04:12:14.693Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":0,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,2],\"name\":\"AmmoPickup\",\"position\":[576.0,266.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"AmmoPickup\",\"position\":[576.0,292.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":4}]},\"kind\":\"SAMPLE\",\"ticks_ms\":7820}",
+    "timestamp": "2026-10-16T04:12:15.468Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":0,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,2],\"name\":\"AmmoPickup\",\"position\":[576.0,266.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"AmmoPickup\",\"position\":[576.0,292.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":3}]},\"kind\":\"SAMPLE\",\"ticks_ms\":8336}",
+    "timestamp": "2026-10-16T04:12:15.983Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":0,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,2],\"name\":\"AmmoPickup\",\"position\":[576.0,266.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"AmmoPickup\",\"position\":[576.0,292.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":2}]},\"kind\":\"SAMPLE\",\"ticks_ms\":9112}",
+    "timestamp": "2026-10-16T04:12:16.760Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":0,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,2],\"name\":\"AmmoPickup\",\"position\":[576.0,266.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"@Area2D@19\",\"position\":[576.0,312.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"AmmoPickup\",\"position\":[576.0,292.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":1}]},\"kind\":\"SAMPLE\",\"ticks_ms\":9887}",
+    "timestamp": "2026-10-16T04:12:17.534Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":0,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,2],\"name\":\"AmmoPickup\",\"position\":[576.0,266.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"@Area2D@19\",\"position\":[576.0,312.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"AmmoPickup\",\"position\":[576.0,292.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]},\"kind\":\"SAMPLE\",\"ticks_ms\":10404}",
+    "timestamp": "2026-10-16T04:12:18.050Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":0,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,2],\"name\":\"AmmoPickup\",\"position\":[576.0,266.0]},{\"amount\":3,\"cell\":[6,4],\"name\":\"@Area2D@20\",\"position\":[576.0,440.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"@Area2D@19\",\"position\":[576.0,312.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"AmmoPickup\",\"position\":[576.0,292.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]},\"kind\":\"SAMPLE\",\"ticks_ms\":14537}",
+    "timestamp": "2026-10-16T04:12:22.184Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"kind\":\"mouse\",\"position\":[240.0,528.0],\"sequence\":1,\"state\":{\"ammo\":0,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,2],\"name\":\"AmmoPickup\",\"position\":[576.0,266.0]},{\"amount\":3,\"cell\":[6,4],\"name\":\"@Area2D@20\",\"position\":[576.0,440.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"@Area2D@19\",\"position\":[576.0,312.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"AmmoPickup\",\"position\":[576.0,292.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]}},\"kind\":\"INPUT_PRE\",\"ticks_ms\":14640}",
+    "timestamp": "2026-10-16T04:12:22.286Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"reason\":\"Munición insuficiente\"},\"kind\":\"REJECTED\",\"ticks_ms\":14640}",
+    "timestamp": "2026-10-16T04:12:22.286Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"sequence\":1,\"state\":{\"ammo\":0,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,2],\"name\":\"AmmoPickup\",\"position\":[576.0,266.0]},{\"amount\":3,\"cell\":[6,4],\"name\":\"@Area2D@20\",\"position\":[576.0,440.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"@Area2D@19\",\"position\":[576.0,312.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"AmmoPickup\",\"position\":[576.0,292.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]}},\"kind\":\"INPUT_POST\",\"ticks_ms\":14654}",
+    "timestamp": "2026-10-16T04:12:22.300Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"kind\":\"mouse\",\"position\":[576.0,251.0],\"sequence\":2,\"state\":{\"ammo\":0,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,2],\"name\":\"AmmoPickup\",\"position\":[576.0,266.0]},{\"amount\":3,\"cell\":[6,4],\"name\":\"@Area2D@20\",\"position\":[576.0,440.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"@Area2D@19\",\"position\":[576.0,312.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"AmmoPickup\",\"position\":[576.0,292.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]}},\"kind\":\"INPUT_PRE\",\"ticks_ms\":14814}",
+    "timestamp": "2026-10-16T04:12:22.460Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"amount\":3},\"kind\":\"AMMO\",\"ticks_ms\":14820}",
+    "timestamp": "2026-10-16T04:12:22.466Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"sequence\":2,\"state\":{\"ammo\":3,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,4],\"name\":\"@Area2D@20\",\"position\":[576.0,440.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"@Area2D@19\",\"position\":[576.0,312.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"AmmoPickup\",\"position\":[576.0,292.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]}},\"kind\":\"INPUT_POST\",\"ticks_ms\":14828}",
+    "timestamp": "2026-10-16T04:12:22.474Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"kind\":\"mouse\",\"position\":[576.0,283.0],\"sequence\":3,\"state\":{\"ammo\":3,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,4],\"name\":\"@Area2D@20\",\"position\":[576.0,440.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"@Area2D@19\",\"position\":[576.0,312.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"AmmoPickup\",\"position\":[576.0,292.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]}},\"kind\":\"INPUT_PRE\",\"ticks_ms\":14988}",
+    "timestamp": "2026-10-16T04:12:22.634Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"amount\":6},\"kind\":\"AMMO\",\"ticks_ms\":15003}",
+    "timestamp": "2026-10-16T04:12:22.650Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"sequence\":3,\"state\":{\"ammo\":6,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,4],\"name\":\"@Area2D@20\",\"position\":[576.0,440.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"@Area2D@19\",\"position\":[576.0,312.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]}},\"kind\":\"INPUT_POST\",\"ticks_ms\":15005}",
+    "timestamp": "2026-10-16T04:12:22.651Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":6,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,4],\"name\":\"@Area2D@20\",\"position\":[576.0,440.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"@Area2D@19\",\"position\":[576.0,312.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]},\"kind\":\"SAMPLE\",\"ticks_ms\":15052}",
+    "timestamp": "2026-10-16T04:12:22.699Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"kind\":\"mouse\",\"position\":[576.0,312.0],\"sequence\":4,\"state\":{\"ammo\":6,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,4],\"name\":\"@Area2D@20\",\"position\":[576.0,440.0]},{\"amount\":3,\"cell\":[6,3],\"name\":\"@Area2D@19\",\"position\":[576.0,312.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]}},\"kind\":\"INPUT_PRE\",\"ticks_ms\":15163}",
+    "timestamp": "2026-10-16T04:12:22.809Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"amount\":9},\"kind\":\"AMMO\",\"ticks_ms\":15170}",
+    "timestamp": "2026-10-16T04:12:22.816Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"sequence\":4,\"state\":{\"ammo\":9,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,4],\"name\":\"@Area2D@20\",\"position\":[576.0,440.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]}},\"kind\":\"INPUT_POST\",\"ticks_ms\":15178}",
+    "timestamp": "2026-10-16T04:12:22.824Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":9,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,4],\"name\":\"@Area2D@20\",\"position\":[576.0,440.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]},\"kind\":\"SAMPLE\",\"ticks_ms\":15311}",
+    "timestamp": "2026-10-16T04:12:22.957Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"kind\":\"mouse\",\"position\":[576.0,440.0],\"sequence\":5,\"state\":{\"ammo\":9,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,4],\"name\":\"@Area2D@20\",\"position\":[576.0,440.0]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]}},\"kind\":\"INPUT_PRE\",\"ticks_ms\":15332}",
+    "timestamp": "2026-10-16T04:12:22.977Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"amount\":12},\"kind\":\"AMMO\",\"ticks_ms\":15337}",
+    "timestamp": "2026-10-16T04:12:22.983Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"sequence\":5,\"state\":{\"ammo\":12,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]}},\"kind\":\"INPUT_POST\",\"ticks_ms\":15345}",
+    "timestamp": "2026-10-16T04:12:22.991Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"kind\":\"mouse\",\"position\":[624.0,528.0],\"sequence\":6,\"state\":{\"ammo\":12,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]}},\"kind\":\"INPUT_PRE\",\"ticks_ms\":15507}",
+    "timestamp": "2026-10-16T04:12:23.153Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"sequence\":6,\"state\":{\"ammo\":12,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]}},\"kind\":\"INPUT_POST\",\"ticks_ms\":15520}",
+    "timestamp": "2026-10-16T04:12:23.167Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":12,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]},\"kind\":\"SAMPLE\",\"ticks_ms\":15569}",
+    "timestamp": "2026-10-16T04:12:23.216Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":12,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,4],\"name\":\"AmmoPickup\",\"position\":[576.0,451.97]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]},\"kind\":\"SAMPLE\",\"ticks_ms\":26937}",
+    "timestamp": "2026-10-16T04:12:34.583Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"kind\":\"mouse\",\"position\":[576.0,452.0],\"sequence\":7,\"state\":{\"ammo\":12,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[{\"amount\":3,\"cell\":[6,4],\"name\":\"AmmoPickup\",\"position\":[576.0,451.97]}],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]}},\"kind\":\"INPUT_PRE\",\"ticks_ms\":27821}",
+    "timestamp": "2026-10-16T04:12:35.466Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"amount\":15},\"kind\":\"AMMO\",\"ticks_ms\":27836}",
+    "timestamp": "2026-10-16T04:12:35.482Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"sequence\":7,\"state\":{\"ammo\":15,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]}},\"kind\":\"INPUT_POST\",\"ticks_ms\":27837}",
+    "timestamp": "2026-10-16T04:12:35.482Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"ammo\":15,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]},\"kind\":\"SAMPLE\",\"ticks_ms\":27969}",
+    "timestamp": "2026-10-16T04:12:35.615Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"kind\":\"mouse\",\"position\":[240.0,528.0],\"sequence\":8,\"state\":{\"ammo\":15,\"game_state\":0,\"occupied_cells\":[[6,5]],\"pickups\":[],\"soldiers\":[{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]}},\"kind\":\"INPUT_PRE\",\"ticks_ms\":28013}",
+    "timestamp": "2026-10-16T04:12:35.658Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"amount\":5},\"kind\":\"AMMO\",\"ticks_ms\":28013}",
+    "timestamp": "2026-10-16T04:12:35.658Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  },
+  {
+    "level": "log",
+    "message": "WEB_OBSERVER {\"data\":{\"sequence\":8,\"state\":{\"ammo\":5,\"game_state\":0,\"occupied_cells\":[[6,5],[2,5]],\"pickups\":[],\"soldiers\":[{\"cell\":[2,5],\"name\":\"@StaticBody2D@21\",\"position\":[240.0,528.0],\"rifle_ammo\":10},{\"cell\":[6,5],\"name\":\"Soldado\",\"position\":[576.0,500.0],\"rifle_ammo\":0}]}},\"kind\":\"INPUT_POST\",\"ticks_ms\":28028}",
+    "timestamp": "2026-10-16T04:12:35.673Z",
+    "url": "http://127.0.0.1:8063/observed/index.js"
+  }
+]
