@@ -16,14 +16,20 @@
 
 ## Adenda de preparación — 2026-10-16
 
-**Estado**: preparación de la adenda aprobada por QA; no aprueba por sí sola T019, la corrección ni las verificaciones nativas. El [registro del orquestador en tasks.md](tasks.md) es la fuente vigente de aprobaciones. Se conservan las aprobaciones históricas y la constitución 1.1.0 de esta rama.
+**Estado**: preparación de la adenda aprobada por QA; no aprueba por sí sola T019, la corrección ni las verificaciones nativas. El [registro del orquestador en tasks.md](tasks.md) es la fuente vigente de aprobaciones. Se conservan las aprobaciones históricas. La adenda original se preparó con la constitución 1.1.0; la decisión de referencia provisional posterior se documenta en la enmienda 1.2.0.
 
-- La persona autorizó validar iOS/Android mediante simuladores/emuladores. V4 se realizará en **iOS Simulator**, con gestos sobre la interfaz de la app y registro de coordenadas/estado; su aceptación será de simulador, sin afirmar iOS físico probado. V3 conserva el **Xiaomi físico** disponible para interacción humana y comparación de rendimiento. Ese 11T Pro de 2021 no es la referencia nominal de gama media de los últimos ~3 años: SC-007 conserva ese límite constitucional sin aprobación automática.
+- La persona autorizó validar iOS/Android mediante simuladores/emuladores. V4 se realizará en **iOS Simulator**, con gestos sobre la interfaz de la app y registro de coordenadas/estado; su aceptación será de simulador, sin afirmar iOS físico probado. V3 conserva el **Xiaomi físico** disponible para interacción humana y comparación de rendimiento. Ese 11T Pro de 2021 no cumple la referencia nominal de gama media de los últimos ~3 años. Tras identificar esa limitación, la persona lo autorizó como referencia provisional exclusiva de 002 según la enmienda posterior; SC-007 mantiene 60 FPS estables y revisión QA, sin aprobación automática.
 - I4 y US2/AC2 ya exigían recoger sin desplegar además un soldado. El diagnóstico nativo actual reproduce el defecto tanto en la copia anterior al arte como en `b670d86`: con reserva 12 y un pickup de 3 en celda libre, un clic puede dejar 5 y crear otro soldado. El script de ambas versiones es idéntico (SHA-256 `2420d7100eb852b6dee0521df56015784a5ac0a0b2af0274b3fa6d2b3fe27e6b`); el arte no lo introdujo.
 - Se planifica adelantar **solo la corrección de precedencia pickup→despliegue** validada mediante TDD en 003 (`4a2915c`), como arreglo separado T019–T022. No se atribuye a la persona una autorización explícita de este backport: su fundamento es el defecto ya corregido/validado en 003 y la necesidad de cumplir I4. La preparación está aprobada; su aceptación en 002 exige completar el ciclo nativo y su QA.
 - Única excepción a la conservación histórica: corregir ese resultado erróneo en `scenes/levels/nivel_monte_calvo.gd` y añadir las seis pruebas/UID de regresión correspondientes. Se mantienen InputMap, costos, recompensas, balance, datos, geometría, escenas de actores y exportaciones. No se incorpora Web ni configuración de 003. La línea base y las evidencias artísticas originales se conservan; la comparación visual se separa de la corrección según [el contrato](contracts/visual-boundary.md).
 
 **Aclaración de método Android, aprobada por QA (2026-10-16)**: la autorización de emuladores permite añadir una subcobertura controlada de I1–I4/I9 mediante **Android Emulator (AVD)**, con gestos entregados por el sistema operativo a la app, incluida la entrada ADB dirigida exclusivamente al serial verificado del emulador. No sustituye V3: el Xiaomi conserva la comprobación humana de interacción física y las mediciones reales disponibles. Los resultados de ratón PC, toque simulado Android, toque humano Xiaomi y gesto iOS Simulator se registran por separado, con coordenadas y estado previo/posterior. Este método no acredita por anticipado ningún caso ni convierte la emulación en prueba física o medición de SC-007; véase [quickstart](quickstart.md).
+
+## Clarifications
+
+### Session 2026-10-16
+
+- Decisión explícita de la persona: «Usar el Xiaomi como referencia provisional para 002». Se adopta el Xiaomi 11T Pro físico (`2107113SG`, generación 2021) solo para la aceptación de 002, mediante la enmienda 1.2.0 de la [constitución](../../.specify/memory/constitution.md). La persona recibió el límite de generación y de la muestra corta disponible; la decisión conserva 60 FPS estables y revisión QA. No certifica otros teléfonos, 003 o iOS ni declara superado SC-007. Esta sincronización documental se entrega como borrador para QA; los resultados siguen en `evidence/`.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -121,7 +127,7 @@ Como jugador, quiero ver tierra excavada, madera y sacos de arena que enmarquen 
 - **SC-004**: La comparación de la línea base no encuentra cambios de reglas, valores de balance, posiciones, geometrías o entradas, salvo el arreglo separado y acotado de I4 de la adenda; la regresión requerida termina sin fallos nuevos atribuibles a esta iteración.
 - **SC-005**: Las cuatro configuraciones de pantalla de la matriz quedan documentadas con evidencia, sin huecos de fondo nuevos ni cambio de correspondencia visual/entrada.
 - **SC-006**: Una partida completa de validación conserva el ciclo del nivel; los escenarios separados de victoria y derrota mantienen los resultados anteriores.
-- **SC-007**: En el dispositivo Android de referencia documentado se mantienen 60 FPS en gameplay típico, conforme a la constitución; las limitaciones o una línea base que ya incumpla el objetivo se registran y no se declaran aprobadas.
+- **SC-007**: En el Xiaomi 11T Pro físico (`2107113SG`), referencia provisional autorizada exclusivamente para 002 conforme a la constitución 1.2.0, se mantienen 60 FPS estables en gameplay típico; las limitaciones o una línea base que ya incumpla el objetivo se registran y no se declaran aprobadas. La aceptación depende de la evidencia y de QA, sin extrapolar a otros teléfonos, 003 o iOS.
 
 ## Assumptions
 

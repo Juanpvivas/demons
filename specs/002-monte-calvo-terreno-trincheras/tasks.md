@@ -158,3 +158,11 @@ Preparación documental aprobada por QA: simulador iOS autorizado para V4, hardw
   el método. QA también aprobó la procedencia de la plantilla local iOS Simulator
   arm64 del mismo tag oficial 4.7.1, sin parches: resuelve el bloqueo de compilación,
   pero la ejecución y los gestos V4 siguen pendientes de evidencia y dictamen.
+
+- 2026-10-16: la persona eligió expresamente «Usar el Xiaomi como referencia
+  provisional para 002». QA **APROBÓ la enmienda constitucional 1.2.0** y su
+  sincronización con los cuatro documentos de preparación. La excepción se
+  limita al Xiaomi 11T Pro físico de esta feature; mantiene 60 FPS estables,
+  QA independiente y la referencia nominal global. No aprueba SC-007 por sí
+  sola ni se extiende a 003, otros teléfonos o iOS. Las mediciones y el dictamen
+  de rendimiento conservan su evaluación separada.
