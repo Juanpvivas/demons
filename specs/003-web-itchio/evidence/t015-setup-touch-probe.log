@@ -1,0 +1,91 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+---  GUT  ---
+[INFO]:  using [/Users/juan.vivas/Library/Application Support/Godot/app_userdata/demons] for temporary output.
+Godot version:  4.7.1
+GUT version:  9.7.1
+
+
+res://tests/unit/levels/test_pickup_input_routing.gd
+* test_mouse_control_reaches_real_pickup_through_viewport_physics_picking
+* test_touch_control_reaches_real_pickup_through_viewport_physics_picking
+    [Failed]:  [0] expected to equal [1]:  CONTROL: physics picking debe entregar un pressed al pickup; si falla, no acredita RED de gameplay
+      at line -1
+    [Failed]:  CONTROL: el pickup real debe recogerse por el evento del Viewport
+      at line -1
+    [Failed]:  [12] expected to equal [15]:  CONTROL: un pickup amount3 debe sumar una vez a reserva12
+      at line -1
+    [Failed]:  ARRAY([]) != ARRAY([15]).
+    [] != [15]  1 of 1 indexes do not match.  CONTROL: una sola ganancia, sin consumo ni segunda recoleccion
+      at line -1
+* test_mouse_pickup_with_enough_ammo_does_not_spend_or_deploy
+T015_EVENT touch=false pickup_presses=1 ammo=5 changes=[2, 5] soldiers_before=1 soldiers_after=2 cell_free=false
+    [Failed]:  [5] expected to equal [15]:  FR-003: reserva12 + pickup3, sin gasto de10 en el mismo gesto
+      at line -1
+    [Failed]:  ARRAY([2, 5]) != ARRAY([15]).
+    [2, 5] != [15]  2 of 2 indexes do not match.  FR-003: exactamente una ganancia, sin gasto/despliegue asociado
+      at line -1
+    [Failed]:  [2] expected to equal [1]:  FR-003: recoger no debe crear un soldado adicional
+      at line -1
+    [Failed]:  FR-003: la celda del pickup debe seguir libre
+      at line -1
+* test_touch_pickup_with_enough_ammo_does_not_spend_or_deploy
+T015_EVENT touch=true pickup_presses=0 ammo=12 changes=[] soldiers_before=1 soldiers_after=1 cell_free=true
+    [Failed]:  FR-003: el unico pickup debe recogerse mediante dispatch real
+      at line -1
+    [Failed]:  [12] expected to equal [15]:  FR-003: reserva12 + pickup3, sin gasto de10 en el mismo gesto
+      at line -1
+    [Failed]:  ARRAY([]) != ARRAY([15]).
+    [] != [15]  1 of 1 indexes do not match.  FR-003: exactamente una ganancia, sin gasto/despliegue asociado
+      at line -1
+1/4 passed.
+
+
+
+
+==============================================
+= Run Summary
+==============================================
+
+res://tests/unit/levels/test_pickup_input_routing.gd
+- test_touch_control_reaches_real_pickup_through_viewport_physics_picking
+    [Failed]:  [0] expected to equal [1]:  CONTROL: physics picking debe entregar un pressed al pickup; si falla, no acredita RED de gameplay
+          at line -1
+    [Failed]:  CONTROL: el pickup real debe recogerse por el evento del Viewport
+          at line -1
+    [Failed]:  [12] expected to equal [15]:  CONTROL: un pickup amount3 debe sumar una vez a reserva12
+          at line -1
+    [Failed]:  ARRAY([]) != ARRAY([15]).
+    [] != [15]  1 of 1 indexes do not match.  CONTROL: una sola ganancia, sin consumo ni segunda recoleccion
+          at line -1
+- test_mouse_pickup_with_enough_ammo_does_not_spend_or_deploy
+    [Failed]:  [5] expected to equal [15]:  FR-003: reserva12 + pickup3, sin gasto de10 en el mismo gesto
+          at line -1
+    [Failed]:  ARRAY([2, 5]) != ARRAY([15]).
+    [2, 5] != [15]  2 of 2 indexes do not match.  FR-003: exactamente una ganancia, sin gasto/despliegue asociado
+          at line -1
+    [Failed]:  [2] expected to equal [1]:  FR-003: recoger no debe crear un soldado adicional
+          at line -1
+    [Failed]:  FR-003: la celda del pickup debe seguir libre
+          at line -1
+- test_touch_pickup_with_enough_ammo_does_not_spend_or_deploy
+    [Failed]:  FR-003: el unico pickup debe recogerse mediante dispatch real
+          at line -1
+    [Failed]:  [12] expected to equal [15]:  FR-003: reserva12 + pickup3, sin gasto de10 en el mismo gesto
+          at line -1
+    [Failed]:  ARRAY([]) != ARRAY([15]).
+    [] != [15]  1 of 1 indexes do not match.  FR-003: exactamente una ganancia, sin gasto/despliegue asociado
+          at line -1
+
+Totals
+------
+Scripts               1
+Tests                 4
+Passing Tests         1
+Failing Tests         3
+Asserts           11/22
+Time               1.1s
+
+
+---- 3 failing tests ----
+

@@ -69,6 +69,22 @@ pero puede prepararse mientras US2 se prueba al no compartir archivos.
 - [X] T010 [US3] godot-tester: comprobar `tools/web/export.sh` y `.github/workflows/export-web.yml` mediante generación desde copia limpia, listado exterior+PCK, extracción/servidor y manifest/hashes; registrar `specs/003-web-itchio/evidence/web-package.md`, límites portal/licencias/exclusiones y resultado local o run CI remoto real claramente separado; depende de T009 entregada, sin editar herramientas.
 - [ ] T011 [US3] docs-writer: redactar `docs/WEB_EXPORT.md` con requisitos y pasos locales/CI realmente verificados, archivo ZIP obtenido, itch.io HTML Game/Click to play/iframe 1152×648/Mobile Friendly condicionado a evidencia y estado de navegadores; enlazar desde `README.md`, sin afirmar subida/publicación ni intervenir cuenta; depende de T008 y T010 disponibles para QA, y conserva alcance de sus veredictos.
 
+## Corrección necesaria de FR-003: recoger sin desplegar
+
+Añadida durante T007 por fallo reproducido con saldo suficiente, conforme al
+ciclo adicional previsto por el plan. Conserva reglas y balance; corrige la
+ruta de entrada que permite recoger y desplegar con el mismo gesto. No es
+trabajo adicional de gameplay. Los IDs iniciales y sus aprobaciones se conservan.
+
+- [X] T015 godot-tester: reproducir W02 en el ZIP de producción y conservar observador de solo lectura y evidencia; escribir y ejecutar RED en `tests/unit/` con saldo suficiente, celda libre y pickup aislado usando la ruta real de eventos y picking, verificando recolección única, ausencia de gasto/despliegue y mouse/toque según el entorno; QA aprueba la prueba por su fallo esperado válido antes de T016. Sin modificar implementación.
+- [ ] T016 dev-godot: corregir únicamente el enrutamiento de recolección/despliegue en `scenes/levels/nivel_monte_calvo.gd` y, solo si es indispensable, `ammo_pickup.gd`, a partir de T015 RED aprobado y skills de input/2D; conservar cantidades, costos, ocupación, datos, InputMap y arte. No escribe ni ejecuta pruebas; depende de T015 aprobado.
+- [ ] T017 godot-tester: ejecutar GREEN de las mismas pruebas RED, regresión GUT completa y repetición real del gesto con fondos en navegador; reexportar el candidato tras el cambio, verificar hashes de invariantes permitiendo solo la corrección documentada y repetir verificaciones del paquete invalidadas por el nuevo código. Entregar evidencia RED/GREEN y limitaciones; depende de T016 entregada.
+- [ ] T018 qa-validator: revisar independientemente causa, diff mínimo, prueba RED válida, GREEN, regresión y evidencia del navegador; emitir veredicto sobre la corrección FR-003 antes de completar T007/T008. No modifica checkout ni marca tareas; depende de T017.
+
+T007 se completa después de esta corrección y de sus casos físicos Android;
+T008 conserva su revisión de toda US2. T011/T014 documentan el comportamiento
+aprobado y el nuevo ZIP. Son **14 tareas iniciales + 4 de corrección requerida**.
+
 ## Fase final: Regresión, rendimiento y cierre
 
 - [ ] T012 godot-tester: verificar estado final en `specs/003-web-itchio/evidence/final-validation.md` con importación limpia/GUT completo, hashes de reglas/arte/nativos y W12 medido en escritorio+Chrome Android (carga, duración, condiciones y frame times/cadencia/memoria disponible); repetir smoke si el paquete cambió desde T007, registrar Firefox/Safari/Web iOS según disponibilidad y gates constitucionales pendientes sin adjudicarles PASS; depende de T008, T010 y T011 entregada, sin revalidación histórica ficticia de 002.
@@ -89,7 +105,7 @@ T001 ─┬─ T002 ─┐
   export actual/UI y el dev solo escribe herramientas/workflow. Serializar
   T010 con T007 al usar export/import/browser; no permitir ediciones de preset
   durante pruebas. El diagrama expresa dependencias, no permiso para carreras.
-- US1 contiene 3 tareas, US2 contiene 2, US3 contiene 3; setup 3 y cierre 3: **14**.
+- US1 contiene 3 tareas, US2 inicialmente 2, US3 contiene 3; setup 3 y cierre 3: **14 iniciales**, más T015–T018 para la corrección necesaria de FR-003.
 - Si surge comportamiento nuevo, añadir tareas sin renumerar: RED depende de
   contrato/harness disponible; dev depende de RED aprobado; GREEN/QA después.
   No paralelizar RED e implementación del mismo caso.
@@ -145,3 +161,12 @@ T001 ─┬─ T002 ─┐
   licencias y arranque extraído verificados. [Paquete](evidence/web-package.md).
   No acredita CI remoto, US2, Android Web, smoke completo ni rendimiento;
   el ZIP sigue como candidato WIP hasta completar las verificaciones restantes.
+- 2026-10-15: T007 detectó fallo W02 con reserva 12: un clic de recolección
+  gastó 10 y desplegó además de recoger. Se abren T015–T018 como ciclo TDD
+  requerido por FR-003/SC-007, sin cambiar reglas ni balance. No se aprueba
+  el candidato para difusión; la prueba física espera la corrección.
+- 2026-10-15: **APROBADO T015 (solo pruebas RED)** por `qa-validator`: dos
+  controles de picking pasan y dos regresiones mouse normal/emulado fallan
+  por saldo 5 en lugar de 15 y despliegue extra. Sin error de entorno;
+  raw touch excluido del RED. [Prueba RED](evidence/t015-red.md). Implementación
+  todavía pendiente; se autoriza T016, sin aprobar el comportamiento.
