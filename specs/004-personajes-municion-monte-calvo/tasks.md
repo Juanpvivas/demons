@@ -1,14 +1,15 @@
 # Tasks: Personajes y munición de Monte Calvo
 
-**Estado**: I1 en ejecución; solo se marcan tareas tras aprobación independiente.
+**Estado**: I1 aprobado (T001–T013); I2/I3 pendientes.
 **Issue**: [#18](https://github.com/Juanpvivas/demons/issues/18).
-**Incremento activo**: I1, T001–T013; soldado y presentación visual compartida.
+**Incremento de esta entrega**: I1, T001–T013; soldado y presentación visual compartida.
 **Execution Branch**: `codex/004-i1-soldado`, desde `main` en `990be90`.
 **Base del PR funcional**: `codex/004-preparacion`, [PR #19 en borrador](https://github.com/Juanpvivas/demons/pull/19);
 la rama de ejecución conserva su historial y no cambia durante el ciclo.
 El Xiaomi 11T Pro físico `2107113SG` es la referencia provisional exclusiva
-de 004 por decisión de la persona, según la constitución 2.2.0. Rendimiento
-y disponibilidad operativa de iOS mantienen sus gates de aceptación pendientes.
+de 004 por decisión de la persona, según la constitución 2.2.0. Los gates
+funcionales de I1 están aprobados; iOS acredita el simulador identificado,
+con sus límites. Los incrementos posteriores conservan sus verificaciones propias.
 **Input**: [spec](spec.md), [plan](plan.md), [research](research.md),
 [modelo](data-model.md), [contrato](contracts/visual-presentation.md) y
 [quickstart](quickstart.md).
@@ -36,7 +37,7 @@ versionan. Cada incremento incluye sus verificaciones, QA y documentación.
 
 **Objetivo**: permitir aserciones semánticas antes de implementar presentación.
 
-- [ ] T002 godot-tester: establecer baseline con `tools/ci/run_gut.py`, `scenes/levels/Nivel_MonteCalvo.tscn` y `specs/004-personajes-municion-monte-calvo/quickstart.md`: reglas/transformaciones protegidas, carga, capturas comparables y rendimiento por entorno. Registrar revisión, duración, FPS/frame times/memoria y límites para comparar cada incremento; depende de T001.
+- [X] T002 godot-tester: establecer baseline con `tools/ci/run_gut.py`, `scenes/levels/Nivel_MonteCalvo.tscn` y `specs/004-personajes-municion-monte-calvo/quickstart.md`: reglas/transformaciones protegidas, carga, capturas comparables y rendimiento por entorno. Registrar revisión, duración, FPS/frame times/memoria y límites para comparar cada incremento; depende de T001.
 - [X] T003 dev-godot: definir firmas mínimas de ataque confirmado, impacto, observación de modo/movimiento y reset en `scenes/units/soldado_visual.gd`, `scenes/enemies/enemigo_visual.gd`, `scenes/visuals/combat_visual_effects.gd` y `scenes/visuals/death_visual_effect.gd`; preparar `scenes/visuals/DeathVisualEffect.tscn` cargable y la señal `defeat_visual_requested(snapshot: Dictionary)` en ambos actores. Solo esqueleto sin poses, emisión efectiva, efectos, conexiones o reset resueltos. godot-tester verifica carga; qa-validator revisa firmas y límites antes de RED; depende de T002.
 
 **Gate**: el tester escribe pruebas contra esas interfaces revisadas; si falta
@@ -54,12 +55,12 @@ recarga por ruta existente, sin incorporar controles.
 - [X] T005 [US1] godot-tester: escribir y ejecutar RED en `tests/unit/units/test_soldado_visual.gd` para modo inicial, disparo/golpe reales, última bala, interrupción por modo, recarga conservando moral, daño/moral superpuestos, muerte prioritaria y dos instancias independientes. Verificar que ninguna animación aplica daño, gasta recursos o altera cadencia; depende de T003, no de T004/T008.
 - [X] T006 [US1] godot-tester: escribir y ejecutar RED en `tests/unit/systems/test_combat_visual_effects.gd` para snapshot neutro por valor anterior al retiro, efecto independiente 0,40 s sin física/input, pooling y callbacks obsoletos, diez reutilizaciones y muerte jugable sin listener/servicio. Cubrir liberación inmediata de celda/actor y una sola solicitud visual; depende de T003, no de T008.
 - [X] T007 [US1] qa-validator: revisar `tests/unit/units/test_soldado_visual.gd`, `tests/unit/systems/test_combat_visual_effects.gd` y resultados T005/T006; aprobar únicamente RED semántico ejecutado, sin errores de infraestructura ni implementación anticipada. El orquestador puede marcar solo las tareas RED aprobadas; depende de T005 y T006.
-- [ ] T008 [US1] dev-godot: implementar presentación del soldado en `scenes/units/Soldado.tscn`, `soldado.gd`, `soldado_visual.gd` y servicio/efecto de `scenes/visuals/`; registrar soldados iniciales/nuevos desde `scenes/levels/nivel_monte_calvo.gd`. Aplicar tiempos/prioridades del contrato y pool visual mínimo, preservando retiro y consecuencias inmediatos. Sin escribir/ejecutar pruebas; depende de T004 y T007.
+- [X] T008 [US1] dev-godot: implementar presentación del soldado en `scenes/units/Soldado.tscn`, `soldado.gd`, `soldado_visual.gd` y servicio/efecto de `scenes/visuals/`; registrar soldados iniciales/nuevos desde `scenes/levels/nivel_monte_calvo.gd`. Aplicar tiempos/prioridades del contrato y pool visual mínimo, preservando retiro y consecuencias inmediatos. Sin escribir/ejecutar pruebas; depende de T004 y T007.
 - [X] T009 [US1] godot-tester: confirmar GREEN de T005/T006 y regresión pertinente en `tests/unit/units/test_soldado.gd`, `test_soldado_enemigo_integration.gd`, `tests/unit/levels/test_nivel_montecalvo.gd`, `test_pickup_input_routing.gd` y sistemas afectados. Comprobar ausencia de listener, independencia y callbacks sin debilitar RED; depende de T008.
-- [ ] T010 [US1] godot-tester: verificar arte/estados de `scenes/units/Soldado.tscn` y procedencia, gestos reales de economía, resize, smoke hasta terminal observado y rendimiento base/candidato según `specs/004-personajes-municion-monte-calvo/quickstart.md` en cada entorno afectado. Incluir Xiaomi provisional de 004/60 FPS y Web separado; no diferirlo a I3; depende de T009.
-- [ ] T011 [US1] qa-validator: validar I1 en `scenes/units/`, `scenes/visuals/` y `scenes/levels/nivel_monte_calvo.gd` contra US1, FR-002–004/006–007/009–012, arte, RED/GREEN y T010; comprobar alcance/tamaño del diff, retiro inmediato y límites reales de plataforma. Solo aprobar el incremento con verificaciones pertinentes completas; depende de T010.
-- [ ] T012 [US1] docs-writer: documentar únicamente el soldado/servicio aprobados en `docs/SPEC.md` y, si corresponde graduar un patrón, `docs/ARCHITECTURE.md`; conservar enemigo, caja y otros pendientes. Preparar resumen útil para PR sin registros de verificación versionados; depende de T011 aprobado.
-- [ ] T013 [US1] qa-validator: revisar documentación T012 y diff final de `docs/SPEC.md`, `docs/ARCHITECTURE.md` y archivos I1, confirmando vigencia de GREEN/visual/rendimiento. Tras APROBADO, project-orchestrator publica la rama y crea PR en borrador con `Refs` al Issue y trazabilidad RED/GREEN; depende de T012, sin promoverlo ni fusionarlo.
+- [X] T010 [US1] godot-tester: verificar arte/estados de `scenes/units/Soldado.tscn` y procedencia, gestos reales de economía, resize, smoke hasta terminal observado y rendimiento base/candidato según `specs/004-personajes-municion-monte-calvo/quickstart.md` en cada entorno afectado. Incluir Xiaomi provisional de 004/60 FPS y Web separado; no diferirlo a I3; depende de T009.
+- [X] T011 [US1] qa-validator: validar I1 en `scenes/units/`, `scenes/visuals/` y `scenes/levels/nivel_monte_calvo.gd` contra US1, FR-002–004/006–007/009–012, arte, RED/GREEN y T010; comprobar alcance/tamaño del diff, retiro inmediato y límites reales de plataforma. Solo aprobar el incremento con verificaciones pertinentes completas; depende de T010.
+- [X] T012 [US1] docs-writer: documentar únicamente el soldado/servicio aprobados en `docs/SPEC.md` y, si corresponde graduar un patrón, `docs/ARCHITECTURE.md`; conservar enemigo, caja y otros pendientes. Preparar resumen útil para PR sin registros de verificación versionados; depende de T011 aprobado.
+- [X] T013 [US1] qa-validator: revisar documentación T012 y diff final de `docs/SPEC.md`, `docs/ARCHITECTURE.md` y archivos I1, confirmando vigencia de GREEN/visual/rendimiento. Tras APROBADO, project-orchestrator publica la rama y crea PR en borrador con `Refs` al Issue y trazabilidad RED/GREEN; depende de T012, sin promoverlo ni fusionarlo.
 
 ## Fase 4: I2 / US2 — Enemigo, contacto y reutilización (P1)
 
