@@ -47,9 +47,9 @@ El alcance artístico es estático: revisión visual/de integración y regresió
 **Gate de alcance**: QA revisa primero esta adenda. Se fundamenta en I4 ya exigida y en la corrección TDD aprobada de 003; no se presenta como autorización humana explícita del backport. La evidencia RED nativa actual puede adoptarse en T019 sin repetir ejecuciones válidas ni reconstruir RED histórico. Referencias y hashes: [plan](plan.md#adenda-de-preparación--2026-10-16) y [contrato](contracts/visual-boundary.md).
 
 - [X] T019 [US2] godot-tester: incorporar sin debilitar las seis pruebas de `4a2915c` en `tests/unit/levels/test_pickup_input_routing.gd` y su UID; conservar/adoptar el diagnóstico RED nativo previo al cambio en copias sin/con arte de 002, con comandos, logs, hashes y esperado/observado en `specs/002-monte-calvo-terreno-trincheras/evidence/t019-red.md`; depende del contrato disponible y QA de alcance de la adenda, nunca de T020; QA debe aprobar el fallo de I4 antes de desarrollo. Los cuatro controles que ya pasan son regresión, no RED fabricado.
-- [ ] T020 [US2] dev-godot: aplicar únicamente `scenes/levels/nivel_monte_calvo.gd` aprobado en 003/`4a2915c`, según hash del contrato, para ceder al picking si hay pickup antes de desplegar y conservar el despliegue por mouse normal/emulado sin pickup; depende de T019 aprobada; no modificar pruebas, ejecutarlas ni copiar Web/configuración/datos/balance/geometría/arte; reportar diff para T021, con aceptación pendiente de GREEN y T022.
-- [ ] T021 [US2] godot-tester: verificar GREEN de las mismas seis pruebas sin cambiar expectativas y regresión completa de `tests/unit/`, importación y matriz nativa pertinente de `quickstart.md`; registrar comandos, resultados reales, hashes y comparación sin/con arte con el mismo script corregido en `specs/002-monte-calvo-terreno-trincheras/evidence/t021-green.md`; depende de T020; separar los resultados automatizados de ratón PC/toque Android físico/gesto iOS Simulator y conservar pendientes de la matriz T008.
-- [ ] T022 [US2] qa-validator: revisar RED T019, diff exclusivo T020, GREEN/regresión T021 y manifests contra `specs/002-monte-calvo-terreno-trincheras/contracts/visual-boundary.md`; depende de T021; confirmar que la única diferencia de comportamiento histórico es recoger sin despliegue adicional, sin introducir regresión normal/emulada ni atribuir toque físico a GUT; emitir veredicto de ciclo, sin modificar checkout ni marcar tareas. Su aprobación habilita continuar la aceptación T008/T009, no cierra la matriz ni la feature.
+- [X] T020 [US2] dev-godot: aplicar únicamente `scenes/levels/nivel_monte_calvo.gd` aprobado en 003/`4a2915c`, según hash del contrato, para ceder al picking si hay pickup antes de desplegar y conservar el despliegue por mouse normal/emulado sin pickup; depende de T019 aprobada; no modificar pruebas, ejecutarlas ni copiar Web/configuración/datos/balance/geometría/arte; reportar diff para T021, con aceptación pendiente de GREEN y T022.
+- [X] T021 [US2] godot-tester: verificar GREEN de las mismas seis pruebas sin cambiar expectativas y regresión completa de `tests/unit/`, importación y matriz nativa pertinente de `quickstart.md`; registrar comandos, resultados reales, hashes y comparación sin/con arte con el mismo script corregido en `specs/002-monte-calvo-terreno-trincheras/evidence/t021-green.md`; depende de T020; separar los resultados automatizados de ratón PC/toque Android físico/gesto iOS Simulator y conservar pendientes de la matriz T008.
+- [X] T022 [US2] qa-validator: revisar RED T019, diff exclusivo T020, GREEN/regresión T021 y manifests contra `specs/002-monte-calvo-terreno-trincheras/contracts/visual-boundary.md`; depende de T021; confirmar que la única diferencia de comportamiento histórico es recoger sin despliegue adicional, sin introducir regresión normal/emulada ni atribuir toque físico a GUT; emitir veredicto de ciclo, sin modificar checkout ni marcar tareas. Su aprobación habilita continuar la aceptación T008/T009, no cierra la matriz ni la feature.
 
 ## Fase 5: US3 — Trincheras decorativas (P2)
 
@@ -140,3 +140,11 @@ Preparación documental aprobada por QA: simulador iOS autorizado para V4, hardw
   historia ni equiparar fixture con toque físico. [RED](evidence/t019-red.md).
   Habilitada T020; corrección y matriz nativa pendientes. **8/22** tareas
   marcadas, conservando los siete checkboxes históricos.
+
+- 2026-10-16: **APROBADO T020/T021/T022** por QA para el ciclo I4 nativo
+  automatizado. Import limpio0, GREEN6/6 (36 aserciones), regresión189/189
+  (532 aserciones,38.199s, tres avisos históricos) y comparativo sin arte con
+  el mismo arreglo6/6. Diff exclusivo y95/97 invariantes originales preservados;
+  únicas excepciones: instancia visual y script I4. [GREEN](evidence/t021-green.md).
+  Este dictamen no acredita gestos físicos, stretch/UI ni SC007; T008/T009 y la
+  matriz nativa continúan pendientes. **11/22 tareas marcadas**.
