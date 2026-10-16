@@ -148,3 +148,13 @@ Preparación documental aprobada por QA: simulador iOS autorizado para V4, hardw
   únicas excepciones: instancia visual y script I4. [GREEN](evidence/t021-green.md).
   Este dictamen no acredita gestos físicos, stretch/UI ni SC007; T008/T009 y la
   matriz nativa continúan pendientes. **11/22 tareas marcadas**.
+
+- 2026-10-16: QA **APROBÓ la aclaración del método Android** solicitada por la
+  persona: los casos controlados I1–I4/I9 se verifican en AVD mediante gestos
+  del SO; el Xiaomi conserva muestreo humano y mediciones físicas, con resultados
+  separados. No se exige repetir cada caso con dedo físico ni trasladar el PASS
+  emulado a casos físicos no demostrados. [Método](quickstart.md). SC-007 y la
+  referencia constitucional permanecen intactos; no se marca T008 por admitir
+  el método. QA también aprobó la procedencia de la plantilla local iOS Simulator
+  arm64 del mismo tag oficial 4.7.1, sin parches: resuelve el bloqueo de compilación,
+  pero la ejecución y los gestos V4 siguen pendientes de evidencia y dictamen.
