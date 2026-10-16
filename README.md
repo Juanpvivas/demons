@@ -16,9 +16,11 @@ como aplicaciones nativas**. Se admiten ratón y toque según el dispositivo.
 No se prevén instaladores propios para Windows, macOS o Linux; el editor y
 la ejecución nativa local en computador siguen siendo herramientas de desarrollo.
 
-La compatibilidad Web se prepara en
-[`003-web-itchio`](specs/003-web-itchio/spec.md). Esta decisión de alcance
-no significa que ya exista una versión exportada o publicada en el portal.
+La feature [`003-web-itchio`](specs/003-web-itchio/spec.md) ya dispone de un
+paquete Web WIP con arranque local y generación aprobados de forma acotada.
+La interacción Web, el smoke y el rendimiento siguen pendientes; no está
+publicado en el portal ni listo para difusión externa. Consulta la
+[guía de exportación y estado de validación](docs/WEB_EXPORT.md).
 
 ## Estado actual
 
@@ -40,10 +42,10 @@ cierra esas tareas ni convierte sus pruebas nativas en pruebas Web.
 
 - Godot 4.7 (motor MIT, sin regalías).
 - El proyecto se abre directamente con `project.godot` en la raíz del repo.
-- Para preparar Web se prevé usar Godot estándar y plantillas de exportación
-  de la misma versión. El gameplay compartido permanece en GDScript.
-  La ruta propuesta usa Compatibility para Web y conserva Mobile para las
-  aplicaciones nativas; su implementación y validación pertenecen a 003.
+- Para exportar Web se usa Godot estándar oficial **4.7.1** y templates de
+  igual versión. El gameplay compartido permanece en GDScript.
+  Compatibility se aplica solo a Web y Mobile se conserva para las apps
+  nativas. [Requisitos y procedimiento](docs/WEB_EXPORT.md).
 
 ## Documentación del proyecto
 
@@ -53,6 +55,7 @@ cierra esas tareas ni convierte sus pruebas nativas en pruebas Web.
 | [CLAUDE.md](CLAUDE.md) | Punto de entrada de Claude; importa `AGENTS.md` |
 | [docs/DEVELOPMENT_WORKFLOW.md](docs/DEVELOPMENT_WORKFLOW.md) | Preparación con Spec Kit, ejecución por agentes y ciclo TDD |
 | [tools/speckit/README.md](tools/speckit/README.md) | Preset propio, workflow de preparación y verificación tras actualizar Spec Kit |
+| [docs/WEB_EXPORT.md](docs/WEB_EXPORT.md) | Generación del ZIP Web WIP, comprobaciones y futura carga manual en itch.io |
 | [.specify/memory/constitution.md](.specify/memory/constitution.md) | Principios no negociables (calidad, testing, UX, rendimiento) |
 | `docs/SPEC.md` | Diseño del juego: mecánicas, economía, contexto histórico, alcance del MVP |
 | `docs/ARCHITECTURE.md` | Convenciones técnicas: estructura de carpetas, nombres, patrones |
@@ -78,9 +81,11 @@ reciben un mensaje de bienvenida en su primera contribución
 
 ## Builds de prueba
 
-- **Web / itch.io**: preparación en la feature 003; exportación,
-  comprobación en navegadores y paquete de publicación todavía pendientes.
-  Los pipelines móviles existentes se conservan.
+- **Web / itch.io**: `tools/web/export.sh` genera `build/demons-web.zip` y su
+  manifiesto; exportación local, PCK y arranque del ZIP extraído verificados.
+  El workflow `export-web.yml` adjunta artefactos sin publicar; todavía no
+  tiene un run remoto acreditado. La demo sigue WIP hasta completar entrada,
+  smoke y mediciones. [Guía y matriz real](docs/WEB_EXPORT.md).
 - **Android**: cada push a `main` exporta un APK debug (verificado en
   local: firma correctamente y pasa `apksigner verify`) y lo sube a
   **Firebase App Distribution** (`.github/workflows/deploy-android-testers.yml`).
