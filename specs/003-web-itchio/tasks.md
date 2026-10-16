@@ -190,3 +190,10 @@ T001 ─┬─ T002 ─┐
   actualizado 4a2915c íntegro y W02/W03 durante PLAYING con repetición visual
   en producción. W04/W05 controlados conservados. Android físico, resize,
   iframe, smoke y rendimiento permanecen abiertos en T007/T008/T012.
+- 2026-10-15: QA **APROBÓ el informe y la documentación de entrega parcial WIP**,
+  no la aceptación global: matriz y métricas verificadas en
+  [validación parcial](evidence/final-validation.md) y
+  [estado de implementación](evidence/implementation-status.md). Permanecen
+  **12/18 tareas aprobadas**; T007/T008/T011/T012/T013/T014 siguen abiertas.
+  La prueba física espera respuesta de la persona; no se cierra la feature,
+  se publica el juego ni se crea el PR final con gates pendientes.

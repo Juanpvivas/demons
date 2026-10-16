@@ -1,7 +1,9 @@
 # T007 — Interacción Web, avance y bloqueo W02
 
-2026-10-15 local. **FAIL W02 confirmado**; T007/T008 y aceptación US2 abiertos.
-No se cambió gameplay. Se requiere la regresión RED nueva antes de corregir.
+2026-10-15 local. **Registro histórico del FAIL W02 inicial**; motivó T015–T018.
+La corrección posterior y GREEN están en [t017-green.md](t017-green.md);
+el estado actual de T007/T008/US2 está en [final-validation.md](final-validation.md).
+Este reporte conserva el fallo original y no se reescribe como si hubiera pasado.
 
 ## Canal de input y observación
 

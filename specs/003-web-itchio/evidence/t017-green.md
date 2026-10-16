@@ -85,6 +85,8 @@ de FPS/gestos no forman parte del paquete candidato. Un wrapper temporal
 cargar el iframe. Las métricas instrumentadas y rAF del contenedor se
 reportarán por separado; no certifican60FPS constitucionales.
 
-El toque físico Chrome Android, resize con clic, iframe, retorno de pestaña,
-smoke terminal y métricas completas continúan por sus casos T007/T012. No se
-anuncian soporte universal, ejecución CI remota ni cierre histórico de002.
+La matriz posterior de [validación parcial final](final-validation.md) registra
+resize/clic/iframe ya comprobados, terminal observado y métricas disponibles.
+Toque físico Android, regreso efectivo de pestaña y gates completos conservan
+sus pendientes. No se anuncian soporte universal, ejecución CI remota ni cierre
+histórico de002.
