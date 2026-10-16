@@ -166,3 +166,11 @@ Preparación documental aprobada por QA: simulador iOS autorizado para V4, hardw
   QA independiente y la referencia nominal global. No aprueba SC-007 por sí
   sola ni se extiende a 003, otros teléfonos o iOS. Las mediciones y el dictamen
   de rendimiento conservan su evaluación separada.
+
+- 2026-10-16: QA **APROBÓ el método alternativo de entrada V4** y su aclaración
+  documental: eventos de SO sintetizados mediante CoreGraphics público sobre
+  la ventana visible del frontend del simulador, con identificación, conversiones
+  de coordenadas y PRE/POST registrados. Solo permisos existentes; ante fallo,
+  intervención humana con ventana preparada. No aprueba ejecución, toque físico
+  ni iOS Mobile. Evita repetir la llamada CUA a Device Hub que quedó bloqueada;
+  el intento fallido se conserva como setup, sin PASS.
