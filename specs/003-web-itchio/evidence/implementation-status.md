@@ -1,6 +1,6 @@
 # 003 — Entrega Web WIP y validación parcial
 
-**Fecha**: 2026-10-15, Bogotá. **Rol**: docs-writer, borrador de seguimiento.
+**Fecha**: 2026-10-16, Bogotá. **Rol**: docs-writer, borrador de seguimiento.
 **Issue**: [#14](https://github.com/Juanpvivas/demons/issues/14).
 **Estado**: implementación disponible para revisión local; aceptación global
 pendiente. Este reporte no completa T011/T014, no marca tareas ni constituye
@@ -60,10 +60,10 @@ seguimiento se excluyen del paquete; editarlos no atribuye un nuevo build.
 | GUT de la corrección | 6/6 focalizados, 36 aserciones; suite 189/189, 532 aserciones, 3 avisos conocidos. Dispatch real SubViewport, no toque físico. |
 | W10 recarga | PASS parcial reportado por tester; no completa regreso real de otra pestaña. |
 | W10 cambio real de pestaña | NOT RUN por límite de la herramienta disponible. No simularlo con una llamada DOM. |
-| Chrome Android físico W02–W05/W07 | Los cuatro casos NOT RUN; teléfono preparado para iniciar, pendientes acciones físicas. Una app Android nativa previa no valida el navegador. |
+| Chrome Android físico W02–W05/W07 | W02–W05 PASS aprobados por QA en copia observada, durante JUGANDO; pares touch/mouse agrupados por gesto humano. Producción sin observador y W07 completo pendientes. |
 | Firefox, Safari macOS, navegador iOS | NOT RUN. Sin soporte anunciado por extrapolación. |
 | W08 smoke manual Web | PARCIAL: interacciones durante PLAYING y LOST natural observado a 33.840 s, sin cierre. Producción sin observador no expone estado terminal; no acredita victoria manual ni smoke móvil. |
-| W12 carga/rendimiento/memoria Web | PARCIAL en escritorio: proceso Godot instrumentado y cadencia del contenedor medidos; carga fría, memoria y Android NOT RUN. Gate constitucional pendiente. |
+| W12 carga/rendimiento/memoria Web | PARCIAL: escritorio y Android observado medidos; producción Android, carga fría y memoria pendientes. Gate constitucional sin certificar. |
 | CI Web remoto | NOT RUN; sí se verificó localmente el procedimiento de generación y empaquetado. |
 
 El [informe GREEN](t017-green.md) contiene las pruebas aceptadas y separa los
@@ -74,13 +74,27 @@ y [validación final parcial del tester](final-validation.md).
 Esta última conserva dos mediciones distintas: proceso Godot **instrumentado
 durante 30.0197 s**, media **119.42 FPS**, p95 **8.33 ms** y máximo **95.7 ms**;
 y producción sin observador con **119.7 callbacks rAF/s del contenedor**,
-que no miden FPS renderizados del juego. No son resultados Android ni una
-certificación de 60 FPS estables. Carga fría y memoria permanecen NOT RUN.
+que no miden FPS renderizados del juego. Son mediciones de escritorio,
+separadas de las físicas Android siguientes.
+
+En Xiaomi 2107113SG/Android 14/Chrome 154.0.8037.94, QA aprobó estos resultados de
+la copia observada: W02 **11→14, soldados 2→2**; W03 **12→2, soldados 1→2**;
+W04 ocupada con fondos **14→14, soldados 1→1**; W05 libre sin fondos **0→0,
+soldados 1→1**, con rechazo registrado. Todos corresponden a JUGANDO; las
+diferencias de soldados entre gestos no se atribuyen al toque. La evidencia
+usa las posiciones reales, sin modificar límites de colocación.
+[Informe físico](android-validation.md), [PRE/POST derivados](android-observed-cases.json)
+y [registros de las sesiones](android-observed-sessions.jsonl).
+
+Dos muestras Android instrumentadas de unos 30 s registraron medias
+**60.144/60.101 FPS**, p95 **16.667 ms** y máximos **133.333/144.133 ms**.
+Excluyen descarga y compilación, no prueban diez oleadas ni 60 FPS estables.
+Carga fría, memoria y mediciones de producción Android siguen pendientes.
 
 ## Lo que falta para cerrar
 
-Completar los cuatro casos físicos Android, matriz de entrada y navegadores
-según disponibilidad, W10 real y los reportes de smoke/rendimiento aplicables;
+Corroborar Android sin observador, completar la matriz de entrada/adaptación y
+navegadores según disponibilidad, W10 real y los gates de smoke/rendimiento;
 registrar límites con su estado exacto. Después corresponden QA global T013 y
 consolidación T014. No se promueve o fusiona un PR ni se publica una página
 por generar un ZIP WIP.

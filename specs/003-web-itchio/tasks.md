@@ -205,3 +205,12 @@ T001 ─┬─ T002 ─┐
   [intento registrado](evidence/android-rotation-attempt.json).
   Sin gestos de gameplay nuevos; siguen 12/18 y T007 pendiente. La persona
   debe desbloquear el giro y volver a Chrome horizontal antes de iniciar.
+- 2026-10-16: QA **APROBÓ W02–W05 y W07 de forma acotada** en Chrome Android
+  físico horizontal, mediante la copia observada de solo lectura. Los eventos
+  PRE/POST durante PLAYING confirman recolección sin despliegue, despliegue
+  único con costo10 y rechazos por ocupación con fondos y por fondos
+  insuficientes. Los pares touch/mouse pertenecen al mismo gesto y no duplican
+  su efecto. [Evidencia Android](evidence/android-validation.md). La repetición
+  visual en producción sin observador y el regreso real de pestaña siguen
+  pendientes; no se completan T007/T008 ni el gate de rendimiento. Se mantienen
+  **12/18 tareas aprobadas** y el mismo candidato de fuente `4a2915c`.

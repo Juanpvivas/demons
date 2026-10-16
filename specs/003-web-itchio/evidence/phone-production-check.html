@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monte Calvo — producción local</title>
+<style>
+html,body{margin:0;height:100%;height:100dvh;background:#15191d;color:white;font:14px system-ui}body{display:flex;flex-direction:column}header{padding:5px 10px;flex:none}button{font:inherit;font-weight:600;min-height:44px;padding:6px 14px;touch-action:manipulation}#metrics{font-size:12px;margin:3px 0}main{flex:1;min-height:0}iframe{display:block;width:100%;height:100%;border:0}#intro{padding:20px;line-height:1.5}
+</style>
+<header><button type="button" id="start">Comenzar producción</button><div id="metrics">Esperando inicio manual. Sin partida cargada.</div></header>
+<main><div id="intro">Versión sin contadores ni marcas A/B.<br>Espera las instrucciones antes de comenzar.<br>La medición externa de esta página registra carga, cadencia del contenedor y cambios de visibilidad; no mide FPS del juego.</div></main>
+<script>
+// Test wrapper only: no game methods, event injection, input interception,
+// production HTML changes or gameplay state mutation. No other-tab information.
+const KEY='demons-web-production-probe-003-v1';
+const main=document.querySelector('main'),metrics=document.querySelector('#metrics');
+let frame=null,run=null,lastFrame=0,deltas=[],timer=0,interval=0;
+function resources(){
+ if(!frame)return;
+ try{
+  const p=frame.contentWindow.performance,nav=p.getEntriesByType('navigation')[0];
+  if(nav)run.iframe_navigation={startTime:nav.startTime,duration:nav.duration,responseStart:nav.responseStart,responseEnd:nav.responseEnd,domContentLoadedEventEnd:nav.domContentLoadedEventEnd,loadEventEnd:nav.loadEventEnd,transferSize:nav.transferSize,encodedBodySize:nav.encodedBodySize,type:nav.type};
+  if(p.memory)run.browser_js_heap={usedJSHeapSize:p.memory.usedJSHeapSize,totalJSHeapSize:p.memory.totalJSHeapSize,jsHeapSizeLimit:p.memory.jsHeapSizeLimit,note:'nonstandard Chromium JS heap estimate; not game-only memory, WASM total, PSS or VRAM'};
+  run.iframe_resources=p.getEntriesByType('resource').filter(e=>{const u=new URL(e.name);return u.origin===location.origin&&u.pathname.startsWith('/production/');}).map(e=>({file:new URL(e.name).pathname.split('/').pop(),startTime:e.startTime,duration:e.duration,responseEnd:e.responseEnd,transferSize:e.transferSize,encodedBodySize:e.encodedBodySize,decodedBodySize:e.decodedBodySize}));
+ }catch{run.resource_timing_note='Same-origin timing unavailable';}
+}
+function summary(){const a=deltas.toSorted((x,y)=>x-y),sum=a.reduce((x,y)=>x+y,0);return{method:'parent requestAnimationFrame callbacks; NOT game FPS',target_wall_window_ms:30000,callbacks:a.length,visible_callback_delta_sum_ms:sum,mean_callbacks_per_second:sum?1000*a.length/sum:null,p50_delta_ms:a.length?a[Math.floor((a.length-1)*.5)]:null,p95_delta_ms:a.length?a[Math.floor((a.length-1)*.95)]:null,max_delta_ms:a.length?a[a.length-1]:null};}
+function save(reason){if(!run)return;resources();run.parent_raf=summary();run.last_reason=reason;run.updated_utc=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(run));}catch{run.storage_note='Local storage unavailable';}console.log('WEB_PROBE '+JSON.stringify(run));const b=frame?.getBoundingClientRect();metrics.textContent=`CSS ${innerWidth}×${innerHeight} · iframe ${b?Math.round(b.width)+'×'+Math.round(b.height):'—'} · ${run.raf_finished?'ventana30s terminada':'muestra externa en curso'} · ${run.visibility.map(x=>x.state).join('→')}`;}
+function finish(){if(!run||run.raf_finished)return;run.raf_finished=true;run.raf_finished_since_click_ms=performance.now()-run.start_perf_ms;save('raf-window-finished');clearInterval(interval);}
+function tick(now){if(run&&!run.raf_finished){const elapsed=now-run.start_perf_ms;if(elapsed<=30000&&document.visibilityState==='visible'){if(lastFrame)deltas.push(now-lastFrame);lastFrame=now;}else if(elapsed>30000)finish();}requestAnimationFrame(tick);}requestAnimationFrame(tick);
+function start(){clearTimeout(timer);clearInterval(interval);lastFrame=0;deltas=[];run={probe:'temporary wrapper, no observer in production',source_revision:'4a2915c5ceb075fbaa3ec7ce1e129a4c34aa497a',zip_sha256:'205d3916f21ce8c2b29eaf4bbbd804908dab7e9c93356355f4a335212eabfd71',run_id:new Date().toISOString(),start_utc:new Date().toISOString(),start_perf_ms:performance.now(),viewport:{width:innerWidth,height:innerHeight,dpr:devicePixelRatio},visibility:[{state:document.visibilityState,since_click_ms:0}],raf_finished:false,cold_cache_claim:false,load_note:'iframe load/timing is not first rendered game frame; cache is preserved'};main.replaceChildren();frame=document.createElement('iframe');frame.title='Monte Calvo producción';frame.allow='fullscreen; autoplay';frame.allowFullscreen=true;frame.addEventListener('load',()=>{run.iframe_document_load_since_click_ms=performance.now()-run.start_perf_ms;save('iframe-document-load');});frame.src='/production/';main.append(frame);save('human-start');interval=setInterval(()=>save('passive-sample'),5000);timer=setTimeout(finish,30000);}
+document.querySelector('#start').addEventListener('click',start);
+document.addEventListener('visibilitychange',()=>{lastFrame=0;if(!run)return;run.visibility.push({state:document.visibilityState,since_click_ms:performance.now()-run.start_perf_ms,utc:new Date().toISOString()});save('visibilitychange');});
+addEventListener('resize',()=>{if(run){run.last_viewport={width:innerWidth,height:innerHeight,dpr:devicePixelRatio};save('resize');}});
+try{const previous=localStorage.getItem(KEY);if(previous)console.log('WEB_PROBE_RESTORED '+previous);}catch{}
+</script>
+</html>

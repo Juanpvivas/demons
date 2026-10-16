@@ -5,6 +5,11 @@ Chrome escritorio aprobados de forma acotada por QA; Android físico, matriz
 completa y gate de rendimiento siguen pendientes. No es aceptación global
 de003, publicación en itch.io ni cierre histórico de002.
 
+Actualización móvil2026-10-16: [preflight horizontal y estado de espera](android-validation.md).
+La persona activó el giro y completó interacción física. QA aprobó W02–W05
+en la copia observada; producción Android y retorno de pestaña siguen pendientes.
+No se repitieron GUT ni exportación.
+
 ## Artefacto y pruebas conservadas
 
 `build/demons-web.zip`, **14 893 307 bytes**, SHA256
@@ -32,20 +37,27 @@ tests históricos permanecen iguales; se agregó el archivo de regresión y UID.
 PASS indica el alcance exacto de la columna de evidencia. El PASS de una
 columna no se extiende a Android ni a los límites pendientes de otra.
 
+Android **PASS observado** corresponde solo a la copia con diagnóstico: W02
+11→14/2→2, W03 12→2/1→2, W04 14→14/1→1 y W05 0→0/1→1, todos
+PLAYING y con condiciones previas discriminantes. El [reporte móvil](android-validation.md)
+contiene coordenadas reales y PRE/POST; el ZIP sin observador aún no se repitió
+en el teléfono. Las cifras de evidencia de las otras filas siguen describiendo
+escritorio salvo que el reporte móvil las amplíe.
+
 | Caso | Chrome escritorio155.0.8059.84 | Android Chrome154.0.8037.94 | Evidencia/límite |
 |---|---|---|---|
 | W01 arranque | **PASS** | NOT RUN | Tres cargas del candidato final sin errores: directa, iframe960 y iframe1152; [resumen](desktop-validation-summary.json) y consola/capturas enlazadas abajo |
-| W02 recoger una vez sin desplegar | **PASS acotado** | NOT RUN | Observador PLAYING: único pickup natural,12→15/soldados1→1; producción confirma visualmente desaparición sin nueva unidad; [T017](t017-green.md) |
-| W03 celda libre con fondos | **PASS acotado** | NOT RUN | Observador PLAYING:15→5/soldados1→2; producción confirma el despliegue explícito; no atribuir saldo oculto al ZIP |
-| W04 ocupada con fondos | **PASS acotado** | NOT RUN | Celda6,5, saldo12≥10, permanece12 y1soldado; registro PRE/POST durante PLAYING |
-| W05 libre sin fondos | **PASS acotado** | NOT RUN | Celda2,5, saldo0, rechazo y ningún gasto/unidad; registro PRE/POST |
+| W02 recoger una vez sin desplegar | **PASS acotado** | **PASS observado** | Observador PLAYING: único pickup natural,12→15/soldados1→1; producción confirma visualmente desaparición sin nueva unidad; [T017](t017-green.md) |
+| W03 celda libre con fondos | **PASS acotado** | **PASS observado** | Observador PLAYING:15→5/soldados1→2; producción confirma el despliegue explícito; no atribuir saldo oculto al ZIP |
+| W04 ocupada con fondos | **PASS acotado** | **PASS observado** | Celda6,5, saldo12≥10, permanece12 y1soldado; registro PRE/POST durante PLAYING |
+| W05 libre sin fondos | **PASS acotado** | **PASS observado** | Celda2,5, saldo0, rechazo y ningún gasto/unidad; registro PRE/POST |
 | W06 tamaños/resize/clic/iframe | **PASS acotado** | NOT RUN | Resize y clic verificados con estado observado; iframe y producción corroborados; detalles abajo |
-| W07 Android horizontal/toque | No aplica | **NOT RUN** | Dispositivo conectado, gate abierto pero aviso introductorio de Chrome y giro horizontal pendientes; ningún toque de juego acreditado |
-| W08 partida manual hasta terminal | **PARCIAL** | NOT RUN | Interacciones CUA durante PLAYING y LOST observado a33.840s; producción sin cierre/error, pero no expone estado terminal; no se acredita victoria manual ni smoke humano móvil |
+| W07 Android horizontal/toque | No aplica | **PARCIAL observado** | Horizontal2400×1080 y toque físico W02–W05 durante PLAYING confirmados; producción/retorno pendientes; [reporte móvil](android-validation.md) |
+| W08 partida manual hasta terminal | **PARCIAL** | **PARCIAL observado** | Interacciones CUA durante PLAYING y LOST observado a33.840s; producción sin cierre/error, pero no expone estado terminal; no se acredita victoria manual ni smoke humano móvil |
 | W09 victoria/derrota automatizadas | **PASS automatizado nativo** | No sustituye Android | Ambas transiciones en suite189; no es una partida manual Web |
 | W10 pestaña/regreso/recarga/audio | **PARCIAL** | NOT RUN | Recargas crean partida nueva; cambio efectivo a segundo plano y regreso NOT RUN por herramienta; no hay audio en recursos actuales |
 | W11 limpio/ZIP/PCK/extraído | **PASS local** | Arranque móvil pendiente | Candidato reconstruido/extraído y servido por HTTP; CI remoto NOT RUN |
-| W12 carga/rendimiento/memoria | **PARCIAL** | **NOT RUN** | Proceso observado y cadencia del contenedor medidos, memoria/caché fría pendientes; no certifica gate constitucional |
+| W12 carga/rendimiento/memoria | **PARCIAL** | **PARCIAL observado** | Proceso observado y cadencia del contenedor medidos, memoria/caché fría pendientes; no certifica gate constitucional |
 
 La instrumentación de saldo usa exclusivamente una copia temporal de la misma
 fuente, sin mutar estado de juego. Los resultados de producción se describen
@@ -119,21 +131,34 @@ Estas muestras registran cadencia disponible, incluidos picos; **no certifican
 60FPS estables**, dispositivo constitucional de referencia ni rendimiento
 de Android/Web iOS. El gate de rendimiento permanece abierto.
 
+Android observado, dos sesiones con30.061/30.050s de proceso: media60.144/60.101FPS,
+p95 16.667ms en ambas y máximos133.333/144.133ms. Estos picos y la instrumentación
+impiden afirmar60FPS estables; descarga/compilación, memoria y producción
+permanecen pendientes. [Valores originales y método](android-validation.md).
+
 ## Dispositivos y siguiente comprobación
 
 Xiaomi2107113SG, Android14, Chrome154.0.8037.94, conectado por USB y reenvío
 temporal del puerto8063. Página `http://localhost:8063/phone-gate.html` espera
 inicio manual; botones **«Comenzar prueba observada»** y **«Comenzar producción»**.
-[Preflight actual](android-preflight-blocked.png): vertical y aviso de
-notificaciones de Chrome pendiente de «No, gracias». No se aceptaron permisos
-ni se cambiaron ajustes del dispositivo. La persona recibió petición de giro
-y cierre del aviso, **sin iniciar la partida todavía**; respuesta pendiente.
+[Preflight histórico2026-10-15](android-preflight-blocked.png): vertical y aviso
+de notificaciones. El2026-10-16 la persona cerró el aviso y activó giro;
+[preflight horizontal](android-landscape-preflight.png) confirma2400×1080,
+CSS795×306 e iframe795×232. El intento anterior del agente de ajustar
+orientación fue rechazado por Android; no cambió ajustes ni otorgó permisos.
+La sesión ya presente estaba PERDIDA/sin gestos. Las dos ventanas de grabación terminaron antes de los gestos posteriores.
+La respuesta humana «Completé la secuencia» permitió recuperar del buffer
+dos sesiones nuevas con PRE/POST: QA aprobó W02–W05 observados. La captura
+posterior es terminal y no sustituye esos registros durante PLAYING.
+[Reporte y límites actuales](android-validation.md).
 
 Tras verificar el preflight horizontal, secuencia prevista: A con0 (W05),
 recoger hasta≥12, B ocupada (W04), otro amarillo con≥10 (W02), A libre (W03).
 El contador temporal de solo lectura muestra reserva/soldados y PRE→POST;
 el build de producción se repite después sin él. No usar un rechazo con
-saldo2 para atribuir un PASS a ocupación. Ninguna prueba física se da por hecha.
+saldo2 para atribuir un PASS a ocupación. Los casos observados ya se acreditaron con sus coordenadas reales; el
+recorrido no siguió literalmente todos los marcadores A/B. Producción sin
+observador y cambio de pestaña/regreso siguen pendientes.
 
 Firefox no instalado; Safari macOS instalado pero sin superficie de control
 habilitada en esta validación; Web iOS sin dispositivo físico. **NOT RUN**

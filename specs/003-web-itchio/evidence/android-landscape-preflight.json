@@ -1,0 +1,35 @@
+{
+  "time_utc": "2026-10-16T11:14:37.718386+00:00",
+  "usb": "device",
+  "usb_exit": 0,
+  "accelerometer_rotation": "1",
+  "user_rotation": "0",
+  "reverse_exit": 0,
+  "gate_http_status": 200,
+  "screencap_exit": 0,
+  "physical_pixels": [
+    2400,
+    1080
+  ],
+  "css_viewport": [
+    795,
+    306
+  ],
+  "css_iframe": [
+    795,
+    232
+  ],
+  "dpr": 2.75,
+  "visible_reference_markers": [
+    "A",
+    "B"
+  ],
+  "hud_legibility": "visible in physical screenshot; top-left",
+  "session_state_on_arrival": "previous session PERDIDA, reserve0, soldiers0, no gestures",
+  "agent_input_injected": false,
+  "settings_modified": false,
+  "source_revision": "4a2915c5ceb075fbaa3ec7ce1e129a4c34aa497a",
+  "zip_sha256": "205d3916f21ce8c2b29eaf4bbbd804908dab7e9c93356355f4a335212eabfd71",
+  "screen_capture": "android-landscape-preflight.png",
+  "note": "Rotation auto=1 is a human preference change; preserve it. No game start by agent."
+}
