@@ -1,0 +1,80 @@
+Godot Engine v4.7.1.stable.mono.official.a13da4feb - https://godotengine.org
+
+---  GUT  ---
+[INFO]:  using [<Godot userdata>/demons] for temporary output.
+Godot version:  4.7.1
+GUT version:  9.7.1
+
+
+res://tests/unit/levels/test_pickup_input_routing.gd
+* test_mouse_control_reaches_real_pickup_through_viewport_physics_picking
+* test_emulated_mouse_control_reaches_real_pickup_through_viewport_physics_picking
+* test_mouse_pickup_with_enough_ammo_does_not_spend_or_deploy
+T015_EVENT device=0 pickup_presses=1 ammo=5 changes=[2, 5] soldiers_before=1 soldiers_after=2 cell_free=false
+    [Failed]:  [5] expected to equal [15]:  FR-003: reserva12 + pickup3, sin gasto de10 en el mismo gesto
+      at line -1
+    [Failed]:  ARRAY([2, 5]) != ARRAY([15]).
+    [2, 5] != [15]  2 of 2 indexes do not match.  FR-003: exactamente una ganancia, sin gasto/despliegue asociado
+      at line -1
+    [Failed]:  [2] expected to equal [1]:  FR-003: recoger no debe crear un soldado adicional
+      at line -1
+    [Failed]:  FR-003: la celda del pickup debe seguir libre
+      at line -1
+* test_emulated_mouse_pickup_with_enough_ammo_does_not_spend_or_deploy
+T015_EVENT device=-1 pickup_presses=1 ammo=5 changes=[2, 5] soldiers_before=1 soldiers_after=2 cell_free=false
+    [Failed]:  [5] expected to equal [15]:  FR-003: reserva12 + pickup3, sin gasto de10 en el mismo gesto
+      at line -1
+    [Failed]:  ARRAY([2, 5]) != ARRAY([15]).
+    [2, 5] != [15]  2 of 2 indexes do not match.  FR-003: exactamente una ganancia, sin gasto/despliegue asociado
+      at line -1
+    [Failed]:  [2] expected to equal [1]:  FR-003: recoger no debe crear un soldado adicional
+      at line -1
+    [Failed]:  FR-003: la celda del pickup debe seguir libre
+      at line -1
+* test_normal_mouse_on_free_cell_without_pickup_deploys_and_spends_once
+T017_W03 device=0 ammo=2 changes=[2] soldiers_before=1 soldiers_after=2 cell_free=false
+* test_emulated_mouse_on_free_cell_without_pickup_deploys_and_spends_once
+T017_W03 device=-1 ammo=2 changes=[2] soldiers_before=1 soldiers_after=2 cell_free=false
+4/6 passed.
+
+
+
+
+==============================================
+= Run Summary
+==============================================
+
+res://tests/unit/levels/test_pickup_input_routing.gd
+- test_mouse_pickup_with_enough_ammo_does_not_spend_or_deploy
+    [Failed]:  [5] expected to equal [15]:  FR-003: reserva12 + pickup3, sin gasto de10 en el mismo gesto
+          at line -1
+    [Failed]:  ARRAY([2, 5]) != ARRAY([15]).
+    [2, 5] != [15]  2 of 2 indexes do not match.  FR-003: exactamente una ganancia, sin gasto/despliegue asociado
+          at line -1
+    [Failed]:  [2] expected to equal [1]:  FR-003: recoger no debe crear un soldado adicional
+          at line -1
+    [Failed]:  FR-003: la celda del pickup debe seguir libre
+          at line -1
+- test_emulated_mouse_pickup_with_enough_ammo_does_not_spend_or_deploy
+    [Failed]:  [5] expected to equal [15]:  FR-003: reserva12 + pickup3, sin gasto de10 en el mismo gesto
+          at line -1
+    [Failed]:  ARRAY([2, 5]) != ARRAY([15]).
+    [2, 5] != [15]  2 of 2 indexes do not match.  FR-003: exactamente una ganancia, sin gasto/despliegue asociado
+          at line -1
+    [Failed]:  [2] expected to equal [1]:  FR-003: recoger no debe crear un soldado adicional
+          at line -1
+    [Failed]:  FR-003: la celda del pickup debe seguir libre
+          at line -1
+
+Totals
+------
+Scripts               1
+Tests                 6
+Passing Tests         4
+Failing Tests         2
+Asserts           28/36
+Time              1.585s
+
+
+---- 2 failing tests ----
+

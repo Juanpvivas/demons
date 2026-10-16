@@ -8,17 +8,17 @@
 
 ## Summary
 
-Renovar primero el suelo y el horizonte de Monte Calvo y después integrar trincheras decorativas de tierra, madera y sacos según [la imagen aprobada](references/visual-reference.md). Crear una escena visual estática independiente, por detrás de los actores, sin tocar lógica, geometría o entradas. Conservar el avance central actual y los personajes provisionales.
+Renovar primero el suelo y el horizonte de Monte Calvo y después integrar trincheras decorativas de tierra, madera y sacos según [la imagen aprobada](references/visual-reference.md). Crear una escena visual estática independiente, por detrás de los actores, sin tocar lógica, geometría o entradas desde las tareas artísticas. Conservar el avance central actual y los personajes provisionales. La adenda del 2026-10-16 separa un único arreglo previo necesario para I4.
 
 La conservación de mecánicas (US2) es un requisito de cada entrega: MVP = terreno US1 + comprobación US2; iteración completa = añadir trincheras US3 + repetir las comprobaciones afectadas. Los cinco carriles y el HUD del concepto quedan fuera.
 
 ## Technical Context
 
-**Language/Version**: proyecto Godot 4.7, CI con Godot 4.7.1; GDScript existente sin cambios previstos. La nueva escena visual no necesita script.
+**Language/Version**: proyecto Godot 4.7, CI con Godot 4.7.1; GDScript existente conservado salvo el arreglo separado T020. La nueva escena visual no necesita script.
 **Primary Dependencies**: nodos nativos `Node2D`, `Sprite2D` y recursos de textura/atlas; `TileMap` existente permanece intacto. Sin addons nuevos.
 **Storage**: PNG y ajustes `.import` versionados; `.godot/` sigue excluido. Sin persistencia o datos de balance nuevos.
-**Testing**: GUT existente, importación headless y revisión del diff; comprobaciones visuales y de mouse/touch reales. Ejecución por tester, revisión independiente por QA; resultados y limitaciones en `evidence/`.
-**Target Platform**: PC, Android e iOS; matriz en [quickstart.md](quickstart.md).
+**Testing**: GUT existente y seis regresiones de input T019–T021, importación headless y revisión del diff; ratón PC, toque Android físico y gesto sobre app iOS Simulator diferenciados. Ejecución por tester, revisión independiente por QA; resultados y limitaciones en `evidence/`.
+**Target Platform**: PC, Android e iOS; V4 se valida en iOS Simulator autorizado, sin acreditar hardware iOS; Android físico para rendimiento. Matriz en [quickstart.md](quickstart.md).
 **Project Type**: juego 2D de defensa con un nivel concreto.
 **Performance Goals**: mantener 60 FPS típicos en Android de referencia; medir antes/después, memoria de texturas y posibles problemas de transparencia. Sin animaciones o procesamiento ambiental por frame.
 **Constraints**: conservar todo el [contrato visual/jugable](contracts/visual-boundary.md), geometría 96×96, recorrido central, posiciones existentes, `canvas_items`/`expand`, renderer Mobile y exportaciones.
@@ -30,8 +30,8 @@ Revisión documental previa a investigación y posterior al diseño; no equivale
 
 | Principio / regla | Resolución del plan | Estado de preparación |
 |---|---|---|
-| I. Separación visual/lógica y datos en Resource | Escena visual sin script; todos los scripts y Resources de balance conservados | Conforme |
-| II. Pruebas y TDD | Arte sin comportamiento nuevo: inspección y regresión existentes, sin RED artificial; cualquier ampliación lógica requiere su propio ciclo RED/GREEN | Conforme |
+| I. Separación visual/lógica y datos en Resource | Escena visual sin script; arreglo I4 aislado en el script del nivel, sin tocar Resources o arte | Conforme; preparación de adenda aprobada por QA |
+| II. Pruebas y TDD | Arte sin RED artificial; defecto previo I4 separado en T019 RED → T020 desarrollo → T021 GREEN/regresión → T022 QA | Conforme; ciclo nativo pendiente |
 | III. UX coherente entre mouse y touch | Misma transformación de coordenadas e input; evidencia real en matriz, contraste y no oclusión | Conforme |
 | IV. Rendimiento | Entorno estático y pocas texturas compartidas; medición en Android y registro de memoria al ejecutar | Conforme en diseño; medición pendiente |
 | Spec Kit prepara, agentes ejecutan | Tareas con propietario, dependencia y evidencia; QA independiente; solo orquestador marca `[X]` | Conforme |
@@ -105,11 +105,22 @@ Completada como investigación documental en [research.md](research.md): compara
 
 ## Phase 2 — Agent Task Preparation
 
-[tasks.md](tasks.md) ya contiene las 18 tareas preparadas con historias US1, US2 y US3, propietarios, rutas y dependencias. La preparación Spec Kit no despacha implementación; el orquestador coordina ahora su ejecución autorizada y solo marca tareas tras `APROBADO`.
+[tasks.md](tasks.md) conserva las 18 tareas originales con sus IDs, estados e historial, y propone T019–T022 para el arreglo aislado de I4. La preparación Spec Kit no despacha implementación; el orquestador coordina su ejecución y solo marca tareas tras `APROBADO`.
+
+## Adenda de preparación — 2026-10-16
+
+Preparación aprobada por QA; no equivale a aprobación de T019 ni del arreglo nativo. Consultar el [registro del orquestador en tasks.md](tasks.md) para el estado vigente de cada tarea. El diagnóstico del tester, anterior al cambio, ejecutó las mismas seis pruebas de 003 en copias nativas sin/con arte: importaciones 0, cuatro controles PASS y dos FAIL de I4, 28/36 aserciones en ambos casos (reserva 12→5 y soldado extra). Puede adoptarse como RED T019 tras conservar logs/manifests y revisión QA; no es TDD histórico de T001 ni exige repetirlo por rutina.
+
+1. **T019** conserva el diagnóstico nativo y las seis pruebas exactas de `4a2915c` (SHA-256 `ac55c141e87f74939d3432dccf89caa62a888b149e0db69df4f8ae1ef9e34dbd`), antes de cualquier cambio productivo. Los cuatro controles ya GREEN permanecen como regresión; no se fabrica un fallo para ellos.
+2. Tras RED aprobado, **T020** aplica únicamente `scenes/levels/nivel_monte_calvo.gd` de esa revisión (SHA-256 `4e89dce236868c4203079e06937b5c8dbcbbd564382f373d2216d4aa8c700d7f`). No filtrar el mouse emulado: también debe poder desplegar en celda libre sin pickup. No copiar configuración o exportación Web.
+3. **T021** verifica las mismas seis pruebas y regresión completa nativas, hashes/invariantes y comparación con/sin arte con el mismo script corregido. **T022** revisa RED/GREEN y el diff acotado. T008/T009 solo pueden aceptarse después de T022.
+4. V4 utilizará iOS Simulator con modelo/runtime, tamaño y método de gesto registrados; hardware iOS no probado. La comparación de rendimiento se mide en Xiaomi físico; el 11T Pro de 2021 no cumple la referencia nominal de gama media de los últimos ~3 años. SC-007 conserva ese gate constitucional; no se extrapola desde simulador ni se aprueba por antigüedad del equipo.
+
+Los hashes de T001 (`e7f2ca9`) y del arte WIP (`b670d86`) no se reescriben. Se añaden manifests del arreglo: única diferencia productiva permitida, script del nivel; únicas pruebas nuevas, archivo de input y su UID. La comparación visual usa copias sin/con arte con el mismo arreglo, dejando el diagnóstico original separado. Fuentes aprobadas en 003: `4a2915c` y reportes `specs/003-web-itchio/evidence/t015-red.md`, `t017-w03-red.md`, `t017-green.md` consultables mediante Git; sus resultados Web no acreditan aceptación nativa de 002. No se afirma autorización humana explícita del backport ni se confunde la aprobación de preparación con la aceptación del arreglo.
 
 ## Integration and verification limits
 
-- Solo se autoriza añadir recursos y el subárbol visual; el diff de `Nivel_MonteCalvo.tscn` conserva íntegros los nodos anteriores y sus propiedades.
+- En las tareas artísticas solo se autoriza añadir recursos y el subárbol visual; el diff de `Nivel_MonteCalvo.tscn` conserva íntegros los nodos anteriores y sus propiedades. T019–T022 delimitan la única excepción lógica separada.
 - El tester captura ventanas y coordenadas reales antes de dibujar/componer. No asumir un viewport fijo o una cuadrícula finita a partir de la imagen.
 - Si el art frame no coincide con el encuadre actual, ajustar el arte y su margen; cualquier cambio de cámara, stretch, transformación o restricción de input requiere otro alcance.
 - Si aparece un fallo previo, registrar y separar su resolución; no debilitar pruebas ni modificar lógica para que una tarea artística pase.

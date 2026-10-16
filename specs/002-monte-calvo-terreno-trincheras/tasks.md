@@ -9,13 +9,13 @@ description: "Primera iteración visual de Monte Calvo: terreno, conservación d
 **Status**: ejecución iniciada por agentes; los checkboxes se actualizan solo tras QA y no certifican verificaciones pendientes.
 **Execution Branch**: `codex/002-monte-calvo-terreno-trincheras`, preparada por el orquestador.
 **Issue**: [#13](https://github.com/Juanpvivas/demons/issues/13).
-**Dependency**: PR #12 (preset/flujo de agentes) sigue abierto; esta rama parte de ese cambio y no modifica su PR.
+**Dependency**: PR #12 (preset/flujo de agentes) fusionado, verificado el 2026-10-16; esta rama conserva su base y no modifica ese PR.
 
 ## Formato y aprobación
 
 El [flujo compartido](../../docs/DEVELOPMENT_WORKFLOW.md) gobierna ejecución y evidencia. Cada tarea identifica propietario, ruta, dependencias y verificación. `[P]` señala únicamente archivos independientes con prerrequisitos satisfechos; no autoriza editar simultáneamente la misma escena. Solo el orquestador registra `[X]` tras `APROBADO` de QA.
 
-Este alcance es arte estático sin lógica nueva: revisión visual/de integración y regresión existente, sin RED artificial ni pruebas que solo enumeren sprites. Si se necesita cambiar comportamiento, detener esa ampliación y preparar sus tareas RED → desarrollo → GREEN/regresión → QA; no cambiar scripts, costos, input o geometría bajo estas tareas.
+El alcance artístico es estático: revisión visual/de integración y regresión existente, sin RED artificial ni pruebas que solo enumeren sprites. La adenda de preparación del 2026-10-16 delimita exclusivamente el arreglo previo de I4 en T019–T022, con preparación aprobada por QA; la implementación sigue pendiente de RED y su veredicto. No cambiar scripts, costos, input o geometría bajo las tareas artísticas; conservar los 18 IDs, checkboxes y evidencias originales.
 
 ## Fase 1: Preparación y prerrequisitos
 
@@ -39,8 +39,17 @@ Este alcance es arte estático sin lógica nueva: revisión visual/de integraci�
 
 **Objetivo**: comprobar el terreno integrado sin cambiar reglas. **Criterio independiente**: resultados equivalentes de la matriz I1–I9 y contrato, más evidencia de entrada real separada de headless.
 
-- [ ] T008 [US2] godot-tester: ejecutar la regresión existente pertinente de `tests/unit/levels/test_nivel_montecalvo.gd`, `test_wave_spawner.gd` y sistemas/unidades aplicables, además de los escenarios I1–I9 de `quickstart.md` con ratón/toque en V1 y V3–V4; registrar esperado/observado y limitaciones en `specs/002-monte-calvo-terreno-trincheras/evidence/us2.md`; depende de T007; no añadir UI o alterar tests para compensar fallos del arte.
-- [ ] T009 [US2] qa-validator: revisar de forma independiente `specs/002-monte-calvo-terreno-trincheras/contracts/visual-boundary.md`, el diff de `scenes/levels/Nivel_MonteCalvo.tscn` y los reportes T004/T007/T008; aprobar o devolver terreno y conservación de mecánicas con causas concretas; depende de T008; solo lectura y veredicto, sin modificar el checkout ni marcar tareas.
+- [ ] T008 [US2] godot-tester: ejecutar la regresión existente pertinente de `tests/unit/levels/test_nivel_montecalvo.gd`, `test_wave_spawner.gd` y sistemas/unidades aplicables, además de los escenarios I1–I9 de `quickstart.md` con ratón/toque en V1 y V3–V4 (iOS Simulator autorizado, hardware iOS no probado); registrar esperado/observado y limitaciones en `specs/002-monte-calvo-terreno-trincheras/evidence/us2.md`; depende de T007 y T022 aprobadas; comparar arte con la misma corrección I4 y no añadir UI o alterar tests para compensar fallos del arte.
+- [ ] T009 [US2] qa-validator: revisar de forma independiente `specs/002-monte-calvo-terreno-trincheras/contracts/visual-boundary.md`, el diff de `scenes/levels/Nivel_MonteCalvo.tscn` y los reportes T004/T007/T008/T022; aprobar o devolver terreno y conservación de mecánicas con causas concretas; depende de T008 y T022 aprobadas; solo lectura y veredicto, sin modificar el checkout ni marcar tareas.
+
+### Adenda US2 — defecto previo I4, separada del arte (preparación aprobada 2026-10-16)
+
+**Gate de alcance**: QA revisa primero esta adenda. Se fundamenta en I4 ya exigida y en la corrección TDD aprobada de 003; no se presenta como autorización humana explícita del backport. La evidencia RED nativa actual puede adoptarse en T019 sin repetir ejecuciones válidas ni reconstruir RED histórico. Referencias y hashes: [plan](plan.md#adenda-de-preparación--2026-10-16) y [contrato](contracts/visual-boundary.md).
+
+- [X] T019 [US2] godot-tester: incorporar sin debilitar las seis pruebas de `4a2915c` en `tests/unit/levels/test_pickup_input_routing.gd` y su UID; conservar/adoptar el diagnóstico RED nativo previo al cambio en copias sin/con arte de 002, con comandos, logs, hashes y esperado/observado en `specs/002-monte-calvo-terreno-trincheras/evidence/t019-red.md`; depende del contrato disponible y QA de alcance de la adenda, nunca de T020; QA debe aprobar el fallo de I4 antes de desarrollo. Los cuatro controles que ya pasan son regresión, no RED fabricado.
+- [ ] T020 [US2] dev-godot: aplicar únicamente `scenes/levels/nivel_monte_calvo.gd` aprobado en 003/`4a2915c`, según hash del contrato, para ceder al picking si hay pickup antes de desplegar y conservar el despliegue por mouse normal/emulado sin pickup; depende de T019 aprobada; no modificar pruebas, ejecutarlas ni copiar Web/configuración/datos/balance/geometría/arte; reportar diff para T021, con aceptación pendiente de GREEN y T022.
+- [ ] T021 [US2] godot-tester: verificar GREEN de las mismas seis pruebas sin cambiar expectativas y regresión completa de `tests/unit/`, importación y matriz nativa pertinente de `quickstart.md`; registrar comandos, resultados reales, hashes y comparación sin/con arte con el mismo script corregido en `specs/002-monte-calvo-terreno-trincheras/evidence/t021-green.md`; depende de T020; separar los resultados automatizados de ratón PC/toque Android físico/gesto iOS Simulator y conservar pendientes de la matriz T008.
+- [ ] T022 [US2] qa-validator: revisar RED T019, diff exclusivo T020, GREEN/regresión T021 y manifests contra `specs/002-monte-calvo-terreno-trincheras/contracts/visual-boundary.md`; depende de T021; confirmar que la única diferencia de comportamiento histórico es recoger sin despliegue adicional, sin introducir regresión normal/emulada ni atribuir toque físico a GUT; emitir veredicto de ciclo, sin modificar checkout ni marcar tareas. Su aprobación habilita continuar la aceptación T008/T009, no cierra la matriz ni la feature.
 
 ## Fase 5: US3 — Trincheras decorativas (P2)
 
@@ -63,15 +72,16 @@ Este alcance es arte estático sin lógica nueva: revisión visual/de integraci�
 
 ```text
 T001 → T002 → T003 → T004 ─┐
-           └→ T005 ──────┴→ T006 → T007 → T008 → T009
-                                                  └→ T010 → T011 → T012
-                                                                 └→ T013 → T014 → T015 → T016 → T017 → T018
+           └→ T005 ──────┴→ T006 → T007 ────────────┐
+QA adenda → T019 RED → QA RED → T020 → T021 → T022 ┴→ T008 → T009
+                                                            └→ T010 → T011 → T012
+                                                                           └→ T013 → T014 → T015 → T016 → T017 → T018
 ```
 
 - T003 y T005 pueden avanzar en paralelo tras T002: escena nueva frente a imágenes en archivos distintos. No ejecutar dos editores/importadores concurrentes sobre el mismo checkout; el orquestador serializa la importación.
 - El resto mantiene orden explícito. T006 y T011 editan la misma escena: nunca se ejecutan en paralelo.
 - T004/T007/T008/T012/T013/T014/T015 pertenecen al tester; el desarrollador no ejecuta pruebas. T009/T016/T018 son QA en solo lectura; el orquestador conserva los veredictos y el estado de tareas.
-- Esta feature no cambia lógica. Si una corrección requiriera comportamiento nuevo, las tareas RED no podrán depender de su implementación; el orquestador deberá preparar ese alcance con pruebas válidas antes de desarrollarlo.
+- El arte no cambia lógica. La única excepción propuesta I4 sigue T019 → T020 → T021 → T022, sin paralelizar ese ciclo ni inventar TDD retroactivo. Para otra corrección se requiere preparar un alcance distinto antes de desarrollarla.
 
 ## Trazabilidad
 
@@ -80,8 +90,8 @@ T001 → T002 → T003 → T004 ─┐
 | FR-001/002; US1; SC-001 | T002, T005, T006, T007 |
 | FR-003; US3; SC-001/002 | T010, T011, T012 |
 | FR-004; SC-002/003 | T003, T004, T007, T008, T009, T011, T012 |
-| FR-005–009; US2; SC-003/004/006 | T001, T004, T008, T009, T013, T014, T016 |
-| FR-010; SC-005 | T001, T002, T007, T008, T012, T015 |
+| FR-005–009; US2; SC-003/004/006 | T001, T004, T008, T009, T013, T014, T016; excepción I4: T019–T022 |
+| FR-010; SC-005 | T001, T002, T007, T008, T012, T015; V4 iOS Simulator según adenda |
 | FR-011 | T003, T004, T011, T016 |
 | FR-012; evidencia de SC-001–007 | T001, T007, T008, T012, T013, T014, T015, T016, T017, T018 |
 | FR-013; SC-007 | T001, T015, T016 |
@@ -89,6 +99,8 @@ T001 → T002 → T003 → T004 ─┐
 ## Estrategia de entrega
 
 MVP visual: T001–T009, terreno US1 con conservación US2 aprobada. Iteración completa: añadir trincheras US3 y terminar T010–T018. No detener la iteración completa dando por entregado solo el MVP.
+
+La adenda añade T019–T022 sin renumerar las 18 tareas originales. El arreglo separado debe quedar aprobado antes de aceptar T008/T009. El diagnóstico preimplementación actual no modifica los resultados históricos ni cuenta como corrección ya entregada; V4 admite simulador y SC-007 mantiene Android físico y su gate constitucional.
 
 Al iniciar ejecución, el orquestador elegirá/reutilizará rama e Issue de esta feature y comprobará los gates vigentes. Al cerrar todas las tareas aprobadas coordinará publicación y PR en borrador según el flujo. Esa coordinación futura no se ejecuta desde esta preparación Spec Kit, ni reutiliza el Issue/PR del preset como si perteneciera a Monte Calvo.
 
@@ -106,3 +118,25 @@ El orquestador adelanta la producción estática T010/T011 como trabajo en curso
 - T010 — recurso aislado `APROBADO` por `qa-validator` como WIP anticipado: [atlas](evidence/atlas.md), importación/carga/render correctos y regiones completas. Habilita composición estática de trabajo T011; checkbox pendiente de dependencia y aceptación completas.
 - T011 — `APROBADO` técnico/visual por `qa-validator` para PC V1/V2 observado, como WIP anticipado: ocho capturas finales, contrato intacto y suite final 183/183. La revisión no detecta corrección visual bloqueante; dependencia/checkbox y aceptación global continúan pendientes.
 - Dictamen final de esta ejecución — `APROBADO` parcial por `qa-validator` para la implementación visual WIP observada en PC V1/V2 y Android físico, sin correcciones visuales bloqueantes. [Estado y evidencia](evidence/implementation-status.md): 183/183 pruebas, importación desde cero correcta, contrato preservado y prueba humana parcial antes/después. No habilita nuevos `[X]`: quedan matriz completa de entrada/picking, iOS físico, carga/VRAM y rendimiento sostenido. T008/T009 y T012–T018 mantienen sus gates; no hay consolidación definitiva ni publicación.
+
+### Preparación de reanudación — 2026-10-16
+
+Preparación documental aprobada por QA: simulador iOS autorizado para V4, hardware iOS no probado; Xiaomi físico para rendimiento; excepción I4 y tareas T019–T022 separadas. Conserva el registro histórico anterior: sus menciones a iOS físico describen la limitación de aquella ejecución, no invalidan la nueva vía V4. No se marca ninguna tarea ni se declara aprobado el arreglo nativo desde esta preparación.
+
+- 2026-10-16: se retoma002 por prioridad explícita de la persona, conservando
+  003 y su PR15 en borrador. Checklist16/16 y rama002 b670d86 limpios al inicio;
+  se reutiliza issue13 y no se fusiona ni cierra ningún trabajo.
+- QA **APROBÓ la preparación de la adenda002**: I4 heredado se aborda solo en
+  T019–T022, separado del arte y con RED nativo antes de desarrollo. V4 simulado
+  responde al método solicitado por la persona; hardware iOS sigue no probado.
+  Xiaomi físico conserva la comparación de rendimiento, sin PASS automático de
+  SC007 ni excepción implícita a la referencia constitucional. Se mantienen los
+  siete checkboxes históricos y los 18 IDs; los cuatro nuevos siguen pendientes.
+
+- 2026-10-16: **APROBADO T019 (solo RED)** por QA: test y UID idénticos a la
+  fuente aprobada003, script002 aún sin corregir. Las copias nativas sin/con
+  arte importaron correctamente y dieron4/6 PASS, dos fallos semánticos I4,
+  28/36 aserciones, EXIT1. Se adopta el diagnóstico actual, sin reconstruir
+  historia ni equiparar fixture con toque físico. [RED](evidence/t019-red.md).
+  Habilitada T020; corrección y matriz nativa pendientes. **8/22** tareas
+  marcadas, conservando los siete checkboxes históricos.
