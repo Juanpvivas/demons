@@ -87,10 +87,12 @@ fusionarlo con implementación pendiente. Arte y documentos conservan su
 validación proporcional. No esperes a terminar toda la feature para entregar
 un incremento aprobado.
 
-El flujo detalla el tamaño orientativo, los commits por resultado y la evidencia
-mínima que se conserva en Git. Los registros extensos nuevos se enlazan desde
-un archivo duradero con SHA-256, acceso y retención comprobables; si no existe,
-se versiona la evidencia mínima suficiente. Conserva las evidencias históricas.
+El flujo detalla el tamaño orientativo y los commits por resultado. Para futuros
+PR, no añadas archivos de evidencias a Git: reporta brevemente resultados,
+comandos, límites y veredicto QA en el cuerpo del PR; usa logs de CI o temporales
+durante la ejecución. Las pruebas, specs, planes, tareas y documentación útil
+del producto siguen versionados, sin usarlos para volcar registros. Conserva
+las evidencias históricas existentes.
 Los PR intermedios usan `Refs #<issue>`; solo el último, cuando todos los
 criterios estén cumplidos, usa `Closes #<issue>`.
 
@@ -102,7 +104,7 @@ verificaciones, publica la rama y crea un PR **en borrador**, con descripción
 breve y vinculado al Issue. Solo una petición explícita de la persona permite
 promoverlo a revisión; nunca se fusiona automáticamente. Recomienda a la
 persona `Squash and merge` para dejar un commit por PR en `main`, conservando
-la trazabilidad RED/GREEN en el informe; no reescribas historial compartido o
+la trazabilidad RED/GREEN en el cuerpo del PR; no reescribas historial compartido o
 aprobado sin autorización.
 
 Las consultas y correcciones documentales puntuales conservan su alcance;
@@ -168,3 +170,4 @@ no afirmes haberla aplicado ni sustituyas su consulta por conocimiento genérico
 | 2026-10-15 | Spec Kit limitado a preparación; ejecución por agentes con TDD RED → desarrollo → GREEN → QA y guía operativa compartida |
 | 2026-10-15 | Personalizaciones trasladadas al preset local `demons-agent-tdd`, con workflow propio `demons-preparation` y verificador de instalación |
 | 2026-10-16 | Entregas por incrementos con PR pequeños, TDD y QA completos, evidencia proporcional y cierre del Issue solo al completar la feature |
+| 2026-10-16 | Futuros PR sin archivos nuevos de evidencias en Git; resultados y QA en el PR, manteniendo pruebas y documentación útil |

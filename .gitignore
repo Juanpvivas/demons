@@ -5,5 +5,8 @@
 # Local export output — never commit built binaries
 /build/
 
+# Future validation records stay out of Git; tracked history is preserved
+/specs/**/evidence/
+
 # macOS
 .DS_Store

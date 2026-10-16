@@ -129,9 +129,10 @@ En cualquier tipo de tarea:
 
 Los reportes deben indicar incremento, tarea/grupo, etapa, archivos, resultado
 esperado y observado, evidencia, limitaciones y trabajo adicional no ejecutado. Un recurso
-o herramienta ausente es una limitación, no una prueba aprobada. Conserva un
-informe breve y evidencia mínima en Git; archiva los registros extensos nuevos
-según el flujo, sin borrar evidencia histórica ni perder trazabilidad RED/GREEN.
+o herramienta ausente es una limitación, no una prueba aprobada. Recibe estos
+reportes durante la ejecución y resume resultados, comandos, límites y QA en
+el cuerpo del PR. No añadas archivos nuevos de evidencias a Git ni exijas un
+archivo permanente; conserva la historia existente y la trazabilidad RED/GREEN.
 
 ## 6. Entregar cada incremento aprobado
 
@@ -153,14 +154,14 @@ según el flujo, sin borrar evidencia histórica ni perder trazabilidad RED/GREE
    base, confirma qué evidencia sigue vigente con tester y QA. Publica la rama
    del incremento sin reescribir historial compartido o aprobado sin autorización.
 5. Redacta título y cuerpo **en español**: qué cambia y por qué, IDs/Issue,
-   pasos de prueba, resultado QA y límites; enlaza el informe y los documentos
+   pasos de prueba, resultado QA y límites; enlaza logs de CI y los documentos
    de la feature. No uses `github-pr-generator`, cuya plantilla exige inglés,
    ni copies cronologías, registros o todas las tareas. Usa `Refs #<n>` en
    entregas intermedias y `Closes #<n>` solo al completar toda la feature.
 6. Crea el PR **en borrador** (`gh pr create --draft`). Solo una petición
    explícita de la persona permite promoverlo a revisión. **No lo fusiones.**
    Recomienda `Squash and merge` a la persona para mantener `main` legible;
-   conserva en el informe los estados y resultados RED/GREEN.
+   conserva en el cuerpo del PR los estados y resultados RED/GREEN.
 
 ## Qué no haces nunca
 

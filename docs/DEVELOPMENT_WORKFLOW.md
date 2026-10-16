@@ -134,7 +134,7 @@ autoriza ampliar alcance ni inventar tareas.
   revisión, no un nuevo permiso ni motivo para fragmentar TDD o saltar QA.
 - Commits por resultado legible, con IDs cuando existan; agrupa ajustes menores
   y evita commits repetidos de estado o registros. Conserva el estado probado
-  y la secuencia RED/GREEN en el informe, incluso si la persona elige
+  y la secuencia RED/GREEN en el cuerpo del PR, incluso si la persona elige
   `Squash and merge` para dejar un commit por PR en `main`. No reescribas
   historial compartido o aprobado sin autorización.
 - Reutiliza un Issue por feature. Los PR intermedios llevan `Refs #<n>` y
@@ -144,28 +144,27 @@ autoriza ampliar alcance ni inventar tareas.
 
 El cuerpo del PR se redacta en español y permite entender el cambio sin leer
 la conversación: qué cambia y por qué, IDs/Issue, cómo probarlo, resultado de
-QA y límites. Enlaza el informe detallado y los documentos de la feature;
+QA y límites. Enlaza los documentos de la feature y los logs de CI pertinentes;
 evita copiar cronologías, logs o listas enteras de tareas.
 
-## Evidencia suficiente y conservada
+## Resultados de validación sin archivos de evidencias en Git
 
-En Git conserva un informe breve por incremento: alcance y criterios,
-revisión o hashes del estado probado, comandos/pasos reproducibles, versiones
-relevantes, resultados RED/GREEN o visuales, veredicto QA y límites. Añade solo
-las capturas clave que ayuden a revisarlo. No reconstruyas evidencia histórica.
+Para futuros PR, **no añadas archivos nuevos de evidencias a Git**: logs,
+JSON de medición, capturas de QA, informes RED/GREEN o manifiestos de validación.
+Los agentes ejecutan las comprobaciones y entregan sus resultados al orquestador
+durante el trabajo. Este resume brevemente en el cuerpo del PR el estado probado,
+comandos o pasos, resultados RED/GREEN o visuales, límites y veredicto de QA.
 
-Los logs completos, JSON y capturas repetidas nuevos se guardan en un archivo
-duradero enlazado desde ese informe, con SHA-256, acceso verificado para quienes
-revisan y política de retención explícita que cubra la vida soportada de la
-entrega. Los artifacts de CI que caducan no pueden ser la única copia. Si no
-hay un archivo duradero disponible, versiona el conjunto mínimo que permita
-reproducir y auditar el resultado, justificando su inclusión. Capturar la salida
-completa no obliga a incorporarla toda al diff.
+QA puede consultar logs de CI o archivos temporales durante la ejecución. No
+se exige un archivo externo permanente, hashes, política de retención ni una
+copia mínima versionada de esos registros. Esto no elimina TDD, las pruebas
+reales ni la validación independiente antes de aprobar el cambio.
 
-Esta política no permite borrar evidencias ya versionadas ni romper sus enlaces.
-Cualquier migración histórica requiere conservar y verificar contenido, hashes
-y acceso antes de sustituir referencias. QA comprueba la evidencia; reducir el
-diff nunca sustituye una validación ni oculta un fallo.
+Las pruebas automatizadas, specs, planes, tareas y documentación útil del
+producto continúan en Git. No vuelques en ellos logs, crónicas ni informes de
+validación para eludir la regla; el seguimiento de tareas puede enlazar el PR.
+Conserva intactas las evidencias ya versionadas y sus enlaces históricos. No
+reconstruyas RED pasado ni presentes comprobaciones pendientes como aprobadas.
 
 ## Rechazos, cierre y límites
 
@@ -216,3 +215,4 @@ comprobar que sus comandos y plantillas siguen activos tras una actualización.
 | 2026-10-15 | Separación explícita entre preparación Spec Kit y ejecución por agentes; ciclo TDD y tratamiento de tareas RED, arte y documentación |
 | 2026-10-15 | Personalizaciones empaquetadas en un preset local y workflow independiente; mantenimiento fuera de los archivos core |
 | 2026-10-16 | Incrementos con PR pequeños, ciclos TDD/QA completos, descripciones y commits legibles, archivo duradero de evidencia y cierre final del Issue |
+| 2026-10-16 | Por decisión de la persona, futuros PR sin archivos nuevos de evidencias en Git ni archivo permanente obligatorio; resultados en el PR y comprobaciones reales para QA |

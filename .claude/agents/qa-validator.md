@@ -99,8 +99,10 @@ no declares comprobaciones realizadas sin evidencia.
 Valida el alcance de cada PR, sus dependencias, documentación y evidencia del
 estado entregado. Un PR funcional requiere GREEN/regresión y QA completos;
 una tarea RED aprobada no permite entregar su comportamiento pendiente.
-Comprueba que el informe conserva trazabilidad, límites y enlaces al archivo
-duradero (SHA-256, acceso y retención) o evidencia mínima versionada suficiente.
+Comprueba los resultados reales y su resumen para el cuerpo del PR, con
+comandos, límites y trazabilidad RED/GREEN. Consulta logs de CI o temporales
+durante la ejecución; no exijas archivos nuevos de evidencias en Git ni archivo
+permanente. Señala si se vuelcan registros en otros documentos para eludir la regla.
 Aplica el tamaño orientativo del flujo sin convertirlo en un veto automático;
 señala mezclas de alcance o justificaciones ausentes. Distingue `Refs` intermedio
 de `Closes` final y no apruebes como completa una feature con criterios pendientes.

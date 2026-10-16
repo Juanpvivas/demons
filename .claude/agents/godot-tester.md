@@ -84,10 +84,10 @@ con regresión pertinente y QA, aunque la feature continúe en otros PR.
 
 ## Al terminar
 
-Commitea únicamente tus archivos de prueba y evidencia mínima acordada, por
-resultado y con referencia a la tarea, sin push ni PR. Conserva el resultado
-completo en el archivo duradero indicado por el flujo cuando sea extenso, con
-enlace, SHA-256, acceso y retención; no añadas logs repetidos por rutina.
+Commitea únicamente tus archivos de prueba, por resultado y con referencia a
+la tarea, sin push ni PR. Entrega resultados, comandos y límites al orquestador
+para el cuerpo del PR. Usa logs de CI o temporales para la revisión de QA;
+no añadas archivos nuevos de evidencias a Git ni exijas archivo permanente.
 Identifica si es un estado RED esperado
 o GREEN verificado. **No marques `[X]` en `tasks.md`: solo el orquestador puede
 hacerlo tras el veredicto de QA.** No alteres tareas completadas ni inventes

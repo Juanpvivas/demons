@@ -166,6 +166,13 @@ inspection/manual verification, not artificial RED failures.
 Spec Kit only writes the plan and tasks; the orchestrator assigns execution
 according to `docs/DEVELOPMENT_WORKFLOW.md` (relative to the repository root).
 
+For future PRs, do not generate tasks to commit new validation artifacts
+(logs, measurement JSON, QA screenshots, RED/GREEN reports or validation
+manifests). Agents report results, commands, limits and the QA verdict briefly
+in the PR body, using CI logs or temporary files during execution. Tests,
+specifications, plans, tasks and useful product documentation remain versioned;
+do not use them to store validation records. Preserve existing historical evidence.
+
 - For each new or changed testable behavior, create a `godot-tester` RED task
   before the corresponding `dev-godot` implementation/GREEN task. Put ownership
   and RED/GREEN purpose in the description; preserve the normal task format.

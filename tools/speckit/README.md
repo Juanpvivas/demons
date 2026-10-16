@@ -35,8 +35,9 @@ orquestador equivalente de otra herramienta.
 
 La instalación inicial se verificó con Specify CLI 1.0.1. El **2026-10-15** se
 actualizaron la CLI y la integración activa **Claude** a **1.2.0**. El preset
-actual es **1.0.1**: adapta la salida `FEATURE_DIR` del script de planificación
-y conserva `SPECS_DIR` como alternativa para versiones anteriores. El workflow
+actual es **1.0.2**: conserva la adaptación de `FEATURE_DIR` y la alternativa
+`SPECS_DIR` de 1.0.1; las tareas nuevas reportan resultados de validación en el
+PR sin añadir archivos de evidencias a Git. El workflow
 `demons-preparation` sigue en 1.0.0 y las reglas de agentes con TDD se conservan.
 El manifiesto exige `>=1.0.1`; eso no certifica todas las versiones futuras.
 

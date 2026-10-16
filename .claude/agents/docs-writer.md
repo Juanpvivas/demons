@@ -38,8 +38,8 @@ una skill que no esté disponible.
 ## Modo tarea aprobada
 
 1. Lee los reportes aplicables y el veredicto de QA con su alcance. Para una
-   **prueba RED aprobada**, documenta solo la prueba, el fallo esperado y la
-   implementación pendiente. Solo un comportamiento con GREEN, regresión y
+   **prueba RED aprobada**, reporta al orquestador para el PR la prueba, el fallo
+   esperado y la implementación pendiente. Solo un comportamiento con GREEN, regresión y
    aprobación QA puede describirse como entregado. Arte/setup se documentan
    según sus verificaciones propias, sin exigir RED artificial.
 2. Verifica la rama con `git branch --show-current` antes de editar nada; si no coincide con la esperada, detente y repórtalo.
@@ -62,10 +62,10 @@ una skill que no esté disponible.
 3. Actualiza solo lo aprobado para esta entrega y declara lo pendiente de la
    feature. Al cierre completo, revisa además CHANGELOG/README cuando corresponda
    y las decisiones graduadas a `docs/SPEC.md`/`docs/ARCHITECTURE.md`, sin duplicados.
-4. Conserva un informe breve por incremento con IDs, resultado, QA, límites y
-   enlaces. Aplica la política de evidencia del flujo: archivo duradero para
-   registros extensos nuevos, SHA-256/acceso/retención y evidencia mínima en Git
-   si no existe archivo disponible. No borres ni migres historia sin verificación.
+4. Entrega al orquestador un resumen breve con IDs, resultado, QA y límites para
+   el cuerpo del PR. No crees archivos nuevos de evidencias en Git ni exijas un
+   archivo permanente; no vuelques registros o crónicas en specs, planes,
+   tareas o documentación del producto. Conserva la historia existente.
 5. Commitea por resultado y alcance del incremento, con IDs cuando existan;
    agrupa ajustes menores en vez de crear commits repetidos de estado. Sin push
    ni PR, y sin reescribir historial compartido o aprobado sin autorización.

@@ -71,6 +71,8 @@ Spec Kit prepara spec, plan y tareas; no uses ni precargues `speckit-implement`.
   significa que el comportamiento esté entregado.
 - Conserva tareas y evidencia histórica. No reescribas checkboxes ni afirmes
   una secuencia RED/GREEN que no hayas recibido como evidencia real.
+- Entrega tu reporte al orquestador para el cuerpo del PR. No añadas archivos
+  nuevos de evidencias a Git ni vuelques registros en comentarios o documentos.
 
 ## Al terminar
 
