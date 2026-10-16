@@ -1,0 +1,83 @@
+Godot Engine v4.7.1.stable.mono.official.a13da4feb - https://godotengine.org
+Metal 4.0 - Forward Mobile - Using Device #0: Apple - Apple M5 Pro (Apple9)
+
+SCRIPT ERROR: Compile Error: Identifier not found: EconomyManager
+   at: GDScript::reload (res://scenes/units/soldado.gd:367)
+SCRIPT ERROR: Compile Error: Identifier not found: EconomyManager
+   at: GDScript::reload (res://scenes/levels/ammo_pickup.gd:34)
+SCRIPT ERROR: Compile Error: Identifier not found: EconomyManager
+   at: GDScript::reload (res://scenes/enemies/enemigo.gd:278)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (/private/tmp/monte-calvo-t001-0pulm9d5/observe.gd:0)
+ERROR: Failed to load script "/private/tmp/monte-calvo-t001-0pulm9d5/observe.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Invalid call. Nonexistent function 'set_grid_cell' in base 'Nil'.
+   at: _ready (res://scenes/levels/nivel_monte_calvo.gd:158)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://scenes/levels/nivel_monte_calvo.gd:158)
+       [1] start (/private/tmp/monte-calvo-t001-0pulm9d5/observe.gd:22)
+BASELINE geometry {"canvas_transform":"[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]","defended":"(576.0, 650.0)","driver":"metal","gpu":"Apple M5 Pro (Apple9)","renderer":"mobile","screen_scale":1.0,"screen_size":"(3200, 1800)","screen_transform":"[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]","soldier":"(576.0, 500.0)","soldier_cell":"(6, 5)","stretch_transform":"[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]","visible_rect":"[P: (0.0, 0.0), S: (1152.0, 648.0)]","window":"(1152, 648)","window_position":"(100, 126)"}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":0.0,"wave_index":-1}
+BASELINE capture /Users/juan.vivas/AI/Game/demons/specs/002-monte-calvo-terreno-trincheras/evidence/pc-v1-0.png size=(1152, 648) result=0 t=0.231
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":1.004,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":2.004,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":3.004,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":4.006,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":5.006,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":6.006,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":7.001,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":8.006,"wave_index":-1}
+BASELINE capture /Users/juan.vivas/AI/Game/demons/specs/002-monte-calvo-terreno-trincheras/evidence/pc-v1-1.png size=(1152, 648) result=0 t=8.032
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":9.006,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":10.007,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":11.007,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":12.007,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":13.008,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":14.008,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":15.008,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":16.009,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":17.009,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":18.009,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":19.01,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":20.01,"wave_index":-1}
+BASELINE capture /Users/juan.vivas/AI/Game/demons/specs/002-monte-calvo-terreno-trincheras/evidence/pc-v1-2.png size=(1152, 648) result=0 t=20.033
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":21.011,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":22.011,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":23.011,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":24.012,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":25.013,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":26.013,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":27.0,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":28.0,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":29.0,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":30.001,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":31.001,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":32.003,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":33.001,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":34.002,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":35.003,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":36.003,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":37.003,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":38.004,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":39.004,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":40.004,"wave_index":-1}
+BASELINE capture /Users/juan.vivas/AI/Game/demons/specs/002-monte-calvo-terreno-trincheras/evidence/pc-v1-3.png size=(1152, 648) result=0 t=40.029
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":41.004,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":42.005,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":43.006,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":44.006,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":45.006,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":46.006,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":47.007,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":48.007,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":49.008,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":50.008,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":51.008,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":52.009,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":53.009,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":54.01,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":55.01,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":56.01,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":57.01,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":58.011,"wave_index":-1}
+BASELINE state {"actors":[],"ammo_pool":0,"game_state":0,"t":59.011,"wave_index":-1}
