@@ -6,3 +6,5 @@
 script = ExtResource("1_effect")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 2
+texture_repeat = 1
