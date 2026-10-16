@@ -23,6 +23,7 @@ res://
 │   ├── units/                # Soldado.tscn y futuras variantes de unidades
 │   ├── enemies/               # EnemigoBase.tscn y variantes
 │   ├── levels/                 # Nivel_MonteCalvo.tscn, MonteCalvoVisual.tscn, futuros niveles
+│   ├── visuals/                # CombatVisualEffects y DeathVisualEffect: efectos sin gameplay
 │   └── ui/                     # HUD.tscn, menús, pantallas de victoria/derrota
 ├── resources/
 │   ├── schemas/                # Scripts base de Resource (class_name UnitStats,
@@ -36,7 +37,7 @@ res://
 │   └── board_manager.gd           # BoardManager: ocupación de celdas del tablero, por-nivel
 ├── assets/
 │   ├── sprites/
-│   │   ├── units/
+│   │   ├── units/             # monte_calvo/: atlas, frames y procedencia del soldado
 │   │   ├── enemies/
 │   │   ├── levels/             # monte_calvo/: PNG, .import y procedencia del entorno
 │   │   └── ui/
@@ -362,6 +363,41 @@ Mono local se conserva para desarrollo/pruebas nativos. La aceptación Web
 es acotada a los navegadores y dispositivos de su matriz, no universal.
 [Herramientas y evidencia](../specs/003-web-itchio/evidence/toolchain.md).
 
+### 4.7 Presentación observadora y derrota cosmética independiente
+
+Patrón graduado desde I1 de `004-personajes-municion-monte-calvo`, aprobado
+funcionalmente en T011: el actor conserva la autoridad jugable y su presentador
+solo observa modos y hechos confirmados. `SoldadoVisual`, sobre el hijo
+`AnimatedSprite2D`, representa espera, ataques reales, impacto y moral sin
+aplicar daño, consumir recursos o cambiar cadencias. El modo actual interrumpe
+acciones incompatibles, incluida la última bala; la muerte cancela toda pose
+viva. `reset_visual(mode)` restaura la presentación desde el estado real y los
+valores autorados. Frames de arte compartidos son de solo lectura; progreso,
+tinte, escala y callbacks pertenecen a cada instancia.
+
+Antes de las señales que retiran al actor, este captura un snapshot neutro por
+valor y emite `defeat_visual_requested(snapshot: Dictionary)` una sola vez.
+Incluye posición, frames, animación, escala/offset, flips y z autorados, sin
+tinte/pulso transitorio, referencia al actor o callbacks jugables. Los valores
+mutables se copian; los recursos de arte inmutables pueden compartirse. La
+ausencia de listener o de recursos visuales nunca impide la muerte jugable.
+
+`CombatVisualEffects` es un servicio del nivel, sin autoload, que registra una
+vez cada actor integrado y posee un `ObjectPool` precalentado con diez efectos;
+el tamaño inicial no es un límite. `DeathVisualEffect.tscn` contiene solamente
+`Node2D` y `AnimatedSprite2D`: reproduce la caída durante 0,40 s en la posición
+capturada, sin física, input, ocupación ni objetivos. Su final devuelve esa
+activación al pool. La celda y el actor se liberan sin esperar, y el efecto no
+sigue a una instancia reutilizada. Cada reset cancela tweens y restaura la
+presentación; una generación/activación invalida callbacks obsoletos para que
+no restauren poses ni liberen otro uso de la misma instancia.
+
+I1 integra únicamente al soldado inicial y a los nuevos despliegues. La señal
+de enemigo y `EnemigoVisual` son interfaces mínimas reservadas; no acreditan
+arte, emisión de derrota o reset del enemigo. Su integración pertenece a I2,
+y la caja a I3. El [contrato de 004](../specs/004-personajes-municion-monte-calvo/contracts/visual-presentation.md)
+delimita los tiempos y la frontera jugable.
+
 ## 5. Composición de escenas (ejemplo concreto)
 
 - **`Soldado.tscn`**: `StaticBody2D` raíz (el soldado se coloca en una
@@ -369,7 +405,9 @@ es acotada a los navegadores y dispositivos de su matriz, no universal.
   le da colisión física real para enemigos/proyectiles sin implicar
   movimiento por código, a diferencia de `CharacterBody2D`) → `AnimatedSprite2D` +
   `Area2D` "DeteccionRango" (cono frontal + diagonales) + `Area2D`
-  "RangoMelee" + `CollisionShape2D`. Script `soldado.gd`.
+  "RangoMelee" + `CollisionShape2D`. Script `soldado.gd`; el hijo visual usa
+  `soldado_visual.gd` y los frames de `assets/sprites/units/monte_calvo/`, con
+  [procedencia e importación](../assets/sprites/units/monte_calvo/SOURCES.md).
 - **`EnemigoBase.tscn`**: `CharacterBody2D` raíz (los enemigos sí avanzan
   por el carril con `move_and_slide()`), con `soldado.gd` reemplazado
   por `enemigo.gd`, estructura de hijos análoga.
@@ -377,6 +415,8 @@ es acotada a los navegadores y dispositivos de su matriz, no universal.
   celdas de 96×96), soldado y enemigo iniciales, `PosicionDefendida` e
   instancia hija de `MonteCalvoVisual.tscn`. El script crea `WaveSpawner`
   en `_ready()` y lo configura con la secuencia de Resources de oleadas;
+  también prepara `CombatVisualEffects` y registra al soldado inicial y los
+  nuevos despliegues para su derrota visual independiente (§4.7).
   `wave_spawn_position` fija el punto de aparición. El nivel actual no
   instancia `HUD.tscn`: tampoco integra controles de recarga ni pantallas
   de victoria/derrota, aunque los métodos y estados correspondientes tienen
@@ -555,6 +595,13 @@ conservada en la constitución 2.1.0,
 con los picos y límites del instrumento conservados; no se extrapola a otros
 dispositivos o features.
 
+Para I1 de 004, la constitución 2.2.0 autoriza por separado el Xiaomi 11T Pro
+físico provisional; se mantiene el objetivo de 60 FPS. Web y app Android tienen
+aceptaciones propias, sin extrapolar por compartir teléfono. La comprobación
+iOS corresponde solo a simulador con renderer software, sin acreditar hardware
+iOS o Mobile. La aceptación de I1 no certifica estabilidad sostenida fuera de
+las muestras revisadas ni sustituye las verificaciones pendientes de I2/I3.
+
 - **Política de versionado para releases de prueba**: ambos workflows de
   deploy tienen un paso que compara `version/code`/`version/name`
   (Android) o `application/version`/`application/short_version` (iOS) en
@@ -613,3 +660,4 @@ dispositivos o features.
 | 2026-10-16 | §4.6/7: estado verificado de 003 en su alcance Web: estándar 4.7.1, Compatibility específico/un hilo, Mobile nativo conservado, ZIP/PCK/licencias y artefacto CI sin publicación. Se gradúa la precedencia pickup→despliegue validada con RED/GREEN y toque físico; las mediciones y entornos no certificados mantienen sus límites. |
 | 2026-10-16 | T017 de `002-monte-calvo-terreno-trincheras`, tras QA T016: §2/§5 documentan la subescena visual estática aislada y sus recursos; se corrige la descripción del nivel para reflejar WaveSpawner creado por código y ausencia de HUD integrado. §6/§7 documentan la precedencia de pickup→despliegue aprobada con TDD y distinguen regresión de entrada real, con límites de iPad Simulator y Xiaomi provisional. |
 | 2026-10-16 | Integración de main tras PR #16: se preservan la escena visual y la validación nativa 002 junto con Web/Compatibility de 003; constitución 2.1.0 combina sus decisiones sin extrapolar pruebas ni rendimiento entre plataformas. |
+| 2026-10-16 | T012 de 004, tras aprobación funcional T011: §2/§4.7/§5 gradúan la presentación observadora y derrota cosmética independiente, con snapshot neutro, pool visual precalentado y callbacks por activación. Solo soldado integrado; enemigo/caja pendientes. §7 delimita Xiaomi provisional propio de 004, Web separado e iOS simulador/software. |
