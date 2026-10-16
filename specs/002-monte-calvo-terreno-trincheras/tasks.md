@@ -174,3 +174,13 @@ Preparación documental aprobada por QA: simulador iOS autorizado para V4, hardw
   intervención humana con ventana preparada. No aprueba ejecución, toque físico
   ni iOS Mobile. Evita repetir la llamada CUA a Device Hub que quedó bloqueada;
   el intento fallido se conserva como setup, sin PASS.
+
+- 2026-10-16: QA **APROBÓ SC-007 en el alcance de 002/Xiaomi provisional**:
+  comparativa física PLAYING antes/después y partida humana de aproximadamente
+  50 s con recolección y despliegue. Se conservan el registro de 54 FPS y el pico
+  de 24,45 ms. El control que aplaza solo el guardado del observador desplaza la
+  bajada a 55 FPS diez segundos después; es evidencia fuerte de perturbación del
+  instrumento, sin homologar el control LOST a gameplay ni afirmar causalidad
+  exclusiva o cero caídas. [Control y procedencia](evidence/native-save-control.md).
+  No se extrapola a otros dispositivos, futuras hordas, 003 o iOS. T015 y las
+  restantes tareas mantienen sus checkboxes mientras falten PC/V4 y consolidación.

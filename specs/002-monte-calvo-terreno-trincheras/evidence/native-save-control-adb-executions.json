@@ -1,0 +1,185 @@
+[
+  {
+    "args": [
+      "get-state"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.009458250000000001,
+    "stdout": "device\n",
+    "stderr": "",
+    "utc": "2026-10-16T15:11:41.796832+00:00"
+  },
+  {
+    "args": [
+      "shell",
+      "dumpsys",
+      "power"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.16820749999999998,
+    "stdout": "[filtered into preconditions.json]",
+    "stderr": "",
+    "utc": "2026-10-16T15:11:41.965313+00:00"
+  },
+  {
+    "args": [
+      "shell",
+      "dumpsys",
+      "activity",
+      "activities"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.08019699999999999,
+    "stdout": "[filtered into preconditions.json]",
+    "stderr": "",
+    "utc": "2026-10-16T15:11:42.045758+00:00"
+  },
+  {
+    "args": [
+      "shell",
+      "dumpsys",
+      "battery"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.07169466599999996,
+    "stdout": "[filtered into preconditions.json]",
+    "stderr": "",
+    "utc": "2026-10-16T15:11:42.117609+00:00"
+  },
+  {
+    "args": [
+      "shell",
+      "settings",
+      "get",
+      "system",
+      "accelerometer_rotation"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.088098709,
+    "stdout": "1\n",
+    "stderr": "",
+    "utc": "2026-10-16T15:11:42.206144+00:00"
+  },
+  {
+    "args": [
+      "shell",
+      "settings",
+      "get",
+      "system",
+      "user_rotation"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.08224883400000005,
+    "stdout": "0\n",
+    "stderr": "",
+    "utc": "2026-10-16T15:11:42.288456+00:00"
+  },
+  {
+    "args": [
+      "shell",
+      "getprop",
+      "ro.product.model"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.06719991700000005,
+    "stdout": "2107113SG\n",
+    "stderr": "",
+    "utc": "2026-10-16T15:11:42.355716+00:00"
+  },
+  {
+    "args": [
+      "shell",
+      "getprop",
+      "ro.build.version.release"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.05521866600000003,
+    "stdout": "14\n",
+    "stderr": "",
+    "utc": "2026-10-16T15:11:42.410987+00:00"
+  },
+  {
+    "args": [
+      "install",
+      "-r",
+      "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/control-final.apk"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.609258459,
+    "stdout": "Serving...\nPerforming Incremental Install\nSuccess\nInstall command complete in 1587 ms\n",
+    "stderr": "All files should be loaded. Notifying the device.\n",
+    "utc": "2026-10-16T15:11:44.020620+00:00"
+  },
+  {
+    "args": [
+      "shell",
+      "cmd",
+      "package",
+      "resolve-activity",
+      "--brief",
+      "-a",
+      "android.intent.action.MAIN",
+      "-c",
+      "android.intent.category.LAUNCHER",
+      "com.juanpvivas.demons"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.04640375000000008,
+    "stdout": "priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=true\ncom.juanpvivas.demons/com.godot.game.GodotAppLauncher\n",
+    "stderr": "",
+    "utc": "2026-10-16T15:11:44.067097+00:00"
+  },
+  {
+    "args": [
+      "shell",
+      "am",
+      "start",
+      "-W",
+      "-n",
+      "com.juanpvivas.demons/com.godot.game.GodotAppLauncher"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.5310021250000001,
+    "stdout": "Starting: Intent { cmp=com.juanpvivas.demons/com.godot.game.GodotAppLauncher }\nStatus: ok\nLaunchState: COLD\nActivity: com.juanpvivas.demons/com.godot.game.GodotApp\nTotalTime: 462\nWaitTime: 475\nComplete\n",
+    "stderr": "",
+    "utc": "2026-10-16T15:11:44.598189+00:00"
+  },
+  {
+    "args": [
+      "shell",
+      "pidof",
+      "com.juanpvivas.demons"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.10372612499999967,
+    "stdout": "20944\n",
+    "stderr": "",
+    "utc": "2026-10-16T15:11:44.702885+00:00"
+  },
+  {
+    "args": [
+      "shell",
+      "run-as",
+      "com.juanpvivas.demons",
+      "cat",
+      "files/native-telemetry.json"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.11292679199999611,
+    "stdout": "[stored separately in control-native-telemetry.json]",
+    "stderr": "",
+    "utc": "2026-10-16T15:12:31.824528+00:00"
+  },
+  {
+    "args": [
+      "install",
+      "-r",
+      "/private/tmp/monte-calvo-54fps-control-002-xxctgspu/restore-normal.apk"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.5233587499999999,
+    "stdout": "Serving...\nPerforming Incremental Install\nSuccess\nInstall command complete in 1496 ms\n",
+    "stderr": "All files should be loaded. Notifying the device.\n",
+    "utc": "2026-10-16T15:12:33.354301+00:00"
+  }
+]

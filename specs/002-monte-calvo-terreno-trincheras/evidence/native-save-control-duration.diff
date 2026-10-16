@@ -1,0 +1,11 @@
+--- original/_native_telemetry.gd
++++ control/_native_telemetry.gd
+@@ -32,7 +32,7 @@
+ 	if int(_native_elapsed) != _native_last_second:
+ 		_native_last_second = int(_native_elapsed)
+ 		print("NATIVE_TELEMETRY ", JSON.stringify(row))
+-	if _native_elapsed >= 35.0 and not _native_saved:
++	if _native_elapsed >= 45.0 and not _native_saved:
+ 		_native_saved = true
+ 		var file: FileAccess = FileAccess.open("user://native-telemetry.json", FileAccess.WRITE)
+ 		file.store_string(JSON.stringify({"method": "approved read-only observer003 plus telemetry002 in temporary native variant", "renderer": RenderingServer.get_current_rendering_method(), "driver": RenderingServer.get_current_rendering_driver_name(), "gpu": RenderingServer.get_video_adapter_name(), "first_post_draw": _native_first_frame, "rows": _native_rows}))
