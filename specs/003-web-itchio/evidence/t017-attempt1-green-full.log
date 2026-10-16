@@ -1,0 +1,304 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+---  GUT  ---
+[INFO]:  using [/Users/juan.vivas/Library/Application Support/Godot/app_userdata/demons] for temporary output.
+Godot version:  4.7.1
+GUT version:  9.7.1
+[GUT WARNING]:  Ignoring script res://tests/unit/systems/test_double_pooled_node.gd because it does not extend GutTest
+
+
+res://tests/unit/enemies/test_enemigo.gd
+* test_enemigo_base_scene_instantiates_and_joins_enemies_group
+* test_take_damage_returns_false_when_the_hit_does_not_deplete_health
+* test_take_damage_accumulates_across_multiple_calls_before_dying
+* test_take_damage_returns_true_on_lethal_call_even_with_overkill_damage
+* test_take_damage_returns_false_on_repeated_calls_after_the_lethal_hit
+* test_enemy_defeated_is_not_emitted_when_a_hit_does_not_kill
+* test_enemy_defeated_is_emitted_with_stats_ammo_drop_and_death_position_on_lethal_hit
+* test_enemy_defeated_is_emitted_exactly_once_despite_repeated_calls_after_death
+* test_enemy_is_removed_from_the_scene_tree_after_being_defeated
+[GUT WARNING]:  Test script has 7 unfreed children.  Increase log level for more details.
+9/9 passed.
+
+
+res://tests/unit/levels/test_nivel_montecalvo.gd
+* test_nivel_montecalvo_instantiates_without_errors_with_expected_structure
+* test_enemigo_avanzando_en_mas_y_entra_en_rango_de_deteccion_y_es_eliminado_sin_intervencion
+    --- Awaiting 250 physics frames  ---
+    --- Awaiting 100 physics frames  ---
+* test_deploy_on_free_cell_with_enough_ammo_instantiates_soldado_spends_ammo_and_occupies_cell
+* test_deploy_on_free_cell_without_enough_ammo_does_not_deploy_and_signals_rejection
+* test_enemigo_que_alcanza_posicion_defendida_fuera_del_carril_del_soldado_emite_la_senal
+    --- Awaiting 170 physics frames  ---
+* test_enemigo_real_que_alcanza_posicion_defendida_termina_la_partida_en_derrota_de_punta_a_punta
+    --- Awaiting 170 physics frames  ---
+* test_body_ajeno_a_enemy_group_que_entra_en_posicion_defendida_no_causa_error_ni_falso_positivo
+* test_enemigo_no_puede_alcanzar_fisicamente_posicion_defendida_mientras_el_soldado_de_su_carril_sigue_vivo
+    --- Awaiting 90 physics frames  ---
+* test_deploy_on_already_occupied_cell_does_not_deploy_or_spend_ammo
+* test_soldado_inicial_colocado_a_mano_defeated_libera_su_celda_en_board_manager
+* test_soldado_desplegado_defeated_libera_su_celda_en_board_manager
+* test_defeating_a_real_enemy_in_the_level_spawns_a_real_ammopickup_child_with_correct_amount_and_position
+* test_collecting_a_real_ammopickup_adds_its_amount_to_the_global_ammo_pool
+* test_completing_all_configured_real_waves_transitions_the_real_gamestatemanager_to_won_end_to_end
+* test_celda_liberada_tras_derrota_puede_volver_a_desplegarse_un_nuevo_soldado
+15/15 passed.
+
+
+res://tests/unit/levels/test_pickup_input_routing.gd
+* test_mouse_control_reaches_real_pickup_through_viewport_physics_picking
+* test_emulated_mouse_control_reaches_real_pickup_through_viewport_physics_picking
+* test_mouse_pickup_with_enough_ammo_does_not_spend_or_deploy
+T015_EVENT device=0 pickup_presses=1 ammo=15 changes=[15] soldiers_before=1 soldiers_after=1 cell_free=true
+* test_emulated_mouse_pickup_with_enough_ammo_does_not_spend_or_deploy
+T015_EVENT device=-1 pickup_presses=1 ammo=15 changes=[15] soldiers_before=1 soldiers_after=1 cell_free=true
+4/4 passed.
+
+
+res://tests/unit/levels/test_wave_spawner.gd
+* test_wave_started_does_not_spawn_any_enemy_synchronously
+* test_wave_spawns_exactly_the_total_enemies_of_all_spawn_entries_combined
+    --- Awaiting 1.0 seconds tiempo suficiente para los 5 spawns de 0.05s cada uno ---
+* test_spawned_enemies_receive_the_enemy_stats_of_their_own_spawn_entry
+    --- Awaiting 0.5 seconds tiempo suficiente para los 2 spawns de 0.05s cada uno ---
+* test_spawned_enemy_appears_at_the_configured_spawn_position
+* test_defeating_the_spawned_enemy_notifies_wave_manager
+* test_defeating_the_spawned_enemy_recycles_it_into_the_pool_instead_of_destroying_it
+* test_wave_with_no_spawn_entries_spawns_nothing_and_does_not_error
+7/7 passed.
+
+
+res://tests/unit/systems/test_autoloads_registration.gd
+* test_economy_manager_is_accessible_as_global_singleton
+* test_economy_manager_singleton_is_in_scene_tree
+* test_economy_manager_singleton_exposes_expected_state_and_signals
+* test_game_state_manager_is_accessible_as_global_singleton
+* test_game_state_manager_singleton_is_in_scene_tree
+* test_game_state_manager_singleton_exposes_expected_state_and_signals
+* test_economy_manager_and_game_state_manager_are_distinct_singleton_instances
+* test_economy_manager_state_persists_across_reference_accesses
+8/8 passed.
+
+
+res://tests/unit/systems/test_board_manager.gd
+* test_is_cell_free_is_true_for_any_cell_on_a_fresh_board
+* test_occupy_cell_marks_the_cell_as_no_longer_free
+* test_occupy_cell_does_not_affect_other_cells
+* test_occupy_cell_returns_false_when_cell_already_occupied
+* test_occupy_cell_does_not_overwrite_existing_occupant_when_rejected
+* test_free_cell_makes_the_cell_free_again
+* test_cell_can_be_occupied_again_after_being_freed
+* test_free_cell_on_an_already_free_cell_is_idempotent_and_does_not_error
+* test_get_occupant_returns_the_node_that_occupies_the_cell
+* test_get_occupant_returns_null_for_a_free_cell
+* test_get_occupant_returns_null_after_the_cell_is_freed
+11/11 passed.
+
+
+res://tests/unit/systems/test_economy_manager.gd
+* test_economy_manager_script_extends_node
+* test_economy_manager_instantiates
+* test_collected_ammo_defaults_to_zero
+* test_collected_ammo_field_is_typed_as_int
+* test_ammo_pool_changed_signal_exists
+* test_ammo_pickup_spawned_signal_exists
+* test_ammo_pool_changed_is_emitted_and_listenable_with_new_amount_payload
+* test_ammo_pickup_spawned_is_emitted_and_listenable_with_full_payload
+* test_add_ammo_increases_collected_ammo_by_given_amount
+* test_add_ammo_accumulates_across_multiple_calls
+* test_add_ammo_emits_ammo_pool_changed_with_new_total
+* test_try_spend_ammo_with_sufficient_funds_returns_true
+* test_try_spend_ammo_with_sufficient_funds_subtracts_from_pool
+* test_try_spend_ammo_with_sufficient_funds_emits_ammo_pool_changed_with_new_total
+* test_try_spend_ammo_with_sufficient_funds_does_not_emit_rejection
+* test_try_spend_ammo_can_spend_exact_available_amount_leaving_pool_at_zero
+* test_try_spend_ammo_with_insufficient_funds_returns_false
+* test_try_spend_ammo_with_insufficient_funds_does_not_mutate_collected_ammo
+* test_try_spend_ammo_with_insufficient_funds_emits_deploy_or_reload_rejected
+* test_try_spend_ammo_with_insufficient_funds_does_not_emit_ammo_pool_changed
+* test_try_spend_ammo_with_zero_collected_ammo_is_rejected
+21/21 passed.
+
+
+res://tests/unit/systems/test_game_state_manager.gd
+* test_game_state_manager_script_extends_node
+* test_game_state_manager_instantiates
+* test_game_state_enum_has_expected_values
+* test_initial_state_is_playing
+* test_game_won_signal_exists
+* test_game_lost_signal_exists
+* test_game_state_changed_signal_exists
+* test_game_state_changed_is_emitted_and_listenable_with_new_state_payload
+* test_report_reached_defended_position_from_playing_transitions_state_to_lost
+* test_report_reached_defended_position_from_playing_emits_game_lost
+* test_report_reached_defended_position_from_playing_emits_game_state_changed_with_lost
+* test_report_reached_defended_position_is_ignored_once_already_lost
+* test_on_all_waves_completed_from_playing_transitions_state_to_won
+* test_on_all_waves_completed_from_playing_emits_game_won
+* test_on_all_waves_completed_from_playing_emits_game_state_changed_with_won
+* test_on_all_waves_completed_is_ignored_once_already_won
+16/16 passed.
+
+
+res://tests/unit/systems/test_gut_setup.gd
+* test_gut_runner_executes_a_basic_assertion
+* test_project_input_map_has_select_cell_action
+* test_project_input_map_has_collect_pickup_action
+* test_select_cell_action_is_not_hardcoded_to_keyboard
+* test_collect_pickup_action_is_not_hardcoded_to_keyboard
+5/5 passed.
+
+
+res://tests/unit/systems/test_object_pool.gd
+* test_setup_pre_instantiates_the_requested_initial_size
+* test_acquire_creates_a_new_instance_when_pool_is_empty
+* test_acquire_reuses_an_available_instance_instead_of_creating_new
+* test_release_then_acquire_reuses_the_same_instance_rather_than_creating_a_new_one
+* test_release_moves_instance_from_in_use_to_available
+* test_release_of_instance_not_belonging_to_pool_is_ignored_safely
+* test_acquire_invokes_on_pool_acquired_hook_on_the_instance
+* test_release_invokes_on_pool_released_hook_on_the_instance
+* test_reused_instance_receives_on_pool_acquired_again_on_second_acquire
+9/9 passed.
+
+
+res://tests/unit/systems/test_resource_schemas.gd
+* test_unit_stats_class_name_is_globally_registered
+* test_unit_stats_instantiates_via_global_class_name
+* test_unit_stats_has_expected_fields_with_correct_types_and_defaults
+* test_unit_stats_machete_base_damage_minimum_is_greater_than_zero
+* test_enemy_stats_instantiates_via_global_class_name
+* test_enemy_stats_has_expected_fields_with_correct_types_and_defaults
+* test_wave_spawn_entry_instantiates_via_global_class_name
+* test_wave_spawn_entry_has_expected_fields_with_correct_types
+* test_wave_spawn_entry_enemy_stats_field_is_statically_typed_as_enemy_stats
+* test_wave_data_instantiates_via_global_class_name
+* test_wave_data_has_expected_fields_with_correct_types_and_default
+* test_wave_data_spawn_entries_is_statically_typed_as_wave_spawn_entry_array
+* test_wave_data_spawn_entries_accepts_and_stores_wave_spawn_entry_instances
+* test_wave_data_spawn_entries_is_typed_array_enforced_at_runtime_not_generic
+14/14 passed.
+
+
+res://tests/unit/systems/test_wave_data_resources.gd
+* test_ten_wave_resource_files_exist_on_disk
+* test_each_wave_resource_loads_without_error_as_wave_data
+* test_wave_number_matches_file_order_for_each_wave
+* test_each_wave_has_at_least_one_spawn_entry
+* test_each_spawn_entry_references_a_valid_enemy_stats_resource
+* test_total_enemy_count_increases_on_every_successive_wave
+* test_spawn_interval_decreases_or_holds_on_every_successive_wave
+* test_final_wave_is_measurably_harder_than_first_wave
+8/8 passed.
+
+
+res://tests/unit/systems/test_wave_manager.gd
+* test_wave_manager_script_extends_node
+* test_wave_manager_instantiates
+* test_wave_manager_declares_expected_signals
+* test_current_wave_index_starts_at_minus_one_before_any_start_waves_call
+* test_get_current_wave_returns_null_before_start_waves
+* test_start_waves_emits_wave_started_for_first_wave
+* test_start_waves_emits_wave_started_exactly_once_for_first_wave
+* test_start_waves_sets_current_wave_index_to_zero
+* test_get_current_wave_returns_first_wave_data_after_start
+* test_start_waves_does_not_emit_wave_completed_or_all_waves_completed_immediately
+* test_wave_completed_not_emitted_before_all_enemies_of_wave_are_defeated
+* test_wave_completed_emitted_when_last_enemy_of_wave_is_defeated
+* test_wave_completed_counts_enemies_across_multiple_spawn_entries
+* test_completing_a_wave_starts_the_next_one
+* test_wave_started_for_second_wave_fires_after_wave_completed_of_first
+* test_full_three_wave_sequence_fires_wave_started_and_completed_in_order
+* test_all_waves_completed_not_emitted_while_waves_remain
+* test_all_waves_completed_emitted_once_after_last_wave_fully_defeated
+* test_all_waves_completed_does_not_emit_a_further_wave_started
+* test_single_wave_sequence_emits_wave_completed_and_all_waves_completed
+* test_get_current_wave_returns_null_after_all_waves_completed
+* test_start_waves_with_empty_array_emits_all_waves_completed_immediately
+* test_start_waves_with_empty_array_does_not_emit_wave_started
+* test_notify_enemy_defeated_before_start_waves_does_not_error_or_emit_signals
+* test_notify_enemy_defeated_beyond_wave_total_does_not_emit_duplicate_wave_completed
+25/25 passed.
+
+
+res://tests/unit/ui/test_hud.gd
+* test_ammo_label_reflects_already_collected_ammo_immediately_on_ready
+* test_ammo_label_updates_when_ammo_pool_changed_is_emitted
+* test_rejection_message_becomes_visible_with_reason_on_insufficient_funds
+* test_ammo_label_is_unaffected_by_a_rejected_spend
+* test_rejection_message_hides_when_rejection_timer_times_out
+* test_new_rejection_while_previous_message_still_visible_keeps_it_visible_and_replaces_text
+* test_wave_label_starts_hidden_on_ready
+* test_game_over_screen_starts_hidden_on_ready
+* test_wave_label_becomes_visible_with_wave_number_on_wave_started
+* test_wave_label_hides_when_wave_message_timer_times_out
+* test_new_wave_started_while_previous_message_still_visible_keeps_it_visible_and_replaces_text
+* test_game_over_screen_shows_victoria_on_game_won
+* test_game_over_screen_shows_derrota_on_game_lost
+13/13 passed.
+
+
+res://tests/unit/units/test_soldado.gd
+* test_rifle_shot_deals_exactly_stats_damage_per_shot
+* test_ammo_depleted_signal_is_emitted_after_max_ammo_shots
+    --- Awaiting 40 physics frames  ---
+* test_soldier_transitions_to_melee_mode_when_ammo_reaches_zero
+    --- Awaiting 40 physics frames  ---
+* test_soldier_no_longer_fires_rifle_shots_once_in_melee_mode
+    --- Awaiting 40 physics frames  ---
+    --- Awaiting 40 physics frames  ---
+* test_moral_changed_is_not_emitted_when_a_shot_does_not_kill_the_target
+* test_moral_changed_is_emitted_with_moral_per_kill_when_a_shot_kills_the_target
+* test_moral_changed_is_not_emitted_when_a_melee_kill_happens
+    --- Awaiting 40 physics frames  ---
+* test_machete_damage_with_zero_accumulated_morale_equals_base_damage
+    --- Awaiting 40 physics frames  ---
+* test_machete_damage_scales_with_accumulated_morale
+    --- Awaiting 40 physics frames  ---
+    --- Awaiting 40 physics frames  ---
+* test_soldier_does_not_split_fire_when_a_second_enemy_enters_detection_range
+    --- Awaiting 40 physics frames  ---
+* test_reload_transitions_soldier_from_melee_back_to_rifle_mode
+* test_reload_preserves_accumulated_morale_instead_of_resetting_it
+    --- Awaiting 40 physics frames  ---
+    --- Awaiting 40 physics frames  ---
+* test_soldier_current_health_is_initialized_from_stats_max_health
+* test_take_damage_reduces_current_health_without_killing_if_amount_is_less_than_health
+* test_take_damage_returns_true_only_on_the_hit_that_reaches_zero_health
+* test_soldier_emits_soldier_defeated_with_its_assigned_grid_cell_when_health_reaches_zero
+* test_soldier_loses_all_accumulated_morale_when_defeated
+* test_soldier_is_removed_from_the_scene_tree_when_defeated
+* test_soldier_is_defeated_by_a_real_enemy_attacking_within_rango_melee
+    --- Awaiting 400 physics frames  ---
+* test_soldier_takes_incoming_melee_damage_from_every_candidate_present_not_only_the_current_target
+20/20 passed.
+
+
+res://tests/unit/units/test_soldado_enemigo_integration.gd
+* test_real_soldado_detects_fires_and_defeats_a_real_enemigo_with_production_stats
+    --- Awaiting 100 physics frames  ---
+* test_real_soldado_fires_depletes_ammo_and_finishes_a_real_enemigo_with_machete_without_player_input
+    --- Awaiting 140 physics frames  ---
+[GUT WARNING]:  Test script has 3 unfreed children.  Increase log level for more details.
+2/2 passed.
+
+
+
+
+==============================================
+= Run Summary
+==============================================
+
+Totals
+------
+Warnings              3
+
+Scripts              16
+Tests               187
+Passing Tests       187
+Asserts             518
+Time              37.725s
+
+
+---- All tests passed! ----
+

@@ -9,10 +9,9 @@
 ##      T003; `docs/ARCHITECTURE.md` §7).
 ##   2. La posición de pantalla del evento se convierte a coordenada de celda
 ##      vía `Tablero.local_to_map()`.
-##   3. Si la celda NO está libre (`BoardManager.is_cell_free()` → `false`),
-##      no se hace nada — otra interacción (ej. recolectar una `AmmoPickup`
-##      encima de esa celda) ya consumió su propio click por separado, ver
-##      nota en `_unhandled_input()`.
+##   3. Si el punto corresponde a una pickup, se deja la recolección al
+##      physics picking sin desplegar. Si la celda NO está libre
+##      (`BoardManager.is_cell_free()` → `false`), tampoco se despliega.
 ##   4. Si está libre, se intenta gastar
 ##      `EconomyManager.try_spend_ammo(soldado_deploy_stats.deploy_ammo_cost)`
 ##      (mismo costo que una recarga completa — `data-model.md`, `spec.md`
@@ -24,14 +23,12 @@
 ##      `BoardManager` (FR-001).
 ##
 ## Nota sobre el conflicto con `AmmoPickup` (`scenes/levels/ammo_pickup.gd`):
-## las pickups son `Area2D` con `input_event` conectado, que Godot resuelve
-## mediante "physics picking" ANTES de que el evento llegue a
-## `_unhandled_input()` de este nivel. Cuando el picking encuentra un
-## `CollisionObject2D` que recibe el evento, el motor lo marca como
-## manejado automáticamente — por eso un click sobre una pickup nunca
-## dispara además la lógica de despliegue de abajo, aunque `select_cell` y
-## `collect_pickup` compartan el mismo evento físico (mismo botón/touch) en
-## el `InputMap`. No se requiere ninguna guarda adicional en este script.
+## Godot resuelve `_unhandled_input()` ANTES del physics picking de las
+## `Area2D`. T016 (003/FR-003) consulta la forma real de las pickups antes
+## de desplegar y deja ese evento sin manejar para que el picking recoja
+## normalmente. Así se conserva también la recolección de pickups solapadas.
+## La misma comprobación se aplica al mouse emulado de los toques: esa
+## ruta debe conservar el despliegue cuando no hay pickup bajo el gesto.
 ##
 ## No declara `class_name`: es un nivel concreto (una única instancia
 ## jugable), no un tipo reutilizable — a diferencia de `AmmoPickup`
@@ -188,8 +185,27 @@ func _unhandled_input(event: InputEvent) -> void:
 	else:
 		return
 
-	var cell := _world_to_cell(_screen_to_world(screen_position))
+	var world_position := _screen_to_world(screen_position)
+	if _has_pickable_ammo_at(world_position):
+		return
+	var cell := _world_to_cell(world_position)
 	_try_deploy_soldado(cell)
+
+
+## Consulta puntual sobre las formas existentes, sin cambiar su radio o
+## sustituir la recolección. La física 2D corre en el hilo principal en la
+## configuración actual; activar un hilo separado requeriría trasladar esta
+## consulta a la fase de física y revisar el enrutamiento de entrada.
+func _has_pickable_ammo_at(world_position: Vector2) -> bool:
+	var query := PhysicsPointQueryParameters2D.new()
+	query.position = world_position
+	query.collide_with_areas = true
+	query.collide_with_bodies = false
+	for hit: Dictionary in get_world_2d().direct_space_state.intersect_point(query, 64):
+		var pickup := hit["collider"] as AmmoPickup
+		if pickup != null and pickup.input_pickable and pickup.is_visible_in_tree():
+			return true
+	return false
 
 
 ## Intenta desplegar un soldado nuevo en `cell` (FR-001/FR-010). No hace

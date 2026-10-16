@@ -144,3 +144,32 @@ func test_mouse_pickup_with_enough_ammo_does_not_spend_or_deploy() -> void:
 
 func test_emulated_mouse_pickup_with_enough_ammo_does_not_spend_or_deploy() -> void:
 	await _assert_pickup_does_not_deploy(InputEvent.DEVICE_ID_EMULATION)
+
+
+## T017: regresion adicional de W03. Conserva las cuatro pruebas T015 y
+## prueba la celda libre SIN pickup, para no aceptar una guarda que arregla
+## recoleccion a costa de bloquear el despliegue por mouse emulado.
+func _assert_free_cell_without_pickup_deploys_once(device: int) -> void:
+	await _fixture(true)
+	_pickup.queue_free()
+	await wait_physics_frames(2)
+	var board: BoardManager = _host.get("_board_manager")
+	var soldiers_before := _soldier_count()
+	var deploy_cost: int = _host.soldado_deploy_stats.deploy_ammo_cost
+	assert_false(is_instance_valid(_pickup), "Precondicion W03: no hay pickup bajo el gesto")
+	assert_true(board.is_cell_free(PICKUP_CELL), "Precondicion W03: celda libre")
+	assert_gte(EconomyManager.collected_ammo, deploy_cost, "Precondicion W03: saldo suficiente")
+	await _press_and_release(device)
+	print("T017_W03 device=", device, " ammo=", EconomyManager.collected_ammo, " changes=", _pool_changes, " soldiers_before=", soldiers_before, " soldiers_after=", _soldier_count(), " cell_free=", board.is_cell_free(PICKUP_CELL))
+	assert_eq(EconomyManager.collected_ammo, 12 - deploy_cost, "FR-003/W03: un despliegue explicito debe cobrar el costo una vez")
+	assert_eq(_pool_changes, [12 - deploy_cost], "FR-003/W03: exactamente un gasto")
+	assert_eq(_soldier_count(), soldiers_before + 1, "FR-003/W03: exactamente un soldado nuevo")
+	assert_false(board.is_cell_free(PICKUP_CELL), "FR-003/W03: el nuevo soldado ocupa la celda")
+
+
+func test_normal_mouse_on_free_cell_without_pickup_deploys_and_spends_once() -> void:
+	await _assert_free_cell_without_pickup_deploys_once(0)
+
+
+func test_emulated_mouse_on_free_cell_without_pickup_deploys_and_spends_once() -> void:
+	await _assert_free_cell_without_pickup_deploys_once(InputEvent.DEVICE_ID_EMULATION)

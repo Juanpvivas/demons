@@ -170,3 +170,18 @@ T001 ─┬─ T002 ─┐
   por saldo 5 en lugar de 15 y despliegue extra. Sin error de entorno;
   raw touch excluido del RED. [Prueba RED](evidence/t015-red.md). Implementación
   todavía pendiente; se autoriza T016, sin aprobar el comportamiento.
+- 2026-10-15: T017 obtiene GREEN en las cuatro pruebas originales, pero QA
+  detecta bloqueo estático T016: filtrar mouse emulado puede impedir W03 móvil
+  porque ScreenTouch no coincide con las acciones actuales. Se conserva el RED
+  histórico aprobado y se añade regresión W03 con mouse normal/emulado dentro
+  de T017, antes de corregir el filtro. No se exporta esta versión ni se aprueba
+  T016; primer rechazo de esta implementación por regresión de entrada.
+- 2026-10-15: QA **APROBÓ la extensión RED W03 de T017**: control normal
+  despliega con costo 10, mouse emulado queda incorrectamente bloqueado.
+  Los cuatro tests T015 originales son byte idénticos; se añaden dos casos.
+  [RED W03](evidence/t017-w03-red.md). Dev autorizado a retirar la guarda
+  emulada antes del GREEN final de seis casos y la suite ampliada.
+- 2026-10-15: tras la enmienda T016, T017 confirma **GREEN 6/6** (36 aserciones)
+  y **189/189 GUT** (532 aserciones, tres avisos históricos). Importación
+  estándar y UID de prueba correctos. Se guarda candidato para export limpio;
+  T016/T017/T018 no se marcan aún: resta la repetición real Web y QA.
