@@ -15,6 +15,11 @@ no repita la exigencia. Agregar otras pruebas cuando aporten verificación de
 un comportamiento o riesgo concreto. No fabricar RED para arte, documentos o
 configuración sin comportamiento testeable; indicar su verificación pertinente.
 
+**Resultados**: los agentes reportan comandos, resultados y límites para el
+cuerpo del PR, con QA independiente. No generar tareas de subir archivos nuevos
+de evidencias a Git ni volcar registros en specs, planes, tareas o documentación.
+Las pruebas y la documentación útil del producto sí se versionan.
+
 ## Formato y aprobación
 
 - Formato: `- [ ] T001 [P?] [US1?] Descripción con ruta exacta`.
@@ -41,7 +46,7 @@ personajes, rutas o escenarios si no pertenecen al alcance solicitado.
 
 **Objetivo**: disponer de contratos y entorno de pruebas antes de guiar comportamiento nuevo.
 
-- [ ] T001 Verificar con godot-tester que el runner GUT y el entorno de `tests/unit/` funcionan; documentar evidencia sin modificar gameplay
+- [ ] T001 Verificar con godot-tester que el runner GUT y el entorno de `tests/unit/` funcionan; reportar el resultado al orquestador para el PR sin modificar gameplay
 - [ ] T002 Definir con dev-godot el contrato mínimo de `resources/schemas/unit_stats.gd` requerido por la historia, sin implementar el comportamiento que guiará la prueba RED
 
 **Control**: si una prueba no puede ejecutarse por falta de interfaz o harness,
@@ -60,7 +65,7 @@ no constituye por sí solo evidencia RED del escenario solicitado.
 
 **Control RED**: `qa-validator` confirma que el test verifica el contrato y que
 falla por el comportamiento todavía ausente. Tras `APROBADO`, el orquestador
-puede marcar T003 `[X]` y `docs-writer` registra esa evidencia como RED.
+puede marcar T003 `[X]` y el orquestador resume ese resultado RED en el PR.
 La implementación T004 continúa pendiente.
 
 ### Implementación y comprobación GREEN
@@ -91,9 +96,9 @@ cobertura automatizada pertinente en lugar de tratarlo como una excepción.
 
 ## Fase final: Verificación y cierre
 
-- [ ] T009 godot-tester: ejecutar la suite completa de GUT de `tests/unit/` antes del PR y documentar regresiones, fallos y cobertura; depende de las tareas de comportamiento terminadas
-- [ ] T010 Ejecutar con el rol responsable los escenarios pertinentes de `specs/[###-feature-name]/quickstart.md`, incluyendo smoke test y verificaciones en dispositivo cuando la constitución los exija; documentar evidencia para QA
-- [ ] T011 docs-writer: consolidar decisiones aprobadas y evidencia final en `docs/SPEC.md` y `docs/ARCHITECTURE.md`; depende de la aprobación de las verificaciones finales
+- [ ] T009 godot-tester: ejecutar la suite completa de GUT de `tests/unit/` antes del PR y reportar regresiones, fallos y cobertura para el cuerpo del PR; depende de las tareas de comportamiento terminadas
+- [ ] T010 Ejecutar con el rol responsable los escenarios pertinentes de `specs/[###-feature-name]/quickstart.md`, incluyendo smoke test y verificaciones en dispositivo cuando la constitución los exija; entregar resultados para QA y el cuerpo del PR
+- [ ] T011 docs-writer: consolidar decisiones aprobadas útiles al producto en `docs/SPEC.md` y `docs/ARCHITECTURE.md`; entregar resultados de validación al orquestador para el PR, sin archivos de evidencias en Git; depende de la aprobación de las verificaciones finales
 
 ## Dependencias y ejecución
 

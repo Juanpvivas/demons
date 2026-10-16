@@ -2,7 +2,7 @@ schema_version: '1.0'
 preset:
   id: demons-agent-tdd
   name: 'Demons: preparación y agentes con TDD'
-  version: 1.0.1
+  version: 1.0.2
   description: Spec Kit prepara especificaciones, planes y tareas; los agentes implementan con RED/GREEN
     y QA independiente.
   author: Demonios de las Trincheras
