@@ -1,0 +1,16 @@
+{
+  "baseline_count": 110,
+  "unchanged": 108,
+  "changed": [
+    "export_presets.cfg",
+    "project.godot"
+  ],
+  "native_presets_semantically_identical": true,
+  "input_identical": true,
+  "global_mobile_preserved": true,
+  "project_only_added_web_override": true,
+  "current_config_sha256": {
+    "project.godot": "b7cbd5788412877993f242fa50ee1d81b71bcb8ed397de53683d3dce17383cf3",
+    "export_presets.cfg": "6f03ee97329168da6678533f0ef367edc35bbe24395c49330333d96e2ac27fe4"
+  }
+}

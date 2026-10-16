@@ -44,9 +44,9 @@ constitución 2.0.0 es el gate documental previo, no una prueba de exportación.
 **Criterio independiente**: W01 y comparación visual del nivel; tres cargas
 nuevas en Chromium escritorio. No se presenta todavía como validación táctil.
 
-- [ ] T004 [US1] dev-godot: añadir preset `Web` en `export_presets.cfg` y explicitar solo el override Web Compatibility en `project.godot`, con un hilo, sin extensiones/PWA, canvas Adaptive y salida `build/web/index.html`; seleccionar dependencias/exclusiones sin alterar Mobile, InputMap ni presets nativos; depende de T002/T003 aprobadas y del contrato `specs/003-web-itchio/contracts/web-delivery.md`.
-- [ ] T005 [US1] godot-tester: verificar importación/exportación Web reales y W01 en `specs/003-web-itchio/evidence/web-startup.md`, con tres cargas nuevas, consola/red, renderer real, capturas 1152×648/960×540 e inspección inicial ZIP/PCK/exclusiones; comparar hashes protegidos; depende de T004 entregada, sin modificar preset ni juego.
-- [ ] T006 [US1] qa-validator: revisar en solo lectura `export_presets.cfg`, `project.godot` y `specs/003-web-itchio/evidence/web-startup.md`, cobertura FR-001/002/009/011 y evidencia T004/T005; emitir veredicto acotado de arranque/conservación, sin aprobar US2 por extrapolación; depende de T005 y reporte de desarrollo.
+- [X] T004 [US1] dev-godot: añadir preset `Web` en `export_presets.cfg` y explicitar solo el override Web Compatibility en `project.godot`, con un hilo, sin extensiones/PWA, canvas Adaptive y salida `build/web/index.html`; seleccionar dependencias/exclusiones sin alterar Mobile, InputMap ni presets nativos; depende de T002/T003 aprobadas y del contrato `specs/003-web-itchio/contracts/web-delivery.md`.
+- [X] T005 [US1] godot-tester: verificar importación/exportación Web reales y W01 en `specs/003-web-itchio/evidence/web-startup.md`, con tres cargas nuevas, consola/red, renderer real, capturas 1152×648/960×540 e inspección inicial ZIP/PCK/exclusiones; comparar hashes protegidos; depende de T004 entregada, sin modificar preset ni juego.
+- [X] T006 [US1] qa-validator: revisar en solo lectura `export_presets.cfg`, `project.godot` y `specs/003-web-itchio/evidence/web-startup.md`, cobertura FR-001/002/009/011 y evidencia T004/T005; emitir veredicto acotado de arranque/conservación, sin aprobar US2 por extrapolación; depende de T005 y reporte de desarrollo.
 
 ## Fase 3: Historia de usuario2 — Clic y toque Web (Prioridad: P1)
 
@@ -131,3 +131,12 @@ T001 ─┬─ T002 ─┐
   `b670d86`; hashes, versión y templates del toolchain estándar verificados.
   Evidencia: [baseline](evidence/baseline.md) y [toolchain](evidence/toolchain.md).
   Aprobación de prerrequisitos; compatibilidad Web todavía pendiente.
+- 2026-10-15: primer intento T004/T005 **RECHAZADO** por QA: el filtro de
+  escenas omitió dependencias cargadas desde GDScript; exportar con retorno 0
+  no bastó para iniciar el combate. Dev corrigió el filtro de recursos y el
+  tester repite la exportación. No hubo cambio de mecánicas ni RED artificial.
+- 2026-10-15: segundo intento **APROBADO T004/T005/T006** por `qa-validator`: W01
+  en 3/3 cargas Chrome, dos tamaños, PCK de 78 archivos con dependencias y
+  exclusiones verificadas; 108/110 hashes intactos, solo dos configuraciones
+  autorizadas difieren. [Arranque](evidence/web-startup.md). US2, Android Web,
+  ZIP final, licencias y rendimiento siguen pendientes; habilitadas T007/T009.

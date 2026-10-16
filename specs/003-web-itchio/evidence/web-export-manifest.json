@@ -1,0 +1,83 @@
+{
+  "files": [
+    {
+      "name": "index.apple-touch-icon.png",
+      "bytes": 11939,
+      "sha256": "071ccd3c3619e62c9e27995cf1afde427bb1b630767801a0fe1ac33505b2f221"
+    },
+    {
+      "name": "index.apple-touch-icon.png.import",
+      "bytes": 979,
+      "sha256": "9a45978629a56bc44df3b65dde588de417ac941c177a263edf0af27657a9d753"
+    },
+    {
+      "name": "index.audio.position.worklet.js",
+      "bytes": 2973,
+      "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+    },
+    {
+      "name": "index.audio.worklet.js",
+      "bytes": 7298,
+      "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+    },
+    {
+      "name": "index.html",
+      "bytes": 5437,
+      "sha256": "1a2b5edd4b6f9cde1ea9e5c8ca3880c5e936566a874a4d21ce6e64b24d218703"
+    },
+    {
+      "name": "index.icon.png",
+      "bytes": 5765,
+      "sha256": "662f81d7672001a6f5f928532493267c226624757de3b5fa2908f6e5923964b7"
+    },
+    {
+      "name": "index.icon.png.import",
+      "bytes": 944,
+      "sha256": "d375de9cf3f65427d7e47465afc6e503f2a00418b17781925a05b02dc205acd5"
+    },
+    {
+      "name": "index.js",
+      "bytes": 279815,
+      "sha256": "68586d6daafc93c6e697b3fb258976874aa7459b8931165ebb1dc3c9614cc42c"
+    },
+    {
+      "name": "index.pck",
+      "bytes": 4701720,
+      "sha256": "9f224c3bd51600344a90f8ace66e48857977b6bedd62a1e98d0e1315c85b8d58"
+    },
+    {
+      "name": "index.png",
+      "bytes": 21443,
+      "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+    },
+    {
+      "name": "index.png.import",
+      "bytes": 929,
+      "sha256": "54da91535943c3cc75723cd8b12a1204ab9a2ecb4341db24ecb407f40e787bcd"
+    },
+    {
+      "name": "index.wasm",
+      "bytes": 39513091,
+      "sha256": "35116f68540ac41acf7d71ea457added91b5e960a9cca3e2acc72918eaf01277"
+    }
+  ],
+  "total_bytes": 44552333,
+  "inspection_zip": "build/web-t005-inspection.zip",
+  "zip_bytes": 14863752,
+  "zip_sha256": "35cb3ffb85a8ecedaf50026c28cf5298ad4adbd4445cdb35f66dc38fabae1694",
+  "zip_members": [
+    "index.apple-touch-icon.png",
+    "index.apple-touch-icon.png.import",
+    "index.audio.position.worklet.js",
+    "index.audio.worklet.js",
+    "index.html",
+    "index.icon.png",
+    "index.icon.png.import",
+    "index.js",
+    "index.pck",
+    "index.png",
+    "index.png.import",
+    "index.wasm"
+  ],
+  "final_release_package": false
+}
