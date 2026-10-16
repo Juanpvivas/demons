@@ -197,3 +197,11 @@ T001 ─┬─ T002 ─┐
   **12/18 tareas aprobadas**; T007/T008/T011/T012/T013/T014 siguen abiertas.
   La prueba física espera respuesta de la persona; no se cierra la feature,
   se publica el juego ni se crea el PR final con gates pendientes.
+- 2026-10-16: QA aprobó únicamente la evidencia de preparación Android:
+  aviso de Chrome cerrado, pero pantalla aún en retrato y orientación 0/0
+  bloqueada. El intento temporal de giro fue rechazado por Android con
+  `WRITE_SETTINGS`; relectura 0/0, ningún cambio ni restauración necesaria.
+  [Preflight](evidence/android-preflight-2026-10-16.json),
+  [intento registrado](evidence/android-rotation-attempt.json).
+  Sin gestos de gameplay nuevos; siguen 12/18 y T007 pendiente. La persona
+  debe desbloquear el giro y volver a Chrome horizontal antes de iniciar.
