@@ -7,7 +7,9 @@ metadata:
 
 El Issue #1 en el repo de GitHub corresponde a la feature
 `001-soldado-defensor-oleadas`. Si un trabajo autorizado de esa feature requiere
-un PR, su vínculo de trazabilidad es `Closes #1`. No crear un segundo Issue:
+un PR, usa `Refs #1` para incrementos intermedios y `Closes #1` solo en la entrega
+final con todos los criterios cumplidos, conforme al flujo vigente. No crear
+un segundo Issue:
 reutiliza el #1, abierto o cerrado. Comprueba el estado actual y los enlaces;
 esta memoria no significa que exista un PR pendiente ni ordena reabrir trabajo
 completado.

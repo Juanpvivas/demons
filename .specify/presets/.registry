@@ -2,9 +2,9 @@
   "schema_version": "1.0",
   "presets": {
     "demons-agent-tdd": {
-      "version": "1.0.1",
+      "version": "1.0.2",
       "source": "local",
-      "manifest_hash": "sha256:dcfbd982e965e19b556e841cf35cdb86b5742e5b500d0828b5c7269b65f389cc",
+      "manifest_hash": "sha256:e90e9acc8314d08129cea91b68123dc0f50b2d41d302a36afc20a36f20792919",
       "enabled": true,
       "priority": 5,
       "registered_commands": {
@@ -35,7 +35,7 @@
           "speckit-taskstoissues"
         ]
       },
-      "installed_at": "2026-10-15T23:43:59.669498+00:00"
+      "installed_at": "2026-10-16T20:36:32.165765+00:00"
     }
   }
 }

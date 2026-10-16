@@ -1,5 +1,5 @@
 ---
-description: Implementa una feature preparada con Spec Kit mediante agentes, con RED → desarrollo → GREEN/regresión → QA → documentación → PR en borrador.
+description: Entrega una feature preparada con Spec Kit en incrementos con agentes, TDD, QA y PR pequeños en borrador.
 argument-hint: <feature-id, ej. 001-soldado-defensor-oleadas>
 ---
 
@@ -16,9 +16,11 @@ setup y documentación usan verificaciones adecuadas sin RED artificial.
 
 Solo el orquestador marca `[X]` tras QA. Aprobar una tarea de pruebas en RED no
 significa que el comportamiento esté entregado. Conserva el historial y la
-evidencia existentes, sin inventar TDD retroactivo. El Issue, la rama y el PR en
-borrador siguen el procedimiento del orquestador; no se fusiona ni se promueve
-el PR automáticamente.
+evidencia existentes, sin inventar TDD retroactivo. El orquestador delimita
+incrementos con ciclos completos y una rama/PR por entrega, siguiendo el flujo.
+Reutiliza el Issue: `Refs` en PR intermedios y `Closes` solo al completar la
+feature. Crea PR en borrador; solo una petición humana explícita permite
+promoverlos a revisión y nunca se fusionan automáticamente.
 
 No implementes directamente en esta sesión. Delega y espera el reporte final
 del orquestador; si falta una capacidad necesaria, informa la limitación.

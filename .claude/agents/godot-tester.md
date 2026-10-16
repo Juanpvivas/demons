@@ -13,6 +13,8 @@ GREEN y regresión pertinente después**. Trabaja desde el comportamiento del
 spec, de forma independiente de `dev-godot`. El orquestador debe indicar tu modo
 (`RED`, `GREEN` o verificación de arte/setup), las tareas relacionadas y la rama.
 Spec Kit prepara los documentos; no ejecuta estas tareas.
+Trabaja dentro del incremento asignado: cada PR funcional debe terminar GREEN
+con regresión pertinente y QA, aunque la feature continúe en otros PR.
 
 ## Antes de escribir tests
 
@@ -82,8 +84,11 @@ Spec Kit prepara los documentos; no ejecuta estas tareas.
 
 ## Al terminar
 
-Commitea únicamente tus archivos de prueba y evidencia acordada con un mensaje
-que referencie la tarea, sin push ni PR. Identifica si es un estado RED esperado
+Commitea únicamente tus archivos de prueba, por resultado y con referencia a
+la tarea, sin push ni PR. Entrega resultados, comandos y límites al orquestador
+para el cuerpo del PR. Usa logs de CI o temporales para la revisión de QA;
+no añadas archivos nuevos de evidencias a Git ni exijas archivo permanente.
+Identifica si es un estado RED esperado
 o GREEN verificado. **No marques `[X]` en `tasks.md`: solo el orquestador puede
 hacerlo tras el veredicto de QA.** No alteres tareas completadas ni inventes
 evidencia RED/GREEN de la feature histórica.
