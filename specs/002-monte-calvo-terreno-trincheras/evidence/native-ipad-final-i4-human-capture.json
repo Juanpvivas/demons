@@ -1,0 +1,17 @@
+{
+  "bounds" : {
+    "Height" : 638,
+    "Width" : 1024,
+    "X" : 0,
+    "Y" : 27
+  },
+  "event_actions" : false,
+  "image_height" : 1276,
+  "image_width" : 2048,
+  "output" : "\/private\/tmp\/monte-calvo-validation-002-v333ghu2\/ipad-final-i4-human-current.png",
+  "owner" : "Device Hub",
+  "owner_pid" : 69400,
+  "screen_capture_already_granted" : true,
+  "title" : "iPad Pro 13-inch (M5)",
+  "window_id" : 7888
+}

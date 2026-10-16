@@ -1,3 +1,23 @@
+# Monte Calvo — evidencia consolidada para revisión final
+
+**Actualización2026-10-16, godot-tester.** La evidencia de ejecución está congelada para auditoríaT016. QA ya aprobó los mínimos por vía; la aceptación global, consolidaciónT017 y revisiónT018 corresponden a sus roles. Este informe no marca tareas ni sustituye esos dictámenes finales. El reporteWIP original del2026-10-15 se conserva íntegro más abajo como historia.
+
+- Arteestático: sueloocre, cielo/montañasfrías, una posición amplia de tierra/madera/sacos y bordes. Escenavisual43eec852… y recursos invariantes; composición/recorteV1–V4 en [US3](us3.md)/[matriz](native-validation-matrix.md). NingúnHUD, colisión, control o mecánica incorporada por el arte.
+- CorrecciónI4 separada: [REDT019](t019-red.md)→sourcea473585/script4e89dce…→[GREEN6y189/189/532aserciones/importlimpia0](t021-green.md)→QAcoreT022. Se conserva el defectohistórico antes/después delarte y no se inventaREDartístico. Invariantes95/97originales exactos: únicamente instanciaartística yfixI4 aprobados; geometría/datos/oleadas/balance/InputMap/presetsproductivos intactos.
+- RatónhumanoOS: [BASEI2](native-pc-base-cd-human.md), [BASEI1/I4/I9](native-pc-base-cd-human-run2.md), [FINALI1/I2/I4/I9](native-pc-arte-cd-human.md), PRE/POSTPLAYING y dictámenesQA aprobados; I3previo reutilizado. AppsDEBUG con bundle/userdirs separados y labelsIGNORE/FOCUSNONE, [proveniencia](native-pc-cd-readable-provenance.json). No inputinterno ni modificación de estado.
+- Android: [AVDcontroladoantes/después](native-avd-input.md) cubreI1–I4/I9 en su vía autorizada. [Xiaomihumano](native-android-input.md) aporta muestreofísicoI1/I3 y partida≈51s; I2/I4físicos no demostrados, sin rellenarlosconAVD ni exigirlosporrutina. APKnormal finalsinobserver restauradoycerrado.
+- V4: [iPadPro13M5/iPadOS27.0](native-ipad-setup.md) Compatibilitytemporal, enginearm64 deltag4.7.1sinparches, ruta realmouse+touch humana; I1/I3finales eI4conpre≥10BASE/FINALaprobados. I2/I9iPadno demostrados y no crean repetición porSO; hardwareiOSno probado. La captura estática del soldado por encima del frente se reutiliza aunLOST, sin inventarframeactivo.
+- Rendimiento: [medicionesGodotfísicas](native-device-performance.md), [humana≈50s](native-human-performance.md) y [controlguardado35→45](native-save-control.md), con SC-007 aprobado porQA **solo002/Xiaomi11TProprovisional** conforme decisiónhumana/constitución1.2.0. Se conservan valle54/55FPS/frame24,453ms, estados/seleccionesy límites; no60universales/cargafríaabsoluta ni equivalenciaSoftwareRenderer.
+- [Smoke](smoke.md) conserva derrota natural humana y escenarios separados de victoria/derrota automatizados, sin atribuir victoria manual de10oleadas. No hay otra ejecución pendiente deltester; quedan QAglobal/documentación final por sus roles.
+
+## Límites que se mantienen
+
+Las capturas históricasPC se reutilizan por identidad de arte, sin atribuirles fuenteI4corregida. Capturasposteriores aLOST se etiquetan como estáticas, eventosLOSTno apruebanPLAYING. La capturasecundariaBASErun2fallósetup/SIGTRAP y no se repitió; raw/derivado/proofconcluyentesse conservaron. Los avisos deldisplayserveriOS y warningsGUTpreexistentes permanecen, sin declaración de runtimeceroavisos. No se certifican hardwareiOS, otrosmóviles/Web, ausencia de todo frame largo, carga fríacompleta ni memoriaexclusivadeljuego. Esta entrega es002y no cierra003.
+
+---
+
+## Historial literal — ejecuciónWIP del2026-10-15
+
 # Monte Calvo — estado de ejecución WIP
 
 **Fecha**: 2026-10-15, Bogotá. **Rol**: `docs-writer`, reporte de evidencia FR-012.

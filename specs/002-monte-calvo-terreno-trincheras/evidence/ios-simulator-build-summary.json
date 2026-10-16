@@ -1,0 +1,68 @@
+{
+  "recorded_at_utc": "2026-10-16T14:41:22.944670+00:00",
+  "task": "002 V4 iOS Simulator build preparation only",
+  "status": "BLOCKED_ENVIRONMENT; no app executable produced or runtime test",
+  "source_revision": "a473585ca62e3d35fa1d81d47e052646826032c3",
+  "renderer_variant": "temporary Compatibility, production Mobile untouched",
+  "official_renderer_limit_url": "https://docs.godotengine.org/en/4.7/tutorials/export/exporting_for_ios.html",
+  "toolchain": {
+    "xcode": "27.0 (27A266a)",
+    "sdk": "iphonesimulator27.0",
+    "host_arch": "arm64"
+  },
+  "attempt": {
+    "variant": "baseline",
+    "configuration": "Debug",
+    "target": "generic/platform=iOS Simulator",
+    "architecture": "arm64",
+    "code_signing_allowed": false,
+    "exit_code": 65,
+    "result_bundle": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/baseline.xcresult",
+    "log": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/build-baseline.log",
+    "log_sha256": "4e756607dd93856826676ea30b442bfa46580aee180ec2e0e62eec7e3273bed1",
+    "cause": "Godot iOS Simulator static library is x86_64 only despite xcframework metadata arm64+x86_64; linker ignores 2307 incompatible objects and reports _main undefined for arm64"
+  },
+  "final_build": "NOT RUN: identical architecture blocker; no redundant retry",
+  "installed_template_actual_arch": "x86_64 only for Godot Simulator; MoltenVK arm64+x86_64",
+  "standard_tpz_inspection": "existing official 4.7.1 standard TPZ, extracted outside repo; both debug/release Godot Simulator static libs also x86_64 only; no installation/replacement",
+  "destinations": {
+    "log": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/destinations.log",
+    "log_sha256": "ff9dee577d01e1c3340806a2b1b23323a9daa8888e2a5913fd737b2308907522",
+    "observation": "22 concrete iOS26.5/27.0 Simulator destinations arm64, plus2placeholders; none x86_64/Rosetta listed"
+  },
+  "exports": [
+    {
+      "variant": "baseline",
+      "manifest_path": "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-sim-baseline-manifest.json",
+      "manifest_sha256": "91865d082ed214bc6eb171b2db8bfd30680038e992320006e0c3e24118ad37bb",
+      "source_revision": "a473585ca62e3d35fa1d81d47e052646826032c3",
+      "engine": "4.7.1.stable.mono.official.a13da4feb",
+      "source_script_sha256": "4e89dce236868c4203079e06937b5c8dbcbbd564382f373d2216d4aa8c700d7f",
+      "observer_base_sha256": "c628c721ec12ba7c922545787134bae6b86808dbdc9d0c5669945b4e3d15fc90",
+      "telemetry_sha256": "2fbdb3c09e002b9d35cf85da77ef20bd715b266a824341c4f793729372578634",
+      "pck_sha256": "c6795e7716f8dac4fdd18c3891cb695426711c1a5aac1e389f1ba23e40cce99c",
+      "checked_export_files": 55,
+      "export_changes_after_build": []
+    },
+    {
+      "variant": "final",
+      "manifest_path": "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-sim-final-manifest.json",
+      "manifest_sha256": "4bffbb6f5f31274012c5590b30232dac14ed32dc5bb1c707431578b0d09f0a33",
+      "source_revision": "a473585ca62e3d35fa1d81d47e052646826032c3",
+      "engine": "4.7.1.stable.mono.official.a13da4feb",
+      "source_script_sha256": "4e89dce236868c4203079e06937b5c8dbcbbd564382f373d2216d4aa8c700d7f",
+      "observer_base_sha256": "c628c721ec12ba7c922545787134bae6b86808dbdc9d0c5669945b4e3d15fc90",
+      "telemetry_sha256": "2fbdb3c09e002b9d35cf85da77ef20bd715b266a824341c4f793729372578634",
+      "pck_sha256": "d0e72375fa88b02690e0ec20d8497e6d25eb644f01307a9fbf9f5ea2e07e114d",
+      "checked_export_files": 55,
+      "export_changes_after_build": []
+    }
+  ],
+  "limits": [
+    "No install, launch, UI gesture, gameplay test, screenshot or FPS measurement by auxiliary",
+    "No Godot/import, ADB or simulator control by auxiliary",
+    "No production, preset, source, test, signing, version or checklist changes",
+    "No downloads, toolchain/runtime installation or publication",
+    "iOS physical hardware and production Mobile renderer remain untested"
+  ]
+}

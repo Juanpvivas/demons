@@ -1,0 +1,128 @@
+[
+  {
+    "variant": "baseline",
+    "created_utc": "2026-10-16T15:25:42.336983+00:00",
+    "source_revision": "a473585",
+    "source_script_sha256": "4e89dce236868c4203079e06937b5c8dbcbbd564382f373d2216d4aa8c700d7f",
+    "observer_base_sha256": "c628c721ec12ba7c922545787134bae6b86808dbdc9d0c5669945b4e3d15fc90",
+    "telemetry_sha256": "2fbdb3c09e002b9d35cf85da77ef20bd715b266a824341c4f793729372578634",
+    "project_configuration_sha256": "72d4d8dcbff801eb9a659921298e92521629a13fedf86e1ffc7111d9626dc7ba",
+    "configuration_delta": "--- original temporary Compatibility/project.godot\n+++ temporary iOS file-logging/project.godot\n@@ -58,3 +58,8 @@\n rendering_device/driver.windows=\"d3d12\"\n renderer/rendering_method=\"gl_compatibility\"\n textures/vram_compression/import_etc2_astc=true\n+\n+[debug]\n+\n+file_logging/enable_file_logging=true\n+file_logging/log_path=\"user://logs/godot.log\"\n",
+    "renderer": "temporary Compatibility for iOS Simulator, production Mobile untouched",
+    "engine_binary_source": "original local4.7.1 tag compiled arm64 Simulator app, unchanged; only debug PCK replaced",
+    "app": "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-filelog-app-baseline/demons.app",
+    "app_file_hashes": {
+      "AppIcon60x60@2x.png": "3517f04dc6f16b3897f56e5e186aaf44e82793b9756721d800e4267ea2baedc4",
+      "demons": "5fa85885290eb55f547b4a8fcba086e50256b2e01d4ba2e5a5909b654882f034",
+      "Assets.car": "c1ddc1c55bd53d354cd053230ec71afa15bbf563c4e07d1c2c85800496281f92",
+      "AppIcon76x76@2x~ipad.png": "8f68dd69535048726b4af10830915b41bb0eadfb30d70eb4e12525c289942af4",
+      "PrivacyInfo.xcprivacy": "4b61978794a0d6042d6fb5751bf9474cded649ab89956a1304667a1f0260ab2e",
+      "demons.pck": "55076ebcf908c6613f081f66382e693cdd351703552dcc90f40c412fc4df4ceb",
+      "Info.plist": "528c382d294d8a8f63c9f85c04a5a3a6422e208f6194ec879fa1e79e9098b1c4",
+      "PkgInfo": "82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0",
+      "en.lproj/InfoPlist.strings": "9261ecceda608ef174256e5fdc774c1e6e3dcf533409c1bc393d490d01c713f1",
+      "Launch Screen.storyboardc/01J-lp-oVM-view-Ze5-6b-2t3.nib": "9d775f9bf073a37a2f6ce2e2c7c4cc4363cf7bd26fe8c2d49a359abaf805164f",
+      "Launch Screen.storyboardc/UIViewController-01J-lp-oVM.nib": "54f3637f671feba5f19e82ec4f4a7fb448bb3cfc0fb180f089aa571fc8f053e2",
+      "Launch Screen.storyboardc/Info.plist": "1f255d5cc53b531e3f29a9406a8df49a958e2bf9443d3e20bd8374f707f7d5c8"
+    },
+    "changed_app_members": [
+      "demons.pck"
+    ],
+    "steps": [
+      {
+        "stage": "import",
+        "command": [
+          "/Applications/Godot_mono.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-filelog-baseline",
+          "--editor",
+          "--import",
+          "--log-file",
+          "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-filelog-baseline-import-engine.log"
+        ],
+        "exit": 0,
+        "seconds": 2.101
+      },
+      {
+        "stage": "export",
+        "command": [
+          "/Applications/Godot_mono.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-filelog-baseline",
+          "--export-debug",
+          "iOS",
+          "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-filelog-export-baseline/demons.ipa",
+          "--log-file",
+          "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-filelog-baseline-export-engine.log"
+        ],
+        "exit": 0,
+        "seconds": 3.407
+      }
+    ]
+  },
+  {
+    "variant": "final",
+    "created_utc": "2026-10-16T15:25:48.600666+00:00",
+    "source_revision": "a473585",
+    "source_script_sha256": "4e89dce236868c4203079e06937b5c8dbcbbd564382f373d2216d4aa8c700d7f",
+    "observer_base_sha256": "c628c721ec12ba7c922545787134bae6b86808dbdc9d0c5669945b4e3d15fc90",
+    "telemetry_sha256": "2fbdb3c09e002b9d35cf85da77ef20bd715b266a824341c4f793729372578634",
+    "project_configuration_sha256": "72d4d8dcbff801eb9a659921298e92521629a13fedf86e1ffc7111d9626dc7ba",
+    "configuration_delta": "--- original temporary Compatibility/project.godot\n+++ temporary iOS file-logging/project.godot\n@@ -58,3 +58,8 @@\n rendering_device/driver.windows=\"d3d12\"\n renderer/rendering_method=\"gl_compatibility\"\n textures/vram_compression/import_etc2_astc=true\n+\n+[debug]\n+\n+file_logging/enable_file_logging=true\n+file_logging/log_path=\"user://logs/godot.log\"\n",
+    "renderer": "temporary Compatibility for iOS Simulator, production Mobile untouched",
+    "engine_binary_source": "original local4.7.1 tag compiled arm64 Simulator app, unchanged; only debug PCK replaced",
+    "app": "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-filelog-app-final/demons.app",
+    "app_file_hashes": {
+      "AppIcon60x60@2x.png": "3517f04dc6f16b3897f56e5e186aaf44e82793b9756721d800e4267ea2baedc4",
+      "demons": "d4c1f14a87fc61fdf9f8b2983b27ca6a1a7525da8472a90635af88a58bdca096",
+      "Assets.car": "c1ddc1c55bd53d354cd053230ec71afa15bbf563c4e07d1c2c85800496281f92",
+      "AppIcon76x76@2x~ipad.png": "8f68dd69535048726b4af10830915b41bb0eadfb30d70eb4e12525c289942af4",
+      "PrivacyInfo.xcprivacy": "4b61978794a0d6042d6fb5751bf9474cded649ab89956a1304667a1f0260ab2e",
+      "demons.pck": "e6fbeaa3c092d0a464ee038d8541e5fe39339f0f9a8b8b582a730d2df29a9352",
+      "Info.plist": "528c382d294d8a8f63c9f85c04a5a3a6422e208f6194ec879fa1e79e9098b1c4",
+      "PkgInfo": "82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0",
+      "en.lproj/InfoPlist.strings": "9261ecceda608ef174256e5fdc774c1e6e3dcf533409c1bc393d490d01c713f1",
+      "Launch Screen.storyboardc/01J-lp-oVM-view-Ze5-6b-2t3.nib": "9d775f9bf073a37a2f6ce2e2c7c4cc4363cf7bd26fe8c2d49a359abaf805164f",
+      "Launch Screen.storyboardc/UIViewController-01J-lp-oVM.nib": "54f3637f671feba5f19e82ec4f4a7fb448bb3cfc0fb180f089aa571fc8f053e2",
+      "Launch Screen.storyboardc/Info.plist": "1f255d5cc53b531e3f29a9406a8df49a958e2bf9443d3e20bd8374f707f7d5c8"
+    },
+    "changed_app_members": [
+      "demons.pck"
+    ],
+    "steps": [
+      {
+        "stage": "import",
+        "command": [
+          "/Applications/Godot_mono.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-filelog-final",
+          "--editor",
+          "--import",
+          "--log-file",
+          "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-filelog-final-import-engine.log"
+        ],
+        "exit": 0,
+        "seconds": 2.683
+      },
+      {
+        "stage": "export",
+        "command": [
+          "/Applications/Godot_mono.app/Contents/MacOS/Godot",
+          "--headless",
+          "--path",
+          "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-filelog-final",
+          "--export-debug",
+          "iOS",
+          "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-filelog-export-final/demons.ipa",
+          "--log-file",
+          "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-filelog-final-export-engine.log"
+        ],
+        "exit": 0,
+        "seconds": 3.372
+      }
+    ]
+  }
+]

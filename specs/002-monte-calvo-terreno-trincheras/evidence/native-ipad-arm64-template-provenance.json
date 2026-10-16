@@ -1,0 +1,54 @@
+{
+  "started_at_utc": "2026-10-16T14:44:59.092095+00:00",
+  "origin": "https://github.com/godotengine/godot.git",
+  "tag": "4.7.1-stable",
+  "commit": "a13da4feb8d8aefc283c3763d33a2f170a18d541",
+  "tag_commit": "a13da4feb8d8aefc283c3763d33a2f170a18d541",
+  "tracked_diff": "",
+  "status_before_build": "",
+  "source_files_sha256": {
+    "version.py": "00c05ab60e5deb961be64809b7aedf445f9a4d19a41db349ee5656ef56db56c8",
+    "SConstruct": "b67bd31bf2d3bc1d91d4a1c5b2e4117c3d2dbd9c066ba3bb040cdd61226845f7",
+    "platform/ios/detect.py": "e7fe9867344d77e92ff4b318fc820ad05c0d5c0799032542cb5c59bfb568e478",
+    "platform/ios/SCsub": "683cb6d2b487a2a6139b87a425fa278f0b71d356589a14d3ba4aacb2ff1833da"
+  },
+  "scons_version": "4.8.1",
+  "python_version": "3.9.6",
+  "cpu_count": 15,
+  "command": [
+    "scons",
+    "platform=ios",
+    "target=template_debug",
+    "arch=arm64",
+    "ios_simulator=yes",
+    "-j8"
+  ],
+  "reductions": "none; defaults retain OpenGL3 and standard modules; platform automatically disables Metal/Vulkan for Simulator",
+  "destination_inventory_corrected": "22 concrete Simulator destinations arm64; exclude two placeholders from earlier count24",
+  "sources": [
+    "https://github.com/godotengine/godot/issues/122379",
+    "https://docs.godotengine.org/en/4.7/engine_details/development/compiling/compiling_for_ios.html"
+  ],
+  "finished_at_utc": "2026-10-16T14:48:14.184378+00:00",
+  "build_exit_code": 0,
+  "time_real_seconds": 152.46,
+  "scons_elapsed_seconds": 149.59,
+  "tracked_diff_after_build": "",
+  "status_after_build": "",
+  "build_log": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/build-engine-arm64.log",
+  "build_log_sha256": "8a5b3e838d1fdba939713a77950849f98d264e84434c2f46dfbf1843169b48f3",
+  "libraries": {
+    "engine": {
+      "path": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/godot-source/bin/libgodot.ios.template_debug.arm64.simulator.a",
+      "sha256": "858f3ecce9e64e715657f9efe0cf7ca42deea92a75d636a0d0556cc96f2fe8e5",
+      "bytes": 190991072,
+      "lipo_info": "Non-fat file: /private/tmp/demons-ios-sim-build-002-gvvh8iow/godot-source/bin/libgodot.ios.template_debug.arm64.simulator.a is architecture: arm64"
+    },
+    "camera": {
+      "path": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/godot-source/bin/libgodot_camera.ios.template_debug.arm64.simulator.a",
+      "sha256": "e46e418f922e408c0bae2401f0ffb6aa49d949d2782885c8da3a44e2fd9525b2",
+      "bytes": 81672,
+      "lipo_info": "Non-fat file: /private/tmp/demons-ios-sim-build-002-gvvh8iow/godot-source/bin/libgodot_camera.ios.template_debug.arm64.simulator.a is architecture: arm64"
+    }
+  }
+}

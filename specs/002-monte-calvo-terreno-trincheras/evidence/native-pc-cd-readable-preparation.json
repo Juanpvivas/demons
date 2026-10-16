@@ -1,0 +1,116 @@
+{
+  "records": [
+    {
+      "variant": "base",
+      "approved_source": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/source-base",
+      "source": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd-readable/source-base",
+      "app": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/apps-cd-readable/MonteCalvo_Base002.app",
+      "name": "MonteCalvo_Base002",
+      "bundle_identifier": "com.juanpvivas.demons.validation002.base.cd",
+      "custom_user_dir_name": "MonteCalvo_Validation002_Base_CD",
+      "expected_user_data_directory": "/Users/juan.vivas/Library/Application Support/MonteCalvo_Validation002_Base_CD",
+      "expected_log": "/Users/juan.vivas/Library/Application Support/MonteCalvo_Validation002_Base_CD/logs/godot.log",
+      "expected_telemetry": "/Users/juan.vivas/Library/Application Support/MonteCalvo_Validation002_Base_CD/native-telemetry.json",
+      "only_changed_files_from_approved_packaging": [
+        "project.godot",
+        "export_presets.cfg",
+        "_native_telemetry.gd"
+      ],
+      "original_extension_sha256": "2fbdb3c09e002b9d35cf85da77ef20bd715b266a824341c4f793729372578634",
+      "marker_extension_sha256": "123c0a98c3e4f79b175c9c8e0f9c91cbcfdd6f1043e7a47729ecc3c6f755db80",
+      "production_game_script_sha256": "4e89dce236868c4203079e06937b5c8dbcbbd564382f373d2216d4aa8c700d7f",
+      "observer_base_sha256": "c628c721ec12ba7c922545787134bae6b86808dbdc9d0c5669945b4e3d15fc90",
+      "native_scene_sha256": "04ce4ee1c0013f4aa1e78e46d1f273f5a7166e3728e17212ef6ad9f77d3b6434",
+      "source_revision": "a473585ca62e3d35fa1d81d47e052646826032c3",
+      "markers": {
+        "C": {
+          "target_world": [
+            528,
+            624
+          ],
+          "label_position": [
+            512,
+            610
+          ]
+        },
+        "D": {
+          "target_world": [
+            48,
+            144
+          ],
+          "label_position": [
+            32,
+            130
+          ]
+        }
+      },
+      "scope": "Only DLabel position moved (32,34)\u2192(32,130) from previous passive C/D package. C, metadata, base/gameplay/input/state/clocks/timers unchanged.",
+      "skills_consulted": [
+        "godot-ui",
+        "godot-testing"
+      ],
+      "previous_cd_source": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd/source-base",
+      "previous_cd_marker_extension_sha256": "bbf0f01bdb74146713644b70114fcb5239a1e88ab6aa5a03a9185c3951daf3d0",
+      "only_changed_files_from_previous_cd": [
+        "_native_telemetry.gd"
+      ]
+    },
+    {
+      "variant": "arte",
+      "approved_source": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/source-arte",
+      "source": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd-readable/source-arte",
+      "app": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/apps-cd-readable/MonteCalvo_Arte002.app",
+      "name": "MonteCalvo_Arte002",
+      "bundle_identifier": "com.juanpvivas.demons.validation002.arte.cd",
+      "custom_user_dir_name": "MonteCalvo_Validation002_Arte_CD",
+      "expected_user_data_directory": "/Users/juan.vivas/Library/Application Support/MonteCalvo_Validation002_Arte_CD",
+      "expected_log": "/Users/juan.vivas/Library/Application Support/MonteCalvo_Validation002_Arte_CD/logs/godot.log",
+      "expected_telemetry": "/Users/juan.vivas/Library/Application Support/MonteCalvo_Validation002_Arte_CD/native-telemetry.json",
+      "only_changed_files_from_approved_packaging": [
+        "project.godot",
+        "export_presets.cfg",
+        "_native_telemetry.gd"
+      ],
+      "original_extension_sha256": "2fbdb3c09e002b9d35cf85da77ef20bd715b266a824341c4f793729372578634",
+      "marker_extension_sha256": "123c0a98c3e4f79b175c9c8e0f9c91cbcfdd6f1043e7a47729ecc3c6f755db80",
+      "production_game_script_sha256": "4e89dce236868c4203079e06937b5c8dbcbbd564382f373d2216d4aa8c700d7f",
+      "observer_base_sha256": "c628c721ec12ba7c922545787134bae6b86808dbdc9d0c5669945b4e3d15fc90",
+      "native_scene_sha256": "98a966ec90bc03541520375b6b9d71af42ae4850f46f7b13a8677ddfc9a211d4",
+      "source_revision": "a473585ca62e3d35fa1d81d47e052646826032c3",
+      "markers": {
+        "C": {
+          "target_world": [
+            528,
+            624
+          ],
+          "label_position": [
+            512,
+            610
+          ]
+        },
+        "D": {
+          "target_world": [
+            48,
+            144
+          ],
+          "label_position": [
+            32,
+            130
+          ]
+        }
+      },
+      "scope": "Only DLabel position moved (32,34)\u2192(32,130) from previous passive C/D package. C, metadata, base/gameplay/input/state/clocks/timers unchanged.",
+      "skills_consulted": [
+        "godot-ui",
+        "godot-testing"
+      ],
+      "previous_cd_source": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd/source-arte",
+      "previous_cd_marker_extension_sha256": "bbf0f01bdb74146713644b70114fcb5239a1e88ab6aa5a03a9185c3951daf3d0",
+      "only_changed_files_from_previous_cd": [
+        "_native_telemetry.gd"
+      ]
+    }
+  ],
+  "runtime_launched": false,
+  "production_modified": false
+}

@@ -34,3 +34,9 @@ Godot --headless --path <copia-final-sin-cache> --import --quit-after 2 --log-fi
 **Retorno 0**, sin errores de parser/carga/importación en el [log completo](final-clean-import.log). La caché nueva contiene los tres `.ctex` generados: terreno 1,998,276 bytes; montañas 974,124 bytes; atlas 1,664,902 bytes. Los **10/10 archivos del manifest final** comparados después de importar permanecen idénticos. [Resumen verificable](final-clean-import-summary.json).
 
 Se ejecutó una sola importación adicional. No se repitieron GUT ni capturas válidas: sus fuentes finales seguían idénticas. Esta comprobación completa la evidencia técnica de importación desde cero; no resuelve los pendientes globales de entrada o dispositivos.
+
+## Reanudación 2026-10-16 — fuente corregida identificada
+
+Se reutiliza la ejecución válida de [T021GREEN](t021-green.md), fuentea473585/4e89dce…: seisregresiones36asercionesGREEN, suitecompleta **189/189/532aserciones**, importación desde copia sin`.godot` **retorno0**. [Logs e invariantes](t021-invariants.json) mantienen95/97archivos originales idénticos: solo se permiten instancia visual y excepciónI4. Prueba/UID exactas, sin rebajar expectativas. Se mantienen los3avisosGUTpreexistentes descritos enT021.
+
+El arte final no cambió desde el hash43eec852…; los commits posteriores son evidencias/proceso. No se repite la suite o importación por documentos, empaquetados temporales, logging de instrumentos o apps de entrada. Este resultado técnico es reutilizable paraT013; su aprobación depende deQA y de losgates de matriz, sin marcar la tarea desde aquí. El resultado histórico183/183 se conserva separado del estado corregido actual189/189.

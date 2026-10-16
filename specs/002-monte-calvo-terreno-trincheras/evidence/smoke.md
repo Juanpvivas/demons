@@ -17,3 +17,13 @@ La partida termina naturalmente en derrota, igual que el baselineV1(33.617s), co
 La [suite completa183/183](regression.md) pasó los escenarios de nivel `test_enemigo_real_que_alcanza_posicion_defendida_termina_la_partida_en_derrota_de_punta_a_punta` y `test_completing_all_configured_real_waves_transitions_the_real_gamestatemanager_to_won_end_to_end`, además de los sistemas de estado y oleadas. Es cobertura automatizada del estado/sus señales, no una partida ganada manualmente con las diez oleadas y economía naturales.
 
 No se forzó una victoria en el smoke ni se reparó el juego para obtenerla. La [comparación humana finalAndroid](android-human-final.md) está disponible y es parcial; no acredita una partida ganada ni la matriz física completa. EntradaOSPC y casos discriminados de picking permanecen pendientes. iOSfísico y criterios finales de rendimiento se mantienen separados en [performance.md](performance.md). Este reporte entrega smoke observado y sus límites paraQA; no marcaT014niaprueba la feature por sí solo.
+
+## Reanudación 2026-10-16 — partida humana nativa corregida
+
+La [sesión Xiaomi actual](native-android-input.md), fuentea473585/4e89dce… y APKinstrumentado final, incluyó gestos físicos de recolección y despliegue y llegó naturalmente aLOST alrededor de51s. Su [serie de rendimiento](native-human-performance.md) conserva estadosPLAYING hasta50s y el valle del guardado a36s; no se altera el juego para ganar, acelerar tiempos o crear saldo. Es un smoke manual con observación pasiva, distinto de la composición anterior fallida y de los escenariosGUT.
+
+La [regresión189/189](t021-green.md) pasó escenarios separados de victoria y derrota con oleadas reales configuradas. Eso acredita terminales automatizados; no se afirma una victoria manual de10oleadas. No hace falta otra partida completa por rutina para volver a observar derrota ya documentada. PC e iPad mantienen sus pendientes de gestos enT008/T012; iOSfísico no se acredita por simulador.
+
+### Cierre de entrada y smoke disponible — 2026-10-16
+
+El [PC FINALhumano](native-pc-arte-cd-human.md) conserva gestosPLAYING hasta seq15/t48085ms y un gestoLOSTseq16/t50294ms; se registra como transición observada entre esos momentos, no timestamp exacto de derrota. La captura posterior muestra el estadoPERDIDA. BASEtambién alcanzóLOST; no se usa el inputposterior comoPASSactivo. La sesiónXiaomi≈51s y los escenariosGUT189/189 siguen siendo la evidencia de partida/terminales, sin otra ejecución rutinaria ni victoria manual fabricada. Las vías de entrada PC/iPad anteriormente pendientes ya recibieron sus dictámenes mínimos; [matriz](native-validation-matrix.md). Queda revisión global de entrega, no más playthrough asignado al tester.

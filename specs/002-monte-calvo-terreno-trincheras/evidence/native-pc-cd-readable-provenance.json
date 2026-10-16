@@ -1,0 +1,222 @@
+{
+  "created_utc": "2026-10-16T15:54:53.097109+00:00",
+  "purpose": "Final readability adjustment: only passive DLabel moved below readout before human PC validation",
+  "source_revision": "a473585ca62e3d35fa1d81d47e052646826032c3",
+  "engine": "4.7.1.stable.official.a13da4feb standard portable",
+  "template_provenance": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/arm64-template-provenance.json",
+  "template_provenance_sha256": "100e207e58d062be30317210e8670015064f37b4220d228d93ed1caf921358db",
+  "only_instrumentation_delta": "2Labels in existing extension _ready; inherited CanvasLayer read via _readout.get_parent(), no new callbacks, handlers, signals, gameplay state, clocks, timers or input",
+  "marker_targets_and_positions": {
+    "C": {
+      "target_world": [
+        528,
+        624
+      ],
+      "label_position": [
+        512,
+        610
+      ]
+    },
+    "D": {
+      "target_world": [
+        48,
+        144
+      ],
+      "label_position": [
+        32,
+        130
+      ]
+    },
+    "offset_matches_A_B": [
+      -16,
+      -14
+    ]
+  },
+  "marker_style": {
+    "text": "[C] / [D]",
+    "font_size": 28,
+    "font_color": [
+      0.3,
+      1.0,
+      1.0
+    ],
+    "font_outline_color": "black",
+    "outline_size": 6,
+    "mouse_filter": "MOUSE_FILTER_IGNORE",
+    "focus_mode": "FOCUS_NONE"
+  },
+  "separate_output_metadata": "Existing unique .base.cd/.arte.cd bundleIDs and _Base_CD/_Arte_CD userdirs preserved unchanged. Final app paths are apps-cd-readable; earlier packages retained.",
+  "preserved": [
+    "game script4e89dce byte-identical",
+    "base observerc628c721 byte-identical",
+    "remaining native telemetry code and35s save threshold byte-identical",
+    "production resources/scenes/atlas/input/viewport/rendererMobile",
+    "approved previous packages and all original native sources"
+  ],
+  "source_for_review": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd-readable/marker-extension-source.txt",
+  "source_sha256": "123c0a98c3e4f79b175c9c8e0f9c91cbcfdd6f1043e7a47729ecc3c6f755db80",
+  "instrumentation_diff": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd-readable/base-d-position.diff",
+  "instrumentation_diff_sha256": "ff94601a05b547de1274d12b848920b12145f2d5fc36b12f4de22164e9f63b49",
+  "variants": [
+    {
+      "variant": "base",
+      "app": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/apps-cd-readable/MonteCalvo_Base002.app",
+      "name": "MonteCalvo_Base002",
+      "bundle_identifier": "com.juanpvivas.demons.validation002.base.cd",
+      "executable": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/apps-cd-readable/MonteCalvo_Base002.app/Contents/MacOS/MonteCalvo_Base002",
+      "executable_sha256": "3f2b4d1f5e9af1ff89325f2ac38c66e7166bb34bf7c2ff10768bcb92d21690eb",
+      "pck_sha256": "def3b5be6049e0b382b435b5e0d80d3a05988c4ba89ab129c26e806e1e984a25",
+      "info_plist_sha256": "751aba5f30ba5df5ed7e1439cb80a9c6ff985299ba5c33d36142242d5cd130ba",
+      "lipo_info": "Non-fat file: /private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/apps-cd-readable/MonteCalvo_Base002.app/Contents/MacOS/MonteCalvo_Base002 is architecture: arm64",
+      "codesign_verify_exit_code": 0,
+      "signature": "ad-hoc builtin, no certificate/notarization",
+      "source_manifest": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd-readable/base-source-manifest.json",
+      "source_manifest_sha256": "66223927f8bf755c147fc3071d0ec3b8dd2ff5317f27caa735f2bf9402f93b6a",
+      "source_files_verified_after_export": 364,
+      "source_changes_after_export": [],
+      "only_files_different_from_previous_cd": [
+        "_native_telemetry.gd"
+      ],
+      "game_script_sha256": "4e89dce236868c4203079e06937b5c8dbcbbd564382f373d2216d4aa8c700d7f",
+      "observer_base_sha256": "c628c721ec12ba7c922545787134bae6b86808dbdc9d0c5669945b4e3d15fc90",
+      "marker_extension_sha256": "123c0a98c3e4f79b175c9c8e0f9c91cbcfdd6f1043e7a47729ecc3c6f755db80",
+      "previous_cd_extension_sha256": "bbf0f01bdb74146713644b70114fcb5239a1e88ab6aa5a03a9185c3951daf3d0",
+      "original_extension_sha256": "2fbdb3c09e002b9d35cf85da77ef20bd715b266a824341c4f793729372578634",
+      "expected_log": "/Users/juan.vivas/Library/Application Support/MonteCalvo_Validation002_Base_CD/logs/godot.log",
+      "expected_telemetry": "/Users/juan.vivas/Library/Application Support/MonteCalvo_Validation002_Base_CD/native-telemetry.json",
+      "expected_user_data_directory": "/Users/juan.vivas/Library/Application Support/MonteCalvo_Validation002_Base_CD",
+      "app_files_sha256": {
+        "Contents/Info.plist": "751aba5f30ba5df5ed7e1439cb80a9c6ff985299ba5c33d36142242d5cd130ba",
+        "Contents/PkgInfo": "7e50a30efad50208a173203ced60818d693bb61266b75aa10927d1a2adce80cb",
+        "Contents/_CodeSignature/CodeResources": "8cae83c8a0f9250baf61814b4364cdfbb61148b0b928a7e71834073919a0cb74",
+        "Contents/MacOS/MonteCalvo_Base002": "3f2b4d1f5e9af1ff89325f2ac38c66e7166bb34bf7c2ff10768bcb92d21690eb",
+        "Contents/Resources/icon.icns": "c3d75c7efc3765d3934b080718478566488c9912634ed11dae2a5691c414c375",
+        "Contents/Resources/PrivacyInfo.xcprivacy": "0535353bb08c25b8ce5ed9ac7e442a5994f402e0f6cbc4bed668cfc63c2ceac3",
+        "Contents/Resources/MonteCalvo_Base002.pck": "def3b5be6049e0b382b435b5e0d80d3a05988c4ba89ab129c26e806e1e984a25"
+      }
+    },
+    {
+      "variant": "arte",
+      "app": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/apps-cd-readable/MonteCalvo_Arte002.app",
+      "name": "MonteCalvo_Arte002",
+      "bundle_identifier": "com.juanpvivas.demons.validation002.arte.cd",
+      "executable": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/apps-cd-readable/MonteCalvo_Arte002.app/Contents/MacOS/MonteCalvo_Arte002",
+      "executable_sha256": "a221cf059aa1c6c659c5b431c05dcdefb4aa25f1c69a50c7911fccb53745c9a8",
+      "pck_sha256": "6ea292fd89cd44cc8c5d7c80dd3b9c681d49e1086887171b7dc10af0bcaf6655",
+      "info_plist_sha256": "b98dc4ebc2066db6888e6ee70a158f7c1468868caca22d46738819d1fa072f97",
+      "lipo_info": "Non-fat file: /private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/apps-cd-readable/MonteCalvo_Arte002.app/Contents/MacOS/MonteCalvo_Arte002 is architecture: arm64",
+      "codesign_verify_exit_code": 0,
+      "signature": "ad-hoc builtin, no certificate/notarization",
+      "source_manifest": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd-readable/arte-source-manifest.json",
+      "source_manifest_sha256": "6275c45fff54ef99983ea30a66233002b7651dc07b63682ba86a00a612e5b760",
+      "source_files_verified_after_export": 372,
+      "source_changes_after_export": [],
+      "only_files_different_from_previous_cd": [
+        "_native_telemetry.gd"
+      ],
+      "game_script_sha256": "4e89dce236868c4203079e06937b5c8dbcbbd564382f373d2216d4aa8c700d7f",
+      "observer_base_sha256": "c628c721ec12ba7c922545787134bae6b86808dbdc9d0c5669945b4e3d15fc90",
+      "marker_extension_sha256": "123c0a98c3e4f79b175c9c8e0f9c91cbcfdd6f1043e7a47729ecc3c6f755db80",
+      "previous_cd_extension_sha256": "bbf0f01bdb74146713644b70114fcb5239a1e88ab6aa5a03a9185c3951daf3d0",
+      "original_extension_sha256": "2fbdb3c09e002b9d35cf85da77ef20bd715b266a824341c4f793729372578634",
+      "expected_log": "/Users/juan.vivas/Library/Application Support/MonteCalvo_Validation002_Arte_CD/logs/godot.log",
+      "expected_telemetry": "/Users/juan.vivas/Library/Application Support/MonteCalvo_Validation002_Arte_CD/native-telemetry.json",
+      "expected_user_data_directory": "/Users/juan.vivas/Library/Application Support/MonteCalvo_Validation002_Arte_CD",
+      "app_files_sha256": {
+        "Contents/Info.plist": "b98dc4ebc2066db6888e6ee70a158f7c1468868caca22d46738819d1fa072f97",
+        "Contents/PkgInfo": "7e50a30efad50208a173203ced60818d693bb61266b75aa10927d1a2adce80cb",
+        "Contents/_CodeSignature/CodeResources": "14abaa290f23b9d2e3383dac107f0c3975c324d03ead9105dd04efba80cdc852",
+        "Contents/MacOS/MonteCalvo_Arte002": "a221cf059aa1c6c659c5b431c05dcdefb4aa25f1c69a50c7911fccb53745c9a8",
+        "Contents/Resources/icon.icns": "c3d75c7efc3765d3934b080718478566488c9912634ed11dae2a5691c414c375",
+        "Contents/Resources/PrivacyInfo.xcprivacy": "0535353bb08c25b8ce5ed9ac7e442a5994f402e0f6cbc4bed668cfc63c2ceac3",
+        "Contents/Resources/MonteCalvo_Arte002.pck": "6ea292fd89cd44cc8c5d7c80dd3b9c681d49e1086887171b7dc10af0bcaf6655"
+      }
+    }
+  ],
+  "executions": [
+    {
+      "variant": "base",
+      "mode": "import",
+      "command": [
+        "/private/tmp/demons-web-tools-pdApeK/portable/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd-readable/source-base",
+        "--editor",
+        "--import",
+        "--log-file",
+        "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd-readable/base-import-engine.log"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.5232822500000003,
+      "completed_utc": "2026-10-16T15:53:43.414949+00:00"
+    },
+    {
+      "variant": "base",
+      "mode": "export",
+      "command": [
+        "/private/tmp/demons-web-tools-pdApeK/portable/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd-readable/source-base",
+        "--export-debug",
+        "macOS Validation",
+        "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/apps-cd-readable/MonteCalvo_Base002.app",
+        "--log-file",
+        "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd-readable/base-export-engine.log"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 3.1708350829999996,
+      "completed_utc": "2026-10-16T15:53:46.586827+00:00"
+    },
+    {
+      "variant": "arte",
+      "mode": "import",
+      "command": [
+        "/private/tmp/demons-web-tools-pdApeK/portable/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd-readable/source-arte",
+        "--editor",
+        "--import",
+        "--log-file",
+        "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd-readable/arte-import-engine.log"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.4822802079999997,
+      "completed_utc": "2026-10-16T15:53:49.070000+00:00"
+    },
+    {
+      "variant": "arte",
+      "mode": "export",
+      "command": [
+        "/private/tmp/demons-web-tools-pdApeK/portable/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd-readable/source-arte",
+        "--export-debug",
+        "macOS Validation",
+        "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/apps-cd-readable/MonteCalvo_Arte002.app",
+        "--log-file",
+        "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd-readable/arte-export-engine.log"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 3.1553929159999985,
+      "completed_utc": "2026-10-16T15:53:52.225765+00:00"
+    }
+  ],
+  "setup_warnings": "Both imports EXIT0 without errors; exports EXIT0 with known single Cannot set object script message; no unrelated fix",
+  "skills_read": [
+    "godot-ui",
+    "godot-testing"
+  ],
+  "runtime_launched_by_auxiliary": false,
+  "runtime_input_or_visual_acceptance": "NOT RUN by auxiliary; principal owns UI/human sequence; QA must approve passive instrumentation first",
+  "visual_observation_limit": "D positioned below readout as requested. No runtime launch or visual acceptance asserted by auxiliary; principal owns human interaction.",
+  "production_checkout_edits": false,
+  "tests_run": false,
+  "android_ios_operations": false,
+  "previous_package_summary": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd/packaging-summary.json",
+  "previous_package_summary_sha256": "d43222b39921bd07fb957fd053b36cd8cf687528061183fcd5d2f77b27f380fa",
+  "only_delta_from_previous_cd": "Vector2(32,34)\u2192Vector2(32,130) in the DLabel descriptor; C and all project/preset metadata unchanged"
+}

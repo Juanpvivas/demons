@@ -1,0 +1,18 @@
+{
+  "device": "iPad Pro13-inch(M5)/iOS27.0, own simulator booted from shutdown",
+  "phase": "freeze rendered final variant before human start",
+  "source_revision": "a473585",
+  "renderer": "temporaryCompatibility",
+  "copied_own_app_diagnostics": [
+    {
+      "filename": "native-telemetry.json",
+      "temporary_copy": "/private/tmp/monte-calvo-validation-002-v333ghu2/ipad-final-native-telemetry.json",
+      "bytes": 86813,
+      "sha256": "ca28ba22003d6ba657d024090d9db2ed1c526a972f9e99f37e2e482a8916bdb1"
+    }
+  ],
+  "terminate_exit": 0,
+  "terminate_output": "",
+  "terminate_stderr": "",
+  "reason": "leave app stopped so user starts after reading; no touch or other app controlled"
+}

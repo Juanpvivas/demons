@@ -1,0 +1,171 @@
+{
+  "revision": "b670d86711b86f974a5e5c7a988a8e7ce6184265",
+  "phase": "preT020; early autoplay without input; visual-art profiling rehearsal, not corrected-source certification",
+  "method": "Existing002 SceneTree observer copied temporarily; read-only monitors; root viewport render measurement enabled; no input/game methods invoked",
+  "window_physical": [
+    1152,
+    648
+  ],
+  "selection": "game_state0 PLAYING, elapsed5..30s only; no post-LOST rows used",
+  "raw_directory": "/private/tmp/monte-calvo-validation-002-v333ghu2",
+  "provenance": {
+    "base_observer": "/private/tmp/monte-calvo-t001-0pulm9d5/observe_final_v1.gd",
+    "base_observer_sha256": "2c3e61e0b5664f30037ece15300e1601b00c2327eef2722184d477ff121b5c94",
+    "telemetry_observer": "/private/tmp/monte-calvo-validation-002-v333ghu2/observe_002_telemetry.gd",
+    "sha256": "b81a9b870fe39187ef08bae52d7af7dd7d13e5f60c0f8f2edaf1f28c4eb60336",
+    "changes": [
+      "Disabled historical captures to avoid overwriting files/readback overhead",
+      "Added readonly Performance/RenderingServer monitors and first-post-draw timing",
+      "Enabled viewport render time measurement; no game input/state changes",
+      "31s limit, raw rows retain game_state; analysis selects PLAYING5..30s"
+    ]
+  },
+  "copies": {
+    "baseline": {
+      "exit_code": 0,
+      "source_level_script_sha256": "2420d7100eb852b6dee0521df56015784a5ac0a0b2af0274b3fa6d2b3fe27e6b",
+      "renderer": "mobile",
+      "driver": "metal",
+      "gpu_name": "Apple M5 Pro (Apple9)",
+      "samples": 1870,
+      "first_sample_seconds": 5.01,
+      "last_sample_seconds": 29.994,
+      "first_post_draw": {
+        "engine_ticks_ms": 903,
+        "scene_setup_to_first_post_draw_ms": 29.432,
+        "scope": "instrumented script/scene startup; excludes process/OS launch before script initialization; filesystem cache uncontrolled",
+        "script_initialization_to_first_post_draw_ms": 39.934
+      },
+      "metrics": {
+        "delta_ms": {
+          "min": 12.7272727272727,
+          "median": 13.3333333333333,
+          "p95": 13.3333333333333,
+          "max": 18.2159999999995
+        },
+        "engine_fps": {
+          "min": 74.0,
+          "median": 75.0,
+          "p95": 75.0,
+          "max": 75.0
+        },
+        "process_ms": {
+          "min": 13.641,
+          "median": 14.179,
+          "p95": 21.241,
+          "max": 25.683
+        },
+        "physics_process_ms": {
+          "min": 0.092,
+          "median": 0.417,
+          "p95": 3.378,
+          "max": 3.727
+        },
+        "render_setup_cpu_ms": {
+          "min": 0.001,
+          "median": 0.01,
+          "p95": 0.023,
+          "max": 0.143
+        },
+        "viewport_render_cpu_ms": {
+          "min": 0.00800000037997961,
+          "median": 0.0410000011324883,
+          "p95": 0.0700000002980232,
+          "max": 0.273000001907349
+        },
+        "texture_mem_bytes": {
+          "min": 1215232.0,
+          "median": 1215232.0,
+          "p95": 1215232.0,
+          "max": 1215232.0
+        },
+        "video_mem_bytes": {
+          "min": 27475968.0,
+          "median": 27475968.0,
+          "p95": 27475968.0,
+          "max": 27475968.0
+        },
+        "viewport_render_gpu_ms": {
+          "status": "unavailable",
+          "raw_all_zero": true,
+          "note": "Do not interpret zero readbacks as zero GPU execution time."
+        }
+      },
+      "raw_filename": "baseline-pc-telemetry.json",
+      "raw_sha256": "a528202032c41aa0f94a8bffc9cde9086f7427eadd903d9d59e667277c064eea"
+    },
+    "final": {
+      "exit_code": 0,
+      "source_level_script_sha256": "2420d7100eb852b6dee0521df56015784a5ac0a0b2af0274b3fa6d2b3fe27e6b",
+      "renderer": "mobile",
+      "driver": "metal",
+      "gpu_name": "Apple M5 Pro (Apple9)",
+      "samples": 1870,
+      "first_sample_seconds": 5.0,
+      "last_sample_seconds": 29.995,
+      "first_post_draw": {
+        "engine_ticks_ms": 424,
+        "scene_setup_to_first_post_draw_ms": 90.329,
+        "scope": "instrumented script/scene startup; excludes process/OS launch before script initialization; filesystem cache uncontrolled",
+        "script_initialization_to_first_post_draw_ms": 105.494
+      },
+      "metrics": {
+        "delta_ms": {
+          "min": 12.962962962963,
+          "median": 13.333,
+          "p95": 13.6363636363636,
+          "max": 18.2986666666665
+        },
+        "engine_fps": {
+          "min": 74.0,
+          "median": 75.0,
+          "p95": 75.0,
+          "max": 75.0
+        },
+        "process_ms": {
+          "min": 13.487,
+          "median": 14.04,
+          "p95": 25.942,
+          "max": 26.328
+        },
+        "physics_process_ms": {
+          "min": 0.144,
+          "median": 0.373,
+          "p95": 0.936,
+          "max": 0.999
+        },
+        "render_setup_cpu_ms": {
+          "min": 0.001,
+          "median": 0.01,
+          "p95": 0.023,
+          "max": 0.076
+        },
+        "viewport_render_cpu_ms": {
+          "min": 0.00899999961256981,
+          "median": 0.0489999987185001,
+          "p95": 0.0799999982118607,
+          "max": 0.33500000834465
+        },
+        "texture_mem_bytes": {
+          "min": 20368128.0,
+          "median": 20368128.0,
+          "p95": 20368128.0,
+          "max": 20368128.0
+        },
+        "video_mem_bytes": {
+          "min": 52920320.0,
+          "median": 52920320.0,
+          "p95": 52920320.0,
+          "max": 52920320.0
+        },
+        "viewport_render_gpu_ms": {
+          "status": "unavailable",
+          "raw_all_zero": true,
+          "note": "Do not interpret zero readbacks as zero GPU execution time."
+        }
+      },
+      "raw_filename": "final-pc-telemetry.json",
+      "raw_sha256": "871208949fa5732a9ec8a1a8a39751e394b9ee09459ee469c7cafd187b76b0b9"
+    }
+  }
+}

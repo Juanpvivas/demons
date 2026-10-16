@@ -1,0 +1,54 @@
+{
+  "checked_utc": "2026-10-16T15:26:50.781526+00:00",
+  "source_revision": "a473585",
+  "app": "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-filelog-app-final/demons.app",
+  "preflight_log": "/private/tmp/monte-calvo-validation-002-v333ghu2/ipad-filelog-preflight.log",
+  "preflight_log_sha256": "3893d5edd72a173bbea361d7767024ce907ef08b7f2c38131c03f41fa1fc26bd",
+  "observer_initial_present": true,
+  "native_geometry_present": true,
+  "app_terminated": true,
+  "only_own_preflight_log_removed_for_human_session": true,
+  "steps": [
+    {
+      "args": [
+        "install",
+        "802157DE-BEA4-455D-89E7-A4DE6388D3FE",
+        "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-filelog-app-final/demons.app"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "launch",
+        "802157DE-BEA4-455D-89E7-A4DE6388D3FE",
+        "com.juanpvivas.demons"
+      ],
+      "exit": 0,
+      "stdout": "com.juanpvivas.demons: 70581\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "terminate",
+        "802157DE-BEA4-455D-89E7-A4DE6388D3FE",
+        "com.juanpvivas.demons"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "get_app_container",
+        "802157DE-BEA4-455D-89E7-A4DE6388D3FE",
+        "com.juanpvivas.demons",
+        "data"
+      ],
+      "exit": 0,
+      "stdout": "/Users/juan.vivas/Library/Developer/CoreSimulator/Devices/802157DE-BEA4-455D-89E7-A4DE6388D3FE/data/Containers/Data/Application/09B1BFE5-D487-4405-8351-3EA70B832725\n",
+      "stderr": ""
+    }
+  ]
+}

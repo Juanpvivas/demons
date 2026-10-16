@@ -1,0 +1,124 @@
+{
+  "recorded_at_utc": "2026-10-16T14:49:06.352373+00:00",
+  "task": "002 V4 iOS Simulator preparation/handoff",
+  "result": "Two arm64 Simulator apps built successfully; principal owns installation/launch/UI/input validation",
+  "supersedes_environment_block": "Original shipped-template arm64 attempt exit65 retained in build-summary.json as historical setup failure, not RED; local same-tag template resolves architecture blocker",
+  "source_revision": "a473585ca62e3d35fa1d81d47e052646826032c3",
+  "engine_source_tag": "4.7.1-stable",
+  "engine_source_commit": "a13da4feb8d8aefc283c3763d33a2f170a18d541",
+  "engine_source_diff": "0 tracked/untracked changes after build",
+  "local_template_provenance": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/local-template-provenance.json",
+  "local_template_provenance_sha256": "99725456f9e23d61347d4a3ec88414c26eef99f87908dd9335246dc11739c1f3",
+  "renderer": "Compatibility only in temporary copies; production Mobile untouched",
+  "simulator_inventory_concrete_count": 22,
+  "simulator_inventory_arch": "arm64",
+  "toolchain": "Xcode27.0/27A266a, iphonesimulator27.0, Python3.9.6/SCons4.8.1 in temporary venv",
+  "signing": "CODE_SIGNING_ALLOWED=NO; no archive/distribution/provisioning work",
+  "source_links": [
+    "https://github.com/godotengine/godot/issues/122379",
+    "https://docs.godotengine.org/en/4.7/engine_details/development/compiling/compiling_for_ios.html"
+  ],
+  "builds": [
+    {
+      "variant": "baseline",
+      "result": "BUILD_SUCCEEDED; runtime/input NOT RUN by auxiliary",
+      "exit_code": 0,
+      "app": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/DerivedData-local-baseline/Build/Products/Debug-iphonesimulator/demons.app",
+      "binary_sha256": "5fa85885290eb55f547b4a8fcba086e50256b2e01d4ba2e5a5909b654882f034",
+      "binary_bytes": 85356808,
+      "app_files_sha256": {
+        "AppIcon60x60@2x.png": "3517f04dc6f16b3897f56e5e186aaf44e82793b9756721d800e4267ea2baedc4",
+        "AppIcon76x76@2x~ipad.png": "8f68dd69535048726b4af10830915b41bb0eadfb30d70eb4e12525c289942af4",
+        "Assets.car": "c1ddc1c55bd53d354cd053230ec71afa15bbf563c4e07d1c2c85800496281f92",
+        "Info.plist": "528c382d294d8a8f63c9f85c04a5a3a6422e208f6194ec879fa1e79e9098b1c4",
+        "Launch Screen.storyboardc/01J-lp-oVM-view-Ze5-6b-2t3.nib": "9d775f9bf073a37a2f6ce2e2c7c4cc4363cf7bd26fe8c2d49a359abaf805164f",
+        "Launch Screen.storyboardc/Info.plist": "1f255d5cc53b531e3f29a9406a8df49a958e2bf9443d3e20bd8374f707f7d5c8",
+        "Launch Screen.storyboardc/UIViewController-01J-lp-oVM.nib": "54f3637f671feba5f19e82ec4f4a7fb448bb3cfc0fb180f089aa571fc8f053e2",
+        "PkgInfo": "82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0",
+        "PrivacyInfo.xcprivacy": "4b61978794a0d6042d6fb5751bf9474cded649ab89956a1304667a1f0260ab2e",
+        "demons": "5fa85885290eb55f547b4a8fcba086e50256b2e01d4ba2e5a5909b654882f034",
+        "demons.pck": "c6795e7716f8dac4fdd18c3891cb695426711c1a5aac1e389f1ba23e40cce99c",
+        "en.lproj/InfoPlist.strings": "9261ecceda608ef174256e5fdc774c1e6e3dcf533409c1bc393d490d01c713f1"
+      },
+      "pck_sha256": "c6795e7716f8dac4fdd18c3891cb695426711c1a5aac1e389f1ba23e40cce99c",
+      "pck_unchanged_from_original_export": true,
+      "bundle_id": "com.juanpvivas.demons",
+      "executable": "demons",
+      "supported_platforms": [
+        "iPhoneSimulator"
+      ],
+      "lipo_info": "Non-fat file: /private/tmp/demons-ios-sim-build-002-gvvh8iow/DerivedData-local-baseline/Build/Products/Debug-iphonesimulator/demons.app/demons is architecture: arm64",
+      "build_version": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/DerivedData-local-baseline/Build/Products/Debug-iphonesimulator/demons.app/demons:\nLoad command 11\n      cmd LC_BUILD_VERSION\n  cmdsize 32\n platform IOSSIMULATOR\n    minos 15.0\n      sdk 27.0\n   ntools 1\n     tool LD\n  version 27037.1",
+      "source_manifest": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/ios-sim-local-baseline-manifest.json",
+      "source_manifest_sha256": "2940353b154999afcd749d7a406c784687e95214bf8826257daed16a4971bd50",
+      "verified_export_files": 55,
+      "export_changes_after_build": [],
+      "log": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/build-local-baseline.log",
+      "log_sha256": "53417121f63439f5235687adfacfffabd534a259b63b391302565faaca5f393a",
+      "xcresult": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/local-baseline.xcresult",
+      "wall_seconds": 9.09,
+      "warnings": [
+        "/tmp/demons-ios-sim-build-002-gvvh8iow/ios-sim-local-baseline/demons/dummy.h:31:9: warning: #pragma once in main file",
+        "2026-10-16 09:48:38.984 appintentsmetadataprocessor[64445:2650814] warning: Metadata extraction skipped, no AppIntents.framework dependency found",
+        "warning: The value for NSCameraUsageDescription must be a non-empty string. (in target 'demons' from project 'demons')",
+        "warning: The value for NSMicrophoneUsageDescription must be a non-empty string. (in target 'demons' from project 'demons')",
+        "warning: The value for NSPhotoLibraryUsageDescription must be a non-empty string. (in target 'demons' from project 'demons')",
+        "|         `- warning: #pragma once in main file"
+      ]
+    },
+    {
+      "variant": "final",
+      "result": "BUILD_SUCCEEDED; runtime/input NOT RUN by auxiliary",
+      "exit_code": 0,
+      "app": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/DerivedData-local-final/Build/Products/Debug-iphonesimulator/demons.app",
+      "binary_sha256": "d4c1f14a87fc61fdf9f8b2983b27ca6a1a7525da8472a90635af88a58bdca096",
+      "binary_bytes": 85356792,
+      "app_files_sha256": {
+        "AppIcon60x60@2x.png": "3517f04dc6f16b3897f56e5e186aaf44e82793b9756721d800e4267ea2baedc4",
+        "AppIcon76x76@2x~ipad.png": "8f68dd69535048726b4af10830915b41bb0eadfb30d70eb4e12525c289942af4",
+        "Assets.car": "c1ddc1c55bd53d354cd053230ec71afa15bbf563c4e07d1c2c85800496281f92",
+        "Info.plist": "528c382d294d8a8f63c9f85c04a5a3a6422e208f6194ec879fa1e79e9098b1c4",
+        "Launch Screen.storyboardc/01J-lp-oVM-view-Ze5-6b-2t3.nib": "9d775f9bf073a37a2f6ce2e2c7c4cc4363cf7bd26fe8c2d49a359abaf805164f",
+        "Launch Screen.storyboardc/Info.plist": "1f255d5cc53b531e3f29a9406a8df49a958e2bf9443d3e20bd8374f707f7d5c8",
+        "Launch Screen.storyboardc/UIViewController-01J-lp-oVM.nib": "54f3637f671feba5f19e82ec4f4a7fb448bb3cfc0fb180f089aa571fc8f053e2",
+        "PkgInfo": "82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0",
+        "PrivacyInfo.xcprivacy": "4b61978794a0d6042d6fb5751bf9474cded649ab89956a1304667a1f0260ab2e",
+        "demons": "d4c1f14a87fc61fdf9f8b2983b27ca6a1a7525da8472a90635af88a58bdca096",
+        "demons.pck": "d0e72375fa88b02690e0ec20d8497e6d25eb644f01307a9fbf9f5ea2e07e114d",
+        "en.lproj/InfoPlist.strings": "9261ecceda608ef174256e5fdc774c1e6e3dcf533409c1bc393d490d01c713f1"
+      },
+      "pck_sha256": "d0e72375fa88b02690e0ec20d8497e6d25eb644f01307a9fbf9f5ea2e07e114d",
+      "pck_unchanged_from_original_export": true,
+      "bundle_id": "com.juanpvivas.demons",
+      "executable": "demons",
+      "supported_platforms": [
+        "iPhoneSimulator"
+      ],
+      "lipo_info": "Non-fat file: /private/tmp/demons-ios-sim-build-002-gvvh8iow/DerivedData-local-final/Build/Products/Debug-iphonesimulator/demons.app/demons is architecture: arm64",
+      "build_version": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/DerivedData-local-final/Build/Products/Debug-iphonesimulator/demons.app/demons:\nLoad command 11\n      cmd LC_BUILD_VERSION\n  cmdsize 32\n platform IOSSIMULATOR\n    minos 15.0\n      sdk 27.0\n   ntools 1\n     tool LD\n  version 27037.1",
+      "source_manifest": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/ios-sim-local-final-manifest.json",
+      "source_manifest_sha256": "6433c27fd490db4c9a2c6bef2bbde7205b1ba97e9d5d9b8312d508813da25618",
+      "verified_export_files": 55,
+      "export_changes_after_build": [],
+      "log": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/build-local-final.log",
+      "log_sha256": "176986f87a59447c6ab26d0f1b58252bdce80e60d025a01538a2312920f1bc56",
+      "xcresult": "/private/tmp/demons-ios-sim-build-002-gvvh8iow/local-final.xcresult",
+      "wall_seconds": 7.86,
+      "warnings": [
+        "/tmp/demons-ios-sim-build-002-gvvh8iow/ios-sim-local-final/demons/dummy.h:31:9: warning: #pragma once in main file",
+        "2026-10-16 09:48:38.984 appintentsmetadataprocessor[64447:2650816] warning: Metadata extraction skipped, no AppIntents.framework dependency found",
+        "warning: The value for NSCameraUsageDescription must be a non-empty string. (in target 'demons' from project 'demons')",
+        "warning: The value for NSMicrophoneUsageDescription must be a non-empty string. (in target 'demons' from project 'demons')",
+        "warning: The value for NSPhotoLibraryUsageDescription must be a non-empty string. (in target 'demons' from project 'demons')",
+        "|         `- warning: #pragma once in main file"
+      ]
+    }
+  ],
+  "limits": [
+    "Build success is setup evidence, not gameplay V4 acceptance",
+    "No simulator control, UI, installs, launches, ADB or Godot/import runs by auxiliary",
+    "No production/repository/gameplay/tests/preset/signature/version/checklist changes",
+    "No global tool/runtime installation; source and SCons only under temporary directory",
+    "Hardware iOS and production Mobile renderer not tested"
+  ]
+}

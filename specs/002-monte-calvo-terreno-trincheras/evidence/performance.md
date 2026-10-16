@@ -57,3 +57,19 @@ PCV1/V2están cubiertos visualmente en[us3.md](us3.md), sin benchmarkPC. Android
 ## Sesión humana separada
 
 Después de terminar las mediciones se reinició la app para la [prueba humana final](android-human-final.md). La confirmación de recolección/despliegue y ausencia observada de duplicación se limita a esa sesión; no se incorpora a las cifras de autoplay ni completa la matriz física controlada.
+
+## Reanudación 2026-10-16 — mediciones Godot y referencia provisional002
+
+La [comparación física actual](native-device-performance.md) sustituye los huecos de medición de esta preparación: mismo arregloI4/observer/viewport antes ydespués, dosautoplays, análisisPLAYING5–30s. GodotFPS mínimo60 ambos; delta p9516.667ms y máximo16.667→24.453ms; renderGPU p50 0.473→2.648ms/p950.480→2.852ms; texturas12,656,000→31,886,720bytes, PSS267001→278675KiB. Carga deactividadAndroid613/487ms y primerpost-draw motor1054/1240ms tienen alcances distintos y cachésnocontroladas; no se declara cargafríacompleta certificada.
+
+Se añade sin nuevaejecución la [sesión humana≈50s](native-human-performance.md), con recolección/despliegue y su serie cruda. Se preserva54FPS/TIME_PROCESS114.607ms a36s. El [control único del guardado](native-save-control.md) desplaza serialización35→45s y la caída a46s/55FPS/111.074ms;34–37s informan61/60/60/61FPS. ControlyaLOST frente ahumanoPLAYING: limita inferencia, sin ocultarlo. No se afirma cero caídas ni ausencia de todos los frames largos.
+
+La persona autorizó el **Xiaomi11TPro/2107113SG de2021 como referencia provisional exclusiva de002** (constitución1.2.0). QA aprobóSC-007 para ese alcance al revisar comparación, sesión humana y control del instrumento; no extrapola a otrosmóviles ni cambia el objetivo60FPS. [APKnormal restaurado/sin abrir](native-save-control.md), sin observer ni etiquetas. T015 completo sigue pendiente de consolidación y matricesPC/iOS; hardwareiOS no probado. [V4simulador](native-ipad-setup.md) usa Compatibility/AppleSoftwareRenderer para imagen/input y no se compara como rendimiento de un iPhone físico.
+
+### V4 y pendiente de cierre — 2026-10-16
+
+[iPadSimulator](native-ipad-setup.md) ya tiene el mínimo de entrada aprobado por QA, incluida [I4 BASE/FINAL](native-ipad-final-i4-human.md), con render Compatibility temporal/AppleSoftwareRenderer. Sus lecturas5–8FPS no se usan para SC-007 ni se comparan con el Xiaomi físico Mobile/Vulkan. La aceptación SC-007 exclusiva de002/Xiaomi provisional conserva el [control de guardado](native-save-control.md), el valle crudo54/55FPS y el frame24,453ms: no significa cero caídas, certificación de otro móvil o carga fría absoluta. No se hicieron más benchmarks. La consolidación global T015 espera ratón PC y revisión final de [matriz](native-validation-matrix.md), sin convertir esa espera en una carencia de rendimiento ya medida.
+
+### Estado vigente de matriz y entrega — 2026-10-16
+
+QA ya aprobó los mínimos de [ratónPC BASE/FINAL](native-pc-arte-cd-human.md) y [V4iPad](native-ipad-setup.md), además deAVD/muestreoXiaomi. Por tanto, la espera de ratón descrita en la actualización anterior está resuelta; [matriz consolidada](native-validation-matrix.md) y evidencia deT015 quedan listas para auditoría T016, sin otro benchmark. SC-007 conserva exclusivamente el dictamen002/Xiaomi provisional ya recibido, no cero caídas o certificación de otrasplataformas. Carga fríaabsoluta, memoriaexclusiva exactaGPU y hardwareiOS siguen sin certificación, sin convertirlos en métricasinventadas. Los54/55FPS, pico24,453ms, seleccionesPLAYING y controlLOSTsiguen íntegros.

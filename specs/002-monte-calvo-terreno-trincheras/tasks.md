@@ -15,7 +15,7 @@ description: "Primera iteración visual de Monte Calvo: terreno, conservación d
 
 El [flujo compartido](../../docs/DEVELOPMENT_WORKFLOW.md) gobierna ejecución y evidencia. Cada tarea identifica propietario, ruta, dependencias y verificación. `[P]` señala únicamente archivos independientes con prerrequisitos satisfechos; no autoriza editar simultáneamente la misma escena. Solo el orquestador registra `[X]` tras `APROBADO` de QA.
 
-El alcance artístico es estático: revisión visual/de integración y regresión existente, sin RED artificial ni pruebas que solo enumeren sprites. La adenda de preparación del 2026-10-16 delimita exclusivamente el arreglo previo de I4 en T019–T022, con preparación aprobada por QA; la implementación sigue pendiente de RED y su veredicto. No cambiar scripts, costos, input o geometría bajo las tareas artísticas; conservar los 18 IDs, checkboxes y evidencias originales.
+El alcance artístico es estático: revisión visual/de integración y regresión existente, sin RED artificial ni pruebas que solo enumeren sprites. La adenda de preparación del 2026-10-16 delimita exclusivamente el arreglo previo de I4 en T019–T022, cuyo ciclo RED → desarrollo → GREEN y veredicto están aprobados en el registro de ejecución. No cambiar scripts, costos, input o geometría bajo las tareas artísticas; conservar los 18 IDs, checkboxes y evidencias originales.
 
 ## Fase 1: Preparación y prerrequisitos
 
@@ -39,8 +39,8 @@ El alcance artístico es estático: revisión visual/de integración y regresió
 
 **Objetivo**: comprobar el terreno integrado sin cambiar reglas. **Criterio independiente**: resultados equivalentes de la matriz I1–I9 y contrato, más evidencia de entrada real separada de headless.
 
-- [ ] T008 [US2] godot-tester: ejecutar la regresión existente pertinente de `tests/unit/levels/test_nivel_montecalvo.gd`, `test_wave_spawner.gd` y sistemas/unidades aplicables, además de los escenarios I1–I9 de `quickstart.md` con ratón/toque en V1 y V3–V4 (iOS Simulator autorizado, hardware iOS no probado); registrar esperado/observado y limitaciones en `specs/002-monte-calvo-terreno-trincheras/evidence/us2.md`; depende de T007 y T022 aprobadas; comparar arte con la misma corrección I4 y no añadir UI o alterar tests para compensar fallos del arte.
-- [ ] T009 [US2] qa-validator: revisar de forma independiente `specs/002-monte-calvo-terreno-trincheras/contracts/visual-boundary.md`, el diff de `scenes/levels/Nivel_MonteCalvo.tscn` y los reportes T004/T007/T008/T022; aprobar o devolver terreno y conservación de mecánicas con causas concretas; depende de T008 y T022 aprobadas; solo lectura y veredicto, sin modificar el checkout ni marcar tareas.
+- [X] T008 [US2] godot-tester: ejecutar la regresión existente pertinente de `tests/unit/levels/test_nivel_montecalvo.gd`, `test_wave_spawner.gd` y sistemas/unidades aplicables, además de los escenarios I1–I9 de `quickstart.md` con ratón/toque en V1 y V3–V4 (iOS Simulator autorizado, hardware iOS no probado); registrar esperado/observado y limitaciones en `specs/002-monte-calvo-terreno-trincheras/evidence/us2.md`; depende de T007 y T022 aprobadas; comparar arte con la misma corrección I4 y no añadir UI o alterar tests para compensar fallos del arte.
+- [X] T009 [US2] qa-validator: revisar de forma independiente `specs/002-monte-calvo-terreno-trincheras/contracts/visual-boundary.md`, el diff de `scenes/levels/Nivel_MonteCalvo.tscn` y los reportes T004/T007/T008/T022; aprobar o devolver terreno y conservación de mecánicas con causas concretas; depende de T008 y T022 aprobadas; solo lectura y veredicto, sin modificar el checkout ni marcar tareas.
 
 ### Adenda US2 — defecto previo I4, separada del arte (preparación aprobada 2026-10-16)
 
@@ -55,16 +55,16 @@ El alcance artístico es estático: revisión visual/de integración y regresió
 
 **Objetivo**: añadir tierra excavada, madera y sacos sin cobertura o colisión. **Criterio independiente**: escenarios US3 y comparación con/sin capa de trincheras sobre el terreno aprobado.
 
-- [ ] T010 [US3] dev-godot: producir `assets/sprites/levels/monte_calvo/trincheras_atlas.png` y su `.import`, con piezas de excavación, madera, sacos y marco de rocas/hierba seca según T002 y terreno aprobado; registrar regiones de atlas en la escena al integrarlas; depende de T009 aprobada; tester/QA revisan coherencia artística antes de integrar, sin generar personajes, bandera, carteles o efectos.
-- [ ] T011 [US3] dev-godot: distribuir las piezas de T010 en `scenes/levels/MonteCalvoVisual.tscn`, adaptando solo el arte a posiciones actuales y manteniéndolo detrás de actores/pickups; depende de T010 aprobada; no añadir física, selección, restricciones de celda ni modificar `Nivel_MonteCalvo.tscn` fuera de la instancia visual aprobada.
-- [ ] T012 [US3] godot-tester: repetir las comprobaciones afectadas de lectura, costuras, recorte y picking de `quickstart.md` con trincheras en V1–V4 e I1–I5/I9; registrar en `specs/002-monte-calvo-terreno-trincheras/evidence/us3.md` comparaciones con/sin decoración y referencia; depende de T011; QA revisa US3/AC1–3 y SC-001/002/003/005 antes del cierre.
+- [X] T010 [US3] dev-godot: producir `assets/sprites/levels/monte_calvo/trincheras_atlas.png` y su `.import`, con piezas de excavación, madera, sacos y marco de rocas/hierba seca según T002 y terreno aprobado; registrar regiones de atlas en la escena al integrarlas; depende de T009 aprobada; tester/QA revisan coherencia artística antes de integrar, sin generar personajes, bandera, carteles o efectos.
+- [X] T011 [US3] dev-godot: distribuir las piezas de T010 en `scenes/levels/MonteCalvoVisual.tscn`, adaptando solo el arte a posiciones actuales y manteniéndolo detrás de actores/pickups; depende de T010 aprobada; no añadir física, selección, restricciones de celda ni modificar `Nivel_MonteCalvo.tscn` fuera de la instancia visual aprobada.
+- [X] T012 [US3] godot-tester: repetir las comprobaciones afectadas de lectura, costuras, recorte y picking de `quickstart.md` con trincheras en V1–V4 e I1–I5/I9; registrar en `specs/002-monte-calvo-terreno-trincheras/evidence/us3.md` comparaciones con/sin decoración y referencia; depende de T011; QA revisa US3/AC1–3 y SC-001/002/003/005 antes del cierre.
 
 ## Fase final: Regresión, evidencia y cierre
 
-- [ ] T013 godot-tester: ejecutar importación limpia y suite GUT completa de `tests/unit/` para el estado final según `specs/002-monte-calvo-terreno-trincheras/quickstart.md`; guardar comandos, códigos de retorno, resultados y comparación de archivos protegidos en `evidence/regression.md`; depende de T012 aprobada; no reparar lógica ni fabricar RED, y devolver cualquier regresión atribuible a desarrollo.
-- [ ] T014 godot-tester: ejecutar una partida completa y los escenarios separados de victoria/derrota de `specs/002-monte-calvo-terreno-trincheras/quickstart.md`; registrar resultados reales en `evidence/smoke.md`, distinguiendo señales/estado existentes de pantallas o controles que el nivel no tiene; depende de T013; una carencia previa se reporta y no se marca como aprobada.
-- [ ] T015 godot-tester: medir antes/después en Android de referencia y completar la matriz PC/iOS de `specs/002-monte-calvo-terreno-trincheras/quickstart.md`; registrar dispositivo, resolución efectiva, FPS/tiempos de frame, memoria de texturas, carga y limitaciones en `evidence/performance.md`; depende de T014; no publicar builds ni cambiar versión/firma/exportaciones, y no declarar 60 FPS sin medición.
-- [ ] T016 qa-validator: auditar `specs/002-monte-calvo-terreno-trincheras/spec.md`, `contracts/visual-boundary.md`, referencia, diff y reportes T012–T015 contra FR-001–013 y SC-001–007; depende de T015; emitir veredicto de entrega visual sin escribir archivos ni marcar tareas, dejando explícitos cualquier dispositivo o criterio pendiente.
+- [X] T013 godot-tester: ejecutar importación limpia y suite GUT completa de `tests/unit/` para el estado final según `specs/002-monte-calvo-terreno-trincheras/quickstart.md`; guardar comandos, códigos de retorno, resultados y comparación de archivos protegidos en `evidence/regression.md`; depende de T012 aprobada; no reparar lógica ni fabricar RED, y devolver cualquier regresión atribuible a desarrollo.
+- [X] T014 godot-tester: ejecutar una partida completa y los escenarios separados de victoria/derrota de `specs/002-monte-calvo-terreno-trincheras/quickstart.md`; registrar resultados reales en `evidence/smoke.md`, distinguiendo señales/estado existentes de pantallas o controles que el nivel no tiene; depende de T013; una carencia previa se reporta y no se marca como aprobada.
+- [X] T015 godot-tester: medir antes/después en Android de referencia y completar la matriz PC/iOS de `specs/002-monte-calvo-terreno-trincheras/quickstart.md`; registrar dispositivo, resolución efectiva, FPS/tiempos de frame, memoria de texturas, carga y limitaciones en `evidence/performance.md`; depende de T014; no publicar builds ni cambiar versión/firma/exportaciones, y no declarar 60 FPS sin medición.
+- [X] T016 qa-validator: auditar `specs/002-monte-calvo-terreno-trincheras/spec.md`, `contracts/visual-boundary.md`, referencia, diff y reportes T012–T015 contra FR-001–013 y SC-001–007; depende de T015; emitir veredicto de entrega visual sin escribir archivos ni marcar tareas, dejando explícitos cualquier dispositivo o criterio pendiente.
 - [ ] T017 docs-writer, consolidación: documentar únicamente el arte y estructura aprobados en `docs/ARCHITECTURE.md` y el estado visual aplicable en `docs/SPEC.md`, enlazando evidencia de `specs/002-monte-calvo-terreno-trincheras/`; depende de T016 aprobada; no graduar nuevas mecánicas ni atribuir pruebas históricas no realizadas.
 - [ ] T018 qa-validator: revisar la consolidación en `docs/ARCHITECTURE.md`, `docs/SPEC.md` y evidencia final de `specs/002-monte-calvo-terreno-trincheras/`; depende de T017; confirmar que el estado de juego coincide con el verificado en T013–T015 y que esas evidencias siguen válidas, o devolver al tester solo las comprobaciones invalidadas; emitir veredicto sin modificar checkout o tareas.
 
@@ -184,3 +184,40 @@ Preparación documental aprobada por QA: simulador iOS autorizado para V4, hardw
   exclusiva o cero caídas. [Control y procedencia](evidence/native-save-control.md).
   No se extrapola a otros dispositivos, futuras hordas, 003 o iOS. T015 y las
   restantes tareas mantienen sus checkboxes mientras falten PC/V4 y consolidación.
+
+- 2026-10-16: QA **APROBÓ el mínimo de entrada V4 en iPad Simulator**:
+  I1/I3 y correspondencia de coordenadas en la sesión humana, más I4 antes/después
+  con reserva12→15 y un soldado antes/después, sin gasto ni despliegue adicional.
+  [BASE](evidence/native-ipad-baseline-human.md) y
+  [FINAL](evidence/native-ipad-final-i4-human.md) conservan PRE/POST en PLAYING;
+  las capturas posteriores a LOST se identifican como tales. Esta aceptación
+  usa Compatibility/SoftwareRenderer y no certifica hardware iOS ni Mobile.
+  I2/I9 de iPad no se declaran demostrados; su cobertura táctil controlada
+  corresponde al AVD aprobado. T008 y el cierre siguen pendientes de los casos
+  de ratón PC antes/después y del dictamen global. **11/22 tareas marcadas**.
+
+- 2026-10-16: QA **APROBÓ la entrada de ratón PC en la composición BASE**:
+  I2 de la primera sesión humana conserva12→12 sin duplicado; la segunda
+  demuestra I1 en C (12→2), I4 con pickup único (11→14 sin soldado adicional)
+  e I9 en D (14→4), todos en PLAYING. Se reutiliza I3 previamente válido.
+  [Sesión1](evidence/native-pc-base-cd-human.md) y
+  [sesión2](evidence/native-pc-base-cd-human-run2.md) conservan los registros
+  separados; no se aprueban los gestos de la primera sesión posteriores a LOST.
+  Las etiquetas de prueba son pasivas y solo existen en copias temporales.
+  No se exige repetir BASE; faltan los casos de ratón FINAL y el dictamen
+  global. **11/22 tareas marcadas**.
+
+- 2026-10-16: QA **APROBÓ T008–T016**, incluidas T010/T011 y sus dependencias,
+  sobre el estado final congelado. La [matriz nativa](evidence/native-validation-matrix.md)
+  y la [sesión PC FINAL](evidence/native-pc-arte-cd-human.md) completan la
+  comparación de ratón: B12→12 sin duplicado, pickup12→15 sin soldado extra,
+  C15→5 y D14→4, con PRE/POST válidos en PLAYING. Se conservan las aprobaciones
+  separadas de AVD, Xiaomi humano e iPad Simulator, sin atribuir hardware iOS.
+  [Regresión](evidence/regression.md): importación limpia0,189/189 pruebas,
+  532 aserciones,95/97 invariantes protegidos y las dos excepciones aprobadas.
+  [Smoke](evidence/smoke.md) conserva partida humana hasta LOST y terminales
+  GUT separados; [rendimiento](evidence/performance.md) conserva la aceptación
+  provisional de SC-007 y sus picos/limitaciones. El dictamen global confirma
+  FR-001–013 y SC-001–007 sin hallazgos bloqueantes ni necesidad de repetir
+  pruebas. Se marcan las nueve tareas en orden de dependencia: **20/22**.
+  Habilitada T017; consolidación T017 y revisión T018 todavía pendientes.
