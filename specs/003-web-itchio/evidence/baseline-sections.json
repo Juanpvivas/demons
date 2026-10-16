@@ -1,0 +1,15 @@
+{
+  "native_presets": {
+    "Android": {
+      "sha256": "7f2724bc21fe1c737488ef7d67e49a092346cfab23f4aa12bdc84e953e3e7d4d",
+      "platform": "Android"
+    },
+    "iOS": {
+      "sha256": "88a63d829b1d110ccf6afa6541792fb515a53b510ab48614ef3c8198c0b3507f",
+      "platform": "iOS"
+    }
+  },
+  "input_section_sha256": "634d567d3e8da18298f194a4036f2cb9822176780ebb1da180072fca545d2df1",
+  "global_renderer": "mobile",
+  "web_preset_present": false
+}

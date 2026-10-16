@@ -344,24 +344,20 @@ usa siempre `queue_free()` y nunca `free()` — `free()` libera el nodo de
 forma inmediata y puede causar use-after-free si algo todavía tiene una
 referencia pendiente en el mismo frame.
 
-### 4.6 Convenciones de C# (si se usa)
+### 4.6 Compatibilidad del lenguaje con Web
 
-El proyecto tiene la build .NET habilitada (`project.godot`) y la
-constitución permite C# en sistemas puntuales justificados por rendimiento.
-Si eso llega a pasar, se siguen estas convenciones (no repetidas por
-sistema, se asumen desde este documento):
+El juego compartido usa GDScript. La constitución 2.0.0 retira la excepción
+anterior de introducir C# por rendimiento: Godot 4 no exporta actualmente
+proyectos C# a Web. Las convenciones C# previas quedan como historial del
+documento y no habilitan un sistema nuevo que excluya un destino. Una futura
+excepción exige comprobar compatibilidad y enmendar la constitución.
+[Restricción oficial de Godot](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html).
 
-- Scripts de nodo son `partial class` (requerido para que el generador de
-  Godot funcione).
-- Métodos y propiedades en `PascalCase`; variables locales en `camelCase`;
-  propiedades `[Export]` en `PascalCase`.
-- Delegados `[Signal]` siguen el patrón `<NombreEnPasado>EventHandler`
-  (ej. `EnemyDefeatedEventHandler`), consistente con la convención de
-  señales en tiempo pasado de la tabla de la sección 3.
-- Un `Resource` escrito en C# lleva el atributo `[GlobalClass]` — sin eso
-  el editor no lo reconoce en "New Resource" ni lo muestra en el picker.
-- `GetNode<T>()` se cachea en `_Ready()` igual que `@onready` en GDScript;
-  nunca se llama dentro de `_Process()`/`_PhysicsProcess()`.
+La sección `[dotnet]` heredada de `project.godot` no demuestra por sí sola
+una dependencia C# ni una exportación Web válida. El ejecutable del editor
+local puede ser .NET; la preparación de exportación Web usará la edición
+estándar y plantillas de la misma versión. Configurar y verificar esa ruta
+es trabajo de la feature 003, todavía pendiente de evidencia.
 
 ## 5. Composición de escenas (ejemplo concreto)
 
@@ -443,9 +439,14 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
 
 ## 7. Consideraciones multiplataforma
 
+- **Destinos del producto:** Web, con navegador en computador y móvil, y
+  aplicaciones Android/iOS. itch.io es el primer portal Web previsto.
+  Windows/macOS/Linux nativos se conservan como entornos de editor y prueba
+  local, sin instaladores del producto. Las capturas y mediciones históricas
+  de PC siguen identificadas como tales; no equivalen a resultados Web.
 - Input abstraído vía `InputMap` de Godot; no se hardcodean teclas/toques
-  directamente en la lógica de gameplay, para que Android/iOS (touch) y PC
-  (mouse/teclado) compartan la misma capa de lógica. Ejemplo concreto ya en
+  directamente en la lógica de gameplay, para que las aplicaciones móviles
+  y Web compartan la misma capa de lógica con toque o ratón. Ejemplo ya en
   el repo (`project.godot`, `001-soldado-defensor-oleadas`/T003): las
   acciones `select_cell` y `collect_pickup` mapean mouse click y touch tap
   al mismo evento lógico, sin tecla de teclado asociada; la distinción de
@@ -453,7 +454,17 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   `InputMap`.
 - UI (`HUD.tscn`) usa contenedores con anclas relativas, no posiciones fijas
   en píxeles, para adaptarse a distintas resoluciones y aspect ratios entre
-  dispositivos móviles y PC.
+  aplicaciones móviles y navegadores de computador/móvil.
+- **Ruta gráfica propuesta para 003, pendiente de implementación y
+  validación:** conservar `Mobile` como método nativo y configurar
+  `Compatibility` mediante un ajuste específico para Web. Este destino
+  requiere WebGL 2.0; no se presupone que una captura del editor valide su
+  resultado. [Exportación Web oficial](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html).
+- Las verificaciones Web identifican navegador, sistema/dispositivo, tamaño,
+  entrada y renderer. Deben comprobar carga, partida, redimensionamiento y
+  entrada dentro del navegador, incluida su presentación embebida cuando se
+  prepare itch.io. Se conserva la exigencia de 60 FPS en el Android de
+  referencia; los resultados nativos y Web se registran por separado.
 - Presets de exportación por plataforma se versionan en
   `export_presets.cfg`, sin credenciales ni keystores/certificados dentro
   del repositorio. Cada push a `main` exporta y sube automáticamente un
@@ -516,3 +527,4 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
 | 2026-09-13 | §6: cerrado el hueco de cobertura anterior — T046 de `001-soldado-defensor-oleadas` (validado por `qa-validator`) agrega el test simétrico de victoria de punta a punta con instancias reales (`Nivel_MonteCalvo.tscn`/`WaveManager`/`WaveSpawner`/`GameStateManager` reales, oleada de prueba acortada), cerrando la Fase Final de la feature. Consolidación de fin de feature: se confirma que las graduaciones de T050-T054 (gap de derrota del `Soldado`) y del hallazgo de motor de T053 (§4.2) ya estaban correctamente integradas, sin duplicados. |
 | 2026-09-15 | §7: sincronizado con la realidad — iOS/TestFlight ya no está pendiente, quedó operativo (`.github/workflows/deploy-ios-testflight.yml`, firma Manual en vez de Automatic, ver ese archivo para el detalle). Se agrega la política de versionado: ambos workflows de deploy de prueba ahora fallan a propósito si `export_presets.cfg` no tiene un bump de versión desde el último deploy exitoso — se detectó en esta sesión que el pipeline estaba re-subiendo repetidamente la misma versión (1.0/build 1) a TestFlight y Firebase sin ningún control. |
 | 2026-10-15 | §8: separación entre preparación Spec Kit y ejecución por agentes, TDD y referencia compartida de desarrollo; rutas de constitución actualizadas |
+| 2026-10-15 | §4.6/7: alineación con constitución 2.0.0 y destinos Web + Android/iOS; se retira la excepción C# incompatible con Web. Compatibility específico para Web y Mobile nativo se documentan como ruta pendiente de implementar/validar en 003; se conserva evidencia histórica PC. |

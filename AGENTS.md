@@ -2,7 +2,10 @@
 
 Este archivo reúne las instrucciones compartidas para cualquier asistente que
 trabaje en este repositorio: un juego 2D de defensa por carriles en Godot 4.x,
-con GDScript y pruebas GUT, orientado a Android, iOS y PC.
+con GDScript y pruebas GUT, orientado a Web y aplicaciones Android/iOS.
+Web incluye navegadores en computador y móvil; itch.io es el primer portal
+previsto. La ejecución nativa en PC se conserva para desarrollo y pruebas,
+sin instaladores Windows/macOS/Linux como destino de publicación.
 
 Mantén aquí el flujo común. `CLAUDE.md` importa esta guía y solo contiene la
 adaptación a Claude; no dupliques las reglas entre ambos archivos. El nombre
@@ -27,6 +30,11 @@ cárgalo explícitamente al iniciar el trabajo.
    confirma el cambio de prioridad antes de iniciar otra feature.
 4. **Lee las referencias aplicables.** No cambies mecánicas, balance o
    alcance sin una tarea que lo contemple.
+5. **Distingue el destino probado:** una prueba en el editor/ejecutable local,
+   en Web o en Android/iOS nativos acredita solo ese entorno. Conserva las
+   evidencias históricas de PC y registra las verificaciones Web por navegador
+   y dispositivo; no cierres pendientes de una feature anterior por cambiar
+   las plataformas del producto.
 
 ## Documentos de referencia
 
@@ -148,3 +156,4 @@ no afirmes haberla aplicado ni sustituyas su consulta por conocimiento genérico
 | 2026-10-15 | Instrucciones comunes trasladadas a `AGENTS.md`, con adaptación a otras herramientas y ruta real de la constitución |
 | 2026-10-15 | Spec Kit limitado a preparación; ejecución por agentes con TDD RED → desarrollo → GREEN → QA y guía operativa compartida |
 | 2026-10-15 | Personalizaciones trasladadas al preset local `demons-agent-tdd`, con workflow propio `demons-preparation` y verificador de instalación |
+| 2026-10-15 | Destinos Web + Android/iOS; navegador de computador incluido y PC nativo reservado a desarrollo/pruebas, sin convertir evidencia histórica en validación Web |

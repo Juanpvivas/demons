@@ -1,16 +1,23 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.0 → 1.1.0
-- Motivo: decisión de la persona (2026-10-15): Spec Kit prepara documentos;
-  los agentes implementan, prueban y validan, manteniendo TDD.
-- Principios modificados: II. Estándares de Testing: explicita RED antes de
-  desarrollo y GREEN antes de aprobar implementación; QA independiente.
-- Flujo actualizado: preparación Spec Kit separada de ejecución por agentes;
-  solo el orquestador marca tareas aprobadas; sin implementación genérica.
-- Referencias sincronizadas: AGENTS.md, CLAUDE.md, README.md,
-  docs/DEVELOPMENT_WORKFLOW.md, docs/ARCHITECTURE.md, roles y comando en
-  .claude/, skills/plantillas/workflow de Spec Kit y notas de proceso de 001.
-- Se conservan los cuatro principios originales y la ratificación inicial.
+- Version change: 1.1.0 → 2.0.0 (MAJOR)
+- Motivo: decisión de la persona (2026-10-15): priorizar Web para publicar
+  en itch.io, conservando aplicaciones Android/iOS; retirar instaladores
+  Windows/macOS/Linux como destinos del producto.
+- Principios modificados: III. Consistencia de Experiencia de Usuario:
+  Web en computador y móvil sustituye al destino PC nativo. I. Calidad de
+  Código: guía GDScript para el juego compartido, sin dependencia C#/.NET.
+- Restricciones modificadas: Web + Android + iOS; no introducir lenguaje
+  o dependencia que impida exportar el mismo gameplay a Web. La anterior
+  excepción de C# por rendimiento queda retirada. MAJOR porque redefine
+  el contrato de plataformas de un principio existente.
+- Referencias sincronizadas: AGENTS.md, README.md, docs/SPEC.md,
+  docs/ARCHITECTURE.md. La preparación de 003-web-itchio aplica esta versión;
+  los documentos/evidencias históricos de 001 y 002 se conservan.
+- Configuración y validación Web pendientes de implementación/evidencia;
+  la enmienda no acredita exportación, publicación ni cierre de 002.
+- Se mantienen TDD, QA independiente, separación Spec Kit/agentes,
+  los 60 FPS en Android de referencia y la ratificación inicial.
 - TODO diferido sin cambios: PERFORMANCE_LOAD_TIME_TARGET, pendiente de medir
   en dispositivo Android de referencia.
 -->
@@ -27,9 +34,9 @@ innegociable a medida que crece el roster de soldados y enemigos. La lógica de
 gameplay (economía, daño, detección de objetivos) DEBE mantenerse separada de
 la lógica puramente visual/de animación, para que cada una se pueda modificar
 sin romper la otra. Todo código nuevo DEBE seguir una guía de estilo consistente
-(GDScript style guide oficial de Godot, o las convenciones estándar de C# si se
-usa ese lenguaje) y no se mezclan ambos lenguajes dentro de un mismo sistema sin
-justificación explícita. Ninguna funcionalidad se integra a la rama principal
+(GDScript style guide oficial de Godot). El código compartido del juego DEBE
+seguir siendo exportable a Web, Android e iOS, sin depender de C#/.NET ni de
+extensiones que excluyan alguno de esos destinos. Ninguna funcionalidad se integra a la rama principal
 sin una revisión propia (auto-revisión o revisión de otra persona) que confirme
 que sigue estas reglas.
 **Razón**: el proyecto ya pasó por varias iteraciones de diseño del sistema de
@@ -61,7 +68,8 @@ pruebas, los cambios futuros pueden reintroducir bugs de balance ya resueltos.
 ### III. Consistencia de Experiencia de Usuario
 La interacción de colocación de unidades, lectura de recursos (munición, moral)
 y retroalimentación de combate DEBEN comportarse de forma consistente entre
-Android, iOS y PC, adaptando el input (touch vs. mouse/teclado) sin cambiar la
+Web (navegador en computador y móvil), Android e iOS nativos, adaptando el
+input (touch vs. mouse/teclado cuando corresponda) sin cambiar la
 lógica ni el significado de las acciones. Todo cambio de estado relevante para
 el jugador (soldado sin munición pasando a machete, enemigo recibiendo daño,
 oleada por llegar) DEBE comunicarse con retroalimentación visual y/o sonora
@@ -83,7 +91,11 @@ oleadas grandes. El tiempo de carga de un nivel NO DEBE exceder
 TODO(PERFORMANCE_LOAD_TIME_TARGET) — valor pendiente de definir tras medir en
 el dispositivo de referencia. Cualquier funcionalidad que arriesgue el
 framerate objetivo (partículas, cantidad simultánea de enemigos) DEBE probarse
-en el dispositivo de gama más baja soportada antes de mergear, no solo en PC.
+en el dispositivo de gama más baja soportada antes de mergear. Una ejecución
+en el editor o en un navegador de computador no sustituye esa medición.
+Las features Web DEBEN registrar además carga y rendimiento en los navegadores
+y dispositivos de su matriz de aceptación; no se extrapolan los resultados
+del ejecutable nativo al navegador del mismo dispositivo.
 **Razón**: como es un juego 2D pensado para escalar a hordas de enemigos en
 pantalla, el rendimiento en el hardware más débil del público objetivo (móviles
 de gama media/baja) es lo que determina si el juego es jugable, no el
@@ -93,10 +105,14 @@ rendimiento en la máquina de desarrollo.
 
 - Motor: Godot 4.x, licencia MIT — no se introduce dependencia de pago
   obligatoria para el desarrollo ni la publicación del juego.
-- Lenguaje: GDScript por defecto para prototipado; C# permitido solo en
-  sistemas donde el rendimiento lo justifique, documentando la razón.
-- Plataformas objetivo: Android, iOS, PC (Windows/macOS/Linux) — toda decisión
-  técnica nueva debe considerarse contra las tres antes de adoptarse.
+- Lenguaje del juego compartido: GDScript. No introducir C#/.NET como
+  dependencia del juego exportado mientras impida el destino Web; una futura
+  excepción requiere demostrar compatibilidad y enmendar esta constitución.
+- Plataformas objetivo: Web, Android e iOS. Web incluye navegador en computador
+  con ratón y en dispositivos móviles con toque; itch.io es el primer portal
+  previsto. No se publican instaladores Windows/macOS/Linux como producto.
+  El editor y la ejecución nativa local en PC siguen disponibles para desarrollo
+  y pruebas. Toda decisión técnica nueva debe considerar los tres destinos.
 - Datos de balance (unidades, enemigos, oleadas) definidos como `Resource`
   (`.tres`), nunca hardcodeados en scripts de lógica.
 
@@ -136,4 +152,4 @@ listo para implementar. Cualquier complejidad técnica que viole un principio
 DEBE justificarse explícitamente en el documento correspondiente (plan o spec)
 o rechazarse.
 
-**Version**: 1.1.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-15
+**Version**: 2.0.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-15

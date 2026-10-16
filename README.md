@@ -8,6 +8,18 @@ trincheras" por su ferocidad en combate cuerpo a cuerpo tras quedarse sin
 munición). Ver `docs/SPEC.md` para el diseño completo del juego y el
 contexto histórico.
 
+## Plataformas y publicación
+
+El objetivo es publicar primero una versión **Web jugable en itch.io**,
+desde el navegador de un computador o teléfono, conservando **Android e iOS
+como aplicaciones nativas**. Se admiten ratón y toque según el dispositivo.
+No se prevén instaladores propios para Windows, macOS o Linux; el editor y
+la ejecución nativa local en computador siguen siendo herramientas de desarrollo.
+
+La compatibilidad Web se prepara en
+[`003-web-itchio`](specs/003-web-itchio/spec.md). Esta decisión de alcance
+no significa que ya exista una versión exportada o publicada en el portal.
+
 ## Estado actual
 
 La feature `001-soldado-defensor-oleadas` (`specs/001-soldado-defensor-oleadas/`)
@@ -19,10 +31,19 @@ desplegar soldados nuevos), y un sistema de oleadas de enemigos crecientes en
 dificultad con condiciones de victoria y derrota. Es el primer nivel jugable
 de punta a punta del proyecto (`Nivel_MonteCalvo.tscn`).
 
+La primera iteración visual de Monte Calvo está integrada en la feature
+[`002-monte-calvo-terreno-trincheras`](specs/002-monte-calvo-terreno-trincheras/evidence/implementation-status.md),
+que continúa abierta con validaciones pendientes. El cambio de destinos no
+cierra esas tareas ni convierte sus pruebas nativas en pruebas Web.
+
 ## Requisitos
 
 - Godot 4.7 (motor MIT, sin regalías).
 - El proyecto se abre directamente con `project.godot` en la raíz del repo.
+- Para preparar Web se prevé usar Godot estándar y plantillas de exportación
+  de la misma versión. El gameplay compartido permanece en GDScript.
+  La ruta propuesta usa Compatibility para Web y conserva Mobile para las
+  aplicaciones nativas; su implementación y validación pertenecen a 003.
 
 ## Documentación del proyecto
 
@@ -57,6 +78,9 @@ reciben un mensaje de bienvenida en su primera contribución
 
 ## Builds de prueba
 
+- **Web / itch.io**: preparación en la feature 003; exportación,
+  comprobación en navegadores y paquete de publicación todavía pendientes.
+  Los pipelines móviles existentes se conservan.
 - **Android**: cada push a `main` exporta un APK debug (verificado en
   local: firma correctamente y pasa `apksigner verify`) y lo sube a
   **Firebase App Distribution** (`.github/workflows/deploy-android-testers.yml`).

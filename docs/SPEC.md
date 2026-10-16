@@ -23,15 +23,28 @@ Juego de defensa por carriles (estilo *Plants vs. Zombies*) inspirado en la hist
 
 ## 4. Plataformas objetivo
 
-- Android
-- iOS
-- PC (Windows / macOS / Linux)
+- **Web (prioridad de publicación):** jugable desde el navegador en computador
+  y dispositivos móviles; primer portal previsto: itch.io.
+- **Android e iOS:** se conservan como aplicaciones nativas objetivo.
+
+No se prevén instaladores propios Windows/macOS/Linux. El ratón sigue siendo
+una entrada válida en navegador de computador, y la ejecución nativa local
+en PC se mantiene como herramienta de desarrollo y pruebas. Esta decisión
+de alcance no acredita todavía una exportación Web ni modifica las mecánicas.
 
 ## 5. Motor y stack técnico
 
 - **Motor:** Godot 4.x
-- **Lenguaje:** por definir entre GDScript (más rápido para prototipar) o C# (más familiar viniendo de Kotlin). Recomendado: empezar en GDScript para el prototipo, migrar módulos críticos a C# solo si hay problemas de performance.
+- **Lenguaje:** GDScript compartido entre Web, Android e iOS. No se incorporan
+  dependencias C#/.NET al juego exportado que impidan Web. Godot 4 no admite
+  actualmente exportar proyectos C# a Web; cualquier cambio futuro requiere
+  demostrar compatibilidad y revisar la constitución. [Limitación oficial](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html).
 - **Licencia del motor:** MIT, sin regalías, sin costos.
+- **Portabilidad prevista (pendiente de implementar y validar en la feature
+  003):** Compatibility para Web mediante una configuración específica del
+  destino, manteniendo Mobile para las aplicaciones nativas. La exportación
+  y la publicación en itch.io requieren evidencia propia; las pruebas PC
+  históricas no acreditan funcionamiento en navegador.
 
 ## 6. Mecánicas core
 
@@ -39,7 +52,7 @@ Juego de defensa por carriles (estilo *Plants vs. Zombies*) inspirado en la hist
 
 **Recurso global: Munición**
 - Se obtiene principalmente de enemigos derrotados (dropean munición al morir, el jugador la recoge/recolecta). *(Supuesto — confirmar si además debería acumularse pasiva y automáticamente con el tiempo, estilo sol en PvZ.)*
-- **Confirmado** (spec `001-soldado-defensor-oleadas`, T031/T032): la recolección de la munición soltada es una acción **explícita** del jugador — tap/click sobre la pickup (`AmmoPickup`, `Area2D`) que aparece en la posición del enemigo derrotado — nunca automática por proximidad. Misma acción discreta (`collect_pickup` del `InputMap`) en touch (Android/iOS) y mouse (PC); ver rationale en `research.md` §3 de esa feature.
+- **Confirmado** (spec `001-soldado-defensor-oleadas`, T031/T032): la recolección de la munición soltada es una acción **explícita** del jugador — tap/click sobre la pickup (`AmmoPickup`, `Area2D`) que aparece en la posición del enemigo derrotado — nunca automática por proximidad. Misma acción discreta (`collect_pickup` del `InputMap`) en touch y mouse; ver rationale en `research.md` §3 de esa feature. Web debe conservar esa semántica en navegador móvil y de computador; su verificación pertenece a 003.
 - Uso dual, a elección del jugador:
   1. **Recargar** a un soldado ya desplegado en el tablero (le da más disparos antes de quedarse sin balas).
   2. **Desplegar** un soldado nuevo en una casilla libre.
@@ -138,3 +151,4 @@ Esta economía recrea la tensión histórica real: cada bala cuenta, y sobrevivi
 | 2026-09-12 | §10: graduado el cierre del gap crítico de T043 — resuelto por T050-T053 de `001-soldado-defensor-oleadas` (validados por `qa-validator`): `Soldado` gana salud (`UnitStats.max_health`), `take_damage()`/`soldier_defeated` (T050-T052) y recibe daño real de cada `Enemigo` en su "RangoMelee" (T053), con lo cual deja de ser indestructible y la condición de derrota de FR-013 vuelve a ser alcanzable. Se retira el bullet pendiente de §10 y se agrega a "Resueltas". El hallazgo de motor detrás de la implementación final de T053 (`Area2D` sobre `CharacterBody2D` con `move_and_slide()` no detecta overlaps de forma fiable contra un `StaticBody2D`) se gradúa por separado a `docs/ARCHITECTURE.md` §4.2, por ser una convención técnica de alcance de proyecto, no solo de esta feature. |
 | 2026-09-12 | §10: actualizada la entrada "Resueltas" del gap de derrota del `Soldado` para incluir T054 (`001-soldado-defensor-oleadas`, validada por `qa-validator`) — antes decía "cerrado por T050-T053" y atribuía la liberación de la celda del tablero a esas tareas, cuando en realidad `Soldado.take_damage()`/`soldier_defeated` (T050-T052) solo dan salud/derrota interna al `Soldado`; quien libera la celda (`BoardManager.free_cell()`, tanto para el soldado colocado a mano como para cualquiera desplegado dinámicamente) es `nivel_monte_calvo.gd` en T054. El gap queda ahora correctamente cerrado de punta a punta como bloque T050-T054. |
 | 2026-09-12 | §10: graduada nueva entrada "Resueltas" — T038+T044 de `001-soldado-defensor-oleadas` (validados por `qa-validator`) cierran el último eslabón de la condición de victoria/derrota: `GameStateManager` real reacciona en juego real tanto a `Enemigo.reached_defended_position` (vía método público, no `.connect()` directo) como a `WaveManager.all_waves_completed`, confirmado con test de integración de punta a punta con instancias reales para el camino de derrota. Se deja nota de hueco de cobertura no bloqueante para el simétrico de victoria (ver `docs/ARCHITECTURE.md` §6). |
+| 2026-10-15 | §4–5: Web para itch.io pasa a ser prioridad, se conservan Android/iOS nativos y se retiran los instaladores PC del alcance de producto; GDScript compartido protege compatibilidad Web. Configuración y pruebas del port pendientes en 003, sin cerrar 002 ni cambiar mecánicas. |

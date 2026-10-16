@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-16T03:16:12.564492+00:00",
+  "exit": 0,
+  "devices": [
+    {
+      "state": "device",
+      "details": {
+        "product": "vili_eea",
+        "model": "2107113SG",
+        "device": "vili"
+      }
+    }
+  ],
+  "serials_omitted": true,
+  "android_version": "14",
+  "chrome_version": "154.0.8037.94"
+}
