@@ -22,6 +22,10 @@ func _soldier(ammo := 3, position := Vector2.ZERO) -> Soldado:
 	# Solo interfaz y datos; el fixture NO cablea eventos del actor al presentador.
 	sprite.set_script(Visual)
 	sprite.sprite_frames = _shared_frames
+	sprite.scale = Vector2.ONE
+	sprite.offset = Vector2.ZERO
+	sprite.flip_h = false
+	sprite.flip_v = false
 	soldier.position = position
 	return add_child_autofree(soldier)
 
@@ -157,3 +161,30 @@ func test_presentation_callbacks_do_not_mutate_gameplay_or_resources() -> void:
 	visual.play_confirmed_morale()
 	await wait_seconds(0.30)
 	assert_eq([soldier._current_health, soldier._current_ammo, soldier._current_morale, soldier._mode, EconomyManager.collected_ammo], before)
+
+func test_authored_nonunit_scale_survives_morale_snapshot_and_reset_callbacks() -> void:
+	var visual := Visual.new()
+	visual.sprite_frames = Fixtures.frames()
+	var authored := Vector2(0.4, 0.5)
+	visual.scale = authored
+	visual.offset = Vector2(0, -3)
+	visual.flip_h = true
+	add_child_autofree(visual)
+	visual.reset_visual(Soldado.SoldierMode.RIFLE)
+	visual.play_confirmed_morale()
+	visual.play_confirmed_hit()
+	await wait_seconds(0.04)
+	assert_gt(visual.scale.x, authored.x)
+	assert_lte(visual.scale.x, authored.x * 1.10 + 0.001)
+	var snapshot: Dictionary = visual.capture_defeat_snapshot(Vector2(10, 20))
+	assert_has(snapshot, "visual_scale")
+	if snapshot.has("visual_scale"): assert_eq(snapshot["visual_scale"], authored)
+	visual.deactivate_visual()
+	visual.reset_visual(Soldado.SoldierMode.MELEE)
+	await wait_seconds(0.25)
+	assert_true(visual.visible)
+	assert_eq(visual.scale, authored, "Reset conserva escala propia, sin hardcodear ONE")
+	assert_eq(visual.offset, Vector2(0, -3))
+	assert_true(visual.flip_h)
+	assert_eq(visual.modulate, Color.WHITE)
+	assert_eq(visual.animation, &"melee_idle")

@@ -7,22 +7,29 @@ const EffectScene := preload("res://scenes/visuals/DeathVisualEffect.tscn")
 const EnemyDouble := preload("res://tests/unit/units/enemigo_double.gd")
 var _wave_before: Dictionary
 var _state_before: int
+var _ammo_before: int
 
 func before_each() -> void:
 	_wave_before = {}
 	for key: String in ["waves", "current_wave_index", "_total_enemies_in_current_wave", "_defeated_in_current_wave"]:
 		_wave_before[key] = WaveManager.get(key)
 	_state_before = GameStateManager._current_state
+	_ammo_before = EconomyManager.collected_ammo
 
 func after_each() -> void:
 	for key: String in _wave_before: WaveManager.set(key, _wave_before[key])
 	GameStateManager._current_state = _state_before
+	EconomyManager.collected_ammo = _ammo_before
 
 func _soldier() -> Soldado:
 	var soldier: Soldado = load("res://scenes/units/Soldado.tscn").instantiate()
 	var visual: AnimatedSprite2D = soldier.get_node("AnimatedSprite2D")
 	visual.set_script(Visual)
 	visual.sprite_frames = Fixtures.frames()
+	visual.scale = Vector2.ONE
+	visual.offset = Vector2.ZERO
+	visual.flip_h = false
+	visual.flip_v = false
 	soldier.position = Vector2(320, 240)
 	return add_child_autofree(soldier)
 
@@ -220,3 +227,20 @@ func test_two_effects_keep_position_progress_and_completion_independent() -> voi
 	assert_signal_not_emitted(second, "finished")
 	assert_eq(first.global_position, Vector2(10, 20))
 	assert_eq(second.global_position, Vector2(30, 40))
+
+func test_newly_deployed_soldier_is_registered_for_one_effect_and_immediate_cell_release() -> void:
+	var level: Node = load("res://scenes/levels/Nivel_MonteCalvo.tscn").instantiate()
+	add_child_autofree(level)
+	EconomyManager.add_ammo(20)
+	var cell := Vector2i(5, 5)
+	level._try_deploy_soldado(cell)
+	var soldier := level._board_manager.get_occupant(cell) as Soldado
+	assert_not_null(soldier, "Ruta de despliegue real produce un soldado nuevo")
+	if soldier == null: return
+	soldier.take_damage(soldier.stats.max_health)
+	assert_true(level._board_manager.is_cell_free(cell))
+	assert_true(soldier.is_queued_for_deletion())
+	var services := level.get_children().filter(func(node): return node is CombatVisualEffects)
+	assert_eq(services.size(), 1)
+	if services.is_empty(): return
+	assert_eq(services[0].get_active_effect_count(), 1, "Registro único del soldado desplegado, sin registro manual en fixture")
