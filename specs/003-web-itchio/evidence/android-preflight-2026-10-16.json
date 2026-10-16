@@ -1,0 +1,34 @@
+{
+  "date_utc": "2026-10-16T11:07:16Z",
+  "device": "Xiaomi 2107113SG",
+  "os": "Android 14",
+  "browser": "Chrome 154.0.8037.94",
+  "source_revision": "4a2915c5ceb075fbaa3ec7ce1e129a4c34aa497a",
+  "zip_sha256": "205d3916f21ce8c2b29eaf4bbbd804908dab7e9c93356355f4a335212eabfd71",
+  "source_script_sha256": "4e89dce236868c4203079e06937b5c8dbcbbd564382f373d2216d4aa8c700d7f",
+  "usb": "device",
+  "reverse": "tcp:8063 tcp:8063",
+  "http_server": "127.0.0.1:8063",
+  "screenshot": "android-preflight-2026-10-16.png",
+  "screenshot_sha256": "93c6bb541eaf34af308ea0db2d547f1820a0fcee91ebc67e79460367caaddf2b",
+  "physical_pixels": [
+    1080,
+    2400
+  ],
+  "orientation": "portrait",
+  "observed_css_viewport": [
+    392,
+    739
+  ],
+  "observed_css_iframe": [
+    393,
+    607
+  ],
+  "dpr": 2.75,
+  "accelerometer_rotation_readonly": 0,
+  "user_rotation_readonly": 0,
+  "current_page": "http://localhost:8063/phone-gate.html",
+  "observed_previous_session": "PERDIDA, reserva 0, soldados 0, Sin gestos; session already present before this preflight",
+  "agent_actions": "ADB read-only screen/settings inspection, restore local reverse only; no gameplay start, touch injection or settings change",
+  "case_status": "WAITING_FOR_PHYSICAL_LANDSCAPE_AND_HUMAN_START"
+}

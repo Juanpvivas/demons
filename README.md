@@ -8,6 +8,22 @@ trincheras" por su ferocidad en combate cuerpo a cuerpo tras quedarse sin
 munición). Ver `docs/SPEC.md` para el diseño completo del juego y el
 contexto histórico.
 
+## Plataformas y publicación
+
+El objetivo es publicar primero una versión **Web jugable en itch.io**,
+desde el navegador de un computador o teléfono, conservando **Android e iOS
+como aplicaciones nativas**. Se admiten ratón y toque según el dispositivo.
+No se prevén instaladores propios para Windows, macOS o Linux; el editor y
+la ejecución nativa local en computador siguen siendo herramientas de desarrollo.
+
+La feature [`003-web-itchio`](specs/003-web-itchio/spec.md) ya dispone de un
+paquete Web revisado localmente, con entrega aceptada por QA en Chrome de
+escritorio y Xiaomi horizontal: generación, interacción y smoke observados,
+corroboración visual de producción móvil y regreso sin recarga observada. Rendimiento sostenido,
+carga fría, memoria exclusiva y los entornos no probados conservan pendientes.
+El juego no está publicado en el portal. Consulta la
+[guía de exportación y estado de validación](docs/WEB_EXPORT.md).
+
 ## Estado actual
 
 La feature `001-soldado-defensor-oleadas` (`specs/001-soldado-defensor-oleadas/`)
@@ -19,10 +35,27 @@ desplegar soldados nuevos), y un sistema de oleadas de enemigos crecientes en
 dificultad con condiciones de victoria y derrota. Es el primer nivel jugable
 de punta a punta del proyecto (`Nivel_MonteCalvo.tscn`).
 
+La primera iteración visual de Monte Calvo está integrada en la feature
+[`002-monte-calvo-terreno-trincheras`](specs/002-monte-calvo-terreno-trincheras/tasks.md),
+aprobada con 22/22 tareas e integrada en `main` mediante el
+[PR #16](https://github.com/Juanpvivas/demons/pull/16). Su
+[matriz nativa](specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
+distingue PC, Android e iPad Simulator; la excepción de rendimiento del Xiaomi
+es exclusiva de 002 y no certifica Web. La rama 003 incorpora ese cierre sin
+convertir las pruebas nativas en pruebas de navegador. Su
+[seguimiento propio](specs/003-web-itchio/tasks.md) conserva el alcance aceptado;
+el [informe de integración](specs/003-web-itchio/evidence/main-integration.md)
+registra el nuevo paquete aprobado por QA desde `7309d8f`, su equivalencia con
+la entrega anterior y los límites que se conservan.
+
 ## Requisitos
 
 - Godot 4.7 (motor MIT, sin regalías).
 - El proyecto se abre directamente con `project.godot` en la raíz del repo.
+- Para exportar Web se usa Godot estándar oficial **4.7.1** y templates de
+  igual versión. El gameplay compartido permanece en GDScript.
+  Compatibility se aplica solo a Web y Mobile se conserva para las apps
+  nativas. [Requisitos y procedimiento](docs/WEB_EXPORT.md).
 
 ## Documentación del proyecto
 
@@ -32,6 +65,7 @@ de punta a punta del proyecto (`Nivel_MonteCalvo.tscn`).
 | [CLAUDE.md](CLAUDE.md) | Punto de entrada de Claude; importa `AGENTS.md` |
 | [docs/DEVELOPMENT_WORKFLOW.md](docs/DEVELOPMENT_WORKFLOW.md) | Preparación con Spec Kit, ejecución por agentes y ciclo TDD |
 | [tools/speckit/README.md](tools/speckit/README.md) | Preset propio, workflow de preparación y verificación tras actualizar Spec Kit |
+| [docs/WEB_EXPORT.md](docs/WEB_EXPORT.md) | Generación del ZIP Web, paquetes identificados, comprobaciones y futura carga manual en itch.io |
 | [.specify/memory/constitution.md](.specify/memory/constitution.md) | Principios no negociables (calidad, testing, UX, rendimiento) |
 | `docs/SPEC.md` | Diseño del juego: mecánicas, economía, contexto histórico, alcance del MVP |
 | `docs/ARCHITECTURE.md` | Convenciones técnicas: estructura de carpetas, nombres, patrones |
@@ -57,6 +91,18 @@ reciben un mensaje de bienvenida en su primera contribución
 
 ## Builds de prueba
 
+- **Web / itch.io**: `tools/web/export.sh` genera `build/demons-web.zip` y su
+  manifiesto; exportación local, PCK y arranque del ZIP extraído verificados.
+  El workflow `export-web.yml` adjunta artefactos sin publicar; la
+  [exportación remota anterior](https://github.com/Juanpvivas/demons/actions/runs/38903800209)
+  y el [CI anterior](https://github.com/Juanpvivas/demons/actions/runs/38903800369)
+  terminaron correctamente antes de integrar el cierre de 002. El paquete
+  integrado quedó verificado; consulta los
+  [Checks del PR #15](https://github.com/Juanpvivas/demons/pull/15/checks)
+  para el CI de cada revisión publicada. Entrada y smoke están aprobados en su
+  alcance y QA aceptó la entrega 003; la demo sigue en desarrollo, con las
+  mediciones y los entornos no certificados identificados explícitamente.
+  [Guía y matriz real](docs/WEB_EXPORT.md).
 - **Android**: cada push a `main` exporta un APK debug (verificado en
   local: firma correctamente y pasa `apksigner verify`) y lo sube a
   **Firebase App Distribution** (`.github/workflows/deploy-android-testers.yml`).

@@ -1,0 +1,14 @@
+{
+  "revision": "4a2915c5ceb075fbaa3ec7ce1e129a4c34aa497a",
+  "source_dirty": false,
+  "clean_status_after": "",
+  "manifest_files_match": true,
+  "root_candidate_matches": true,
+  "zip_sha_matches": true,
+  "member_count": 12,
+  "max_member_bytes": 39513091,
+  "zip_bytes": 14893307,
+  "zip_sha256": "205d3916f21ce8c2b29eaf4bbbd804908dab7e9c93356355f4a335212eabfd71",
+  "uncompressed_bytes": 44652145,
+  "license_copies_match": true
+}

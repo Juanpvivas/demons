@@ -345,24 +345,22 @@ usa siempre `queue_free()` y nunca `free()` — `free()` libera el nodo de
 forma inmediata y puede causar use-after-free si algo todavía tiene una
 referencia pendiente en el mismo frame.
 
-### 4.6 Convenciones de C# (si se usa)
+### 4.6 Compatibilidad del lenguaje con Web
 
-El proyecto tiene la build .NET habilitada (`project.godot`) y la
-constitución permite C# en sistemas puntuales justificados por rendimiento.
-Si eso llega a pasar, se siguen estas convenciones (no repetidas por
-sistema, se asumen desde este documento):
+El juego compartido usa GDScript. La enmienda 2.0.0, conservada en la
+constitución 2.1.0, retira la excepción
+anterior de introducir C# por rendimiento: Godot 4 no exporta actualmente
+proyectos C# a Web. Las convenciones C# previas quedan como historial del
+documento y no habilitan un sistema nuevo que excluya un destino. Una futura
+excepción exige comprobar compatibilidad y enmendar la constitución.
+[Restricción oficial de Godot](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html).
 
-- Scripts de nodo son `partial class` (requerido para que el generador de
-  Godot funcione).
-- Métodos y propiedades en `PascalCase`; variables locales en `camelCase`;
-  propiedades `[Export]` en `PascalCase`.
-- Delegados `[Signal]` siguen el patrón `<NombreEnPasado>EventHandler`
-  (ej. `EnemyDefeatedEventHandler`), consistente con la convención de
-  señales en tiempo pasado de la tabla de la sección 3.
-- Un `Resource` escrito en C# lleva el atributo `[GlobalClass]` — sin eso
-  el editor no lo reconoce en "New Resource" ni lo muestra en el picker.
-- `GetNode<T>()` se cachea en `_Ready()` igual que `@onready` en GDScript;
-  nunca se llama dentro de `_Process()`/`_PhysicsProcess()`.
+La sección `[dotnet]` heredada de `project.godot` no implica una dependencia
+C# del gameplay. La exportación Web usa Godot estándar oficial **4.7.1** y
+templates de esa misma versión, verificados en la feature 003. La edición
+Mono local se conserva para desarrollo/pruebas nativos. La aceptación Web
+es acotada a los navegadores y dispositivos de su matriz, no universal.
+[Herramientas y evidencia](../specs/003-web-itchio/evidence/toolchain.md).
 
 ## 5. Composición de escenas (ejemplo concreto)
 
@@ -487,27 +485,57 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
 
 ## 7. Consideraciones multiplataforma
 
+- **Destinos del producto:** Web, con navegador en computador y móvil, y
+  aplicaciones Android/iOS. itch.io es el primer portal Web previsto.
+  Windows/macOS/Linux nativos se conservan como entornos de editor y prueba
+  local, sin instaladores del producto. Las capturas y mediciones históricas
+  de PC siguen identificadas como tales; no equivalen a resultados Web.
 - Input abstraído vía `InputMap` de Godot; no se hardcodean teclas/toques
-  directamente en la lógica de gameplay, para que Android/iOS (touch) y PC
-  (mouse/teclado) compartan la misma capa de lógica. Ejemplo concreto ya en
+  directamente en la lógica de gameplay, para que las aplicaciones móviles
+  y Web compartan la misma capa de lógica con toque o ratón. Ejemplo ya en
   el repo (`project.godot`, `001-soldado-defensor-oleadas`/T003): las
-  acciones `select_cell` y `collect_pickup` mapean mouse click y touch tap
-  al mismo evento lógico, sin tecla de teclado asociada; la distinción de
-  qué gesto significa cada una queda en la lógica de gameplay, no en el
-  `InputMap`.
-- **Recolección antes de despliegue:** `_unhandled_input()` del nivel corre
-  antes del physics picking de `AmmoPickup` (`Area2D`). Si bajo el punto
-  convertido a mundo existe una pickup visible y pickable, el nivel cede
-  el evento al picking y no intenta desplegar. Sin pickup se conservan la
-  comprobación de ocupación y el gasto normal, tanto para mouse real como
-  para mouse emulado por touch; filtrar este último rompería el despliegue
-  móvil. La corrección de 002 consulta las formas existentes en la física
-  2D de hilo principal actual, sin cambiar InputMap, radio de pickup o
-  transformación de coordenadas. Cambiar el hilo de física requeriría
-  revisar esa consulta y el enrutamiento como otro alcance.
+  acciones `select_cell` y `collect_pickup` conservan entradas mouse/touch,
+  sin tecla de teclado asociada. En la ruta Android comprobada, las acciones
+  llegan mediante el mouse emulado del toque; no se debe descartarlo ni
+  suponer que `InputEventScreenTouch` activa por sí solo esas acciones.
+  La distinción entre recoger y desplegar pertenece al enrutamiento del nivel.
+- **Precedencia de recolección validada en 003/T015–T018 y 002/T019–T022:** Godot procesa
+  `_unhandled_input()` antes del physics picking. El nivel consulta si el
+  punto cae sobre una `AmmoPickup` visible/pickable y cede ese evento al
+  picking, evitando desplegar/cobrar con el mismo gesto. Sin pickup conserva
+  ocupación y gasto normal. No cambia InputMap, radio ni coordenadas. No recoge desde el
+  nivel ni modifica las recompensas de pickups solapadas. La consulta usa
+  las formas reales con física 2D en el hilo principal actual; activar un
+  hilo separado exigiría revisar ese acceso. RED de dispatch real, GREEN
+  normal/emulado y comprobación física Android respaldan esta convención.
+  [Corrección Web](../specs/003-web-itchio/evidence/t017-green.md) y
+  [regresión nativa](../specs/002-monte-calvo-terreno-trincheras/evidence/t021-green.md),
+  con validaciones de entrada propias de cada plataforma.
 - UI (`HUD.tscn`) usa contenedores con anclas relativas, no posiciones fijas
   en píxeles, para adaptarse a distintas resoluciones y aspect ratios entre
-  dispositivos móviles y PC.
+  aplicaciones móviles y navegadores de computador/móvil.
+- **Ruta gráfica implementada y validada en 003:** `Mobile` se conserva como
+  método nativo y `rendering/renderer/rendering_method.web="gl_compatibility"`
+  selecciona Compatibility/WebGL 2.0 para Web. El preset `Web` exporta con un
+  hilo, sin GDExtension ni PWA y canvas adaptativo. La evidencia proviene del
+  navegador y del Xiaomi horizontal; una captura del editor no la sustituye.
+  [Guía y alcance validado](WEB_EXPORT.md).
+- **Paquete Web:** `tools/web/export.sh`, con `GODOT_WEB_BIN` estándar 4.7.1,
+  produce `build/web/index.html`, sus compañeros, ZIP y manifest exterior.
+  Incluye recursos de producción con exclusiones de internos: seleccionar
+  solo escenas omitió clases y oleadas cargadas desde scripts. El contenido
+  real del PCK, sus diez oleadas y las licencias se inspeccionan además del ZIP.
+  `build/.gdignore` evita importar la salida; los artefactos no se versionan.
+  El workflow `export-web.yml` adjunta un ZIP descargable, sin publicar en
+  itch.io. Su [run remoto anterior](https://github.com/Juanpvivas/demons/actions/runs/38903800209)
+  terminó con SUCCESS antes de integrar el cierre de 002; el nuevo estado debe
+  comprobarse por separado. [Paquetes y alcance](WEB_EXPORT.md#artefacto-de-ci).
+  El CI existente conserva GUT/importación y los deploys nativos no cambiaron.
+- Las verificaciones Web identifican navegador, sistema/dispositivo, tamaño,
+  entrada y renderer. Deben comprobar carga, partida, redimensionamiento y
+  entrada dentro del navegador, incluida su presentación embebida cuando se
+  prepare itch.io. Se conserva la exigencia de 60 FPS en el Android de
+  referencia; los resultados nativos y Web se registran por separado.
 - Presets de exportación por plataforma se versionan en
   `export_presets.cfg`, sin credenciales ni keystores/certificados dentro
   del repositorio. Cada push a `main` exporta y sube automáticamente un
@@ -522,7 +550,8 @@ gestos humanos sobre iPad Simulator. iPad usó Compatibility en copias temporale
 los presets y el renderer Mobile de producción permanecieron intactos. No se
 acredita hardware iOS ni se toma el SoftwareRenderer del simulador como
 rendimiento de un iPhone. La [aceptación de rendimiento](../specs/002-monte-calvo-terreno-trincheras/evidence/performance.md)
-se limita a 002/Xiaomi 11T Pro físico provisional según la constitución 1.2.0,
+se limita a 002/Xiaomi 11T Pro físico provisional por la enmienda 1.2.0,
+conservada en la constitución 2.1.0,
 con los picos y límites del instrumento conservados; no se extrapola a otros
 dispositivos o features.
 
@@ -580,4 +609,7 @@ dispositivos o features.
 | 2026-09-13 | §6: cerrado el hueco de cobertura anterior — T046 de `001-soldado-defensor-oleadas` (validado por `qa-validator`) agrega el test simétrico de victoria de punta a punta con instancias reales (`Nivel_MonteCalvo.tscn`/`WaveManager`/`WaveSpawner`/`GameStateManager` reales, oleada de prueba acortada), cerrando la Fase Final de la feature. Consolidación de fin de feature: se confirma que las graduaciones de T050-T054 (gap de derrota del `Soldado`) y del hallazgo de motor de T053 (§4.2) ya estaban correctamente integradas, sin duplicados. |
 | 2026-09-15 | §7: sincronizado con la realidad — iOS/TestFlight ya no está pendiente, quedó operativo (`.github/workflows/deploy-ios-testflight.yml`, firma Manual en vez de Automatic, ver ese archivo para el detalle). Se agrega la política de versionado: ambos workflows de deploy de prueba ahora fallan a propósito si `export_presets.cfg` no tiene un bump de versión desde el último deploy exitoso — se detectó en esta sesión que el pipeline estaba re-subiendo repetidamente la misma versión (1.0/build 1) a TestFlight y Firebase sin ningún control. |
 | 2026-10-15 | §8: separación entre preparación Spec Kit y ejecución por agentes, TDD y referencia compartida de desarrollo; rutas de constitución actualizadas |
+| 2026-10-15 | §4.6/7: alineación con constitución 2.0.0 y destinos Web + Android/iOS; se retira la excepción C# incompatible con Web. Compatibility específico para Web y Mobile nativo se documentan como ruta pendiente de implementar/validar en 003; se conserva evidencia histórica PC. |
+| 2026-10-16 | §4.6/7: estado verificado de 003 en su alcance Web: estándar 4.7.1, Compatibility específico/un hilo, Mobile nativo conservado, ZIP/PCK/licencias y artefacto CI sin publicación. Se gradúa la precedencia pickup→despliegue validada con RED/GREEN y toque físico; las mediciones y entornos no certificados mantienen sus límites. |
 | 2026-10-16 | T017 de `002-monte-calvo-terreno-trincheras`, tras QA T016: §2/§5 documentan la subescena visual estática aislada y sus recursos; se corrige la descripción del nivel para reflejar WaveSpawner creado por código y ausencia de HUD integrado. §6/§7 documentan la precedencia de pickup→despliegue aprobada con TDD y distinguen regresión de entrada real, con límites de iPad Simulator y Xiaomi provisional. |
+| 2026-10-16 | Integración de main tras PR #16: se preservan la escena visual y la validación nativa 002 junto con Web/Compatibility de 003; constitución 2.1.0 combina sus decisiones sin extrapolar pruebas ni rendimiento entre plataformas. |

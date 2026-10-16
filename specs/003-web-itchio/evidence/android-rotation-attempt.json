@@ -1,0 +1,19 @@
+{
+  "time_utc": "2026-10-16T11:09:30.060283+00:00",
+  "before": {
+    "time_utc": "2026-10-16T11:09:30.060283+00:00",
+    "accelerometer_rotation": "0",
+    "user_rotation": "0"
+  },
+  "attempt": {
+    "scope": "settings put system user_rotation 1 only; accelerometer_rotation untouched",
+    "exit_code": 255,
+    "device_error": "SecurityException: com.android.shell was not granted android.permission.WRITE_SETTINGS"
+  },
+  "after": {
+    "accelerometer_rotation": "0",
+    "user_rotation": "0"
+  },
+  "result": "No setting changed; no restoration required; manual rotation remains pending",
+  "agent_actions": "No permission grants, bypass, gameplay start or touch injection"
+}

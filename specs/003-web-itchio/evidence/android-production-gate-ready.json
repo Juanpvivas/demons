@@ -1,0 +1,22 @@
+{
+  "prepared_utc": "2026-10-16T12:37:24.315138+00:00",
+  "url": "http://localhost:8063/phone-production-check.html",
+  "button": "Comenzar producción",
+  "game_started_by_agent": false,
+  "iframe_initially_present": false,
+  "source": "phone-production-check.html",
+  "source_sha256": "59ce060a362c744428ca77f9df48f5d0fc687a366294ecb62f483687319bd2bc",
+  "production_zip_sha256": "205d3916f21ce8c2b29eaf4bbbd804908dab7e9c93356355f4a335212eabfd71",
+  "temporary_log_reader": "/private/tmp/demons-web-final-003/read_android_production_console.mjs",
+  "temporary_log": "/private/tmp/demons-web-final-003/android-production-console.jsonl",
+  "reader_status": "prepared, not running",
+  "storage_key": "demons-web-production-probe-003-v1",
+  "retrieval": "Runtime.enable/consoleAPICalled only; select own production-check page, no Runtime.evaluate/input. New page emits restored own-localStorage data on later load if needed.",
+  "limits": [
+    "No cold-cache claim; cache preserved.",
+    "iframe load/nav timings are not first rendered game frame.",
+    "Parent rAF is not game FPS.",
+    "Optional nonstandard JS heap is not game-only memory, PSS, WASM total or VRAM.",
+    "visibility records own document state only, no other-tab URL or content."
+  ]
+}

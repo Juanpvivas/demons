@@ -1,0 +1,32 @@
+{
+  "start": "2026-10-16T03:43:24.448Z",
+  "captured": "2026-10-16T03:43:41.738Z",
+  "canvas": {
+    "height": 648,
+    "rect": {
+      "height": 648,
+      "width": 1152
+    },
+    "width": 1152
+  },
+  "logs": [
+    {
+      "level": "log",
+      "message": "Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org",
+      "timestamp": "2026-10-16T03:43:28.103Z",
+      "url": "http://127.0.0.1:8061/checkout/index.js"
+    },
+    {
+      "level": "log",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+      "timestamp": "2026-10-16T03:43:28.198Z",
+      "url": "http://127.0.0.1:8061/checkout/index.js"
+    },
+    {
+      "level": "log",
+      "message": "Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.",
+      "timestamp": "2026-10-16T03:43:28.278Z",
+      "url": "http://127.0.0.1:8061/checkout/index.js"
+    }
+  ]
+}

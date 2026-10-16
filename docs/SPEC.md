@@ -23,15 +23,29 @@ Juego de defensa por carriles (estilo *Plants vs. Zombies*) inspirado en la hist
 
 ## 4. Plataformas objetivo
 
-- Android
-- iOS
-- PC (Windows / macOS / Linux)
+- **Web (prioridad de publicación):** jugable desde el navegador en computador
+  y dispositivos móviles; primer portal previsto: itch.io.
+- **Android e iOS:** se conservan como aplicaciones nativas objetivo.
+
+No se prevén instaladores propios Windows/macOS/Linux. El ratón sigue siendo
+una entrada válida en navegador de computador, y la ejecución nativa local
+en PC se mantiene como herramienta de desarrollo y pruebas. La entrega 003
+cuenta con exportación y validación Web acotada; no modifica las mecánicas ni
+implica una publicación en el portal. [Alcance y evidencias](WEB_EXPORT.md).
 
 ## 5. Motor y stack técnico
 
 - **Motor:** Godot 4.x
-- **Lenguaje:** por definir entre GDScript (más rápido para prototipar) o C# (más familiar viniendo de Kotlin). Recomendado: empezar en GDScript para el prototipo, migrar módulos críticos a C# solo si hay problemas de performance.
+- **Lenguaje:** GDScript compartido entre Web, Android e iOS. No se incorporan
+  dependencias C#/.NET al juego exportado que impidan Web. Godot 4 no admite
+  actualmente exportar proyectos C# a Web; cualquier cambio futuro requiere
+  demostrar compatibilidad y revisar la constitución. [Limitación oficial](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html).
 - **Licencia del motor:** MIT, sin regalías, sin costos.
+- **Portabilidad validada en 003:** Compatibility específico para Web, con
+  Godot estándar 4.7.1 y un hilo, manteniendo Mobile para las apps nativas.
+  QA aceptó la entrega en Chrome de escritorio y Xiaomi/Chrome horizontal;
+  rendimiento sostenido y entornos no probados conservan límites explícitos.
+  El paquete está revisado localmente y no publicado en itch.io.
 
 ## 6. Mecánicas core
 
@@ -39,8 +53,8 @@ Juego de defensa por carriles (estilo *Plants vs. Zombies*) inspirado en la hist
 
 **Recurso global: Munición**
 - Se obtiene principalmente de enemigos derrotados (dropean munición al morir, el jugador la recoge/recolecta). *(Supuesto — confirmar si además debería acumularse pasiva y automáticamente con el tiempo, estilo sol en PvZ.)*
-- **Confirmado** (spec `001-soldado-defensor-oleadas`, T031/T032): la recolección de la munición soltada es una acción **explícita** del jugador — tap/click sobre la pickup (`AmmoPickup`, `Area2D`) que aparece en la posición del enemigo derrotado — nunca automática por proximidad. Misma acción discreta (`collect_pickup` del `InputMap`) en touch (Android/iOS) y mouse (PC); ver rationale en `research.md` §3 de esa feature.
-- **Precedencia confirmada** (`002-monte-calvo-terreno-trincheras`, T019–T022): un clic/toque sobre una pickup recoge su munición sin desplegar además un soldado ni gastar el costo de despliegue, aunque la reserva ya sea suficiente y su celda esté libre. El despliegue sigue requiriendo un gesto sobre una celda libre sin pickup y fondos suficientes. La corrección separada pasó [RED/GREEN y regresión nativas](../specs/002-monte-calvo-terreno-trincheras/evidence/t021-green.md); la [matriz de entrada](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md) distingue ratón, emulación y dispositivos físicos.
+- **Confirmado** (spec `001-soldado-defensor-oleadas`, T031/T032): la recolección de la munición soltada es una acción **explícita** del jugador — tap/click sobre la pickup (`AmmoPickup`, `Area2D`) que aparece en la posición del enemigo derrotado — nunca automática por proximidad. Misma acción discreta (`collect_pickup` del `InputMap`) en touch y mouse; ver rationale en `research.md` §3 de esa feature. Web debe conservar esa semántica en navegador móvil y de computador; su verificación pertenece a 003.
+- **Precedencia confirmada** (`002-monte-calvo-terreno-trincheras`, T019–T022): un clic/toque sobre una pickup recoge su munición sin desplegar además un soldado ni gastar el costo de despliegue, aunque la reserva ya sea suficiente y su celda esté libre. El despliegue sigue requiriendo un gesto sobre una celda libre sin pickup y fondos suficientes. La corrección separada pasó [RED/GREEN y regresión nativas](../specs/002-monte-calvo-terreno-trincheras/evidence/t021-green.md); la [matriz de entrada](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md) distingue ratón, emulación y dispositivos físicos. La [verificación Web de 003/T015–T018](../specs/003-web-itchio/evidence/t017-green.md) conserva su alcance propio en navegador.
 - Uso dual, a elección del jugador:
   1. **Recargar** a un soldado ya desplegado en el tablero (le da más disparos antes de quedarse sin balas).
   2. **Desplegar** un soldado nuevo en una casilla libre.
@@ -110,7 +124,7 @@ recogen PC, Android y iPad Simulator. La validación de iPad usa Compatibility
 temporal; no acredita un iPhone/iPad físico ni el renderer Mobile de iOS.
 El [rendimiento aprobado](../specs/002-monte-calvo-terreno-trincheras/evidence/performance.md)
 se limita a esta feature y al Xiaomi 11T Pro físico como referencia provisional,
-según la constitución 1.2.0. Conserva los picos y la perturbación del observador
+según la enmienda 1.2.0, conservada en la constitución 2.1.0. Conserva los picos y la perturbación del observador
 documentados; no certifica otros dispositivos ni ausencia de toda caída.
 
 ## 9. Alcance del MVP (primera versión jugable)
@@ -159,4 +173,7 @@ documentados; no certifica otros dispositivos ni ausencia de toda caída.
 | 2026-09-12 | §10: graduado el cierre del gap crítico de T043 — resuelto por T050-T053 de `001-soldado-defensor-oleadas` (validados por `qa-validator`): `Soldado` gana salud (`UnitStats.max_health`), `take_damage()`/`soldier_defeated` (T050-T052) y recibe daño real de cada `Enemigo` en su "RangoMelee" (T053), con lo cual deja de ser indestructible y la condición de derrota de FR-013 vuelve a ser alcanzable. Se retira el bullet pendiente de §10 y se agrega a "Resueltas". El hallazgo de motor detrás de la implementación final de T053 (`Area2D` sobre `CharacterBody2D` con `move_and_slide()` no detecta overlaps de forma fiable contra un `StaticBody2D`) se gradúa por separado a `docs/ARCHITECTURE.md` §4.2, por ser una convención técnica de alcance de proyecto, no solo de esta feature. |
 | 2026-09-12 | §10: actualizada la entrada "Resueltas" del gap de derrota del `Soldado` para incluir T054 (`001-soldado-defensor-oleadas`, validada por `qa-validator`) — antes decía "cerrado por T050-T053" y atribuía la liberación de la celda del tablero a esas tareas, cuando en realidad `Soldado.take_damage()`/`soldier_defeated` (T050-T052) solo dan salud/derrota interna al `Soldado`; quien libera la celda (`BoardManager.free_cell()`, tanto para el soldado colocado a mano como para cualquiera desplegado dinámicamente) es `nivel_monte_calvo.gd` en T054. El gap queda ahora correctamente cerrado de punta a punta como bloque T050-T054. |
 | 2026-09-12 | §10: graduada nueva entrada "Resueltas" — T038+T044 de `001-soldado-defensor-oleadas` (validados por `qa-validator`) cierran el último eslabón de la condición de victoria/derrota: `GameStateManager` real reacciona en juego real tanto a `Enemigo.reached_defended_position` (vía método público, no `.connect()` directo) como a `WaveManager.all_waves_completed`, confirmado con test de integración de punta a punta con instancias reales para el camino de derrota. Se deja nota de hueco de cobertura no bloqueante para el simétrico de victoria (ver `docs/ARCHITECTURE.md` §6). |
+| 2026-10-15 | §4–5: Web para itch.io pasa a ser prioridad, se conservan Android/iOS nativos y se retiran los instaladores PC del alcance de producto; GDScript compartido protege compatibilidad Web. Configuración y pruebas del port pendientes en 003, sin cerrar 002 ni cambiar mecánicas. |
+| 2026-10-16 | §4–5: referencia de portabilidad sincronizada con la entrega 003 aceptada en su alcance Chrome escritorio/Xiaomi horizontal; paquete revisado localmente, sin publicación, soporte universal o certificación de rendimiento sostenido. No se cierra 002. |
 | 2026-10-16 | T017 de `002-monte-calvo-terreno-trincheras`, tras QA T016: §8 documenta el entorno pictórico y las trincheras estáticas aprobadas, con placeholders e interfaces pendientes; §10 resuelve solo esa dirección inicial. §6.1 incorpora la precedencia recolección→despliegue validada por el ciclo nativo T019–T022. Se enlazan evidencias y límites de iPad Simulator y Xiaomi provisional, sin completar el MVP ni cambiar plataformas. |
+| 2026-10-16 | Integración de main tras PR #16: se conserva 002 aprobada junto con los destinos y la entrega Web de 003; constitución 2.1.0 reúne ambas decisiones. Las entradas anteriores describen sus estados históricos, sin extender la referencia Xiaomi de 002 a Web. |

@@ -1,0 +1,12 @@
+{
+  "startedAt": "2026-10-16T04:22:53.529Z",
+  "capturedAt": "2026-10-16T04:23:58.127Z",
+  "text": "Ventana CSS 1280×720 · DPR 1 · iframe 1280×646 · rAF padre 119.7Hz p95 9.9ms n8013",
+  "iframe": {
+    "height": 646,
+    "width": 1280,
+    "x": 0,
+    "y": 74
+  },
+  "logs": []
+}

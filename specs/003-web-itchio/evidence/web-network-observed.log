@@ -1,0 +1,8 @@
+127.0.0.1 - - [15/Oct/2026 22:26:32] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [15/Oct/2026 22:26:32] "GET /index.png HTTP/1.1" 304 -
+127.0.0.1 - - [15/Oct/2026 22:26:32] "GET /index.js HTTP/1.1" 304 -
+127.0.0.1 - - [15/Oct/2026 22:26:32] "GET /index.wasm HTTP/1.1" 304 -
+127.0.0.1 - - [15/Oct/2026 22:26:32] "GET /index.icon.png HTTP/1.1" 304 -
+127.0.0.1 - - [15/Oct/2026 22:26:32] "GET /index.pck HTTP/1.1" 304 -
+127.0.0.1 - - [15/Oct/2026 22:26:32] "GET /index.audio.position.worklet.js HTTP/1.1" 304 -
+127.0.0.1 - - [15/Oct/2026 22:26:32] "GET /index.audio.worklet.js HTTP/1.1" 304 -

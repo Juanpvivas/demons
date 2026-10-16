@@ -1,0 +1,12 @@
+{
+  "Godot_v4.7.1-stable_macos.universal.zip": {
+    "sha256": "897cb7f9799796c717ae75f31446aed883dc92b1d6c3b33d893cc7843fff2fa9",
+    "matches_reported_sha": true,
+    "bytes": 166939858
+  },
+  "Godot_v4.7.1-stable_export_templates.tpz": {
+    "sha256": "86409db6200b6f8fd3230989c2d2002851f3dd18acf11d7bdbafddf5a0dd0f72",
+    "matches_reported_sha": true,
+    "bytes": 1280486955
+  }
+}

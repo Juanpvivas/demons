@@ -1,0 +1,124 @@
+{
+  "desktop_observer_first_30_process_seconds": [
+    {
+      "data": {
+        "elapsed_process_seconds": 5.00800000000004,
+        "engine_fps": 120.0,
+        "first_process_engine_ticks_ms": 192,
+        "frames": 591,
+        "max_delta_ms": 95.7,
+        "mean_fps_from_delta": 118.011182108625,
+        "p50_delta_ms": 8.33333333333333,
+        "p95_delta_ms": 8.33333333333333
+      },
+      "kind": "PERFORMANCE",
+      "ticks_ms": 5107
+    },
+    {
+      "data": {
+        "elapsed_process_seconds": 10.0137333333334,
+        "engine_fps": 120.0,
+        "first_process_engine_ticks_ms": 192,
+        "frames": 1191,
+        "max_delta_ms": 95.7,
+        "mean_fps_from_delta": 118.936660319827,
+        "p50_delta_ms": 8.33333333333333,
+        "p95_delta_ms": 8.33333333333333
+      },
+      "kind": "PERFORMANCE",
+      "ticks_ms": 10108
+    },
+    {
+      "data": {
+        "elapsed_process_seconds": 15.0137333333331,
+        "engine_fps": 120.0,
+        "first_process_engine_ticks_ms": 192,
+        "frames": 1791,
+        "max_delta_ms": 95.7,
+        "mean_fps_from_delta": 119.29078266121,
+        "p50_delta_ms": 8.33333333333333,
+        "p95_delta_ms": 8.33333333333333
+      },
+      "kind": "PERFORMANCE",
+      "ticks_ms": 15107
+    },
+    {
+      "data": {
+        "elapsed_process_seconds": 20.0196993333329,
+        "engine_fps": 120.0,
+        "first_process_engine_ticks_ms": 192,
+        "frames": 2385,
+        "max_delta_ms": 95.7,
+        "mean_fps_from_delta": 119.132658302663,
+        "p50_delta_ms": 8.33333333333333,
+        "p95_delta_ms": 8.33333333333333
+      },
+      "kind": "PERFORMANCE",
+      "ticks_ms": 20107
+    },
+    {
+      "data": {
+        "elapsed_process_seconds": 25.0196993333326,
+        "engine_fps": 120.0,
+        "first_process_engine_ticks_ms": 192,
+        "frames": 2985,
+        "max_delta_ms": 95.7,
+        "mean_fps_from_delta": 119.305990061328,
+        "p50_delta_ms": 8.33333333333333,
+        "p95_delta_ms": 8.33333333333333
+      },
+      "kind": "PERFORMANCE",
+      "ticks_ms": 25107
+    },
+    {
+      "data": {
+        "elapsed_process_seconds": 30.0196993333323,
+        "engine_fps": 120.0,
+        "first_process_engine_ticks_ms": 192,
+        "frames": 3585,
+        "max_delta_ms": 95.7,
+        "mean_fps_from_delta": 119.421582481321,
+        "p50_delta_ms": 8.33333333333333,
+        "p95_delta_ms": 8.33333333333333
+      },
+      "kind": "PERFORMANCE",
+      "ticks_ms": 30106
+    }
+  ],
+  "terminal_observed": [
+    {
+      "data": {
+        "state": 3
+      },
+      "kind": "TERMINAL_OR_STATE",
+      "ticks_ms": 33840
+    }
+  ],
+  "final_production_loads": [
+    {
+      "evidence": "t017-production-actions.json",
+      "navigation_start_utc": "2026-10-16T04:13:01.712Z",
+      "renderer_log_utc": "2026-10-16T04:13:01.915Z",
+      "seconds_navigation_to_renderer_log": 0.203,
+      "errors": []
+    },
+    {
+      "evidence": "production-frame960.json",
+      "navigation_start_utc": "2026-10-16T04:22:15.244Z",
+      "renderer_log_utc": "2026-10-16T04:22:15.407Z",
+      "seconds_navigation_to_renderer_log": 0.163,
+      "errors": []
+    },
+    {
+      "evidence": "production-frame1152.json",
+      "navigation_start_utc": "2026-10-16T04:22:30.832Z",
+      "renderer_log_utc": "2026-10-16T04:22:30.978Z",
+      "seconds_navigation_to_renderer_log": 0.146,
+      "errors": []
+    }
+  ],
+  "production_container_raf": "Ventana CSS 1280\u00d7720 \u00b7 DPR 1 \u00b7 iframe 1280\u00d7646 \u00b7 rAF padre 119.7Hz p95 9.9ms n8013",
+  "android_physical_gameplay": "NOT RUN; notification introduction and portrait rotation await user; gate does not auto-start",
+  "memory_measurement": "NOT RUN",
+  "cold_cache_measurement": "NOT RUN; existing Chrome profile/cache preserved"
+}

@@ -1,0 +1,156 @@
+{
+  "recorded_utc": "2026-10-16T12:42:47.412566+00:00",
+  "user_report": "Funcionó y pude volver al juego",
+  "user_instruction_context": "Collect four yellow pickups plus another before deploying, check collection creates no extra soldier; deploy once on free ground left of white unit in same row; open another Chrome tab about5s and return without reload.",
+  "source_revision": "4a2915c5ceb075fbaa3ec7ce1e129a4c34aa497a",
+  "production_zip_sha256": "205d3916f21ce8c2b29eaf4bbbd804908dab7e9c93356355f4a335212eabfd71",
+  "target_url": "http://localhost:8063/phone-production-check.html",
+  "channel": "Read-only Runtime.enable/consoleAPICalled; only own WEB_PROBE/WEB_PROBE_RESTORED; no Runtime.evaluate or input",
+  "records_read": 13,
+  "unique_records": 13,
+  "raw_file": "android-production-probe.jsonl",
+  "raw_sha256": "b74f7d4ee1b1949b9dbd4926254c60f2e543e62a33710da3722dc2f9101b0c08",
+  "runs": [
+    {
+      "run_id": "2026-10-16T12:39:35.789Z",
+      "start_utc": "2026-10-16T12:39:35.798Z",
+      "record_count": 13,
+      "latest": {
+        "probe": "temporary wrapper, no observer in production",
+        "source_revision": "4a2915c5ceb075fbaa3ec7ce1e129a4c34aa497a",
+        "zip_sha256": "205d3916f21ce8c2b29eaf4bbbd804908dab7e9c93356355f4a335212eabfd71",
+        "run_id": "2026-10-16T12:39:35.789Z",
+        "start_utc": "2026-10-16T12:39:35.798Z",
+        "start_perf_ms": 202565.29999999702,
+        "viewport": {
+          "width": 795,
+          "height": 306,
+          "dpr": 2.75
+        },
+        "visibility": [
+          {
+            "state": "visible",
+            "since_click_ms": 0
+          },
+          {
+            "state": "hidden",
+            "since_click_ms": 21802.80000000447,
+            "utc": "2026-10-16T12:39:57.601Z"
+          },
+          {
+            "state": "visible",
+            "since_click_ms": 25456.30000000447,
+            "utc": "2026-10-16T12:40:01.255Z"
+          },
+          {
+            "state": "hidden",
+            "since_click_ms": 26454.60000000149,
+            "utc": "2026-10-16T12:40:02.253Z"
+          },
+          {
+            "state": "visible",
+            "since_click_ms": 31408.20000000298,
+            "utc": "2026-10-16T12:40:07.206Z"
+          }
+        ],
+        "raf_finished": true,
+        "cold_cache_claim": false,
+        "load_note": "iframe load/timing is not first rendered game frame; cache is preserved",
+        "iframe_navigation": {
+          "startTime": 0,
+          "duration": 69.60000000149012,
+          "responseStart": 15,
+          "responseEnd": 17,
+          "domContentLoadedEventEnd": 69.30000000447035,
+          "loadEventEnd": 69.60000000149012,
+          "transferSize": 5737,
+          "encodedBodySize": 5437,
+          "type": "navigate"
+        },
+        "browser_js_heap": {
+          "usedJSHeapSize": 10000000,
+          "totalJSHeapSize": 10000000,
+          "jsHeapSizeLimit": 1940000000,
+          "note": "nonstandard Chromium JS heap estimate; not game-only memory, WASM total, PSS or VRAM"
+        },
+        "iframe_resources": [
+          {
+            "file": "index.png",
+            "startTime": 27.80000000447035,
+            "duration": 10.699999995529652,
+            "responseEnd": 38.5,
+            "transferSize": 21743,
+            "encodedBodySize": 21443,
+            "decodedBodySize": 21443
+          },
+          {
+            "file": "index.js",
+            "startTime": 28.399999998509884,
+            "duration": 22.80000000447035,
+            "responseEnd": 51.20000000298023,
+            "transferSize": 280115,
+            "encodedBodySize": 279815,
+            "decodedBodySize": 279815
+          },
+          {
+            "file": "index.wasm",
+            "startTime": 68.80000000447035,
+            "duration": 1227,
+            "responseEnd": 1295.8000000044703,
+            "transferSize": 39513391,
+            "encodedBodySize": 39513091,
+            "decodedBodySize": 39513091
+          },
+          {
+            "file": "index.pck",
+            "startTime": 69.10000000149012,
+            "duration": 267.1000000014901,
+            "responseEnd": 336.20000000298023,
+            "transferSize": 4702500,
+            "encodedBodySize": 4702200,
+            "decodedBodySize": 4702200
+          }
+        ],
+        "parent_raf": {
+          "method": "parent requestAnimationFrame callbacks; NOT game FPS",
+          "target_wall_window_ms": 30000,
+          "callbacks": 1201,
+          "visible_callback_delta_sum_ms": 21734.399999999994,
+          "mean_callbacks_per_second": 55.2580241460542,
+          "p50_delta_ms": 16.5,
+          "p95_delta_ms": 16.60000000000582,
+          "max_delta_ms": 1835.6999999999825
+        },
+        "last_reason": "visibilitychange",
+        "updated_utc": "2026-10-16T12:40:07.210Z",
+        "iframe_document_load_since_click_ms": 75.20000000298023,
+        "raf_finished_since_click_ms": 30843.10000000149
+      },
+      "hidden_intervals": [
+        {
+          "hidden_utc": "2026-10-16T12:39:57.601Z",
+          "visible_utc": "2026-10-16T12:40:01.255Z",
+          "hidden_duration_ms": 3653.5
+        },
+        {
+          "hidden_utc": "2026-10-16T12:40:02.253Z",
+          "visible_utc": "2026-10-16T12:40:07.206Z",
+          "hidden_duration_ms": 4953.60000000149
+        }
+      ],
+      "human_start_records": 1,
+      "iframe_document_load_records": 1
+    }
+  ],
+  "screenshot": "android-production-return-current.png",
+  "limits": [
+    "Human report corroborates manual collection/deployment/return, not hidden exact balances/occupancy/terminal state.",
+    "No interactive observer or labels inside production; test wrapper only.",
+    "Own visibility records do not inspect another tab and do not identify which page it displayed.",
+    "Same run_id, one human-start and one iframe load observed; no reload observed in recovered run.",
+    "Parent rAF callback sample is not game FPS; includes initial loading, browser stalls and visibility interruption.",
+    "Navigation/iframe document load and resource response timings are not first rendered game frame.",
+    "Browser cache was preserved/uncontrolled: no verified cold-cache claim.",
+    "Nonstandard Chromium JS heap may be quantized and is not exclusive game memory, WASM total, PSS or VRAM."
+  ]
+}

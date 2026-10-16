@@ -1,0 +1,113 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+[   0% ] first_scan_filesystem | Started Inicialización del proyecto (5 steps)
+[   0% ] first_scan_filesystem | Escaneando la estructura del archivo...
+[  16% ] first_scan_filesystem | Cargando nombres de clases globales...
+[  33% ] first_scan_filesystem | Verificando GDExtensions...
+[  50% ] first_scan_filesystem | Creando scripts de carga automática...
+[  66% ] first_scan_filesystem | Inicializando plugins...
+[  83% ] first_scan_filesystem | Iniciando escaneo de archivos...
+[ DONE ] first_scan_filesystem
+
+[   0% ] _update_scan_actions | Started Escaneando acciones... (3 steps)
+[   0% ] _update_scan_actions | index.apple-touch-icon.png
+[  25% ] _update_scan_actions | index.icon.png
+[  50% ] _update_scan_actions | index.png
+[ DONE ] _update_scan_actions
+
+[   0% ] reimport | Started (Re)Importación de Assets (3 steps)
+[   0% ] reimport | Preparando archivos para reimportarlos...
+[  25% ] reimport | Preparando archivos para reimportarlos...
+[  50% ] reimport | Preparando archivos para reimportarlos...
+[   0% ] reimport | Ejecutando operaciones de pre-reimportación...
+[   0% ] reimport | index.apple-touch-icon.png
+[  25% ] reimport | index.icon.png
+[  50% ] reimport | index.png
+[  75% ] reimport | Finalizando la importación de recursos...
+[ DONE ] reimport
+
+[   0% ] reimport | Started (Re)Importación de Assets (3 steps)
+[   0% ] reimport | Ejecutando operaciones post-reimportación...
+[ DONE ] reimport
+
+[   0% ] savepack | Started Empaquetando (102 steps)
+[   1% ] savepack | Almacenando Archivo: res://core/board_manager.gdc
+[   3% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-91af49eed403e5081afa116486d318c6-soldado_base_stats.res
+[   6% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-64af1692da400cf7768c79e874a26e7d-nivel_montecalvo_oleada_07.res
+[   9% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-585eac80d411e2a8eed77f17c63753ca-enemigo_infanteria_base.res
+[  11% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-b9cab5cc6f4fc79802b0ba40ce0513a3-nivel_montecalvo_oleada_05.res
+[  14% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-613d3ebfddc28d0db273d0f0f8e8cd3c-EnemigoBase.scn
+[  17% ] savepack | Almacenando Archivo: res://autoloads/game_state_manager.gdc
+[  19% ] savepack | Almacenando Archivo: res://autoloads/economy_manager.gdc
+[  22% ] savepack | Almacenando Archivo: res://resources/schemas/wave_spawn_entry.gdc
+[  25% ] savepack | Almacenando Archivo: res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex
+[  25% ] savepack | Almacenando Archivo: res://icon.svg.import
+[  28% ] savepack | Almacenando Archivo: res://scenes/units/soldado.gdc
+[  30% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-cbd68642da28c27d5478c54ca2ba3465-nivel_montecalvo_oleada_10.res
+[  33% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-c03dd3232ffdc7c9116bb400971b6ae4-AmmoPickup.scn
+[  35% ] savepack | Almacenando Archivo: res://.godot/imported/terreno.png-046e69414c21268efe5cc18f516833dc.ctex
+[  35% ] savepack | Almacenando Archivo: res://assets/sprites/levels/monte_calvo/terreno.png.import
+[  37% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-0d445d1b8f3367f8645402226fbf5d87-nivel_montecalvo_oleada_02.res
+[  40% ] savepack | Almacenando Archivo: res://resources/schemas/wave_data.gdc
+[  43% ] savepack | Almacenando Archivo: res://scenes/levels/ammo_pickup.gdc
+[  45% ] savepack | Almacenando Archivo: res://scenes/levels/nivel_monte_calvo.gdc
+[  48% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-596cd59f8c6dda67be8d3d9bbe29e0ba-nivel_montecalvo_oleada_04.res
+[  51% ] savepack | Almacenando Archivo: res://resources/schemas/enemy_stats.gdc
+[  54% ] savepack | Almacenando Archivo: res://.godot/imported/montanas.png-1c63d114b89015bf1a0ef1463a2bb0cc.ctex
+[  54% ] savepack | Almacenando Archivo: res://assets/sprites/levels/monte_calvo/montanas.png.import
+[  56% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-93337037fb7c45d5896db0d3dacbc53e-Soldado.scn
+[  59% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-214b607a4c774030d8ef58e9544033b9-nivel_montecalvo_oleada_06.res
+[  62% ] savepack | Almacenando Archivo: res://.godot/imported/trincheras_atlas.png-b373c9b4f90f13a86611cc5e69652a46.ctex
+[  62% ] savepack | Almacenando Archivo: res://assets/sprites/levels/monte_calvo/trincheras_atlas.png.import
+[  64% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-74b5c9848938f4eb9ebaf6fab3809318-HUD.scn
+[  66% ] savepack | Almacenando Archivo: res://resources/schemas/unit_stats.gdc
+[  69% ] savepack | Almacenando Archivo: res://scenes/levels/wave_spawner.gdc
+[  71% ] savepack | Almacenando Archivo: res://autoloads/wave_manager.gdc
+[  74% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-dcbc2083753d1729f9fbf79293ad4214-nivel_montecalvo_oleada_08.res
+[  77% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-f9b5d5bf1277fa88e05b211cb1367450-nivel_montecalvo_oleada_03.res
+[  80% ] savepack | Almacenando Archivo: res://core/object_pool.gdc
+[  82% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-9397fdcd94222c1c43b91ead4f0b89f3-nivel_montecalvo_oleada_01.res
+[  85% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-c6e4738ec454d7288ac025d1d30a11e4-MonteCalvoVisual.scn
+[  88% ] savepack | Almacenando Archivo: res://scenes/enemies/enemigo.gdc
+[  90% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-efd2a702860be21ecc08a13f3c68e413-nivel_montecalvo_oleada_09.res
+[  93% ] savepack | Almacenando Archivo: res://scenes/ui/hud.gdc
+[  96% ] savepack | Almacenando Archivo: res://.godot/exported/133200997/export-1a1a34b0c682cb499da1e6b6a6010606-Nivel_MonteCalvo.scn
+[  96% ] savepack | Almacenando Archivo: res://core/board_manager.gd.remap
+[  96% ] savepack | Almacenando Archivo: res://resources/units/soldado_base_stats.tres.remap
+[  96% ] savepack | Almacenando Archivo: res://resources/waves/nivel_montecalvo_oleada_07.tres.remap
+[  96% ] savepack | Almacenando Archivo: res://resources/enemies/enemigo_infanteria_base.tres.remap
+[  96% ] savepack | Almacenando Archivo: res://resources/waves/nivel_montecalvo_oleada_05.tres.remap
+[  96% ] savepack | Almacenando Archivo: res://scenes/enemies/EnemigoBase.tscn.remap
+[  96% ] savepack | Almacenando Archivo: res://autoloads/game_state_manager.gd.remap
+[  96% ] savepack | Almacenando Archivo: res://autoloads/economy_manager.gd.remap
+[  96% ] savepack | Almacenando Archivo: res://resources/schemas/wave_spawn_entry.gd.remap
+[  96% ] savepack | Almacenando Archivo: res://scenes/units/soldado.gd.remap
+[  96% ] savepack | Almacenando Archivo: res://resources/waves/nivel_montecalvo_oleada_10.tres.remap
+[  96% ] savepack | Almacenando Archivo: res://scenes/levels/AmmoPickup.tscn.remap
+[  96% ] savepack | Almacenando Archivo: res://resources/waves/nivel_montecalvo_oleada_02.tres.remap
+[  96% ] savepack | Almacenando Archivo: res://resources/schemas/wave_data.gd.remap
+[  96% ] savepack | Almacenando Archivo: res://scenes/levels/ammo_pickup.gd.remap
+[  96% ] savepack | Almacenando Archivo: res://scenes/levels/nivel_monte_calvo.gd.remap
+[  96% ] savepack | Almacenando Archivo: res://resources/waves/nivel_montecalvo_oleada_04.tres.remap
+[  96% ] savepack | Almacenando Archivo: res://resources/schemas/enemy_stats.gd.remap
+[  96% ] savepack | Almacenando Archivo: res://scenes/units/Soldado.tscn.remap
+[  96% ] savepack | Almacenando Archivo: res://resources/waves/nivel_montecalvo_oleada_06.tres.remap
+[  96% ] savepack | Almacenando Archivo: res://scenes/ui/HUD.tscn.remap
+[  96% ] savepack | Almacenando Archivo: res://resources/schemas/unit_stats.gd.remap
+[  96% ] savepack | Almacenando Archivo: res://scenes/levels/wave_spawner.gd.remap
+[  96% ] savepack | Almacenando Archivo: res://autoloads/wave_manager.gd.remap
+[  96% ] savepack | Almacenando Archivo: res://resources/waves/nivel_montecalvo_oleada_08.tres.remap
+[  96% ] savepack | Almacenando Archivo: res://resources/waves/nivel_montecalvo_oleada_03.tres.remap
+[  96% ] savepack | Almacenando Archivo: res://core/object_pool.gd.remap
+[  96% ] savepack | Almacenando Archivo: res://resources/waves/nivel_montecalvo_oleada_01.tres.remap
+[  96% ] savepack | Almacenando Archivo: res://scenes/levels/MonteCalvoVisual.tscn.remap
+[  96% ] savepack | Almacenando Archivo: res://scenes/enemies/enemigo.gd.remap
+[  96% ] savepack | Almacenando Archivo: res://resources/waves/nivel_montecalvo_oleada_09.tres.remap
+[  96% ] savepack | Almacenando Archivo: res://scenes/ui/hud.gd.remap
+[  96% ] savepack | Almacenando Archivo: res://scenes/levels/Nivel_MonteCalvo.tscn.remap
+[  96% ] savepack | Almacenando Archivo: res://.godot/global_script_class_cache.cfg
+[  96% ] savepack | Almacenando Archivo: res://icon.svg
+[  96% ] savepack | Almacenando Archivo: res://.godot/uid_cache.bin
+[  96% ] savepack | Almacenando Archivo: res://project.binary
+[ DONE ] savepack
+

@@ -1,0 +1,29 @@
+{
+  "recorded_utc": "2026-10-16T11:23:59.263791+00:00",
+  "cutoff_current_preflight_utc": "2026-10-16T11:14:37Z",
+  "console_channel": "USB local Chrome DevTools: own localhost8063 page; Runtime.enable + consoleAPICalled only, no Runtime.evaluate/input",
+  "retained_console_kind": "WEB_OBSERVER only",
+  "old_buffer_records": 213,
+  "current_records": 112,
+  "current_initial_or_input_records": 0,
+  "console_old_input_status": "11:02..11:03Z, already game_state3 LOST; excluded from current PLAYING claims",
+  "clips": [
+    {
+      "name": "android-human-observed-part1.mp4",
+      "bytes": 13849809,
+      "sha256": "fb08c8a772ed068e782a71170c45cf8a9602d9193df8cb5e5483ff509fe4b860",
+      "location": "temporary outside repository",
+      "sampled_status": "previous PERDIDA session, reserve0/soldiers0, Sin gestos"
+    },
+    {
+      "name": "android-human-observed-part2.mp4",
+      "bytes": 13725193,
+      "sha256": "41a8e94f2c64bb1d9ab0bd5d6d7e4fa32b686d788068d5872d8fa9d2eae092af",
+      "location": "temporary outside repository",
+      "sampled_status": "previous PERDIDA session, reserve0/soldiers0, Sin gestos"
+    }
+  ],
+  "test_result": "WAITING_FOR_HUMAN_START; no PASS/FAIL assigned from waiting",
+  "recording_limit": "two180-second clips only; no ongoing screen recording",
+  "metric_limit": "post-terminal waiting samples and screenrecord overhead cannot certify performance"
+}

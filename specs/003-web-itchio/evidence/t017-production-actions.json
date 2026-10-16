@@ -1,0 +1,81 @@
+{
+  "start": "2026-10-16T04:13:01.712Z",
+  "actions": [
+    {
+      "time": "2026-10-16T04:13:26.170Z",
+      "position": [
+        240,
+        528
+      ]
+    },
+    {
+      "time": "2026-10-16T04:13:26.347Z",
+      "position": [
+        576,
+        251
+      ]
+    },
+    {
+      "time": "2026-10-16T04:13:26.515Z",
+      "position": [
+        576,
+        283
+      ]
+    },
+    {
+      "time": "2026-10-16T04:13:26.682Z",
+      "position": [
+        576,
+        312
+      ]
+    },
+    {
+      "time": "2026-10-16T04:13:26.852Z",
+      "position": [
+        576,
+        440
+      ]
+    },
+    {
+      "time": "2026-10-16T04:13:27.027Z",
+      "position": [
+        624,
+        528
+      ]
+    },
+    {
+      "time": "2026-10-16T04:13:37.743Z",
+      "position": [
+        576,
+        452
+      ]
+    },
+    {
+      "time": "2026-10-16T04:13:37.959Z",
+      "position": [
+        240,
+        528
+      ]
+    }
+  ],
+  "logs": [
+    {
+      "level": "log",
+      "message": "Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org",
+      "timestamp": "2026-10-16T04:13:01.851Z",
+      "url": "http://127.0.0.1:8063/production/index.js"
+    },
+    {
+      "level": "log",
+      "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+      "timestamp": "2026-10-16T04:13:01.915Z",
+      "url": "http://127.0.0.1:8063/production/index.js"
+    },
+    {
+      "level": "log",
+      "message": "Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.",
+      "timestamp": "2026-10-16T04:13:01.941Z",
+      "url": "http://127.0.0.1:8063/production/index.js"
+    }
+  ]
+}

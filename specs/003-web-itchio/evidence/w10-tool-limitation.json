@@ -1,0 +1,9 @@
+{
+  "createdAwayTabWasNotAnActualSwitch": true,
+  "oldDocumentVisibility": "visible",
+  "whileAwayDocumentVisibility": "visible",
+  "explicitActivationAttempt": "management.tabs.update(id,{active:true})",
+  "result": "Chrome API tabs.update contains an unsupported property",
+  "actualBackgroundReturn": "NOT RUN",
+  "navigationReload": "PASS from new INITIAL records"
+}

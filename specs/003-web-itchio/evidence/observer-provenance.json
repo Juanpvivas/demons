@@ -1,0 +1,12 @@
+{
+  "source_revision": "ed446d9ab4c1e84e3ef84709e0fe5f357848dd76",
+  "temporary_project": "/private/tmp/demons-web-observer-003",
+  "compared_files": 105,
+  "changed_from_source": [
+    "scenes/levels/Nivel_MonteCalvo.tscn"
+  ],
+  "additional_script": "_observation.gd",
+  "observer_sha256": "4877fc321385ec63e0ca1b1612482673a787c038563d4605bfcabd8d995a20fa",
+  "scene_sha256": "71fa81c0c74624a0afcadcbabb5f7ad2d72cf4a10e441330719b2850e78990fa",
+  "method": "Read-only Node added to level. Logs existing signals, fields and raw _input; never consumes events or writes game state."
+}

@@ -1,0 +1,392 @@
+[
+  {
+    "level": "log",
+    "message": "Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org",
+    "timestamp": "2026-10-16T03:20:53.087Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "log",
+    "message": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL",
+    "timestamp": "2026-10-16T03:20:53.996Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "log",
+    "message": "Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support.",
+    "timestamp": "2026-10-16T03:20:54.096Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Could not find type \"WaveData\" in the current scope.",
+    "timestamp": "2026-10-16T03:20:54.109Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://autoloads/wave_manager.gd:22)",
+    "timestamp": "2026-10-16T03:20:54.109Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Could not find type \"WaveData\" in the current scope.",
+    "timestamp": "2026-10-16T03:20:54.109Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://autoloads/wave_manager.gd:57)",
+    "timestamp": "2026-10-16T03:20:54.109Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Could not find type \"WaveData\" in the current scope.",
+    "timestamp": "2026-10-16T03:20:54.109Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://autoloads/wave_manager.gd:95)",
+    "timestamp": "2026-10-16T03:20:54.109Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Could not find type \"WaveData\" in the current scope.",
+    "timestamp": "2026-10-16T03:20:54.109Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://autoloads/wave_manager.gd:113)",
+    "timestamp": "2026-10-16T03:20:54.109Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Could not find type \"WaveData\" in the current scope.",
+    "timestamp": "2026-10-16T03:20:54.109Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://autoloads/wave_manager.gd:82)",
+    "timestamp": "2026-10-16T03:20:54.109Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Could not find type \"WaveSpawnEntry\" in the current scope.",
+    "timestamp": "2026-10-16T03:20:54.109Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://autoloads/wave_manager.gd:115)",
+    "timestamp": "2026-10-16T03:20:54.109Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Compile Error: Failed to compile depended scripts.",
+    "timestamp": "2026-10-16T03:20:54.109Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://autoloads/game_state_manager.gd:0)",
+    "timestamp": "2026-10-16T03:20:54.110Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "ERROR: Failed to load script \"res://autoloads/game_state_manager.gd\" with error \"Compilation failed\".",
+    "timestamp": "2026-10-16T03:20:54.110Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: load (modules/gdscript/gdscript_resource_format.cpp:46)",
+    "timestamp": "2026-10-16T03:20:54.110Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "ERROR: Failed to instantiate an autoload, script 'res://autoloads/wave_manager.gd' does not inherit from 'Node'.",
+    "timestamp": "2026-10-16T03:20:54.110Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: start (main/main.cpp:4535)",
+    "timestamp": "2026-10-16T03:20:54.110Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Preload file \"res://scenes/levels/AmmoPickup.tscn\" does not exist.",
+    "timestamp": "2026-10-16T03:20:54.125Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/enemies/enemigo.gd:73)",
+    "timestamp": "2026-10-16T03:20:54.125Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Could not find type \"ObjectPool\" in the current scope.",
+    "timestamp": "2026-10-16T03:20:54.125Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/enemies/enemigo.gd:105)",
+    "timestamp": "2026-10-16T03:20:54.125Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Could not find type \"ObjectPool\" in the current scope.",
+    "timestamp": "2026-10-16T03:20:54.125Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/enemies/enemigo.gd:165)",
+    "timestamp": "2026-10-16T03:20:54.125Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Could not find type \"AmmoPickup\" in the current scope.",
+    "timestamp": "2026-10-16T03:20:54.125Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/enemies/enemigo.gd:273)",
+    "timestamp": "2026-10-16T03:20:54.125Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "ERROR: Failed to load script \"res://scenes/enemies/enemigo.gd\" with error \"Parse error\".",
+    "timestamp": "2026-10-16T03:20:54.125Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: load (modules/gdscript/gdscript_resource_format.cpp:46)",
+    "timestamp": "2026-10-16T03:20:54.125Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Could not find type \"WaveData\" in the current scope.",
+    "timestamp": "2026-10-16T03:20:54.127Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/levels/nivel_monte_calvo.gd:70)",
+    "timestamp": "2026-10-16T03:20:54.128Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Preload file \"res://resources/waves/nivel_montecalvo_oleada_01.tres\" does not exist.",
+    "timestamp": "2026-10-16T03:20:54.128Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/levels/nivel_monte_calvo.gd:71)",
+    "timestamp": "2026-10-16T03:20:54.128Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Preload file \"res://resources/waves/nivel_montecalvo_oleada_02.tres\" does not exist.",
+    "timestamp": "2026-10-16T03:20:54.128Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/levels/nivel_monte_calvo.gd:72)",
+    "timestamp": "2026-10-16T03:20:54.128Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Preload file \"res://resources/waves/nivel_montecalvo_oleada_03.tres\" does not exist.",
+    "timestamp": "2026-10-16T03:20:54.129Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/levels/nivel_monte_calvo.gd:73)",
+    "timestamp": "2026-10-16T03:20:54.129Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Preload file \"res://resources/waves/nivel_montecalvo_oleada_04.tres\" does not exist.",
+    "timestamp": "2026-10-16T03:20:54.129Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/levels/nivel_monte_calvo.gd:74)",
+    "timestamp": "2026-10-16T03:20:54.129Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Preload file \"res://resources/waves/nivel_montecalvo_oleada_05.tres\" does not exist.",
+    "timestamp": "2026-10-16T03:20:54.129Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/levels/nivel_monte_calvo.gd:75)",
+    "timestamp": "2026-10-16T03:20:54.129Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Preload file \"res://resources/waves/nivel_montecalvo_oleada_06.tres\" does not exist.",
+    "timestamp": "2026-10-16T03:20:54.129Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/levels/nivel_monte_calvo.gd:76)",
+    "timestamp": "2026-10-16T03:20:54.129Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Preload file \"res://resources/waves/nivel_montecalvo_oleada_07.tres\" does not exist.",
+    "timestamp": "2026-10-16T03:20:54.129Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/levels/nivel_monte_calvo.gd:77)",
+    "timestamp": "2026-10-16T03:20:54.130Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Preload file \"res://resources/waves/nivel_montecalvo_oleada_08.tres\" does not exist.",
+    "timestamp": "2026-10-16T03:20:54.130Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/levels/nivel_monte_calvo.gd:78)",
+    "timestamp": "2026-10-16T03:20:54.130Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Preload file \"res://resources/waves/nivel_montecalvo_oleada_09.tres\" does not exist.",
+    "timestamp": "2026-10-16T03:20:54.130Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/levels/nivel_monte_calvo.gd:79)",
+    "timestamp": "2026-10-16T03:20:54.130Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Preload file \"res://resources/waves/nivel_montecalvo_oleada_10.tres\" does not exist.",
+    "timestamp": "2026-10-16T03:20:54.130Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/levels/nivel_monte_calvo.gd:80)",
+    "timestamp": "2026-10-16T03:20:54.130Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Identifier \"BoardManager\" not declared in the current scope.",
+    "timestamp": "2026-10-16T03:20:54.130Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/levels/nivel_monte_calvo.gd:115)",
+    "timestamp": "2026-10-16T03:20:54.130Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Cannot infer the type of \"_board_manager\" variable because the value doesn't have a set type.",
+    "timestamp": "2026-10-16T03:20:54.130Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/levels/nivel_monte_calvo.gd:115)",
+    "timestamp": "2026-10-16T03:20:54.130Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Identifier \"WaveSpawner\" not declared in the current scope.",
+    "timestamp": "2026-10-16T03:20:54.130Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/levels/nivel_monte_calvo.gd:122)",
+    "timestamp": "2026-10-16T03:20:54.130Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Cannot infer the type of \"_wave_spawner\" variable because the value doesn't have a set type.",
+    "timestamp": "2026-10-16T03:20:54.130Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/levels/nivel_monte_calvo.gd:122)",
+    "timestamp": "2026-10-16T03:20:54.130Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "SCRIPT ERROR: Parse Error: Could not resolve external class member \"start_waves\".",
+    "timestamp": "2026-10-16T03:20:54.131Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: GDScript::reload (res://scenes/levels/nivel_monte_calvo.gd:168)",
+    "timestamp": "2026-10-16T03:20:54.131Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "ERROR: Failed to load script \"res://scenes/levels/nivel_monte_calvo.gd\" with error \"Parse error\".",
+    "timestamp": "2026-10-16T03:20:54.131Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  },
+  {
+    "level": "error",
+    "message": "   at: load (modules/gdscript/gdscript_resource_format.cpp:46)",
+    "timestamp": "2026-10-16T03:20:54.131Z",
+    "url": "http://127.0.0.1:8060/index.js"
+  }
+]

@@ -1,0 +1,2122 @@
+{
+  "date": "2026-10-16",
+  "source_revision": "4a2915c5ceb075fbaa3ec7ce1e129a4c34aa497a",
+  "zip_sha256": "205d3916f21ce8c2b29eaf4bbbd804908dab7e9c93356355f4a335212eabfd71",
+  "user_report": "Completé la secuencia",
+  "method": "Physical human touch on Android Chrome; own read-only WEB_OBSERVER recovered from Runtime.enable buffer without reload. A mouse emulation + touch pair is one human gesture. No ADB input injection.",
+  "deduplication": "timestamp + ticks + kind + canonical data; old sessions excluded",
+  "raw_new_sessions": "android-observed-sessions.jsonl",
+  "raw_new_sessions_sha256": "71371ebbc76b0f7899c2ffc063a9e1aee7b79078d81ba5ccfce217d4a8cc35a0",
+  "cases": {
+    "W02": {
+      "session": 3,
+      "session_initial_utc": "2026-10-16T12:26:04.637052+00:00",
+      "mouse_sequence": 55,
+      "paired_touch_sequence": 56,
+      "position_world": [
+        570.89,
+        453.4
+      ],
+      "gesture_grid_cell_floor": [
+        5,
+        4
+      ],
+      "before": {
+        "ammo": 11,
+        "game_state": 0,
+        "occupied_cells": [
+          [
+            6,
+            5
+          ],
+          [
+            5,
+            5
+          ]
+        ],
+        "pickups": [
+          {
+            "amount": 3,
+            "cell": [
+              6,
+              4
+            ],
+            "name": "AmmoPickup",
+            "position": [
+              576,
+              442
+            ]
+          }
+        ],
+        "soldiers": [
+          {
+            "cell": [
+              5,
+              5
+            ],
+            "name": "@StaticBody2D@21",
+            "position": [
+              528,
+              528
+            ],
+            "rifle_ammo": 0
+          },
+          {
+            "cell": [
+              6,
+              5
+            ],
+            "name": "Soldado",
+            "position": [
+              576,
+              500
+            ],
+            "rifle_ammo": 0
+          }
+        ]
+      },
+      "after": {
+        "ammo": 14,
+        "game_state": 0,
+        "occupied_cells": [
+          [
+            6,
+            5
+          ],
+          [
+            5,
+            5
+          ]
+        ],
+        "pickups": [],
+        "soldiers": [
+          {
+            "cell": [
+              5,
+              5
+            ],
+            "name": "@StaticBody2D@21",
+            "position": [
+              528,
+              528
+            ],
+            "rifle_ammo": 0
+          },
+          {
+            "cell": [
+              6,
+              5
+            ],
+            "name": "Soldado",
+            "position": [
+              576,
+              500
+            ],
+            "rifle_ammo": 0
+          }
+        ]
+      },
+      "pre": {
+        "received_utc": "2026-10-16T12:28:53.660Z",
+        "console_timestamp": 1792153595091.764,
+        "event": {
+          "data": {
+            "kind": "mouse",
+            "position": [
+              570.89,
+              453.4
+            ],
+            "sequence": 55,
+            "state": {
+              "ammo": 11,
+              "game_state": 0,
+              "occupied_cells": [
+                [
+                  6,
+                  5
+                ],
+                [
+                  5,
+                  5
+                ]
+              ],
+              "pickups": [
+                {
+                  "amount": 3,
+                  "cell": [
+                    6,
+                    4
+                  ],
+                  "name": "AmmoPickup",
+                  "position": [
+                    576,
+                    442
+                  ]
+                }
+              ],
+              "soldiers": [
+                {
+                  "cell": [
+                    5,
+                    5
+                  ],
+                  "name": "@StaticBody2D@21",
+                  "position": [
+                    528,
+                    528
+                  ],
+                  "rifle_ammo": 0
+                },
+                {
+                  "cell": [
+                    6,
+                    5
+                  ],
+                  "name": "Soldado",
+                  "position": [
+                    576,
+                    500
+                  ],
+                  "rifle_ammo": 0
+                }
+              ]
+            }
+          },
+          "kind": "INPUT_PRE",
+          "ticks_ms": 32371
+        }
+      },
+      "post": {
+        "received_utc": "2026-10-16T12:28:53.660Z",
+        "console_timestamp": 1792153595113.787,
+        "event": {
+          "data": {
+            "sequence": 55,
+            "state": {
+              "ammo": 14,
+              "game_state": 0,
+              "occupied_cells": [
+                [
+                  6,
+                  5
+                ],
+                [
+                  5,
+                  5
+                ]
+              ],
+              "pickups": [],
+              "soldiers": [
+                {
+                  "cell": [
+                    5,
+                    5
+                  ],
+                  "name": "@StaticBody2D@21",
+                  "position": [
+                    528,
+                    528
+                  ],
+                  "rifle_ammo": 0
+                },
+                {
+                  "cell": [
+                    6,
+                    5
+                  ],
+                  "name": "Soldado",
+                  "position": [
+                    576,
+                    500
+                  ],
+                  "rifle_ammo": 0
+                }
+              ]
+            }
+          },
+          "kind": "INPUT_POST",
+          "ticks_ms": 32393
+        }
+      },
+      "paired_events": [
+        {
+          "received_utc": "2026-10-16T12:28:53.660Z",
+          "console_timestamp": 1792153595091.764,
+          "event": {
+            "data": {
+              "kind": "mouse",
+              "position": [
+                570.89,
+                453.4
+              ],
+              "sequence": 55,
+              "state": {
+                "ammo": 11,
+                "game_state": 0,
+                "occupied_cells": [
+                  [
+                    6,
+                    5
+                  ],
+                  [
+                    5,
+                    5
+                  ]
+                ],
+                "pickups": [
+                  {
+                    "amount": 3,
+                    "cell": [
+                      6,
+                      4
+                    ],
+                    "name": "AmmoPickup",
+                    "position": [
+                      576,
+                      442
+                    ]
+                  }
+                ],
+                "soldiers": [
+                  {
+                    "cell": [
+                      5,
+                      5
+                    ],
+                    "name": "@StaticBody2D@21",
+                    "position": [
+                      528,
+                      528
+                    ],
+                    "rifle_ammo": 0
+                  },
+                  {
+                    "cell": [
+                      6,
+                      5
+                    ],
+                    "name": "Soldado",
+                    "position": [
+                      576,
+                      500
+                    ],
+                    "rifle_ammo": 0
+                  }
+                ]
+              }
+            },
+            "kind": "INPUT_PRE",
+            "ticks_ms": 32371
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.660Z",
+          "console_timestamp": 1792153595093.913,
+          "event": {
+            "data": {
+              "kind": "touch",
+              "position": [
+                570.89,
+                453.4
+              ],
+              "sequence": 56,
+              "state": {
+                "ammo": 11,
+                "game_state": 0,
+                "occupied_cells": [
+                  [
+                    6,
+                    5
+                  ],
+                  [
+                    5,
+                    5
+                  ]
+                ],
+                "pickups": [
+                  {
+                    "amount": 3,
+                    "cell": [
+                      6,
+                      4
+                    ],
+                    "name": "AmmoPickup",
+                    "position": [
+                      576,
+                      442
+                    ]
+                  }
+                ],
+                "soldiers": [
+                  {
+                    "cell": [
+                      5,
+                      5
+                    ],
+                    "name": "@StaticBody2D@21",
+                    "position": [
+                      528,
+                      528
+                    ],
+                    "rifle_ammo": 0
+                  },
+                  {
+                    "cell": [
+                      6,
+                      5
+                    ],
+                    "name": "Soldado",
+                    "position": [
+                      576,
+                      500
+                    ],
+                    "rifle_ammo": 0
+                  }
+                ]
+              }
+            },
+            "kind": "INPUT_PRE",
+            "ticks_ms": 32373
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.660Z",
+          "console_timestamp": 1792153595095.757,
+          "event": {
+            "data": {
+              "amount": 14
+            },
+            "kind": "AMMO",
+            "ticks_ms": 32375
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.660Z",
+          "console_timestamp": 1792153595113.787,
+          "event": {
+            "data": {
+              "sequence": 55,
+              "state": {
+                "ammo": 14,
+                "game_state": 0,
+                "occupied_cells": [
+                  [
+                    6,
+                    5
+                  ],
+                  [
+                    5,
+                    5
+                  ]
+                ],
+                "pickups": [],
+                "soldiers": [
+                  {
+                    "cell": [
+                      5,
+                      5
+                    ],
+                    "name": "@StaticBody2D@21",
+                    "position": [
+                      528,
+                      528
+                    ],
+                    "rifle_ammo": 0
+                  },
+                  {
+                    "cell": [
+                      6,
+                      5
+                    ],
+                    "name": "Soldado",
+                    "position": [
+                      576,
+                      500
+                    ],
+                    "rifle_ammo": 0
+                  }
+                ]
+              }
+            },
+            "kind": "INPUT_POST",
+            "ticks_ms": 32393
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.660Z",
+          "console_timestamp": 1792153595115.282,
+          "event": {
+            "data": {
+              "sequence": 56,
+              "state": {
+                "ammo": 14,
+                "game_state": 0,
+                "occupied_cells": [
+                  [
+                    6,
+                    5
+                  ],
+                  [
+                    5,
+                    5
+                  ]
+                ],
+                "pickups": [],
+                "soldiers": [
+                  {
+                    "cell": [
+                      5,
+                      5
+                    ],
+                    "name": "@StaticBody2D@21",
+                    "position": [
+                      528,
+                      528
+                    ],
+                    "rifle_ammo": 0
+                  },
+                  {
+                    "cell": [
+                      6,
+                      5
+                    ],
+                    "name": "Soldado",
+                    "position": [
+                      576,
+                      500
+                    ],
+                    "rifle_ammo": 0
+                  }
+                ]
+              }
+            },
+            "kind": "INPUT_POST",
+            "ticks_ms": 32395
+          }
+        }
+      ],
+      "result": "PASS observed physical input; exact counters belong only to observer. Later production corroboration is recorded in android-production-summary.json."
+    },
+    "W03": {
+      "session": 3,
+      "session_initial_utc": "2026-10-16T12:26:04.637052+00:00",
+      "mouse_sequence": 11,
+      "paired_touch_sequence": 12,
+      "position_world": [
+        507.85,
+        525.51
+      ],
+      "gesture_grid_cell_floor": [
+        5,
+        5
+      ],
+      "before": {
+        "ammo": 12,
+        "game_state": 0,
+        "occupied_cells": [
+          [
+            6,
+            5
+          ]
+        ],
+        "pickups": [],
+        "soldiers": [
+          {
+            "cell": [
+              6,
+              5
+            ],
+            "name": "Soldado",
+            "position": [
+              576,
+              500
+            ],
+            "rifle_ammo": 0
+          }
+        ]
+      },
+      "after": {
+        "ammo": 2,
+        "game_state": 0,
+        "occupied_cells": [
+          [
+            6,
+            5
+          ],
+          [
+            5,
+            5
+          ]
+        ],
+        "pickups": [],
+        "soldiers": [
+          {
+            "cell": [
+              5,
+              5
+            ],
+            "name": "@StaticBody2D@21",
+            "position": [
+              528,
+              528
+            ],
+            "rifle_ammo": 10
+          },
+          {
+            "cell": [
+              6,
+              5
+            ],
+            "name": "Soldado",
+            "position": [
+              576,
+              500
+            ],
+            "rifle_ammo": 0
+          }
+        ]
+      },
+      "pre": {
+        "received_utc": "2026-10-16T12:28:53.651Z",
+        "console_timestamp": 1792153584467.17,
+        "event": {
+          "data": {
+            "kind": "mouse",
+            "position": [
+              507.85,
+              525.51
+            ],
+            "sequence": 11,
+            "state": {
+              "ammo": 12,
+              "game_state": 0,
+              "occupied_cells": [
+                [
+                  6,
+                  5
+                ]
+              ],
+              "pickups": [],
+              "soldiers": [
+                {
+                  "cell": [
+                    6,
+                    5
+                  ],
+                  "name": "Soldado",
+                  "position": [
+                    576,
+                    500
+                  ],
+                  "rifle_ammo": 0
+                }
+              ]
+            }
+          },
+          "kind": "INPUT_PRE",
+          "ticks_ms": 21747
+        }
+      },
+      "post": {
+        "received_utc": "2026-10-16T12:28:53.651Z",
+        "console_timestamp": 1792153584487.819,
+        "event": {
+          "data": {
+            "sequence": 11,
+            "state": {
+              "ammo": 2,
+              "game_state": 0,
+              "occupied_cells": [
+                [
+                  6,
+                  5
+                ],
+                [
+                  5,
+                  5
+                ]
+              ],
+              "pickups": [],
+              "soldiers": [
+                {
+                  "cell": [
+                    5,
+                    5
+                  ],
+                  "name": "@StaticBody2D@21",
+                  "position": [
+                    528,
+                    528
+                  ],
+                  "rifle_ammo": 10
+                },
+                {
+                  "cell": [
+                    6,
+                    5
+                  ],
+                  "name": "Soldado",
+                  "position": [
+                    576,
+                    500
+                  ],
+                  "rifle_ammo": 0
+                }
+              ]
+            }
+          },
+          "kind": "INPUT_POST",
+          "ticks_ms": 21767
+        }
+      },
+      "paired_events": [
+        {
+          "received_utc": "2026-10-16T12:28:53.651Z",
+          "console_timestamp": 1792153584467.17,
+          "event": {
+            "data": {
+              "kind": "mouse",
+              "position": [
+                507.85,
+                525.51
+              ],
+              "sequence": 11,
+              "state": {
+                "ammo": 12,
+                "game_state": 0,
+                "occupied_cells": [
+                  [
+                    6,
+                    5
+                  ]
+                ],
+                "pickups": [],
+                "soldiers": [
+                  {
+                    "cell": [
+                      6,
+                      5
+                    ],
+                    "name": "Soldado",
+                    "position": [
+                      576,
+                      500
+                    ],
+                    "rifle_ammo": 0
+                  }
+                ]
+              }
+            },
+            "kind": "INPUT_PRE",
+            "ticks_ms": 21747
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.651Z",
+          "console_timestamp": 1792153584468.407,
+          "event": {
+            "data": {
+              "amount": 2
+            },
+            "kind": "AMMO",
+            "ticks_ms": 21748
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.651Z",
+          "console_timestamp": 1792153584472.545,
+          "event": {
+            "data": {
+              "kind": "touch",
+              "position": [
+                507.85,
+                525.51
+              ],
+              "sequence": 12,
+              "state": {
+                "ammo": 2,
+                "game_state": 0,
+                "occupied_cells": [
+                  [
+                    6,
+                    5
+                  ],
+                  [
+                    5,
+                    5
+                  ]
+                ],
+                "pickups": [],
+                "soldiers": [
+                  {
+                    "cell": [
+                      5,
+                      5
+                    ],
+                    "name": "@StaticBody2D@21",
+                    "position": [
+                      528,
+                      528
+                    ],
+                    "rifle_ammo": 10
+                  },
+                  {
+                    "cell": [
+                      6,
+                      5
+                    ],
+                    "name": "Soldado",
+                    "position": [
+                      576,
+                      500
+                    ],
+                    "rifle_ammo": 0
+                  }
+                ]
+              }
+            },
+            "kind": "INPUT_PRE",
+            "ticks_ms": 21752
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.651Z",
+          "console_timestamp": 1792153584487.819,
+          "event": {
+            "data": {
+              "sequence": 11,
+              "state": {
+                "ammo": 2,
+                "game_state": 0,
+                "occupied_cells": [
+                  [
+                    6,
+                    5
+                  ],
+                  [
+                    5,
+                    5
+                  ]
+                ],
+                "pickups": [],
+                "soldiers": [
+                  {
+                    "cell": [
+                      5,
+                      5
+                    ],
+                    "name": "@StaticBody2D@21",
+                    "position": [
+                      528,
+                      528
+                    ],
+                    "rifle_ammo": 10
+                  },
+                  {
+                    "cell": [
+                      6,
+                      5
+                    ],
+                    "name": "Soldado",
+                    "position": [
+                      576,
+                      500
+                    ],
+                    "rifle_ammo": 0
+                  }
+                ]
+              }
+            },
+            "kind": "INPUT_POST",
+            "ticks_ms": 21767
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.651Z",
+          "console_timestamp": 1792153584489.564,
+          "event": {
+            "data": {
+              "sequence": 12,
+              "state": {
+                "ammo": 2,
+                "game_state": 0,
+                "occupied_cells": [
+                  [
+                    6,
+                    5
+                  ],
+                  [
+                    5,
+                    5
+                  ]
+                ],
+                "pickups": [],
+                "soldiers": [
+                  {
+                    "cell": [
+                      5,
+                      5
+                    ],
+                    "name": "@StaticBody2D@21",
+                    "position": [
+                      528,
+                      528
+                    ],
+                    "rifle_ammo": 10
+                  },
+                  {
+                    "cell": [
+                      6,
+                      5
+                    ],
+                    "name": "Soldado",
+                    "position": [
+                      576,
+                      500
+                    ],
+                    "rifle_ammo": 0
+                  }
+                ]
+              }
+            },
+            "kind": "INPUT_POST",
+            "ticks_ms": 21769
+          }
+        }
+      ],
+      "result": "PASS observed physical input; exact counters belong only to observer. Later production corroboration is recorded in android-production-summary.json."
+    },
+    "W04": {
+      "session": 3,
+      "session_initial_utc": "2026-10-16T12:26:04.637052+00:00",
+      "mouse_sequence": 57,
+      "paired_touch_sequence": 58,
+      "position_world": [
+        565.8,
+        540.75
+      ],
+      "gesture_grid_cell_floor": [
+        5,
+        5
+      ],
+      "before": {
+        "ammo": 14,
+        "game_state": 0,
+        "occupied_cells": [
+          [
+            5,
+            5
+          ]
+        ],
+        "pickups": [
+          {
+            "amount": 3,
+            "cell": [
+              6,
+              5
+            ],
+            "name": "@Area2D@24",
+            "position": [
+              576.07,
+              486.67
+            ]
+          },
+          {
+            "amount": 3,
+            "cell": [
+              6,
+              4
+            ],
+            "name": "@Area2D@23",
+            "position": [
+              576,
+              451.97
+            ]
+          },
+          {
+            "amount": 3,
+            "cell": [
+              6,
+              4
+            ],
+            "name": "AmmoPickup",
+            "position": [
+              576,
+              451.95
+            ]
+          }
+        ],
+        "soldiers": [
+          {
+            "cell": [
+              5,
+              5
+            ],
+            "name": "@StaticBody2D@21",
+            "position": [
+              528,
+              528
+            ],
+            "rifle_ammo": 0
+          }
+        ]
+      },
+      "after": {
+        "ammo": 14,
+        "game_state": 0,
+        "occupied_cells": [
+          [
+            5,
+            5
+          ]
+        ],
+        "pickups": [
+          {
+            "amount": 3,
+            "cell": [
+              6,
+              5
+            ],
+            "name": "@Area2D@24",
+            "position": [
+              576.07,
+              486.67
+            ]
+          },
+          {
+            "amount": 3,
+            "cell": [
+              6,
+              4
+            ],
+            "name": "@Area2D@23",
+            "position": [
+              576,
+              451.97
+            ]
+          },
+          {
+            "amount": 3,
+            "cell": [
+              6,
+              4
+            ],
+            "name": "AmmoPickup",
+            "position": [
+              576,
+              451.95
+            ]
+          }
+        ],
+        "soldiers": [
+          {
+            "cell": [
+              5,
+              5
+            ],
+            "name": "@StaticBody2D@21",
+            "position": [
+              528,
+              528
+            ],
+            "rifle_ammo": 0
+          }
+        ]
+      },
+      "pre": {
+        "received_utc": "2026-10-16T12:28:53.661Z",
+        "console_timestamp": 1792153610960.61,
+        "event": {
+          "data": {
+            "kind": "mouse",
+            "position": [
+              565.8,
+              540.75
+            ],
+            "sequence": 57,
+            "state": {
+              "ammo": 14,
+              "game_state": 0,
+              "occupied_cells": [
+                [
+                  5,
+                  5
+                ]
+              ],
+              "pickups": [
+                {
+                  "amount": 3,
+                  "cell": [
+                    6,
+                    5
+                  ],
+                  "name": "@Area2D@24",
+                  "position": [
+                    576.07,
+                    486.67
+                  ]
+                },
+                {
+                  "amount": 3,
+                  "cell": [
+                    6,
+                    4
+                  ],
+                  "name": "@Area2D@23",
+                  "position": [
+                    576,
+                    451.97
+                  ]
+                },
+                {
+                  "amount": 3,
+                  "cell": [
+                    6,
+                    4
+                  ],
+                  "name": "AmmoPickup",
+                  "position": [
+                    576,
+                    451.95
+                  ]
+                }
+              ],
+              "soldiers": [
+                {
+                  "cell": [
+                    5,
+                    5
+                  ],
+                  "name": "@StaticBody2D@21",
+                  "position": [
+                    528,
+                    528
+                  ],
+                  "rifle_ammo": 0
+                }
+              ]
+            }
+          },
+          "kind": "INPUT_PRE",
+          "ticks_ms": 48240
+        }
+      },
+      "post": {
+        "received_utc": "2026-10-16T12:28:53.661Z",
+        "console_timestamp": 1792153610979.986,
+        "event": {
+          "data": {
+            "sequence": 57,
+            "state": {
+              "ammo": 14,
+              "game_state": 0,
+              "occupied_cells": [
+                [
+                  5,
+                  5
+                ]
+              ],
+              "pickups": [
+                {
+                  "amount": 3,
+                  "cell": [
+                    6,
+                    5
+                  ],
+                  "name": "@Area2D@24",
+                  "position": [
+                    576.07,
+                    486.67
+                  ]
+                },
+                {
+                  "amount": 3,
+                  "cell": [
+                    6,
+                    4
+                  ],
+                  "name": "@Area2D@23",
+                  "position": [
+                    576,
+                    451.97
+                  ]
+                },
+                {
+                  "amount": 3,
+                  "cell": [
+                    6,
+                    4
+                  ],
+                  "name": "AmmoPickup",
+                  "position": [
+                    576,
+                    451.95
+                  ]
+                }
+              ],
+              "soldiers": [
+                {
+                  "cell": [
+                    5,
+                    5
+                  ],
+                  "name": "@StaticBody2D@21",
+                  "position": [
+                    528,
+                    528
+                  ],
+                  "rifle_ammo": 0
+                }
+              ]
+            }
+          },
+          "kind": "INPUT_POST",
+          "ticks_ms": 48259
+        }
+      },
+      "paired_events": [
+        {
+          "received_utc": "2026-10-16T12:28:53.661Z",
+          "console_timestamp": 1792153610960.61,
+          "event": {
+            "data": {
+              "kind": "mouse",
+              "position": [
+                565.8,
+                540.75
+              ],
+              "sequence": 57,
+              "state": {
+                "ammo": 14,
+                "game_state": 0,
+                "occupied_cells": [
+                  [
+                    5,
+                    5
+                  ]
+                ],
+                "pickups": [
+                  {
+                    "amount": 3,
+                    "cell": [
+                      6,
+                      5
+                    ],
+                    "name": "@Area2D@24",
+                    "position": [
+                      576.07,
+                      486.67
+                    ]
+                  },
+                  {
+                    "amount": 3,
+                    "cell": [
+                      6,
+                      4
+                    ],
+                    "name": "@Area2D@23",
+                    "position": [
+                      576,
+                      451.97
+                    ]
+                  },
+                  {
+                    "amount": 3,
+                    "cell": [
+                      6,
+                      4
+                    ],
+                    "name": "AmmoPickup",
+                    "position": [
+                      576,
+                      451.95
+                    ]
+                  }
+                ],
+                "soldiers": [
+                  {
+                    "cell": [
+                      5,
+                      5
+                    ],
+                    "name": "@StaticBody2D@21",
+                    "position": [
+                      528,
+                      528
+                    ],
+                    "rifle_ammo": 0
+                  }
+                ]
+              }
+            },
+            "kind": "INPUT_PRE",
+            "ticks_ms": 48240
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.661Z",
+          "console_timestamp": 1792153610964.134,
+          "event": {
+            "data": {
+              "kind": "touch",
+              "position": [
+                565.8,
+                540.75
+              ],
+              "sequence": 58,
+              "state": {
+                "ammo": 14,
+                "game_state": 0,
+                "occupied_cells": [
+                  [
+                    5,
+                    5
+                  ]
+                ],
+                "pickups": [
+                  {
+                    "amount": 3,
+                    "cell": [
+                      6,
+                      5
+                    ],
+                    "name": "@Area2D@24",
+                    "position": [
+                      576.07,
+                      486.67
+                    ]
+                  },
+                  {
+                    "amount": 3,
+                    "cell": [
+                      6,
+                      4
+                    ],
+                    "name": "@Area2D@23",
+                    "position": [
+                      576,
+                      451.97
+                    ]
+                  },
+                  {
+                    "amount": 3,
+                    "cell": [
+                      6,
+                      4
+                    ],
+                    "name": "AmmoPickup",
+                    "position": [
+                      576,
+                      451.95
+                    ]
+                  }
+                ],
+                "soldiers": [
+                  {
+                    "cell": [
+                      5,
+                      5
+                    ],
+                    "name": "@StaticBody2D@21",
+                    "position": [
+                      528,
+                      528
+                    ],
+                    "rifle_ammo": 0
+                  }
+                ]
+              }
+            },
+            "kind": "INPUT_PRE",
+            "ticks_ms": 48243
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.661Z",
+          "console_timestamp": 1792153610979.986,
+          "event": {
+            "data": {
+              "sequence": 57,
+              "state": {
+                "ammo": 14,
+                "game_state": 0,
+                "occupied_cells": [
+                  [
+                    5,
+                    5
+                  ]
+                ],
+                "pickups": [
+                  {
+                    "amount": 3,
+                    "cell": [
+                      6,
+                      5
+                    ],
+                    "name": "@Area2D@24",
+                    "position": [
+                      576.07,
+                      486.67
+                    ]
+                  },
+                  {
+                    "amount": 3,
+                    "cell": [
+                      6,
+                      4
+                    ],
+                    "name": "@Area2D@23",
+                    "position": [
+                      576,
+                      451.97
+                    ]
+                  },
+                  {
+                    "amount": 3,
+                    "cell": [
+                      6,
+                      4
+                    ],
+                    "name": "AmmoPickup",
+                    "position": [
+                      576,
+                      451.95
+                    ]
+                  }
+                ],
+                "soldiers": [
+                  {
+                    "cell": [
+                      5,
+                      5
+                    ],
+                    "name": "@StaticBody2D@21",
+                    "position": [
+                      528,
+                      528
+                    ],
+                    "rifle_ammo": 0
+                  }
+                ]
+              }
+            },
+            "kind": "INPUT_POST",
+            "ticks_ms": 48259
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.661Z",
+          "console_timestamp": 1792153610981.357,
+          "event": {
+            "data": {
+              "sequence": 58,
+              "state": {
+                "ammo": 14,
+                "game_state": 0,
+                "occupied_cells": [
+                  [
+                    5,
+                    5
+                  ]
+                ],
+                "pickups": [
+                  {
+                    "amount": 3,
+                    "cell": [
+                      6,
+                      5
+                    ],
+                    "name": "@Area2D@24",
+                    "position": [
+                      576.07,
+                      486.67
+                    ]
+                  },
+                  {
+                    "amount": 3,
+                    "cell": [
+                      6,
+                      4
+                    ],
+                    "name": "@Area2D@23",
+                    "position": [
+                      576,
+                      451.97
+                    ]
+                  },
+                  {
+                    "amount": 3,
+                    "cell": [
+                      6,
+                      4
+                    ],
+                    "name": "AmmoPickup",
+                    "position": [
+                      576,
+                      451.95
+                    ]
+                  }
+                ],
+                "soldiers": [
+                  {
+                    "cell": [
+                      5,
+                      5
+                    ],
+                    "name": "@StaticBody2D@21",
+                    "position": [
+                      528,
+                      528
+                    ],
+                    "rifle_ammo": 0
+                  }
+                ]
+              }
+            },
+            "kind": "INPUT_POST",
+            "ticks_ms": 48261
+          }
+        }
+      ],
+      "result": "PASS observed physical input; exact counters belong only to observer. Later production corroboration is recorded in android-production-summary.json."
+    },
+    "W05": {
+      "session": 4,
+      "session_initial_utc": "2026-10-16T12:27:28.378410+00:00",
+      "mouse_sequence": 1,
+      "paired_touch_sequence": 2,
+      "position_world": [
+        553.6,
+        504.18
+      ],
+      "gesture_grid_cell_floor": [
+        5,
+        5
+      ],
+      "before": {
+        "ammo": 0,
+        "game_state": 0,
+        "occupied_cells": [
+          [
+            6,
+            5
+          ]
+        ],
+        "pickups": [],
+        "soldiers": [
+          {
+            "cell": [
+              6,
+              5
+            ],
+            "name": "Soldado",
+            "position": [
+              576,
+              500
+            ],
+            "rifle_ammo": 10
+          }
+        ]
+      },
+      "after": {
+        "ammo": 0,
+        "game_state": 0,
+        "occupied_cells": [
+          [
+            6,
+            5
+          ]
+        ],
+        "pickups": [],
+        "soldiers": [
+          {
+            "cell": [
+              6,
+              5
+            ],
+            "name": "Soldado",
+            "position": [
+              576,
+              500
+            ],
+            "rifle_ammo": 10
+          }
+        ]
+      },
+      "pre": {
+        "received_utc": "2026-10-16T12:28:53.671Z",
+        "console_timestamp": 1792153649892.998,
+        "event": {
+          "data": {
+            "kind": "mouse",
+            "position": [
+              553.6,
+              504.18
+            ],
+            "sequence": 1,
+            "state": {
+              "ammo": 0,
+              "game_state": 0,
+              "occupied_cells": [
+                [
+                  6,
+                  5
+                ]
+              ],
+              "pickups": [],
+              "soldiers": [
+                {
+                  "cell": [
+                    6,
+                    5
+                  ],
+                  "name": "Soldado",
+                  "position": [
+                    576,
+                    500
+                  ],
+                  "rifle_ammo": 10
+                }
+              ]
+            }
+          },
+          "kind": "INPUT_PRE",
+          "ticks_ms": 3424
+        }
+      },
+      "post": {
+        "received_utc": "2026-10-16T12:28:53.671Z",
+        "console_timestamp": 1792153649907.195,
+        "event": {
+          "data": {
+            "sequence": 1,
+            "state": {
+              "ammo": 0,
+              "game_state": 0,
+              "occupied_cells": [
+                [
+                  6,
+                  5
+                ]
+              ],
+              "pickups": [],
+              "soldiers": [
+                {
+                  "cell": [
+                    6,
+                    5
+                  ],
+                  "name": "Soldado",
+                  "position": [
+                    576,
+                    500
+                  ],
+                  "rifle_ammo": 10
+                }
+              ]
+            }
+          },
+          "kind": "INPUT_POST",
+          "ticks_ms": 3440
+        }
+      },
+      "paired_events": [
+        {
+          "received_utc": "2026-10-16T12:28:53.671Z",
+          "console_timestamp": 1792153649892.998,
+          "event": {
+            "data": {
+              "kind": "mouse",
+              "position": [
+                553.6,
+                504.18
+              ],
+              "sequence": 1,
+              "state": {
+                "ammo": 0,
+                "game_state": 0,
+                "occupied_cells": [
+                  [
+                    6,
+                    5
+                  ]
+                ],
+                "pickups": [],
+                "soldiers": [
+                  {
+                    "cell": [
+                      6,
+                      5
+                    ],
+                    "name": "Soldado",
+                    "position": [
+                      576,
+                      500
+                    ],
+                    "rifle_ammo": 10
+                  }
+                ]
+              }
+            },
+            "kind": "INPUT_PRE",
+            "ticks_ms": 3424
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.671Z",
+          "console_timestamp": 1792153649895.719,
+          "event": {
+            "data": {
+              "reason": "Munición insuficiente"
+            },
+            "kind": "REJECTED",
+            "ticks_ms": 3428
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.671Z",
+          "console_timestamp": 1792153649897.404,
+          "event": {
+            "data": {
+              "kind": "touch",
+              "position": [
+                553.6,
+                504.18
+              ],
+              "sequence": 2,
+              "state": {
+                "ammo": 0,
+                "game_state": 0,
+                "occupied_cells": [
+                  [
+                    6,
+                    5
+                  ]
+                ],
+                "pickups": [],
+                "soldiers": [
+                  {
+                    "cell": [
+                      6,
+                      5
+                    ],
+                    "name": "Soldado",
+                    "position": [
+                      576,
+                      500
+                    ],
+                    "rifle_ammo": 10
+                  }
+                ]
+              }
+            },
+            "kind": "INPUT_PRE",
+            "ticks_ms": 3430
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.671Z",
+          "console_timestamp": 1792153649907.195,
+          "event": {
+            "data": {
+              "sequence": 1,
+              "state": {
+                "ammo": 0,
+                "game_state": 0,
+                "occupied_cells": [
+                  [
+                    6,
+                    5
+                  ]
+                ],
+                "pickups": [],
+                "soldiers": [
+                  {
+                    "cell": [
+                      6,
+                      5
+                    ],
+                    "name": "Soldado",
+                    "position": [
+                      576,
+                      500
+                    ],
+                    "rifle_ammo": 10
+                  }
+                ]
+              }
+            },
+            "kind": "INPUT_POST",
+            "ticks_ms": 3440
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.671Z",
+          "console_timestamp": 1792153649907.923,
+          "event": {
+            "data": {
+              "sequence": 2,
+              "state": {
+                "ammo": 0,
+                "game_state": 0,
+                "occupied_cells": [
+                  [
+                    6,
+                    5
+                  ]
+                ],
+                "pickups": [],
+                "soldiers": [
+                  {
+                    "cell": [
+                      6,
+                      5
+                    ],
+                    "name": "Soldado",
+                    "position": [
+                      576,
+                      500
+                    ],
+                    "rifle_ammo": 10
+                  }
+                ]
+              }
+            },
+            "kind": "INPUT_POST",
+            "ticks_ms": 3440
+          }
+        }
+      ],
+      "result": "PASS observed physical input; exact counters belong only to observer. Later production corroboration is recorded in android-production-summary.json."
+    }
+  },
+  "observed_performance": [
+    {
+      "session": 3,
+      "initial_utc": "2026-10-16T12:26:04.637052+00:00",
+      "terminal_ticks_ms": 50987,
+      "active_windows": [
+        {
+          "received_utc": "2026-10-16T12:28:53.648Z",
+          "console_timestamp": 1792153569483.933,
+          "event": {
+            "data": {
+              "elapsed_process_seconds": 5.01186666666667,
+              "engine_fps": 61,
+              "first_process_engine_ticks_ms": 1945,
+              "frames": 292,
+              "max_delta_ms": 133.333333333333,
+              "mean_fps_from_delta": 58.2617255048019,
+              "p50_delta_ms": 16.6,
+              "p95_delta_ms": 16.6666666666667
+            },
+            "kind": "PERFORMANCE",
+            "ticks_ms": 6763
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.648Z",
+          "console_timestamp": 1792153574489.687,
+          "event": {
+            "data": {
+              "elapsed_process_seconds": 10.0130883333334,
+              "engine_fps": 60,
+              "first_process_engine_ticks_ms": 1945,
+              "frames": 595,
+              "max_delta_ms": 133.333333333333,
+              "mean_fps_from_delta": 59.4222262095955,
+              "p50_delta_ms": 16.4333333333333,
+              "p95_delta_ms": 16.6666666666667
+            },
+            "kind": "PERFORMANCE",
+            "ticks_ms": 11769
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.648Z",
+          "console_timestamp": 1792153579500.668,
+          "event": {
+            "data": {
+              "elapsed_process_seconds": 15.020465666667,
+              "engine_fps": 61,
+              "first_process_engine_ticks_ms": 1945,
+              "frames": 898,
+              "max_delta_ms": 133.333333333333,
+              "mean_fps_from_delta": 59.7850972085918,
+              "p50_delta_ms": 16.393,
+              "p95_delta_ms": 16.6666666666667
+            },
+            "kind": "PERFORMANCE",
+            "ticks_ms": 16780
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.651Z",
+          "console_timestamp": 1792153584504.241,
+          "event": {
+            "data": {
+              "elapsed_process_seconds": 20.036723666667,
+              "engine_fps": 60,
+              "first_process_engine_ticks_ms": 1945,
+              "frames": 1201,
+              "max_delta_ms": 133.333333333333,
+              "mean_fps_from_delta": 59.9399392824874,
+              "p50_delta_ms": 16.393,
+              "p95_delta_ms": 16.6666666666667
+            },
+            "kind": "PERFORMANCE",
+            "ticks_ms": 21784
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.654Z",
+          "console_timestamp": 1792153589528.413,
+          "event": {
+            "data": {
+              "elapsed_process_seconds": 25.0529816666672,
+              "engine_fps": 61,
+              "first_process_engine_ticks_ms": 1945,
+              "frames": 1505,
+              "max_delta_ms": 133.333333333333,
+              "mean_fps_from_delta": 60.0726899506095,
+              "p50_delta_ms": 16.393,
+              "p95_delta_ms": 16.6666666666667
+            },
+            "kind": "PERFORMANCE",
+            "ticks_ms": 26808
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.660Z",
+          "console_timestamp": 1792153594538.293,
+          "event": {
+            "data": {
+              "elapsed_process_seconds": 30.0611800000006,
+              "engine_fps": 60,
+              "first_process_engine_ticks_ms": 1945,
+              "frames": 1808,
+              "max_delta_ms": 133.333333333333,
+              "mean_fps_from_delta": 60.1440129762026,
+              "p50_delta_ms": 16.393,
+              "p95_delta_ms": 16.6666666666667
+            },
+            "kind": "PERFORMANCE",
+            "ticks_ms": 31818
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.660Z",
+          "console_timestamp": 1792153599546.4,
+          "event": {
+            "data": {
+              "elapsed_process_seconds": 35.0691046666673,
+              "engine_fps": 61,
+              "first_process_engine_ticks_ms": 1945,
+              "frames": 2111,
+              "max_delta_ms": 133.333333333333,
+              "mean_fps_from_delta": 60.1954347014304,
+              "p50_delta_ms": 16.393,
+              "p95_delta_ms": 16.6666666666667
+            },
+            "kind": "PERFORMANCE",
+            "ticks_ms": 36826
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.660Z",
+          "console_timestamp": 1792153604571.058,
+          "event": {
+            "data": {
+              "elapsed_process_seconds": 40.0853626666674,
+              "engine_fps": 60,
+              "first_process_engine_ticks_ms": 1945,
+              "frames": 2415,
+              "max_delta_ms": 133.333333333333,
+              "mean_fps_from_delta": 60.2464301017331,
+              "p50_delta_ms": 16.393,
+              "p95_delta_ms": 16.6666666666667
+            },
+            "kind": "PERFORMANCE",
+            "ticks_ms": 41851
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.661Z",
+          "console_timestamp": 1792153609578.464,
+          "event": {
+            "data": {
+              "elapsed_process_seconds": 45.1016206666674,
+              "engine_fps": 61,
+              "first_process_engine_ticks_ms": 1945,
+              "frames": 2718,
+              "max_delta_ms": 133.333333333333,
+              "mean_fps_from_delta": 60.2639098068764,
+              "p50_delta_ms": 16.393,
+              "p95_delta_ms": 16.6666666666667
+            },
+            "kind": "PERFORMANCE",
+            "ticks_ms": 46858
+          }
+        }
+      ],
+      "approximately_first30_seconds": {
+        "received_utc": "2026-10-16T12:28:53.660Z",
+        "console_timestamp": 1792153594538.293,
+        "event": {
+          "data": {
+            "elapsed_process_seconds": 30.0611800000006,
+            "engine_fps": 60,
+            "first_process_engine_ticks_ms": 1945,
+            "frames": 1808,
+            "max_delta_ms": 133.333333333333,
+            "mean_fps_from_delta": 60.1440129762026,
+            "p50_delta_ms": 16.393,
+            "p95_delta_ms": 16.6666666666667
+          },
+          "kind": "PERFORMANCE",
+          "ticks_ms": 31818
+        }
+      }
+    },
+    {
+      "session": 4,
+      "initial_utc": "2026-10-16T12:27:28.378410+00:00",
+      "terminal_ticks_ms": 35486,
+      "active_windows": [
+        {
+          "received_utc": "2026-10-16T12:28:53.674Z",
+          "console_timestamp": 1792153653215.785,
+          "event": {
+            "data": {
+              "elapsed_process_seconds": 5.00173333333333,
+              "engine_fps": 61,
+              "first_process_engine_ticks_ms": 1934,
+              "frames": 290,
+              "max_delta_ms": 144.133333333333,
+              "mean_fps_from_delta": 57.979900301229,
+              "p50_delta_ms": 16.6666666666667,
+              "p95_delta_ms": 16.6666666666667
+            },
+            "kind": "PERFORMANCE",
+            "ticks_ms": 6748
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.676Z",
+          "console_timestamp": 1792153658224.233,
+          "event": {
+            "data": {
+              "elapsed_process_seconds": 10.0103333333334,
+              "engine_fps": 61,
+              "first_process_engine_ticks_ms": 1934,
+              "frames": 593,
+              "max_delta_ms": 144.133333333333,
+              "mean_fps_from_delta": 59.2387865871929,
+              "p50_delta_ms": 16.6666666666667,
+              "p95_delta_ms": 16.6666666666667
+            },
+            "kind": "PERFORMANCE",
+            "ticks_ms": 11757
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.678Z",
+          "console_timestamp": 1792153663231.594,
+          "event": {
+            "data": {
+              "elapsed_process_seconds": 15.0189666666669,
+              "engine_fps": 60,
+              "first_process_engine_ticks_ms": 1934,
+              "frames": 896,
+              "max_delta_ms": 144.133333333333,
+              "mean_fps_from_delta": 59.6578992340787,
+              "p50_delta_ms": 16.6666666666667,
+              "p95_delta_ms": 16.6666666666667
+            },
+            "kind": "PERFORMANCE",
+            "ticks_ms": 16764
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.679Z",
+          "console_timestamp": 1792153668239.646,
+          "event": {
+            "data": {
+              "elapsed_process_seconds": 20.0274333333335,
+              "engine_fps": 61,
+              "first_process_engine_ticks_ms": 1934,
+              "frames": 1199,
+              "max_delta_ms": 144.133333333333,
+              "mean_fps_from_delta": 59.8678812229221,
+              "p50_delta_ms": 16.6666666666667,
+              "p95_delta_ms": 16.6666666666667
+            },
+            "kind": "PERFORMANCE",
+            "ticks_ms": 21772
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.680Z",
+          "console_timestamp": 1792153673247.017,
+          "event": {
+            "data": {
+              "elapsed_process_seconds": 25.0351333333334,
+              "engine_fps": 60,
+              "first_process_engine_ticks_ms": 1934,
+              "frames": 1502,
+              "max_delta_ms": 144.133333333333,
+              "mean_fps_from_delta": 59.9956860625201,
+              "p50_delta_ms": 16.6666666666667,
+              "p95_delta_ms": 16.6666666666667
+            },
+            "kind": "PERFORMANCE",
+            "ticks_ms": 26779
+          }
+        },
+        {
+          "received_utc": "2026-10-16T12:28:53.682Z",
+          "console_timestamp": 1792153678273.49,
+          "event": {
+            "data": {
+              "elapsed_process_seconds": 30.0495643333334,
+              "engine_fps": 60,
+              "first_process_engine_ticks_ms": 1934,
+              "frames": 1806,
+              "max_delta_ms": 144.133333333333,
+              "mean_fps_from_delta": 60.1007049542026,
+              "p50_delta_ms": 16.6666666666667,
+              "p95_delta_ms": 16.6666666666667
+            },
+            "kind": "PERFORMANCE",
+            "ticks_ms": 31806
+          }
+        }
+      ],
+      "approximately_first30_seconds": {
+        "received_utc": "2026-10-16T12:28:53.682Z",
+        "console_timestamp": 1792153678273.49,
+        "event": {
+          "data": {
+            "elapsed_process_seconds": 30.0495643333334,
+            "engine_fps": 60,
+            "first_process_engine_ticks_ms": 1934,
+            "frames": 1806,
+            "max_delta_ms": 144.133333333333,
+            "mean_fps_from_delta": 60.1007049542026,
+            "p50_delta_ms": 16.6666666666667,
+            "p95_delta_ms": 16.6666666666667
+          },
+          "kind": "PERFORMANCE",
+          "ticks_ms": 31806
+        }
+      }
+    }
+  ],
+  "limits": [
+    "Exact A/B intended marker sequence not reproduced literally; actual gestures and occupancy establish each functional case.",
+    "W02 pickup center576,442 is cell6,4; gesture570.89,453.4 is free cell5,4.",
+    "Recorded videos preceded these sessions and do not evidence current touches. Current screenshots are post-terminal.",
+    "Instrumentation adds read-only labels/logging. Later production/visibility corroboration is recorded separately in android-production-summary.json.",
+    "Observer process FPS/delta exclude browser download/compile and do not certify stable60FPS or reference constitutional device."
+  ]
+}

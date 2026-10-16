@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "source_revision": "7309d8fa211637afbd68c4d73181758ee2840a93",
+  "parents": {"main": "0cc19d070caf16f8586f74d504509fbb39efbcee", "web": "9e32f1a42c42bc28719270ca3e7d7b1e2c6b8ed7"},
+  "source_dirty_before_and_after": false,
+  "engine_version": "4.7.1.stable.official.a13da4feb",
+  "web_release_template_sha256": "b7b7d7da29fc6cc2f4934fdd26cc571a40e7af57f716ea3eb7e18da720dae28a",
+  "export_script_sha256": "d5125cb75e8ba55e1d7773dbc63bcf0152cf7ea416f6a38776f10a39253a1c2f",
+  "export_exit_code": 0,
+  "import_errors": 0,
+  "export_errors": 0,
+  "protected_files": {"count": 364, "different_from_either_parent": 0, "aggregate_sha256": "55469201f0f07f6c3ed34edf6d6fca784da1049fa5a26face8aaa73cbbfd3a2e"},
+  "archive": {"path": "demons-web.zip", "size_bytes": 14893307, "sha256": "f3b60dfa20ddbc277c12335a10ab43f92b2f676474659a560dfc6c8ab515dc78"},
+  "previous_archive_sha256": "205d3916f21ce8c2b29eaf4bbbd804908dab7e9c93356355f4a335212eabfd71",
+  "zip_members": {"count": 12, "byte_identical": 11, "changed": ["index.pck"], "licenses_verified": 3},
+  "pck": {"resource_count": 78, "byte_identical": 72, "forbidden_count": 0, "project_settings_equal": true, "settings_sha256": "29b01761cfdfd7eafd00dc37a093dbc09ce33a4e8f5f6061f158a9bf0c9b7b5e"},
+  "scene_deltas": [
+    {"scene": "export-1a1a34b0c682cb499da1e6b6a6010606-Nivel_MonteCalvo.scn.tscn", "node_count": 7, "binary_offset_start": 1640, "binary_offset_end_exclusive": 1668, "normalized_scene_sha256": "c3f2973541b152984335ed61033d0c3a69fa5b01686d50ad73ffe02eb556ca03"},
+    {"scene": "export-613d3ebfddc28d0db273d0f0f8e8cd3c-EnemigoBase.scn.tscn", "node_count": 3, "binary_offset_start": 1630, "binary_offset_end_exclusive": 1642, "normalized_scene_sha256": "89234c40310a8aebeda5a989cba6fc4e9ae4e516519dc9c924e56cf184870859"},
+    {"scene": "export-74b5c9848938f4eb9ebaf6fab3809318-HUD.scn.tscn", "node_count": 12, "binary_offset_start": 2018, "binary_offset_end_exclusive": 2066, "normalized_scene_sha256": "fdcd6066caa19bc74a9396dd50312df91b0627616133c64fcdd45130d0fe810f"},
+    {"scene": "export-93337037fb7c45d5896db0d3dacbc53e-Soldado.scn.tscn", "node_count": 7, "binary_offset_start": 2092, "binary_offset_end_exclusive": 2120, "normalized_scene_sha256": "a6ee247f18c13d81064a7b867b422e8a700793cb8c3f7a5c4fe805ad45e33bb7"},
+    {"scene": "export-c03dd3232ffdc7c9116bb400971b6ae4-AmmoPickup.scn.tscn", "node_count": 3, "binary_offset_start": 1561, "binary_offset_end_exclusive": 1573, "normalized_scene_sha256": "45d79fc0bf3324ee3dbbf42f186c949c15619abfe7c8174e7811621476323eda"},
+    {"scene": "export-c6e4738ec454d7288ac025d1d30a11e4-MonteCalvoVisual.scn.tscn", "node_count": 19, "binary_offset_start": 4032, "binary_offset_end_exclusive": 4108, "normalized_scene_sha256": "dbd623276cf01be7457b59596d287146935dc6d834fbff800a9bacff15b82d80"}
+  ],
+  "scene_delta_method": "Binary prefix/suffix identical; only uint32 node unique_id vector differs. Text comparison removes only node unique_id and resolves external-resource aliases to their paths; six complete scenes then identical.",
+  "logs": {"web-import.log": {"sha256": "78d46aaf02d8dfcaefa421a79c6cbaf399794a641db1494c0463dde303f81610", "exit_code": 0}, "web-export.log": {"sha256": "c84a5a2268daef0f24712371c3915d0a9d26f50676f3b1f6ea5d10a83930d036", "exit_code": 0}},
+  "diagnostic_archive": {"file": "review-diagnostics.tar.gz", "sha256": "a9a46a4e944e4496f729d54522963fc777a46cc802602d4e3a598d4e83648204", "size_bytes": 56558},
+  "ci_status_at_report": "NOT RUN; orchestrator must link checks for final pushed HEAD",
+  "new_manual_browser_or_device_tests": false
+}

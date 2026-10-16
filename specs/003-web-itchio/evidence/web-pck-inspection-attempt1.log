@@ -1,0 +1,25 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Could not find type "WaveData" in the current scope.
+   at: GDScript::reload (res://autoloads/wave_manager.gd:22)
+SCRIPT ERROR: Parse Error: Could not find type "WaveData" in the current scope.
+   at: GDScript::reload (res://autoloads/wave_manager.gd:57)
+SCRIPT ERROR: Parse Error: Could not find type "WaveData" in the current scope.
+   at: GDScript::reload (res://autoloads/wave_manager.gd:95)
+SCRIPT ERROR: Parse Error: Could not find type "WaveData" in the current scope.
+   at: GDScript::reload (res://autoloads/wave_manager.gd:113)
+SCRIPT ERROR: Parse Error: Could not find type "WaveData" in the current scope.
+   at: GDScript::reload (res://autoloads/wave_manager.gd:82)
+SCRIPT ERROR: Parse Error: Could not find type "WaveSpawnEntry" in the current scope.
+   at: GDScript::reload (res://autoloads/wave_manager.gd:115)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://autoloads/game_state_manager.gd:0)
+ERROR: Failed to load script "res://autoloads/game_state_manager.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+ERROR: Failed to instantiate an autoload, script 'res://autoloads/wave_manager.gd' does not inherit from 'Node'.
+   at: start (main/main.cpp:4535)
+PCK_INVENTORY count=38 forbidden=[]
+SCRIPT ERROR: Invalid access to property or key 'all_waves_completed' on a base object of type 'Nil'.
+   at: _ready (res://autoloads/game_state_manager.gd:50)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://autoloads/game_state_manager.gd:50)

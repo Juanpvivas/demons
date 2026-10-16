@@ -1,24 +1,28 @@
 <!--
 Sync Impact Report
-- Version change: 1.1.0 → 1.2.0 (MINOR).
-- Motivo: decisión explícita de la persona (2026-10-16): «Usar el Xiaomi como
-  referencia provisional para 002», conservando el objetivo de 60 FPS y QA.
-- Principio modificado: IV. Requisitos de Rendimiento, sin cambio de título.
-  Se amplía materialmente la guía de referencia con una excepción limitada a
-  la aceptación de 002: Xiaomi 11T Pro, modelo 2107113SG, generación 2021.
-- Se conservan 60 FPS estables y la referencia nominal global de gama media
-  Android de los últimos ~3 años. No se exime estabilidad ni se certifican
-  otros teléfonos, la feature 003, iOS o plataformas emuladas.
-- Secciones añadidas/eliminadas: ninguna; se añade un párrafo acotado a IV.
-- Referencias sincronizadas: spec.md, plan.md, quickstart.md y
-  contracts/visual-boundary.md de specs/002-monte-calvo-terreno-trincheras/.
-- Plantilla activa resuelta; fuentes de preparación del preset consultadas.
-  Templates y comandos leen la constitución en ejecución y no se modifican.
-- Revisión documental aprobada por QA el 2026-10-16; aceptación del rendimiento
-  todavía pendiente. La decisión de dispositivo no convierte una medición
-  corta en aprobación.
-- Se conservan los cuatro principios, la ratificación inicial y la enmienda
-  1.1.0 de 2026-10-15 sobre Spec Kit, agentes, TDD y QA independiente.
+- Version change: 2.0.0 + 1.2.0 → 2.1.0 (MINOR sobre 2.0.0).
+- Motivo: integrar las dos decisiones humanas ya aprobadas, sin sustituir una
+  por la otra: Web para itch.io y apps Android/iOS (2026-10-15, enmienda 2.0.0),
+  y Xiaomi 11T Pro 2107113SG de 2021 como referencia provisional exclusiva de
+  002 (2026-10-16, enmienda 1.2.0 integrada en main con PR #16).
+- Se conservan I/III y las restricciones de 2.0.0: GDScript compartido,
+  Web + Android + iOS; PC nativo queda para desarrollo/pruebas. La excepción
+  previa C#/.NET no vuelve a habilitarse.
+- Se integra en IV la excepción 1.2.0 como ampliación de la guía de 2.0.0.
+  No se modifica el objetivo de 60 FPS estables ni la referencia nominal
+  global de gama media Android de los últimos ~3 años. La excepción no
+  acredita 003/Web, iOS, otros teléfonos ni rendimiento emulado.
+- La aprobación nativa de 002 y sus límites se conservan en su matriz e informe
+  de rendimiento. La aceptación Web de 003 sigue limitada a su propia matriz;
+  ni la enmienda ni el merge certifican rendimiento sostenido Web.
+- Referencias integradas: docs/SPEC.md, docs/ARCHITECTURE.md, README.md y
+  docs/WEB_EXPORT.md. Los documentos/evidencias de 001, 002 y 003 conservan
+  sus versiones y resultados históricos; esta integración no los revalida.
+- Sin cambios en los cuatro principios, TDD, QA independiente, separación
+  Spec Kit/agentes o ratificación inicial. Se mantienen las enmiendas previas
+  y se requiere revisar la evidencia del estado integrado antes de entregar.
+- Templates y comandos de preparación leen la constitución en ejecución;
+  no requieren regeneración por esta integración documental.
 - TODO diferido sin cambios: PERFORMANCE_LOAD_TIME_TARGET, pendiente de medir
   en dispositivo Android de referencia.
 -->
@@ -35,9 +39,9 @@ innegociable a medida que crece el roster de soldados y enemigos. La lógica de
 gameplay (economía, daño, detección de objetivos) DEBE mantenerse separada de
 la lógica puramente visual/de animación, para que cada una se pueda modificar
 sin romper la otra. Todo código nuevo DEBE seguir una guía de estilo consistente
-(GDScript style guide oficial de Godot, o las convenciones estándar de C# si se
-usa ese lenguaje) y no se mezclan ambos lenguajes dentro de un mismo sistema sin
-justificación explícita. Ninguna funcionalidad se integra a la rama principal
+(GDScript style guide oficial de Godot). El código compartido del juego DEBE
+seguir siendo exportable a Web, Android e iOS, sin depender de C#/.NET ni de
+extensiones que excluyan alguno de esos destinos. Ninguna funcionalidad se integra a la rama principal
 sin una revisión propia (auto-revisión o revisión de otra persona) que confirme
 que sigue estas reglas.
 **Razón**: el proyecto ya pasó por varias iteraciones de diseño del sistema de
@@ -69,7 +73,8 @@ pruebas, los cambios futuros pueden reintroducir bugs de balance ya resueltos.
 ### III. Consistencia de Experiencia de Usuario
 La interacción de colocación de unidades, lectura de recursos (munición, moral)
 y retroalimentación de combate DEBEN comportarse de forma consistente entre
-Android, iOS y PC, adaptando el input (touch vs. mouse/teclado) sin cambiar la
+Web (navegador en computador y móvil), Android e iOS nativos, adaptando el
+input (touch vs. mouse/teclado cuando corresponda) sin cambiar la
 lógica ni el significado de las acciones. Todo cambio de estado relevante para
 el jugador (soldado sin munición pasando a machete, enemigo recibiendo daño,
 oleada por llegar) DEBE comunicarse con retroalimentación visual y/o sonora
@@ -91,7 +96,11 @@ oleadas grandes. El tiempo de carga de un nivel NO DEBE exceder
 TODO(PERFORMANCE_LOAD_TIME_TARGET) — valor pendiente de definir tras medir en
 el dispositivo de referencia. Cualquier funcionalidad que arriesgue el
 framerate objetivo (partículas, cantidad simultánea de enemigos) DEBE probarse
-en el dispositivo de gama más baja soportada antes de mergear, no solo en PC.
+en el dispositivo de gama más baja soportada antes de mergear. Una ejecución
+en el editor o en un navegador de computador no sustituye esa medición.
+Las features Web DEBEN registrar además carga y rendimiento en los navegadores
+y dispositivos de su matriz de aceptación; no se extrapolan los resultados
+del ejecutable nativo al navegador del mismo dispositivo.
 
 **Referencia provisional exclusiva de la feature 002 (2026-10-16):** por decisión
 explícita de la persona, el Xiaomi 11T Pro físico, modelo `2107113SG` de 2021,
@@ -113,10 +122,14 @@ rendimiento en la máquina de desarrollo.
 
 - Motor: Godot 4.x, licencia MIT — no se introduce dependencia de pago
   obligatoria para el desarrollo ni la publicación del juego.
-- Lenguaje: GDScript por defecto para prototipado; C# permitido solo en
-  sistemas donde el rendimiento lo justifique, documentando la razón.
-- Plataformas objetivo: Android, iOS, PC (Windows/macOS/Linux) — toda decisión
-  técnica nueva debe considerarse contra las tres antes de adoptarse.
+- Lenguaje del juego compartido: GDScript. No introducir C#/.NET como
+  dependencia del juego exportado mientras impida el destino Web; una futura
+  excepción requiere demostrar compatibilidad y enmendar esta constitución.
+- Plataformas objetivo: Web, Android e iOS. Web incluye navegador en computador
+  con ratón y en dispositivos móviles con toque; itch.io es el primer portal
+  previsto. No se publican instaladores Windows/macOS/Linux como producto.
+  El editor y la ejecución nativa local en PC siguen disponibles para desarrollo
+  y pruebas. Toda decisión técnica nueva debe considerar los tres destinos.
 - Datos de balance (unidades, enemigos, oleadas) definidos como `Resource`
   (`.tres`), nunca hardcodeados en scripts de lógica.
 
@@ -156,4 +169,4 @@ listo para implementar. Cualquier complejidad técnica que viole un principio
 DEBE justificarse explícitamente en el documento correspondiente (plan o spec)
 o rechazarse.
 
-**Version**: 1.2.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-16
+**Version**: 2.1.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-16

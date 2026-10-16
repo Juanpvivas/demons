@@ -1,0 +1,17 @@
+{
+  "baseline_count": 110,
+  "unchanged": 106,
+  "changed": [
+    ".github/workflows/ci.yml",
+    "export_presets.cfg",
+    "project.godot",
+    "scenes/levels/nivel_monte_calvo.gd"
+  ],
+  "native_presets_values_unchanged": true,
+  "input_map_unchanged": true,
+  "global_mobile_preserved": true,
+  "implementation_sha256": "4e89dce236868c4203079e06937b5c8dbcbbd564382f373d2216d4aa8c700d7f",
+  "test_sha256": "ac55c141e87f74939d3432dccf89caa62a888b149e0db69df4f8ae1ef9e34dbd",
+  "new_test_uid_sha256": "d04d09db66592adb6ca9699779850af4a071aed17a727c10544548aabf3ca56d",
+  "observer_sha256": "c628c721ec12ba7c922545787134bae6b86808dbdc9d0c5669945b4e3d15fc90"
+}

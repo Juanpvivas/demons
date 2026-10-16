@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-10-16T03:41:49.553953+00:00",
+  "build_version": "ed446d9",
+  "source_revision": "ed446d9ab4c1e84e3ef84709e0fe5f357848dd76",
+  "source_dirty": false,
+  "godot_version": "4.7.1.stable.official.a13da4feb",
+  "export_preset": "Web",
+  "export_mode": "release",
+  "entrypoint": "index.html",
+  "rendering_method": "gl_compatibility",
+  "threads": false,
+  "extensions": false,
+  "pwa": false,
+  "excluded_resource_patterns": [
+    "tests/*",
+    "addons/*",
+    "specs/*",
+    "docs/*",
+    "tools/*",
+    ".claude/*",
+    ".specify/*",
+    ".agents/*",
+    ".codex/*",
+    ".github/*",
+    "build/*",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "assets/sprites/levels/monte_calvo/SOURCES.md"
+  ],
+  "pck_content_validation": "Requiere inspeccion del tester; la lista exterior no valida el contenido del PCK.",
+  "license_files": [
+    "licenses/GODOT_COPYRIGHT.txt",
+    "licenses/GODOT_LICENSE.txt",
+    "licenses/NOTICE.txt"
+  ],
+  "files": [
+    {
+      "path": "index.apple-touch-icon.png",
+      "size_bytes": 11939,
+      "sha256": "071ccd3c3619e62c9e27995cf1afde427bb1b630767801a0fe1ac33505b2f221"
+    },
+    {
+      "path": "index.audio.position.worklet.js",
+      "size_bytes": 2973,
+      "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+    },
+    {
+      "path": "index.audio.worklet.js",
+      "size_bytes": 7298,
+      "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+    },
+    {
+      "path": "index.html",
+      "size_bytes": 5437,
+      "sha256": "1a2b5edd4b6f9cde1ea9e5c8ca3880c5e936566a874a4d21ce6e64b24d218703"
+    },
+    {
+      "path": "index.icon.png",
+      "size_bytes": 5765,
+      "sha256": "662f81d7672001a6f5f928532493267c226624757de3b5fa2908f6e5923964b7"
+    },
+    {
+      "path": "index.js",
+      "size_bytes": 279815,
+      "sha256": "68586d6daafc93c6e697b3fb258976874aa7459b8931165ebb1dc3c9614cc42c"
+    },
+    {
+      "path": "index.pck",
+      "size_bytes": 4701720,
+      "sha256": "106017938d40236043249611079c616f35770690a0887010ab32a2e3ff168f3c"
+    },
+    {
+      "path": "index.png",
+      "size_bytes": 21443,
+      "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+    },
+    {
+      "path": "index.wasm",
+      "size_bytes": 39513091,
+      "sha256": "35116f68540ac41acf7d71ea457added91b5e960a9cca3e2acc72918eaf01277"
+    },
+    {
+      "path": "licenses/GODOT_COPYRIGHT.txt",
+      "size_bytes": 100108,
+      "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d"
+    },
+    {
+      "path": "licenses/GODOT_LICENSE.txt",
+      "size_bytes": 1149,
+      "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80"
+    },
+    {
+      "path": "licenses/NOTICE.txt",
+      "size_bytes": 927,
+      "sha256": "459270e4af1f55dba3a4ee64c5a5ed2a87691760aef17ae51bd0257775644616"
+    }
+  ],
+  "uncompressed_size_bytes": 44651665,
+  "archive": {
+    "path": "demons-web.zip",
+    "size_bytes": 14891347,
+    "sha256": "e12501af7950c494a47f07ddffdc56ec2ab3e378fe88b6748a7200840831daa1"
+  }
+}
