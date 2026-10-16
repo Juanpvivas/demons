@@ -1,7 +1,7 @@
 # Guía de producción — terreno y trincheras de Monte Calvo
 
-**Tarea**: T002 · `docs-writer`, modo autoría · 2026-10-15.
-**Estado**: autoría completada, borrador para QA. Incorpora la [línea base T001](../evidence/baseline.md), sus capturas PC y la máscara artística acordada. Dimensiones y pila visual autorizadas como propuesta de producción; el orquestador habilita las tareas dependientes tras la aprobación QA de T001 y T002. No acredita arte integrado ni verificaciones futuras.
+**Tarea**: T002, autoría aprobada por QA; actualización documental tras T005 · `docs-writer` · 2026-10-15.
+**Estado**: guía vigente con la [línea base T001](../evidence/baseline.md), sus capturas PC y la máscara artística acordada. T005 aprobó los PNG de suelo/montañas y el uso del suelo como hoja única sin repetición; la integración, continuidad y lectura aún deben verificarse en T006/T007. No acredita arte integrado ni verificaciones futuras.
 **Rama**: `codex/002-monte-calvo-terreno-trincheras`.
 
 Aplicar [spec](../spec.md), [plan](../plan.md), [contrato](../contracts/visual-boundary.md) y [referencia aprobada](visual-reference.md). Esta guía produce instrucciones de arte, no imágenes, escenas, cambios de reglas o evidencia de ejecución.
@@ -42,21 +42,25 @@ Máscara artística propuesta y acordada para producción: corredor de **bajo de
 
 La masa de trinchera usa como referencia horizontal `x=96..1056` y franja aproximada `y=580..650`, conservando la lectura de la defensa que se extiende hasta `y=682`. El borde inferior puede quedar recortado en V1/V2 porque el rectángulo lógico termina en `y=648`; es una condición previa documentada en T001, por lo que no se desplaza la defensa o la cámara para mostrarlo completo. La trinchera frontal puede atravesar visualmente el eje, siempre detrás de actores y con bajo contraste local; no debe simular una puerta obligatoria ni un obstáculo.
 
-## Tres hojas propuestas
+## Hojas de producción
 
-Los tamaños son un presupuesto inicial revisable tras la revisión visual. Los tres PNG finales se producen en `assets/sprites/levels/monte_calvo/`; esta carpeta de referencias permanece excluida de importación mediante `.gdignore`.
+Los PNG finales se producen en `assets/sprites/levels/monte_calvo/`; esta carpeta de referencias permanece excluida de importación mediante `.gdignore`. T005 produjo suelo y montañas; T010 produjo el atlas como trabajo anticipado, sin sustituir los gates de aceptación pendientes. La [verificación de texturas](../evidence/visual-structure.md) y la [del atlas](../evidence/atlas.md) registran tamaños, importación y limitaciones de composición.
 
-| Hoja | Lienzo propuesto | Contenido y transparencia | Uso previsto |
+| Hoja | Lienzo real o propuesto | Contenido y transparencia | Uso previsto |
 |---|---|---|---|
-| `terreno.png` | 1024×1024 | Opaco; tierra ocre/oliva con grano suave, sin horizonte, objetos o sombras direccionales grandes | Suelo continuo, repetible en ambos ejes, sin costuras ni patrón de cuadrícula reconocible |
-| `montanas.png` | 1536×1024 | Transparente; panorama de montañas azul grisáceo, neblina pintada y transición alfa limpia; sin fondo rectangular opaco | Franja superior aproximada de mundo `y=0..160`; ajustar solo el sprite/región del arte al encuadre medido |
-| `trincheras_atlas.png` | 1536×1024 | Transparente; piezas separadas de tierra, madera, sacos, piedras y hierba seca, con perspectiva y luz coherentes | Montar una posición amplia y detalles del marco con regiones estáticas compartidas |
+| `terreno.png` | Real: 1254×1254; propuesta inicial: 1024×1024 | RGB opaco; tierra ocre/oliva con grano suave, sin horizonte u objetos | Una sola hoja, sin repetición; cubrir el encuadre mediante escala/región del arte, sin juntas ni patrón de cuadrícula |
+| `montanas.png` | Real: 1536×1024 | Transparente; panorama de montañas azul grisáceo y neblina pintada | Franja superior aproximada de mundo `y=0..160`; ajustar solo el sprite/región del arte al encuadre medido |
+| `trincheras_atlas.png` | Real: 1536×1024 | Transparente; seis piezas separadas de tierra, madera, sacos, piedras y hierba seca | Posición amplia y detalles del marco mediante seis regiones variables compartidas |
 
-Para el terreno, comprobar continuidad de los cuatro bordes y ausencia de manchas que delaten repetición. Mantener el ruido bajo en toda la hoja; la mayor riqueza del marco procede de piezas separadas. No hornear unidades, sombras de actores, cinco sendas, marcas de selección o elementos de UI.
+El [ensayo de repetición 2×2](../evidence/assets-us1-tiling.png) mostró juntas; T005 no acredita tileabilidad. La decisión aprobada es usar el terreno **una sola vez, con repetición desactivada**, cubriendo el encuadre y sus márgenes mediante escala o región del sprite, sin mover tablero, cámara o actores. La propuesta de integración usa un área de arte 1920×1080 de mundo como margen conservador, no como tamaño del viewport lógico. T006/T007 deben comprobar continuidad sin huecos ni juntas y lectura en los encuadres reales: FR-002 y FR-010 se conservan íntegros. Si el margen no basta, ajustar el recurso o su composición; no reactivar repetición sobre esta hoja sin corregirla y validarla.
+
+Mantener el ruido bajo en toda la superficie; la mayor riqueza del marco procede de piezas separadas. No hornear unidades, sombras de actores, cinco sendas, marcas de selección o elementos de UI.
 
 Para montañas, el tamaño del lienzo no prescribe un quad transparente de pantalla completa. Tras generar el PNG, medir su región útil según el alfa real y registrar región, escala y posición del `Sprite2D`. Ajustar solo ese arte para cubrir el ancho lógico observado `0..1152` y ocupar la franja alta aproximada `y=0..160`, sin recortar los picos ni fijar de antemano una altura de recorte en la fuente. V1/V2 muestran la misma composición lógica; no se centra de nuevo el nivel ni se mueve el eje `x=576`. Una extensión hasta `x=1920` puede servir como margen conservador de arte, pero no es una necesidad causada por V2. Si otra proporción medida requiere mayor extensión, continuar el arte y el suelo hasta cubrirla sin crear un límite de juego. Una transición alfa pintada proporciona la atmósfera sin shader, partículas o niebla dinámica.
 
-Propuesta para el atlas: seis celdas de 512×512 en tres columnas y dos filas, con margen transparente aproximado de 24 px para evitar sangrado. Piezas iniciales: frente de madera/tierra, segmento de sacos, esquina de excavación, unión de madera/sacos y dos grupos laterales de roca/hierba. Son componentes de una misma posición, no seis puestos. La composición final decide las regiones útiles y las registra con sus dimensiones; no dejar guías, rótulos o cuadrículas dentro del PNG.
+Añadir detrás del panorama un cielo azul grisáceo estático mediante `Sprite2D` y `GradientTexture2D` nativos, con transición alfa hacia el suelo. Evita que el terreno opaco aparezca por encima de los picos a través de la transparencia del panorama. Comparte la capa de montañas, se dibuja antes que ellas y no añade PNG, script, animación, shader, input o cámara. Su continuidad y transición quedan pendientes de la comprobación de integración.
+
+El atlas real contiene frente de madera/tierra, sacos, esquina excavada, unión de madera/sacos y dos grupos de roca/hierba. El generador no respetó las seis celdas propuestas de 512×512; T011 utiliza seis regiones variables que conservan las piezas completas, con recorte de filtro. Las regiones y posiciones reales están en [SOURCES.md](../../../assets/sprites/levels/monte_calvo/SOURCES.md) y se contrastan en [atlas.md](../evidence/atlas.md). Son componentes de una misma posición, sin guías o cuadrículas dentro del PNG. La masa visible compuesta ocupa aproximadamente `x=92..1058`, `y=552..653`; la madera se lee principalmente en `y≈585..642`, conservando el recorte inferior de la defensa y su posición original.
 
 ## Integración visual prevista
 
@@ -65,25 +69,25 @@ Una escena estática `MonteCalvoVisual.tscn`, con raíz `Node2D` al origen, esca
 | Capa | Z relativo | Z efectivo con raíz -10 | Función |
 |---|---:|---:|---|
 | Suelo opaco | 0 | -10 | Cubrir la superficie visible y sus extensiones |
-| Montañas con alfa | 1 | -9 | Conservar el horizonte sobre el suelo, solo en la franja superior |
+| Cielo estático y montañas con alfa | 1 | -9 | Cielo nativo detrás del panorama; conservar el horizonte sobre el suelo en la franja superior |
 | Bordes | 2 | -8 | Marco de tierra, rocas y hierba, con densidad controlada |
 | Trincheras | 3 | -7 | Tierra excavada, madera frontal y sacos cerca de la defensa |
 
-Todos los hijos mantienen z relativo y quedan debajo de los actores actuales en z=0. El suelo opaco no oculta el horizonte porque las montañas están encima. Su composición se ajusta con sprites y regiones, sin scripts, procesos, señales, `Control`, física, navegación, cámara propia, `CanvasLayer`, luces, shaders o parallax.
+Todos los hijos mantienen z relativo y quedan debajo de los actores actuales en z=0. El suelo opaco no oculta el horizonte porque cielo y montañas están encima, con el cielo detrás de los picos. Su composición se ajusta con sprites y regiones, sin scripts, procesos, señales, `Control`, física, navegación, cámara propia, `CanvasLayer`, luces, shaders o parallax.
 
 Conservar nombres, padres, rutas, posiciones y propiedades de todos los nodos existentes, incluido `TileMap`; no migrar a `TileMapLayer`. Conservar los sprites provisionales, pickups y la ausencia actual de HUD instanciado. El orden de dibujo no acredita por sí solo que funcionen clic y toque: esas pruebas corresponden al tester.
 
 ## Importación y costo inicial
 
-Comenzar con PNG sin pérdidas y alfa limpio en montañas/atlas. Revisar halos a escala real; mantener la corrección de bordes alfa cuando corresponda. Configurar filtro y repetición solo en los `CanvasItem` del entorno; repetir únicamente el suelo si lo necesita la composición. No cambiar filtros globales, renderer Mobile, ETC2/ASTC, exportaciones o recursos de gameplay.
+Comenzar con PNG sin pérdidas y alfa limpio en montañas/atlas. Revisar halos a escala real; mantener la corrección de bordes alfa cuando corresponda. Configurar filtro solo en los `CanvasItem` del entorno y mantener repetición desactivada en suelo y panorama. No cambiar filtros globales, renderer Mobile, ETC2/ASTC, exportaciones o recursos de gameplay.
 
 No activar compresión VRAM o mipmaps como supuesto universal: decidir según escala, artefactos y medición. Referencia técnica: [importación de imágenes de Godot](https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_images.html). Las regiones estáticas permiten reutilizar la hoja de trincheras sin duplicar su textura: [Sprite2D](https://docs.godotengine.org/en/stable/classes/class_sprite2d.html).
 
-Estimación de las hojas propuestas como RGBA8 sin mipmaps: terreno 4 MiB, montañas 6 MiB y atlas 6 MiB; total 16 MiB. Es un cálculo de `ancho × alto × 4`, no memoria real medida ni tamaño de descarga. Reutilizar una textura no multiplica ese tamaño por cada sprite. Registrar dimensiones finales, importación y memoria real en la evidencia; perfilar transparencias y sobreposición antes de ampliar resolución o planos.
+Estimación conservadora de las hojas como RGBA8 sin mipmaps: terreno real 1254×1254, aproximadamente 5,999 MiB; montañas reales, 6 MiB; atlas real, 6 MiB; total aproximado de 17,999 MiB. Es un cálculo de `ancho × alto × 4`, no memoria real medida ni tamaño de descarga; no incluye la textura nativa del cielo. Reutilizar una textura no multiplica ese tamaño por cada sprite. Registrar dimensiones finales, importación y memoria real en la evidencia; perfilar transparencias y sobreposición antes de ampliar resolución o planos.
 
 ## Revisión y pendientes
 
-- T001: reporte y capturas incorporados como fuente. Someter esta guía a QA y esperar la aprobación de ambas tareas antes de las dependientes de producción. La regresión de la línea base no valida arte todavía inexistente.
+- T001/T002 aprobadas como línea base y guía, respectivamente. T005 aprueba las hojas y el uso único sin repetición, con limitaciones registradas; no aprueba continuidad, lectura o interacción de la integración. La regresión de la línea base no sustituye esas comprobaciones.
 - Arte: comprobar paleta, materialidad, continuidad, horizonte, madera y sacos; excluir HUD, personajes, bandera, carteles, efectos y cinco carriles del concepto. No copiar la imagen completa como fondo.
 - Integración: comparar los mismos estados antes/después y comprobar siluetas/munición sobre suelo, montañas y trincheras; verificar el contrato y el diff con la línea base.
 - Interacción y regresión: seguir [quickstart](../quickstart.md). Esta tarea documental no ejecuta Godot/GUT ni sustituye su evidencia.

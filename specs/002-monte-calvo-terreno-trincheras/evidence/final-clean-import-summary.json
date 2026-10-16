@@ -1,0 +1,15 @@
+{
+  "project": "/private/tmp/monte-calvo-t001-0pulm9d5/final-clean-_r7w1yu6/project",
+  "godot_cache_present_before_import": false,
+  "exit_code": 0,
+  "source_manifest": "final-sha256.json",
+  "manifest_files_compared": 10,
+  "source_manifest_differences_after_import": [],
+  "shared_project_cache_deleted": false,
+  "errors_in_log": 0,
+  "fresh_ctex_bytes": {
+    "terreno.png": 1998276,
+    "montanas.png": 974124,
+    "trincheras_atlas.png": 1664902
+  }
+}

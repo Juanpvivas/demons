@@ -24,16 +24,16 @@ Este alcance es arte estático sin lógica nueva: revisión visual/de integraci�
 
 ## Fase 2: Base visual aislada
 
-- [ ] T003 [P] dev-godot: crear la estructura estática de `scenes/levels/MonteCalvoVisual.tscn` según `contracts/visual-boundary.md`, con transform identidad, z negativo y grupos FondoMontanas/Suelo/Bordes/Trincheras; sin integrar todavía el nivel, scripts, input o física; depende de T002 aprobada; reportar propiedades para T004.
-- [ ] T004 godot-tester: inspeccionar y cargar la escena aislada `scenes/levels/MonteCalvoVisual.tscn` para comprobar importación, transformación, capas y ausencia de nodos de comportamiento; registrar en `specs/002-monte-calvo-terreno-trincheras/evidence/visual-structure.md`; depende de T003; QA valida el contrato, sin exigir RED.
+- [X] T003 [P] dev-godot: crear la estructura estática de `scenes/levels/MonteCalvoVisual.tscn` según `contracts/visual-boundary.md`, con transform identidad, z negativo y grupos FondoMontanas/Suelo/Bordes/Trincheras; sin integrar todavía el nivel, scripts, input o física; depende de T002 aprobada; reportar propiedades para T004.
+- [X] T004 godot-tester: inspeccionar y cargar la escena aislada `scenes/levels/MonteCalvoVisual.tscn` para comprobar importación, transformación, capas y ausencia de nodos de comportamiento; registrar en `specs/002-monte-calvo-terreno-trincheras/evidence/visual-structure.md`; depende de T003; QA valida el contrato, sin exigir RED.
 
 ## Fase 3: US1 — Terreno ilustrado (P1)
 
 **Objetivo**: suelo y horizonte legibles como primer incremento. **Criterio independiente**: escenarios US1 y rasgos aplicables de SC-001, sin necesitar trincheras.
 
-- [ ] T005 [P] [US1] dev-godot: producir `assets/sprites/levels/monte_calvo/terreno.png` y `montanas.png` con sus `.import`, siguiendo la guía T002 y la referencia; sin personajes/UI horneados, con suelo continuo y centro de bajo ruido; depende solo de T002 aprobada y puede avanzar junto a T003; el tester/QA revisan materialidad, escala, transparencia y lectura antes de integrar.
-- [ ] T006 [US1] dev-godot: componer suelo y montañas en `scenes/levels/MonteCalvoVisual.tscn` e instanciarla en `scenes/levels/Nivel_MonteCalvo.tscn`; conservar íntegros nodos, transformaciones y propiedades anteriores; depende de T004 y T005 aprobadas; reportar diff visual y contrato para verificación del tester.
-- [ ] T007 [US1] godot-tester: comparar capturas antes/después del terreno en `specs/002-monte-calvo-terreno-trincheras/evidence/us1.md`, cubriendo US1/AC1–3 y matriz V1–V2 de `quickstart.md`; comprobar lectura de placeholders/pickups, suelo continuo y ausencia de carriles/casillas nuevas; depende de T006; entregar evidencia a QA en T009, sin presentar captura como prueba de input.
+- [X] T005 [P] [US1] dev-godot: producir `assets/sprites/levels/monte_calvo/terreno.png` y `montanas.png` con sus `.import`, siguiendo la guía T002 y la referencia; sin personajes/UI horneados, con suelo continuo y centro de bajo ruido; depende solo de T002 aprobada y puede avanzar junto a T003; el tester/QA revisan materialidad, escala, transparencia y lectura antes de integrar.
+- [X] T006 [US1] dev-godot: componer suelo y montañas en `scenes/levels/MonteCalvoVisual.tscn` e instanciarla en `scenes/levels/Nivel_MonteCalvo.tscn`; conservar íntegros nodos, transformaciones y propiedades anteriores; depende de T004 y T005 aprobadas; reportar diff visual y contrato para verificación del tester.
+- [X] T007 [US1] godot-tester: comparar capturas antes/después del terreno en `specs/002-monte-calvo-terreno-trincheras/evidence/us1.md`, cubriendo US1/AC1–3 y matriz V1–V2 de `quickstart.md`; comprobar lectura de placeholders/pickups, suelo continuo y ausencia de carriles/casillas nuevas; depende de T006; entregar evidencia a QA en T009, sin presentar captura como prueba de input.
 
 ## Fase 4: US2 — Conservar las mecánicas (P1, condición de cada incremento)
 
@@ -96,3 +96,13 @@ Al iniciar ejecución, el orquestador elegirá/reutilizará rama e Issue de esta
 
 - T001 — `APROBADO` por `qa-validator` el 2026-10-15: línea base PC e inventario, 183/183 pruebas y 97/97 archivos intactos. Evidencia: [baseline.md](evidence/baseline.md). No aprueba todavía toque, móviles, rendimiento ni la integración visual.
 - T002 — `APROBADO` por `qa-validator` el 2026-10-15: [guía de producción](references/production-brief.md), composición y máscara derivadas de T001. Habilita T003/T005; no certifica arte ni interacción todavía.
+- T003/T004 — `APROBADO` por `qa-validator` el 2026-10-15: estructura estática aislada y carga correcta; cinco Node2D, identidad y capas negativas. [Verificación](evidence/visual-structure.md). No acredita aún integración ni entrada.
+- T005 — `APROBADO` por `qa-validator` el 2026-10-15: PNG e importación/carga correctas, **solo para hoja única sin repetición**; el ensayo tileable mostró juntas. T006 debe resolver cobertura y cielo estático, y T007 comprobar composición/contraste. [Evidencia](evidence/visual-structure.md).
+
+### Secuencia de producción en curso
+
+El orquestador adelanta la producción estática T010/T011 como trabajo en curso para completar el arte solicitado, tras revisión técnica favorable de la estructura del terreno. QA no encuentra objeción de alcance; esta anticipación no equivale a aprobar T008/T009 ni su dependencia de aceptación. Antes de editar la composición para T011, el tester congela hash/copia y capturas US1 sin trincheras. T008/T009 y las tareas dependientes permanecen sin marcar mientras falten los criterios completos; los requisitos FR/SC, el cierre y la publicación conservan sus gates originales.
+- T006/T007 — `APROBADO` por `qa-validator` el 2026-10-15: integración estática, contrato preservado y comparación visual PC V1/V2 favorable. [US1](evidence/us1.md); 161/161 pruebas pertinentes en [US2](evidence/us2.md). La matriz de entrada y la aceptación móvil/global de T008/T009 siguen pendientes.
+- T010 — recurso aislado `APROBADO` por `qa-validator` como WIP anticipado: [atlas](evidence/atlas.md), importación/carga/render correctos y regiones completas. Habilita composición estática de trabajo T011; checkbox pendiente de dependencia y aceptación completas.
+- T011 — `APROBADO` técnico/visual por `qa-validator` para PC V1/V2 observado, como WIP anticipado: ocho capturas finales, contrato intacto y suite final 183/183. La revisión no detecta corrección visual bloqueante; dependencia/checkbox y aceptación global continúan pendientes.
+- Dictamen final de esta ejecución — `APROBADO` parcial por `qa-validator` para la implementación visual WIP observada en PC V1/V2 y Android físico, sin correcciones visuales bloqueantes. [Estado y evidencia](evidence/implementation-status.md): 183/183 pruebas, importación desde cero correcta, contrato preservado y prueba humana parcial antes/después. No habilita nuevos `[X]`: quedan matriz completa de entrada/picking, iOS físico, carga/VRAM y rendimiento sostenido. T008/T009 y T012–T018 mantienen sus gates; no hay consolidación definitiva ni publicación.

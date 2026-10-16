@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/units/Soldado.tscn" id="1_soldado"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/EnemigoBase.tscn" id="2_enemigo"]
 [ext_resource type="Script" path="res://scenes/levels/nivel_monte_calvo.gd" id="3_nivel_monte_calvo"]
+[ext_resource type="PackedScene" path="res://scenes/levels/MonteCalvoVisual.tscn" id="4_monte_calvo_visual"]
 
 [sub_resource type="TileSet" id="TileSet_tablero"]
 tile_size = Vector2i(96, 96)
@@ -29,3 +30,5 @@ monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PosicionDefendida"]
 shape = SubResource("RectangleShape2D_posicion_defendida")
+
+[node name="MonteCalvoVisual" parent="." instance=ExtResource("4_monte_calvo_visual")]

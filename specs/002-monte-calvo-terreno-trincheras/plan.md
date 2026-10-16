@@ -78,15 +78,17 @@ scenes/levels/
 
 ```text
 MonteCalvoVisual (Node2D, transform identidad, z_index=-10)
-├── Suelo (Node2D, z relativo 0; sprites compartidos si hace falta continuidad)
-├── FondoMontanas (Sprite2D, z relativo 1)
+├── Suelo (Node2D, z relativo 0; una hoja de terreno sin repetición)
+├── FondoMontanas (Node2D, z relativo 1)
+│   ├── Cielo (Sprite2D, GradientTexture2D estática nativa)
+│   └── Panorama (Sprite2D, montañas con alfa)
 ├── Bordes (Node2D, z relativo 2)
 └── Trincheras (Node2D, z relativo 3)
 ```
 
 Ningún descendiente sube al plano de actores, tiene script, input o física. El entorno comparte el espacio de mundo existente, sin `CanvasLayer` o cámara propios. Ajustar solo posiciones y escalas del arte; no alterar el nivel, `Tablero` o actores para acomodarlo.
 
-El suelo opaco cubre toda la superficie visible. Las montañas con transparencia se dibujan encima, acotadas a una franja superior aproximada de mundo `y=0..160`, para conservar el horizonte sin dejar huecos de fondo. Bordes y trincheras quedan encima de ambos; el conjunto mantiene z efectivo de -10 a -7. La composición y sus márgenes se contrastan con las capturas reales de T001.
+T005 aprobó el terreno real de 1254×1254 exclusivamente como hoja única sin repetición: el ensayo 2×2 mostró juntas. Cubrir la superficie visible y márgenes mediante escala/región de ese arte, sin cambiar coordenadas jugables. Las montañas con transparencia se dibujan encima, acotadas a una franja superior aproximada de mundo `y=0..160`; un cielo estático nativo detrás del panorama evita tierra por encima de los picos. Bordes y trincheras quedan encima de ambos; el conjunto mantiene z efectivo de -10 a -7. La composición y sus márgenes se contrastan con las capturas reales de T001; T006/T007 aún deben acreditar continuidad sin huecos/juntas y lectura. Se conservan FR-002 y FR-010, sin certificar la integración por la aprobación de los PNG. Detalle y evidencia en [la guía de producción](references/production-brief.md).
 
 ## Phase 0 — Research
 

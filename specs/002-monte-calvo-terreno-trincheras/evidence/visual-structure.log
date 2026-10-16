@@ -1,0 +1,4 @@
+Godot Engine v4.7.1.stable.mono.official.a13da4feb - https://godotengine.org
+
+T004_NODES [{"children":4,"identity":true,"path":"/root/MonteCalvoVisual","script":false,"type":"Node2D","z":-10,"z_relative":true},{"children":0,"identity":true,"path":"/root/MonteCalvoVisual/Suelo","script":false,"type":"Node2D","z":0,"z_relative":true},{"children":0,"identity":true,"path":"/root/MonteCalvoVisual/FondoMontanas","script":false,"type":"Node2D","z":1,"z_relative":true},{"children":0,"identity":true,"path":"/root/MonteCalvoVisual/Bordes","script":false,"type":"Node2D","z":2,"z_relative":true},{"children":0,"identity":true,"path":"/root/MonteCalvoVisual/Trincheras","script":false,"type":"Node2D","z":3,"z_relative":true}]
+T004_STRUCTURE_PASS true
