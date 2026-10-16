@@ -276,3 +276,16 @@ orquestador comprobará GUT/importación y exportación de la última punta publ
 antes de promover el PR, y enlazará los resultados reales en su descripción.
 Se mantienen los límites de navegadores, rendimiento y ausencia de publicación.
 No se crean tareas ni se cambian checkboxes por esta sincronización documental.
+
+## Comprobación adicional para revisar el PR #15
+
+- [X] **CI-01 — Evitar éxitos de GUT sin ejecución real.** QA detectó en
+  `2744803` que el job terminaba en verde con errores de importación y sin
+  resumen de pruebas. Importar en el mismo job antes de GUT y exigir una suite
+  ejecutada, con total positivo, todas las pruebas aprobadas y sin errores.
+  Mantener la secuencia tester RED → desarrollo → tester GREEN → QA para
+  verificar la implementación local. No cambia gameplay ni las 18 aprobaciones
+  históricas. Como gate separado, promover el PR requiere que QA compruebe los
+  registros de CI del nuevo HEAD publicado, sin anticipar ese resultado.
+  QA **APROBÓ la implementación local**: 16 escenarios y GUT 189/189,
+  532 aserciones. [RED/GREEN conservado](evidence/ci01-red-green.md).

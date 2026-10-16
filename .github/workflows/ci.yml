@@ -22,16 +22,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Verificar el guard de CI
+        run: python3 -B -m unittest discover -s tests/ci -p 'test_*.py' -v
+
       - name: Setup Godot ${{ env.GODOT_VERSION }} (mono)
         uses: chickensoft-games/setup-godot@v2
         with:
           version: ${{ env.GODOT_VERSION }}
           use-dotnet: true
 
-      - name: Correr la suite GUT completa (res://tests/unit)
-        run: >
-          godot --headless --path . -s addons/gut/gut_cmdln.gd
-          -gdir=res://tests/unit -ginclude_subdirs=true -gexit
+      - name: Importar y verificar la suite GUT completa (res://tests/unit)
+        run: python3 tools/ci/run_gut.py
 
   build:
     name: Build (validación de importación)
@@ -52,7 +53,7 @@ jobs:
       # artefacto descargable; Android/iOS mantienen su distribucion existente.
       # Ver docs/ARCHITECTURE.md §7 y export-web.yml.
       - name: Importar el proyecto (headless)
-        run: godot --headless --path . --import --quit-after 2
+        run: godot --headless --path . --editor --import
 
   notify-on-failure:
     name: Notificar fallo en el PR
