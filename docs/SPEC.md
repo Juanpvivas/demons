@@ -40,6 +40,7 @@ Juego de defensa por carriles (estilo *Plants vs. Zombies*) inspirado en la hist
 **Recurso global: Munición**
 - Se obtiene principalmente de enemigos derrotados (dropean munición al morir, el jugador la recoge/recolecta). *(Supuesto — confirmar si además debería acumularse pasiva y automáticamente con el tiempo, estilo sol en PvZ.)*
 - **Confirmado** (spec `001-soldado-defensor-oleadas`, T031/T032): la recolección de la munición soltada es una acción **explícita** del jugador — tap/click sobre la pickup (`AmmoPickup`, `Area2D`) que aparece en la posición del enemigo derrotado — nunca automática por proximidad. Misma acción discreta (`collect_pickup` del `InputMap`) en touch (Android/iOS) y mouse (PC); ver rationale en `research.md` §3 de esa feature.
+- **Precedencia confirmada** (`002-monte-calvo-terreno-trincheras`, T019–T022): un clic/toque sobre una pickup recoge su munición sin desplegar además un soldado ni gastar el costo de despliegue, aunque la reserva ya sea suficiente y su celda esté libre. El despliegue sigue requiriendo un gesto sobre una celda libre sin pickup y fondos suficientes. La corrección separada pasó [RED/GREEN y regresión nativas](../specs/002-monte-calvo-terreno-trincheras/evidence/t021-green.md); la [matriz de entrada](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md) distingue ratón, emulación y dispositivos físicos.
 - Uso dual, a elección del jugador:
   1. **Recargar** a un soldado ya desplegado en el tablero (le da más disparos antes de quedarse sin balas).
   2. **Desplegar** un soldado nuevo en una casilla libre.
@@ -88,10 +89,29 @@ Esta economía recrea la tensión histórica real: cada bala cuenta, y sobrevivi
 
 ## 8. Arte y estilo visual
 
-**Estado: por definir.** Opciones consideradas:
-- Pixel art retro
-- Ilustrado / cartoon (estilo PvZ)
-- Más serio y realista
+**Dirección aprobada para el entorno de Monte Calvo, primera iteración**
+(`002-monte-calvo-terreno-trincheras`): ilustración 2D de textura pictórica,
+suelo ocre/oliva y montañas azul grisáceo entre la bruma. El centro de combate
+mantiene menos detalle que los bordes; tierra excavada, madera y sacos de arena
+enmarcan la posición defendida. La [referencia aprobada](../specs/002-monte-calvo-terreno-trincheras/references/visual-reference.md)
+orienta los materiales y la jerarquía visual; su composición se adapta al único
+avance central existente.
+
+El entorno es estático y sus trincheras son decorativas: no añaden cobertura,
+obstáculos, carriles, casillas o límites de despliegue. Soldados, enemigos y
+municiones conservan sus formas provisionales por encima del fondo. Personajes,
+HUD, efectos, animaciones y audio quedan para otras iteraciones; el nivel actual
+todavía no instancia `HUD.tscn` ni ofrece controles de recarga o pantallas de fin
+de partida. Esta entrega no completa el acabado visual del juego ni el MVP.
+
+La [comparación visual](../specs/002-monte-calvo-terreno-trincheras/evidence/us3.md)
+y la [matriz nativa](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
+recogen PC, Android y iPad Simulator. La validación de iPad usa Compatibility
+temporal; no acredita un iPhone/iPad físico ni el renderer Mobile de iOS.
+El [rendimiento aprobado](../specs/002-monte-calvo-terreno-trincheras/evidence/performance.md)
+se limita a esta feature y al Xiaomi 11T Pro físico como referencia provisional,
+según la constitución 1.2.0. Conserva los picos y la perturbación del observador
+documentados; no certifica otros dispositivos ni ausencia de toda caída.
 
 ## 9. Alcance del MVP (primera versión jugable)
 
@@ -105,7 +125,7 @@ Esta economía recrea la tensión histórica real: cada bala cuenta, y sobrevivi
 
 ## 10. Preguntas abiertas / decisiones pendientes
 
-- Estilo visual definitivo.
+- Acabado visual de personajes, interfaz y efectos, siguiendo la dirección del entorno de Monte Calvo aprobada en §8.
 - ¿Habrá progresión entre niveles (más batallas históricas) o es un solo escenario?
 - ¿Narrativa/contexto histórico se presenta dentro del juego (cutscenes, texto) o queda solo como inspiración temática?
 - Balance de costos exactos de cada unidad (se define con playtesting).
@@ -114,6 +134,7 @@ Esta economía recrea la tensión histórica real: cada bala cuenta, y sobrevivi
 
 ### Resueltas (graduadas desde specs de feature)
 
+- ✅ Dirección visual de la primera iteración del terreno y las trincheras de Monte Calvo: entorno pictórico ocre/oliva, montañas azul grisáceo y decoración estática de tierra, madera y sacos, conservando actores provisionales y reglas actuales. Aprobada en T016 de `002-monte-calvo-terreno-trincheras`; §8 y sus enlaces delimitan el alcance y la evidencia. El acabado de personajes/UI/efectos permanece pendiente.
 - ✅ Moral tras recarga: se conserva, no decae con el tiempo, se pierde solo si el soldado es derrotado. (spec `001-soldado-defensor-oleadas`)
 - ✅ Alcance de diagonales: celdas diagonalmente contiguas a la posición del soldado, no un cono más amplio. (spec `001-soldado-defensor-oleadas`)
 - ✅ Disparador de moral: solo al eliminar enemigos, no por impactos sin eliminación. Se corrigió el FR-006 del spec `001-soldado-defensor-oleadas`, que decía "impacta o elimina", para alinearlo con esta definición. (spec `001-soldado-defensor-oleadas`)
@@ -138,3 +159,4 @@ Esta economía recrea la tensión histórica real: cada bala cuenta, y sobrevivi
 | 2026-09-12 | §10: graduado el cierre del gap crítico de T043 — resuelto por T050-T053 de `001-soldado-defensor-oleadas` (validados por `qa-validator`): `Soldado` gana salud (`UnitStats.max_health`), `take_damage()`/`soldier_defeated` (T050-T052) y recibe daño real de cada `Enemigo` en su "RangoMelee" (T053), con lo cual deja de ser indestructible y la condición de derrota de FR-013 vuelve a ser alcanzable. Se retira el bullet pendiente de §10 y se agrega a "Resueltas". El hallazgo de motor detrás de la implementación final de T053 (`Area2D` sobre `CharacterBody2D` con `move_and_slide()` no detecta overlaps de forma fiable contra un `StaticBody2D`) se gradúa por separado a `docs/ARCHITECTURE.md` §4.2, por ser una convención técnica de alcance de proyecto, no solo de esta feature. |
 | 2026-09-12 | §10: actualizada la entrada "Resueltas" del gap de derrota del `Soldado` para incluir T054 (`001-soldado-defensor-oleadas`, validada por `qa-validator`) — antes decía "cerrado por T050-T053" y atribuía la liberación de la celda del tablero a esas tareas, cuando en realidad `Soldado.take_damage()`/`soldier_defeated` (T050-T052) solo dan salud/derrota interna al `Soldado`; quien libera la celda (`BoardManager.free_cell()`, tanto para el soldado colocado a mano como para cualquiera desplegado dinámicamente) es `nivel_monte_calvo.gd` en T054. El gap queda ahora correctamente cerrado de punta a punta como bloque T050-T054. |
 | 2026-09-12 | §10: graduada nueva entrada "Resueltas" — T038+T044 de `001-soldado-defensor-oleadas` (validados por `qa-validator`) cierran el último eslabón de la condición de victoria/derrota: `GameStateManager` real reacciona en juego real tanto a `Enemigo.reached_defended_position` (vía método público, no `.connect()` directo) como a `WaveManager.all_waves_completed`, confirmado con test de integración de punta a punta con instancias reales para el camino de derrota. Se deja nota de hueco de cobertura no bloqueante para el simétrico de victoria (ver `docs/ARCHITECTURE.md` §6). |
+| 2026-10-16 | T017 de `002-monte-calvo-terreno-trincheras`, tras QA T016: §8 documenta el entorno pictórico y las trincheras estáticas aprobadas, con placeholders e interfaces pendientes; §10 resuelve solo esa dirección inicial. §6.1 incorpora la precedencia recolección→despliegue validada por el ciclo nativo T019–T022. Se enlazan evidencias y límites de iPad Simulator y Xiaomi provisional, sin completar el MVP ni cambiar plataformas. |

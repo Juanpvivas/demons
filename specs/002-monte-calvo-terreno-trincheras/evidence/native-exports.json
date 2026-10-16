@@ -1,0 +1,90 @@
+[
+  {
+    "name": "native-baseline-import",
+    "command": [
+      "/Applications/Godot_mono.app/Contents/MacOS/Godot",
+      "--headless",
+      "--path",
+      "/private/tmp/monte-calvo-validation-002-v333ghu2/native-baseline",
+      "--editor",
+      "--import",
+      "--log-file",
+      "/private/tmp/monte-calvo-validation-002-v333ghu2/native-baseline-import-engine.log"
+    ],
+    "started_utc": "2026-10-16T14:36:15.505112+00:00",
+    "exit": 0,
+    "elapsed_seconds": 2.661,
+    "log": "/private/tmp/monte-calvo-validation-002-v333ghu2/native-baseline-import.log"
+  },
+  {
+    "name": "native-baseline-android-export",
+    "command": [
+      "/Applications/Godot_mono.app/Contents/MacOS/Godot",
+      "--headless",
+      "--path",
+      "/private/tmp/monte-calvo-validation-002-v333ghu2/native-baseline",
+      "--export-debug",
+      "Android",
+      "/private/tmp/monte-calvo-validation-002-v333ghu2/native-baseline.apk",
+      "--log-file",
+      "/private/tmp/monte-calvo-validation-002-v333ghu2/native-baseline-export-engine.log"
+    ],
+    "started_utc": "2026-10-16T14:36:18.167515+00:00",
+    "exit": 0,
+    "elapsed_seconds": 4.741,
+    "log": "/private/tmp/monte-calvo-validation-002-v333ghu2/native-baseline-android-export.log"
+  },
+  {
+    "name": "native-final-import",
+    "command": [
+      "/Applications/Godot_mono.app/Contents/MacOS/Godot",
+      "--headless",
+      "--path",
+      "/private/tmp/monte-calvo-validation-002-v333ghu2/native-final",
+      "--editor",
+      "--import",
+      "--log-file",
+      "/private/tmp/monte-calvo-validation-002-v333ghu2/native-final-import-engine.log"
+    ],
+    "started_utc": "2026-10-16T14:36:22.909255+00:00",
+    "exit": 0,
+    "elapsed_seconds": 2.525,
+    "log": "/private/tmp/monte-calvo-validation-002-v333ghu2/native-final-import.log"
+  },
+  {
+    "name": "native-final-android-export",
+    "command": [
+      "/Applications/Godot_mono.app/Contents/MacOS/Godot",
+      "--headless",
+      "--path",
+      "/private/tmp/monte-calvo-validation-002-v333ghu2/native-final",
+      "--export-debug",
+      "Android",
+      "/private/tmp/monte-calvo-validation-002-v333ghu2/native-final.apk",
+      "--log-file",
+      "/private/tmp/monte-calvo-validation-002-v333ghu2/native-final-export-engine.log"
+    ],
+    "started_utc": "2026-10-16T14:36:25.435082+00:00",
+    "exit": 0,
+    "elapsed_seconds": 5.014,
+    "log": "/private/tmp/monte-calvo-validation-002-v333ghu2/native-final-android-export.log"
+  },
+  {
+    "name": "native-final-ios-export",
+    "command": [
+      "/Applications/Godot_mono.app/Contents/MacOS/Godot",
+      "--headless",
+      "--path",
+      "/private/tmp/monte-calvo-validation-002-v333ghu2/native-final",
+      "--export-debug",
+      "iOS",
+      "/private/tmp/monte-calvo-validation-002-v333ghu2/ios-native-final/demons.ipa",
+      "--log-file",
+      "/private/tmp/monte-calvo-validation-002-v333ghu2/native-final-ios-export-engine.log"
+    ],
+    "started_utc": "2026-10-16T14:36:30.449805+00:00",
+    "exit": 0,
+    "elapsed_seconds": 3.092,
+    "log": "/private/tmp/monte-calvo-validation-002-v333ghu2/native-final-ios-export.log"
+  }
+]

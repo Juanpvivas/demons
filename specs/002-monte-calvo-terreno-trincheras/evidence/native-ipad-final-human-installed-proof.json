@@ -1,0 +1,9 @@
+{
+  "retrieved_utc": "2026-10-16T15:37:25.021736+00:00",
+  "source_revision": "a473585",
+  "installed_pck_sha256": "e6fbeaa3c092d0a464ee038d8541e5fe39339f0f9a8b8b582a730d2df29a9352",
+  "installed_binary_sha256": "d4c1f14a87fc61fdf9f8b2983b27ca6a1a7525da8472a90635af88a58bdca096",
+  "observer_base_sha256": "c628c721ec12ba7c922545787134bae6b86808dbdc9d0c5669945b4e3d15fc90",
+  "human_statement": "Complet\u00e9 los seis pasos",
+  "no_restart_or_stop": true
+}

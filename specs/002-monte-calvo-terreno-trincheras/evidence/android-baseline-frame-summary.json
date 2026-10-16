@@ -1,0 +1,10 @@
+{
+  "exit": 0,
+  "samples": 126,
+  "duration_s": 2.083847655,
+  "mean_interval_ms": 16.538473452380952,
+  "p95_interval_ms": 16.54849,
+  "max_interval_ms": 16.554322,
+  "estimated_present_fps": 60.46507272145094,
+  "intervals_over_20ms": 0
+}

@@ -1,0 +1,57 @@
+{
+  "date_utc": "2026-10-16T14:17:24.106565+00:00",
+  "feature": "002-monte-calvo-terreno-trincheras",
+  "revision": "b670d86711b86f974a5e5c7a988a8e7ce6184265",
+  "mode": "Current diagnostic imported from003, not reconstructed historicalRED",
+  "source_test_revision": "4a2915c5ceb075fbaa3ec7ce1e129a4c34aa497a",
+  "source_test_sha256": "ac55c141e87f74939d3432dccf89caa62a888b149e0db69df4f8ae1ef9e34dbd",
+  "godot_version": "4.7.1.stable.mono.official.a13da4feb",
+  "copies": {
+    "baseline": {
+      "level_script_sha256": "2420d7100eb852b6dee0521df56015784a5ac0a0b2af0274b3fa6d2b3fe27e6b",
+      "level_scene_sha256": "c133b35ee7b5c0f0337d2a5c7f2d0ba93eb95bc5567e9f44cb404ae2a3b25f48",
+      "import_exit": 0,
+      "diagnostic_exit": 1,
+      "passing_tests": 4,
+      "failing_tests": 2,
+      "assertions_passed": 28,
+      "assertions_total": 36,
+      "log": "resume-i4-baseline.log"
+    },
+    "final": {
+      "level_script_sha256": "2420d7100eb852b6dee0521df56015784a5ac0a0b2af0274b3fa6d2b3fe27e6b",
+      "level_scene_sha256": "9ce9dd7efc14e4d73e187e02ef909ac1f21159c688744bfafd3e9bee543831ad",
+      "import_exit": 0,
+      "diagnostic_exit": 1,
+      "passing_tests": 4,
+      "failing_tests": 2,
+      "assertions_passed": 28,
+      "assertions_total": 36,
+      "log": "resume-i4-final.log"
+    }
+  },
+  "expected": {
+    "reserve": 15,
+    "soldiers": 1,
+    "cell_free": true,
+    "pool_changes": [
+      15
+    ]
+  },
+  "observed_both_mouse_and_emulation": {
+    "reserve": 5,
+    "soldiers_before": 1,
+    "soldiers_after": 2,
+    "cell_free": false,
+    "pool_changes": [
+      2,
+      5
+    ]
+  },
+  "result": "I4 fails in baseline and final: pre-existing gameplay defect, not introduced by artwork",
+  "limits": [
+    "Real Viewport dispatch/physics picking fixture, not physical touch/OS click.",
+    "Picking controls and no-pickup deployment controls pass.",
+    "No gameplay code, production tests, source resources or task checkboxes modified."
+  ]
+}

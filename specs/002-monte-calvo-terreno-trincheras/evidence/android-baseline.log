@@ -1,0 +1,11 @@
+E/GODOT   (18993): Unable to load System.Security.Cryptography.Native.Android library
+D/Godot   (18993): renderingDevice: vulkan (ProjectSettings)
+D/Godot   (18993): 			renderer: mobile (ProjectSettings)
+I/godot   (18993): Godot Engine v4.7.1.stable.mono.official.a13da4feb - https://godotengine.org
+E/OpenGLRenderer(18993): Unable to match the desired swap behavior.
+I/godot   (18993): Vulkan 1.1.128 - Forward Mobile - Using Device #0: Qualcomm - Adreno (TM) 660
+E/AHardwareBuffer(18993): GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -1), handle=0x0
+E/AHardwareBuffer(18993): GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -1), handle=0x0
+E/AHardwareBuffer(18993): GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -1), handle=0x0
+E/AHardwareBuffer(18993): GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -1), handle=0x0
+V/Godot   (18993): OnGodotMainLoopStarted

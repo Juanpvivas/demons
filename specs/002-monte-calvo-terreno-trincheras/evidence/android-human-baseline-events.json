@@ -1,0 +1,36 @@
+[
+  {
+    "event": "start",
+    "exit": 0,
+    "output": "Starting: Intent { cmp=com.juanpvivas.demons/com.godot.game.GodotAppLauncher }\nStatus: ok\nLaunchState: COLD\nActivity: com.juanpvivas.demons/com.godot.game.GodotApp\nTotalTime: 346\nWaitTime: 352\nComplete\n",
+    "utc": "2026-10-16T01:08:17Z"
+  },
+  {
+    "event": "capture",
+    "target_s": 8,
+    "elapsed_s": 8.25,
+    "exit": 0,
+    "path": "/private/tmp/monte-calvo-t001-0pulm9d5/android-human-baseline-08s.png"
+  },
+  {
+    "event": "capture",
+    "target_s": 18,
+    "elapsed_s": 18.37,
+    "exit": 0,
+    "path": "/private/tmp/monte-calvo-t001-0pulm9d5/android-human-baseline-18s.png"
+  },
+  {
+    "event": "capture",
+    "target_s": 28,
+    "elapsed_s": 28.343,
+    "exit": 0,
+    "path": "/private/tmp/monte-calvo-t001-0pulm9d5/android-human-baseline-28s.png"
+  },
+  {
+    "event": "capture",
+    "target_s": 40,
+    "elapsed_s": 40.338,
+    "exit": 0,
+    "path": "/private/tmp/monte-calvo-t001-0pulm9d5/android-human-baseline-40s.png"
+  }
+]

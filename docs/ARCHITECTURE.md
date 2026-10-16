@@ -22,7 +22,7 @@ res://
 ├── scenes/
 │   ├── units/                # Soldado.tscn y futuras variantes de unidades
 │   ├── enemies/               # EnemigoBase.tscn y variantes
-│   ├── levels/                 # Nivel_MonteCalvo.tscn, futuros niveles
+│   ├── levels/                 # Nivel_MonteCalvo.tscn, MonteCalvoVisual.tscn, futuros niveles
 │   └── ui/                     # HUD.tscn, menús, pantallas de victoria/derrota
 ├── resources/
 │   ├── schemas/                # Scripts base de Resource (class_name UnitStats,
@@ -38,6 +38,7 @@ res://
 │   ├── sprites/
 │   │   ├── units/
 │   │   ├── enemies/
+│   │   ├── levels/             # monte_calvo/: PNG, .import y procedencia del entorno
 │   │   └── ui/
 │   ├── audio/
 │   │   ├── sfx/
@@ -374,10 +375,45 @@ sistema, se asumen desde este documento):
 - **`EnemigoBase.tscn`**: `CharacterBody2D` raíz (los enemigos sí avanzan
   por el carril con `move_and_slide()`), con `soldado.gd` reemplazado
   por `enemigo.gd`, estructura de hijos análoga.
-- **`Nivel_MonteCalvo.tscn`**: `TileMap` (grid de posiciones) +
-  `WaveSpawner` (nodo `Timer` + cola de spawns, alimentado por un Resource
-  de oleadas) + puntos de spawn + instancia de `HUD.tscn` como
-  `CanvasLayer`.
+- **`Nivel_MonteCalvo.tscn`**: raíz `Node2D`, `Tablero` (`TileMap` con
+  celdas de 96×96), soldado y enemigo iniciales, `PosicionDefendida` e
+  instancia hija de `MonteCalvoVisual.tscn`. El script crea `WaveSpawner`
+  en `_ready()` y lo configura con la secuencia de Resources de oleadas;
+  `wave_spawn_position` fija el punto de aparición. El nivel actual no
+  instancia `HUD.tscn`: tampoco integra controles de recarga ni pantallas
+  de victoria/derrota, aunque los métodos y estados correspondientes tienen
+  cobertura automatizada. Véanse el [contrato](../specs/002-monte-calvo-terreno-trincheras/contracts/visual-boundary.md)
+  y el [smoke](../specs/002-monte-calvo-terreno-trincheras/evidence/smoke.md).
+
+### 5.1 Entorno decorativo separado del nivel
+
+La presentación ambiental se compone en una subescena propia para poder
+modificarla sin alterar la geometría, el input o la lógica del nivel.
+`MonteCalvoVisual.tscn`, aprobada en `002-monte-calvo-terreno-trincheras`,
+concreta este patrón con una raíz `Node2D` de transformación identidad y
+`z_index=-10`. Sus grupos `Suelo`, `FondoMontanas`, `Bordes` y `Trincheras`
+usan z relativo 0–3: el entorno completo queda en z efectivo −10…−7,
+por detrás de los actores y pickups.
+
+La escena contiene únicamente composición estática de `Node2D` y `Sprite2D`:
+una hoja de terreno sin repetición, montañas con alfa, un cielo de
+`GradientTexture2D` y piezas de trincheras/bordes que comparten seis regiones
+`AtlasTexture`. Los tres PNG y sus `.import` viven en
+`assets/sprites/levels/monte_calvo/`; se versionan los originales y ajustes,
+con importación lossless, corrección del borde alfa y sin mipmaps en esta
+iteración. `.godot/` sigue siendo caché regenerable. La [procedencia y regiones](../assets/sprites/levels/monte_calvo/SOURCES.md)
+documentan los recursos sin convertir la imagen de referencia en un fondo
+con personajes o interfaz incrustados.
+
+El entorno carece de scripts, señales, controles, física, navegación o cámara
+propios. Sus trincheras no otorgan cobertura ni restringen colocación. El arte
+se adapta a las posiciones existentes, incluido el soldado inicial y el snap
+de los nuevos despliegues; `BoardManager` conserva ocupación/liberación sin
+límites finitos del tablero. No se migró `TileMap`, no se cambió el stretch
+`canvas_items`/`expand` y no se añadieron efectos animados, luces o parallax.
+La [comparación de US3](../specs/002-monte-calvo-terreno-trincheras/evidence/us3.md)
+y la [matriz de pantallas/entrada](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
+registran los encuadres comprobados y el recorte inferior existente.
 
 **Nota sobre `collision_layer`/`collision_mask` (sin convención propia
 todavía):** ninguna escena del proyecto (`Soldado.tscn`, `EnemigoBase.tscn`)
@@ -426,6 +462,14 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   de simular el evento crudo — deja sin cubrir solo la conversión de
   coordenadas en sí (pantalla → mundo → celda) y el filtro de tipo de
   evento, sin lógica de negocio real.
+- **Precedencia de pickup y despliegue** (`002-monte-calvo-terreno-trincheras`,
+  T019–T022): seis casos en `tests/unit/levels/test_pickup_input_routing.gd`
+  comprueban la ruta normal/emulada y que la recolección no gaste ni cree
+  un soldado adicional. El [ciclo RED/GREEN nativo](../specs/002-monte-calvo-terreno-trincheras/evidence/t021-green.md)
+  terminó con 189/189 pruebas y 532 aserciones en la suite completa, tras
+  importación limpia. Es un resultado fechado de esa entrega, distinto de
+  los gestos de SO antes/después registrados en la matriz nativa; GUT no
+  certifica por sí solo picking, stretch o toque físico.
 - **Cerrado (T046, `001-soldado-defensor-oleadas`):** el hueco de cobertura
   señalado en T044 (existía cobertura de punta a punta con instancias
   reales para la condición de derrota, pero no su simétrico para victoria)
@@ -451,6 +495,16 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   al mismo evento lógico, sin tecla de teclado asociada; la distinción de
   qué gesto significa cada una queda en la lógica de gameplay, no en el
   `InputMap`.
+- **Recolección antes de despliegue:** `_unhandled_input()` del nivel corre
+  antes del physics picking de `AmmoPickup` (`Area2D`). Si bajo el punto
+  convertido a mundo existe una pickup visible y pickable, el nivel cede
+  el evento al picking y no intenta desplegar. Sin pickup se conservan la
+  comprobación de ocupación y el gasto normal, tanto para mouse real como
+  para mouse emulado por touch; filtrar este último rompería el despliegue
+  móvil. La corrección de 002 consulta las formas existentes en la física
+  2D de hilo principal actual, sin cambiar InputMap, radio de pickup o
+  transformación de coordenadas. Cambiar el hilo de física requeriría
+  revisar esa consulta y el enrutamiento como otro alcance.
 - UI (`HUD.tscn`) usa contenedores con anclas relativas, no posiciones fijas
   en píxeles, para adaptarse a distintas resoluciones y aspect ratios entre
   dispositivos móviles y PC.
@@ -461,6 +515,16 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   (`.github/workflows/deploy-android-testers.yml`) y a **iOS/TestFlight**
   (`.github/workflows/deploy-ios-testflight.yml`) — ver esos archivos para
   el detalle y los secrets de CI requeridos.
+
+La [validación nativa de 002](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
+separa ratón PC, gestos de SO en Android Emulator, muestreo humano Xiaomi y
+gestos humanos sobre iPad Simulator. iPad usó Compatibility en copias temporales;
+los presets y el renderer Mobile de producción permanecieron intactos. No se
+acredita hardware iOS ni se toma el SoftwareRenderer del simulador como
+rendimiento de un iPhone. La [aceptación de rendimiento](../specs/002-monte-calvo-terreno-trincheras/evidence/performance.md)
+se limita a 002/Xiaomi 11T Pro físico provisional según la constitución 1.2.0,
+con los picos y límites del instrumento conservados; no se extrapola a otros
+dispositivos o features.
 
 - **Política de versionado para releases de prueba**: ambos workflows de
   deploy tienen un paso que compara `version/code`/`version/name`
@@ -516,3 +580,4 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
 | 2026-09-13 | §6: cerrado el hueco de cobertura anterior — T046 de `001-soldado-defensor-oleadas` (validado por `qa-validator`) agrega el test simétrico de victoria de punta a punta con instancias reales (`Nivel_MonteCalvo.tscn`/`WaveManager`/`WaveSpawner`/`GameStateManager` reales, oleada de prueba acortada), cerrando la Fase Final de la feature. Consolidación de fin de feature: se confirma que las graduaciones de T050-T054 (gap de derrota del `Soldado`) y del hallazgo de motor de T053 (§4.2) ya estaban correctamente integradas, sin duplicados. |
 | 2026-09-15 | §7: sincronizado con la realidad — iOS/TestFlight ya no está pendiente, quedó operativo (`.github/workflows/deploy-ios-testflight.yml`, firma Manual en vez de Automatic, ver ese archivo para el detalle). Se agrega la política de versionado: ambos workflows de deploy de prueba ahora fallan a propósito si `export_presets.cfg` no tiene un bump de versión desde el último deploy exitoso — se detectó en esta sesión que el pipeline estaba re-subiendo repetidamente la misma versión (1.0/build 1) a TestFlight y Firebase sin ningún control. |
 | 2026-10-15 | §8: separación entre preparación Spec Kit y ejecución por agentes, TDD y referencia compartida de desarrollo; rutas de constitución actualizadas |
+| 2026-10-16 | T017 de `002-monte-calvo-terreno-trincheras`, tras QA T016: §2/§5 documentan la subescena visual estática aislada y sus recursos; se corrige la descripción del nivel para reflejar WaveSpawner creado por código y ausencia de HUD integrado. §6/§7 documentan la precedencia de pickup→despliegue aprobada con TDD y distinguen regresión de entrada real, con límites de iPad Simulator y Xiaomi provisional. |

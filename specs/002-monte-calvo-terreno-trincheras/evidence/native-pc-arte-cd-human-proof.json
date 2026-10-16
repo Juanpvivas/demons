@@ -1,0 +1,46 @@
+{
+  "source_revision": "a473585ca62e3d35fa1d81d47e052646826032c3",
+  "manifest": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/cd-readable/packaging-summary.json",
+  "manifest_sha256": "91847b7cd64a419338cdeae2e200098e283174e9439a768ee48020b75e957d2b",
+  "actual_app": "/private/tmp/monte-calvo-macos-validation-002-5h1o_wo7/apps-cd-readable/MonteCalvo_Arte002.app",
+  "raw_sha256": "94ea47079fcd9c7db525cce0a9963afffab131a847a108f8401cad1e12d0d1c1",
+  "app_file_checks": [
+    {
+      "file": "Contents/Info.plist",
+      "sha256": "b98dc4ebc2066db6888e6ee70a158f7c1468868caca22d46738819d1fa072f97",
+      "matches_manifest": true
+    },
+    {
+      "file": "Contents/PkgInfo",
+      "sha256": "7e50a30efad50208a173203ced60818d693bb61266b75aa10927d1a2adce80cb",
+      "matches_manifest": true
+    },
+    {
+      "file": "Contents/_CodeSignature/CodeResources",
+      "sha256": "14abaa290f23b9d2e3383dac107f0c3975c324d03ead9105dd04efba80cdc852",
+      "matches_manifest": true
+    },
+    {
+      "file": "Contents/MacOS/MonteCalvo_Arte002",
+      "sha256": "a221cf059aa1c6c659c5b431c05dcdefb4aa25f1c69a50c7911fccb53745c9a8",
+      "matches_manifest": true
+    },
+    {
+      "file": "Contents/Resources/icon.icns",
+      "sha256": "c3d75c7efc3765d3934b080718478566488c9912634ed11dae2a5691c414c375",
+      "matches_manifest": true
+    },
+    {
+      "file": "Contents/Resources/PrivacyInfo.xcprivacy",
+      "sha256": "0535353bb08c25b8ce5ed9ac7e442a5994f402e0f6cbc4bed668cfc63c2ceac3",
+      "matches_manifest": true
+    },
+    {
+      "file": "Contents/Resources/MonteCalvo_Arte002.pck",
+      "sha256": "6ea292fd89cd44cc8c5d7c80dd3b9c681d49e1086887171b7dc10af0bcaf6655",
+      "matches_manifest": true
+    }
+  ],
+  "no_actions_posted": true,
+  "no_reload_or_terminate": true
+}

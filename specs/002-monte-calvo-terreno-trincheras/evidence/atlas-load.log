@@ -1,0 +1,4 @@
+Godot Engine v4.7.1.stable.mono.official.a13da4feb - https://godotengine.org
+
+T010_TEXTURE {"alpha_mode":2,"format":5,"image_size":"(1536, 1024)","mipmaps":false,"path":"res://assets/sprites/levels/monte_calvo/trincheras_atlas.png","size":"(1536.0, 1024.0)","type":"CompressedTexture2D"}
+T010_LOAD_PASS true

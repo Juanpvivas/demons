@@ -1,0 +1,5 @@
+Godot Engine v4.7.1.stable.mono.official.a13da4feb - https://godotengine.org
+
+T005_TEXTURE {"alpha_mode":0,"format":4,"image_size":"(1254, 1254)","mipmaps":false,"path":"res://assets/sprites/levels/monte_calvo/terreno.png","size":"(1254.0, 1254.0)","type":"CompressedTexture2D"}
+T005_TEXTURE {"alpha_mode":2,"format":5,"image_size":"(1536, 1024)","mipmaps":false,"path":"res://assets/sprites/levels/monte_calvo/montanas.png","size":"(1536.0, 1024.0)","type":"CompressedTexture2D"}
+T005_LOAD_PASS true

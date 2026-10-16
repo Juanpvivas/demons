@@ -1,0 +1,8 @@
+Undefined symbols for architecture arm64:
+  "_main", referenced from:
+ld: symbol(s) not found for architecture arm64
+** BUILD FAILED **
+Undefined symbols for architecture arm64:
+  "_main", referenced from:
+ld: symbol(s) not found for architecture arm64
+** BUILD FAILED **

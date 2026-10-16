@@ -1,0 +1,36 @@
+[
+  {
+    "event": "start",
+    "exit": 0,
+    "output": "Starting: Intent { cmp=com.juanpvivas.demons/com.godot.game.GodotAppLauncher }\nStatus: ok\nLaunchState: COLD\nActivity: com.juanpvivas.demons/com.godot.game.GodotApp\nTotalTime: 391\nWaitTime: 402\nComplete\n",
+    "utc": "2026-10-16T01:22:20Z"
+  },
+  {
+    "event": "capture",
+    "target_s": 8,
+    "elapsed_s": 9.799,
+    "exit": 0,
+    "path": "android-human-final-08s.png"
+  },
+  {
+    "event": "capture",
+    "target_s": 18,
+    "elapsed_s": 19.986,
+    "exit": 0,
+    "path": "android-human-final-18s.png"
+  },
+  {
+    "event": "capture",
+    "target_s": 28,
+    "elapsed_s": 30.001,
+    "exit": 0,
+    "path": "android-human-final-28s.png"
+  },
+  {
+    "event": "capture",
+    "target_s": 40,
+    "elapsed_s": 42.068,
+    "exit": 0,
+    "path": "android-human-final-40s.png"
+  }
+]

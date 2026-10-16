@@ -1,0 +1,12 @@
+{
+  "scenes/levels/Nivel_MonteCalvo.tscn": "9ce9dd7efc14e4d73e187e02ef909ac1f21159c688744bfafd3e9bee543831ad",
+  "scenes/levels/MonteCalvoVisual.tscn": "43eec852955409b76a172a756cdceaa33689d123a2f8b580880a752925b22be2",
+  "project.godot": "29b01761cfdfd7eafd00dc37a093dbc09ce33a4e8f5f6061f158a9bf0c9b7b5e",
+  "export_presets.cfg": "d767a9017d5e171319901bbe7c5b136805f4678a38abc026c520776b797b37e7",
+  "assets/sprites/levels/monte_calvo/montanas.png": "0e1b0fda34559bd7b49258e31f5982617adeaef247b1fe41abe4b20895797194",
+  "assets/sprites/levels/monte_calvo/montanas.png.import": "4c8027d6044535174d4df9b22e82b67d813a8009c3cd6caf2c649a74d3926a00",
+  "assets/sprites/levels/monte_calvo/terreno.png": "b0c6f46717fc256cb025987f98183e499ba0a27a953bb8ea743795d41761429b",
+  "assets/sprites/levels/monte_calvo/terreno.png.import": "1557d836426dcf1d4a0bd861d6d9b869f40c52019f35263b891616212b1a7485",
+  "assets/sprites/levels/monte_calvo/trincheras_atlas.png": "bf5b38cf2b4b2920bd0566195c15d5b0c94297d9124ee1ca38105e1cde340c5b",
+  "assets/sprites/levels/monte_calvo/trincheras_atlas.png.import": "039b79a298ff9bd5307c20b913b0e1b5a23a4c9cd80f1994bd85b444c59bf33d"
+}

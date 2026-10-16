@@ -1,0 +1,1828 @@
+[
+  {
+    "variant": "baseline",
+    "start_utc": "2026-10-16T14:50:16.971076+00:00",
+    "source": "a473585",
+    "apk": "/private/tmp/monte-calvo-validation-002-v333ghu2/native-baseline.apk",
+    "device": "Android AVD Medium_Phone, emulator-5554, SDK input simulated only",
+    "install": "Serving...\nPerforming Incremental Install\nSuccess\nInstall command complete in 646 ms\n",
+    "launch": "Starting: Intent { cmp=com.juanpvivas.demons/com.godot.game.GodotAppLauncher }\nStatus: ok\nLaunchState: COLD\nActivity: com.juanpvivas.demons/com.godot.game.GodotApp\nTotalTime: 909\nWaitTime: 917\nComplete\n",
+    "actions": [
+      {
+        "label": "I3 insufficient free A",
+        "world_xy_requested": [
+          240,
+          528
+        ],
+        "screen_xy": [
+          400,
+          880
+        ],
+        "pre_read": {
+          "ammo": 0,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 10
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 0,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 10
+            }
+          ]
+        },
+        "elapsed_wall_s": 1.357,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "collect natural ammo",
+        "world_xy_requested": [
+          576.0,
+          258.0
+        ],
+        "screen_xy": [
+          960,
+          430
+        ],
+        "pre_read": {
+          "ammo": 0,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                2
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                266.0
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 7
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 3,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 7
+            }
+          ]
+        },
+        "elapsed_wall_s": 6.745,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "collect natural ammo",
+        "world_xy_requested": [
+          576.0,
+          284.0
+        ],
+        "screen_xy": [
+          960,
+          473
+        ],
+        "pre_read": {
+          "ammo": 3,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                3
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                292.0
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 4
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 6,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 4
+            }
+          ]
+        },
+        "elapsed_wall_s": 8.828,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "collect natural ammo",
+        "world_xy_requested": [
+          576.0,
+          303.33
+        ],
+        "screen_xy": [
+          960,
+          506
+        ],
+        "pre_read": {
+          "ammo": 6,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                3
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                311.33
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 1
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 9,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 1
+            }
+          ]
+        },
+        "elapsed_wall_s": 11.172,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "collect natural ammo",
+        "world_xy_requested": [
+          576.0,
+          432.0
+        ],
+        "screen_xy": [
+          960,
+          720
+        ],
+        "pre_read": {
+          "ammo": 9,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                4
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                440.0
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 12,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "elapsed_wall_s": 15.992,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "I2 occupied with funds",
+        "world_xy_requested": [
+          624,
+          528
+        ],
+        "screen_xy": [
+          1040,
+          880
+        ],
+        "pre_read": {
+          "ammo": 12,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 12,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "elapsed_wall_s": 16.363,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "I4 pickup with funds",
+        "world_xy_requested": [
+          576.0,
+          443.95
+        ],
+        "screen_xy": [
+          960,
+          740
+        ],
+        "pre_read": {
+          "ammo": 12,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                4
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                451.95
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 15,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "elapsed_wall_s": 28.115,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "I1 free on trench",
+        "world_xy_requested": [
+          528,
+          600
+        ],
+        "screen_xy": [
+          880,
+          1000
+        ],
+        "pre_read": {
+          "ammo": 15,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 5,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ],
+            [
+              5,
+              6
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                5,
+                6
+              ],
+              "name": "@StaticBody2D@19",
+              "position": [
+                528.0,
+                624.0
+              ],
+              "rifle_ammo": 9
+            },
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "elapsed_wall_s": 28.498,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "collect natural ammo",
+        "world_xy_requested": [
+          576.0,
+          443.95
+        ],
+        "screen_xy": [
+          960,
+          740
+        ],
+        "pre_read": {
+          "ammo": 5,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ],
+            [
+              5,
+              6
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                4
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                451.95
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                5,
+                6
+              ],
+              "name": "@StaticBody2D@19",
+              "position": [
+                528.0,
+                624.0
+              ],
+              "rifle_ammo": 8
+            },
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 8,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ],
+            [
+              5,
+              6
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                5,
+                6
+              ],
+              "name": "@StaticBody2D@19",
+              "position": [
+                528.0,
+                624.0
+              ],
+              "rifle_ammo": 8
+            },
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "elapsed_wall_s": 29.449,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "collect natural ammo",
+        "world_xy_requested": [
+          576.0,
+          440.74
+        ],
+        "screen_xy": [
+          960,
+          735
+        ],
+        "pre_read": {
+          "ammo": 8,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ],
+            [
+              5,
+              6
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                4
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                448.74
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                5,
+                6
+              ],
+              "name": "@StaticBody2D@19",
+              "position": [
+                528.0,
+                624.0
+              ],
+              "rifle_ammo": 7
+            },
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 11,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ],
+            [
+              5,
+              6
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                5,
+                6
+              ],
+              "name": "@StaticBody2D@19",
+              "position": [
+                528.0,
+                624.0
+              ],
+              "rifle_ammo": 7
+            },
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "elapsed_wall_s": 30.415,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "I9 outside illustrated center",
+        "world_xy_requested": [
+          1300,
+          528
+        ],
+        "screen_xy": [
+          2167,
+          880
+        ],
+        "pre_read": {
+          "ammo": 11,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ],
+            [
+              5,
+              6
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                5,
+                6
+              ],
+              "name": "@StaticBody2D@19",
+              "position": [
+                528.0,
+                624.0
+              ],
+              "rifle_ammo": 6
+            },
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 1,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ],
+            [
+              5,
+              6
+            ],
+            [
+              13,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                13,
+                5
+              ],
+              "name": "@StaticBody2D@20",
+              "position": [
+                1296.0,
+                528.0
+              ],
+              "rifle_ammo": 10
+            },
+            {
+              "cell": [
+                5,
+                6
+              ],
+              "name": "@StaticBody2D@19",
+              "position": [
+                528.0,
+                624.0
+              ],
+              "rifle_ammo": 6
+            },
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "elapsed_wall_s": 30.814,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      }
+    ],
+    "end_utc": "2026-10-16T14:50:48.012934+00:00",
+    "observed_actions": {
+      "occupied": true,
+      "pickup_with_funds": true,
+      "deployed_trench": true,
+      "outside_center": true
+    }
+  },
+  {
+    "variant": "final",
+    "start_utc": "2026-10-16T14:50:49.473224+00:00",
+    "source": "a473585",
+    "apk": "/private/tmp/monte-calvo-validation-002-v333ghu2/native-final.apk",
+    "device": "Android AVD Medium_Phone, emulator-5554, SDK input simulated only",
+    "install": "Serving...\nPerforming Incremental Install\nSuccess\nInstall command complete in 574 ms\n",
+    "launch": "Starting: Intent { cmp=com.juanpvivas.demons/com.godot.game.GodotAppLauncher }\nStatus: ok\nLaunchState: COLD\nActivity: com.juanpvivas.demons/com.godot.game.GodotApp\nTotalTime: 734\nWaitTime: 738\nComplete\n",
+    "actions": [
+      {
+        "label": "I3 insufficient free A",
+        "world_xy_requested": [
+          240,
+          528
+        ],
+        "screen_xy": [
+          400,
+          880
+        ],
+        "pre_read": {
+          "ammo": 0,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 10
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 0,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 10
+            }
+          ]
+        },
+        "elapsed_wall_s": 1.403,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "collect natural ammo",
+        "world_xy_requested": [
+          576.0,
+          258.0
+        ],
+        "screen_xy": [
+          960,
+          430
+        ],
+        "pre_read": {
+          "ammo": 0,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                2
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                266.0
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 7
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 3,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 7
+            }
+          ]
+        },
+        "elapsed_wall_s": 6.764,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "collect natural ammo",
+        "world_xy_requested": [
+          576.0,
+          284.0
+        ],
+        "screen_xy": [
+          960,
+          473
+        ],
+        "pre_read": {
+          "ammo": 3,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                3
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                292.0
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 4
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 6,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 3
+            }
+          ]
+        },
+        "elapsed_wall_s": 9.446,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "collect natural ammo",
+        "world_xy_requested": [
+          576.0,
+          304.0
+        ],
+        "screen_xy": [
+          960,
+          507
+        ],
+        "pre_read": {
+          "ammo": 6,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                3
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                312.0
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 9,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "elapsed_wall_s": 12.069,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "collect natural ammo",
+        "world_xy_requested": [
+          576.0,
+          432.0
+        ],
+        "screen_xy": [
+          960,
+          720
+        ],
+        "pre_read": {
+          "ammo": 9,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                4
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                440.0
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 12,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "elapsed_wall_s": 15.753,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "I2 occupied with funds",
+        "world_xy_requested": [
+          624,
+          528
+        ],
+        "screen_xy": [
+          1040,
+          880
+        ],
+        "pre_read": {
+          "ammo": 12,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 12,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "elapsed_wall_s": 18.241,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "I4 pickup with funds",
+        "world_xy_requested": [
+          576.0,
+          443.95
+        ],
+        "screen_xy": [
+          960,
+          740
+        ],
+        "pre_read": {
+          "ammo": 12,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                4
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                451.95
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 15,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              6,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                6,
+                5
+              ],
+              "name": "Soldado",
+              "position": [
+                576.0,
+                500.0
+              ],
+              "rifle_ammo": 0
+            }
+          ]
+        },
+        "elapsed_wall_s": 28.26,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "I1 free on trench",
+        "world_xy_requested": [
+          528,
+          600
+        ],
+        "screen_xy": [
+          880,
+          1000
+        ],
+        "pre_read": {
+          "ammo": 15,
+          "game_state": 0,
+          "occupied_cells": [],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                4
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                451.96
+              ]
+            }
+          ],
+          "soldiers": []
+        },
+        "post_read": {
+          "ammo": 5,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              5,
+              6
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                4
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                451.96
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                5,
+                6
+              ],
+              "name": "Soldado",
+              "position": [
+                528.0,
+                624.0
+              ],
+              "rifle_ammo": 9
+            }
+          ]
+        },
+        "elapsed_wall_s": 31.019,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "collect natural ammo",
+        "world_xy_requested": [
+          576.0,
+          438.65
+        ],
+        "screen_xy": [
+          960,
+          731
+        ],
+        "pre_read": {
+          "ammo": 5,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              5,
+              6
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                4
+              ],
+              "name": "@Area2D@19",
+              "position": [
+                576.0,
+                446.65
+              ]
+            },
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                4
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                451.96
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                5,
+                6
+              ],
+              "name": "Soldado",
+              "position": [
+                528.0,
+                624.0
+              ],
+              "rifle_ammo": 6
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 11,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              5,
+              6
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                5,
+                6
+              ],
+              "name": "Soldado",
+              "position": [
+                528.0,
+                624.0
+              ],
+              "rifle_ammo": 6
+            }
+          ]
+        },
+        "elapsed_wall_s": 33.369,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "I9 outside illustrated center",
+        "world_xy_requested": [
+          1300,
+          528
+        ],
+        "screen_xy": [
+          2167,
+          880
+        ],
+        "pre_read": {
+          "ammo": 11,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              5,
+              6
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                5
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                575.32
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                5,
+                6
+              ],
+              "name": "Soldado",
+              "position": [
+                528.0,
+                624.0
+              ],
+              "rifle_ammo": 4
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 1,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              5,
+              6
+            ],
+            [
+              13,
+              5
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                5
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                575.32
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                13,
+                5
+              ],
+              "name": "@StaticBody2D@20",
+              "position": [
+                1296.0,
+                528.0
+              ],
+              "rifle_ammo": 10
+            },
+            {
+              "cell": [
+                5,
+                6
+              ],
+              "name": "Soldado",
+              "position": [
+                528.0,
+                624.0
+              ],
+              "rifle_ammo": 4
+            }
+          ]
+        },
+        "elapsed_wall_s": 35.787,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      },
+      {
+        "label": "collect natural ammo",
+        "world_xy_requested": [
+          576.0,
+          567.32
+        ],
+        "screen_xy": [
+          960,
+          946
+        ],
+        "pre_read": {
+          "ammo": 1,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              5,
+              6
+            ],
+            [
+              13,
+              5
+            ]
+          ],
+          "pickups": [
+            {
+              "amount": 3,
+              "cell": [
+                6,
+                5
+              ],
+              "name": "AmmoPickup",
+              "position": [
+                576.0,
+                575.32
+              ]
+            }
+          ],
+          "soldiers": [
+            {
+              "cell": [
+                13,
+                5
+              ],
+              "name": "@StaticBody2D@20",
+              "position": [
+                1296.0,
+                528.0
+              ],
+              "rifle_ammo": 10
+            },
+            {
+              "cell": [
+                5,
+                6
+              ],
+              "name": "Soldado",
+              "position": [
+                528.0,
+                624.0
+              ],
+              "rifle_ammo": 4
+            }
+          ]
+        },
+        "post_read": {
+          "ammo": 4,
+          "game_state": 0,
+          "occupied_cells": [
+            [
+              5,
+              6
+            ],
+            [
+              13,
+              5
+            ]
+          ],
+          "pickups": [],
+          "soldiers": [
+            {
+              "cell": [
+                13,
+                5
+              ],
+              "name": "@StaticBody2D@20",
+              "position": [
+                1296.0,
+                528.0
+              ],
+              "rifle_ammo": 10
+            },
+            {
+              "cell": [
+                5,
+                6
+              ],
+              "name": "Soldado",
+              "position": [
+                528.0,
+                624.0
+              ],
+              "rifle_ammo": 4
+            }
+          ]
+        },
+        "elapsed_wall_s": 38.197,
+        "input_channel": "Android SDK adb shell input tap, emulator only; observe actual PRE/POST separately"
+      }
+    ],
+    "end_utc": "2026-10-16T14:51:29.834219+00:00",
+    "observed_actions": {
+      "occupied": true,
+      "pickup_with_funds": true,
+      "deployed_trench": true,
+      "outside_center": true
+    }
+  }
+]

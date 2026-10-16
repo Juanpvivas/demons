@@ -1,0 +1,30 @@
+{
+  "method": "SurfaceFlinger actual-present timestamps, column2, deduplicated rolling buffers after first latest present",
+  "target_observation_s": [
+    8,
+    38
+  ],
+  "present_timestamps": 1815,
+  "interval_count": 1814,
+  "duration_s": 30.001259364,
+  "mean_interval_ms": 16.538731733186328,
+  "p95_interval_ms": 16.682812,
+  "p99_interval_ms": 16.884323,
+  "max_interval_ms": 17.075677,
+  "present_fps": 60.46412845511108,
+  "intervals_over_20ms": 0,
+  "intervals_over_33_334ms": 0,
+  "memory": {
+    "8": {
+      "total_pss_kib": 246034,
+      "total_rss_kib": 364552
+    },
+    "38": {
+      "total_pss_kib": 240741,
+      "total_rss_kib": 359656
+    }
+  },
+  "poll_count": 31,
+  "polls_exit_nonzero": 0,
+  "max_poll_gap_s": 1.0440000000000005
+}

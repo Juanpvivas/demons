@@ -1,16 +1,24 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.0 → 1.1.0
-- Motivo: decisión de la persona (2026-10-15): Spec Kit prepara documentos;
-  los agentes implementan, prueban y validan, manteniendo TDD.
-- Principios modificados: II. Estándares de Testing: explicita RED antes de
-  desarrollo y GREEN antes de aprobar implementación; QA independiente.
-- Flujo actualizado: preparación Spec Kit separada de ejecución por agentes;
-  solo el orquestador marca tareas aprobadas; sin implementación genérica.
-- Referencias sincronizadas: AGENTS.md, CLAUDE.md, README.md,
-  docs/DEVELOPMENT_WORKFLOW.md, docs/ARCHITECTURE.md, roles y comando en
-  .claude/, skills/plantillas/workflow de Spec Kit y notas de proceso de 001.
-- Se conservan los cuatro principios originales y la ratificación inicial.
+- Version change: 1.1.0 → 1.2.0 (MINOR).
+- Motivo: decisión explícita de la persona (2026-10-16): «Usar el Xiaomi como
+  referencia provisional para 002», conservando el objetivo de 60 FPS y QA.
+- Principio modificado: IV. Requisitos de Rendimiento, sin cambio de título.
+  Se amplía materialmente la guía de referencia con una excepción limitada a
+  la aceptación de 002: Xiaomi 11T Pro, modelo 2107113SG, generación 2021.
+- Se conservan 60 FPS estables y la referencia nominal global de gama media
+  Android de los últimos ~3 años. No se exime estabilidad ni se certifican
+  otros teléfonos, la feature 003, iOS o plataformas emuladas.
+- Secciones añadidas/eliminadas: ninguna; se añade un párrafo acotado a IV.
+- Referencias sincronizadas: spec.md, plan.md, quickstart.md y
+  contracts/visual-boundary.md de specs/002-monte-calvo-terreno-trincheras/.
+- Plantilla activa resuelta; fuentes de preparación del preset consultadas.
+  Templates y comandos leen la constitución en ejecución y no se modifican.
+- Revisión documental aprobada por QA el 2026-10-16; aceptación del rendimiento
+  todavía pendiente. La decisión de dispositivo no convierte una medición
+  corta en aprobación.
+- Se conservan los cuatro principios, la ratificación inicial y la enmienda
+  1.1.0 de 2026-10-15 sobre Spec Kit, agentes, TDD y QA independiente.
 - TODO diferido sin cambios: PERFORMANCE_LOAD_TIME_TARGET, pendiente de medir
   en dispositivo Android de referencia.
 -->
@@ -84,6 +92,18 @@ TODO(PERFORMANCE_LOAD_TIME_TARGET) — valor pendiente de definir tras medir en
 el dispositivo de referencia. Cualquier funcionalidad que arriesgue el
 framerate objetivo (partículas, cantidad simultánea de enemigos) DEBE probarse
 en el dispositivo de gama más baja soportada antes de mergear, no solo en PC.
+
+**Referencia provisional exclusiva de la feature 002 (2026-10-16):** por decisión
+explícita de la persona, el Xiaomi 11T Pro físico, modelo `2107113SG` de 2021,
+se admite como dispositivo de referencia provisional para aceptar
+`002-monte-calvo-terreno-trincheras`. Se DEBEN conservar los 60 FPS estables
+durante gameplay típico y la revisión independiente de QA sobre las mediciones
+y sus limitaciones. Esta autorización cambia solo la referencia de esa feature;
+no aprueba el rendimiento observado ni exime estabilidad. La referencia nominal
+global de gama media Android de los últimos ~3 años permanece vigente. No se
+extrapola esta aceptación provisional a otros teléfonos, a la feature 003,
+a iOS ni al rendimiento de emuladores o simuladores.
+
 **Razón**: como es un juego 2D pensado para escalar a hordas de enemigos en
 pantalla, el rendimiento en el hardware más débil del público objetivo (móviles
 de gama media/baja) es lo que determina si el juego es jugable, no el
@@ -136,4 +156,4 @@ listo para implementar. Cualquier complejidad técnica que viole un principio
 DEBE justificarse explícitamente en el documento correspondiente (plan o spec)
 o rechazarse.
 
-**Version**: 1.1.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-15
+**Version**: 1.2.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-16

@@ -1,0 +1,9 @@
+{
+  "method": "Public ScreenCaptureKit own bundle/path only; no focus/events",
+  "helper": "/private/tmp/monte-calvo-validation-002-v333ghu2/capture-own-native-pc",
+  "result": "SIGTRAP5, no image produced",
+  "cause": "Not established; capture setup unavailable, not a gameplay failure",
+  "retry": false,
+  "raw_derived_proof_frozen_first": true,
+  "recorded_utc": "2026-10-16T16:10:09.516507+00:00"
+}
