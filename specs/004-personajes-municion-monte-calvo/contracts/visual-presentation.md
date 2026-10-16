@@ -94,7 +94,11 @@ FR-005–007 y SC-002/003: avance/contacto/derrota/reset.
 FR-008–010 y SC-004/005: caja/input/redimensionamiento.
 FR-009/010 y SC-006: partida terminal y regresión real de victoria/derrota.
 SC-007: baseline/candidato con carga/frame times/memoria por entorno,
-Android físico nominal y 60 FPS estables sin relajar por promedios.
+Xiaomi 11T Pro físico `2107113SG` de 2021 como referencia provisional exclusiva
+de 004 (autorización del 2026-10-16, constitución 2.2.0) y 60 FPS estables sin
+relajar por promedios. Exigir nuevas mediciones y QA; sin heredar resultados de
+002/003 ni certificar equipos menos potentes o iOS. Web y nativo se miden y
+aceptan por separado también sobre el mismo Xiaomi.
 FR-012/SC-008: diff acotado y QA/resumen en PR, sin nuevas evidencias Git.
 
 Quickstart define matriz y pasos: Web 1152×648/960×540 y móvil horizontal,

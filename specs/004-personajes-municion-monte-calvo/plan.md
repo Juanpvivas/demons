@@ -36,8 +36,9 @@ PC nativo solo desarrollo/pruebas. Renderer/presets/input/cámara intactos.
 
 **Project Type**: juego 2D Godot.
 
-**Performance Goals**: 60 FPS estables en Android físico nominal y medición Web
-separada; carga fría/caliente, frame times y memoria frente a baseline.
+**Performance Goals**: 60 FPS estables en Xiaomi 11T Pro físico `2107113SG` de
+2021, referencia provisional exclusiva de 004 (constitución 2.2.0), y medición
+Web separada; carga fría/caliente, frame times y memoria frente a baseline.
 
 **Constraints**: actores 48×48, caja 32×32/collider radio 20 y física intactos.
 Atlases hasta 1024² por actor y caja hasta 256²: máximo 8.25 MiB RGBA8 estimados,
@@ -53,14 +54,17 @@ presentadores y un pool visual mínimo; sin HUD, audio, proyectiles o terreno.
 | I: Resources/separación/GDScript | Aplicable | Balance protegido; presentación observacional |
 | II: TDD y QA independiente | Nueva lógica visual testeable | RED → dev → GREEN → QA; arte sin RED artificial |
 | III: lectura y respeto histórico | Estados existentes | Silueta/armas y feedback, matriz por entorno |
-| IV: 60 FPS y pooling | Nueva medición necesaria | Pool de efectos; Android nominal como prerrequisito |
+| IV: 60 FPS y pooling | Nueva medición necesaria | Pool de efectos; Xiaomi físico provisional autorizado para 004 |
 | Flujo de preparación y PR pequeños | Spec Kit solo prepara | Tres incrementos completos; futura ejecución por roles |
 
-Sin excepción constitucional ni NEEDS CLARIFICATION de diseño. Antes de ejecutar,
-identificar y obtener acceso al Android físico nominal de gama media de los
-últimos aproximadamente tres años. Su ausencia deja pendiente SC-007; no heredar
-Xiaomi 002. El umbral constitucional de carga permanece pendiente, sin inventarlo.
-Cada entorno no probado deja pendiente su aceptación, sin extrapolación.
+Sin NEEDS CLARIFICATION de diseño. La constitución 2.2.0 recoge la autorización
+explícita del 2026-10-16 para usar el Xiaomi físico provisional exclusivamente en
+004; la referencia nominal global permanece vigente. Antes de medir, identificar
+y obtener acceso a ese equipo. Su ausencia deja pendiente SC-007. La autorización
+no aprueba resultados: se requieren nuevas mediciones y QA, sin heredar 002/003
+ni certificar equipos menos potentes o iOS. Web y nativo se miden por separado
+también en el mismo Xiaomi. El umbral constitucional de carga permanece pendiente,
+sin inventarlo. Cada entorno no probado deja pendiente su aceptación.
 
 ## Project Structure
 

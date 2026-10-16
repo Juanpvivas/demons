@@ -38,6 +38,8 @@ o QA de entrega.
   16 puntos; la implementación conserva su ciclo posterior y su propio QA.
 - La matriz exacta, adaptación visual, protocolo de rendimiento y división de
   incrementos pertenecen a la planificación. El acceso al Android físico de
-  referencia es requisito de ejecución, no una excepción autorizada por 002.
+  referencia es requisito de ejecución. La decisión explícita del 2026-10-16 y
+  la constitución 2.2.0 autorizan el Xiaomi provisional exclusivamente para 004,
+  sin heredar resultados de 002/003 ni aprobar rendimiento por esta autorización.
 - Estas casillas corresponden a calidad documental. No sustituyen las tareas
   de implementación ni el veredicto QA sobre el juego.

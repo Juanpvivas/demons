@@ -90,8 +90,13 @@ Sin terminal verificable, smoke permanece pendiente.
 Descartadas. Evidencias nuevas solo temporales/CI; resumen en PR.
 
 Matriz Web escritorio/móvil, Android/iOS nativos separada; antes/después de carga,
-frame times y memoria. Hardware Android nominal es prerrequisito; simulador no
-acredita teléfono. Sin herencia Xiaomi 002/aceptación 003 ni umbral de carga nuevo.
+frame times y memoria. Para 004, la decisión explícita del 2026-10-16 admite el
+Xiaomi 11T Pro físico `2107113SG` de 2021 como referencia provisional exclusiva
+(constitución 2.2.0), sin alterar la referencia nominal global ni los 60 FPS
+estables. Su acceso, nuevas mediciones y QA siguen siendo requisitos; simulador
+no acredita teléfono. Web y nativo se aceptan por separado también en el mismo
+Xiaomi. Sin herencia de resultados 002/003, certificación iOS o de equipos menos
+potentes, ni umbral de carga nuevo.
 Skills consultadas: using-godot-prompter, 2d-essentials, assets-pipeline,
 animation-system, scene-organization, gdscript-patterns, godot-code-review,
 godot-testing y patrones de testing. No hizo falta investigación externa.

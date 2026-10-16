@@ -10,8 +10,9 @@ Aplicar [spec](spec.md), [plan](plan.md), [modelo](data-model.md),
   y rama real. Conserva cambios locales y registra la revisión de la línea base.
 - Los roles consultan las skills de GodotPrompter aplicables. El tester identifica
   ejecutables, versiones, navegadores y dispositivos realmente accesibles.
-- Acordar el Android físico que cumpla la referencia constitucional nominal.
-  El Xiaomi provisional de 002 no queda autorizado para aceptar rendimiento de 004.
+- Identificar y obtener acceso al Xiaomi 11T Pro físico `2107113SG` de 2021,
+  referencia provisional exclusiva de 004 autorizada el 2026-10-16 (constitución
+  2.2.0). No hereda aprobación de 002/003 ni certifica equipos menos potentes.
 - Conservar capturas comparables antes/después con igual encuadre, tamaño y
   estado. Las salidas de verificación van a temporales o CI, nunca a Git.
 - Registrar la línea base de reglas protegidas, importación y GUT, además de
@@ -105,8 +106,9 @@ Registrar tiempo de carga, FPS por ventanas de 1 s, tiempos de fotograma
 p50/p95/p99 y picos, y memoria inicial/pico/final con el alcance real del
 instrumento. Señalar perturbación del observador y carencias de medición.
 No inventar un límite de carga aún pendiente en la constitución. Los 60 FPS
-estables en el Android nominal se evalúan de forma independiente por QA;
-una media favorable no oculta caídas ni sustituye esa aceptación. Web y nativo
+estables en el Xiaomi provisional autorizado para 004 se evalúan de forma
+independiente por QA con nuevas mediciones; la autorización no acredita resultados.
+Una media favorable no oculta caídas ni sustituye esa aceptación. Web y nativo
 tienen mediciones distintas incluso sobre el mismo teléfono.
 
 ## 6. Entrega de cada incremento

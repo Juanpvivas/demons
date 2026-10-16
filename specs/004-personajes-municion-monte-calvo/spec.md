@@ -234,12 +234,14 @@ repetir con reserva suficiente y una celda libre bajo la caja.
   animación ni cambios de reglas. Victoria y derrota se verifican además por
   separado con las rutas de comprobación existentes.
 - **SC-007**: Se mantiene el objetivo constitucional de 60 FPS estables en
-  gameplay típico sobre el Android físico de referencia nominal (gama media
-  de los últimos aproximadamente tres años). Se mide carga y rendimiento por
-  separado en los navegadores/dispositivos de aceptación Web y en nativo; no
-  se atribuye a 004 la excepción Xiaomi de 002 ni la certificación acotada de
-  003. La carga se registra sin inventar el límite aún pendiente de la
-  constitución.
+  gameplay típico sobre el Xiaomi 11T Pro físico `2107113SG` de 2021, referencia
+  provisional exclusiva de 004 autorizada el 2026-10-16 y recogida en la
+  constitución 2.2.0. Se requieren nuevas mediciones y QA; la autorización no
+  aprueba rendimiento ni certifica equipos menos potentes. Se mide carga y
+  rendimiento por separado en los navegadores/dispositivos de aceptación Web
+  y en nativo, incluso en el mismo Xiaomi; no se heredan resultados de 002/003.
+  La autorización no acredita iOS. La carga se registra sin inventar el límite
+  aún pendiente de la constitución.
 - **SC-008**: El 100 % de los recursos artísticos nuevos tiene procedencia y
   permisos documentados. Cada escenario exigido queda identificado como
   aprobado, fallido o pendiente en la revisión de entrega; los resultados y
@@ -267,10 +269,11 @@ repetir con reserva suficiente y una celda libre bajo la caja.
   forman parte de los estados básicos; no abren un sistema de efectos de combate
   completo ni cambian el ciclo de vida de los actores.
 - Antes de ejecutar las verificaciones de rendimiento se identificará y
-  obtendrá acceso al Android físico que cumpla la referencia nominal vigente.
-  Su ausencia mantiene pendiente esa aceptación; no se amplía automáticamente
-  la autorización Xiaomi de 002. El plan fija la matriz y el protocolo de
-  medición, sin usar datos históricos como resultados nuevos.
+  obtendrá acceso al Xiaomi 11T Pro físico `2107113SG` de 2021 autorizado como
+  referencia provisional exclusiva de 004. Su ausencia mantiene pendiente esa
+  aceptación. La decisión explícita del 2026-10-16 no amplía la referencia
+  nominal global ni hereda la aprobación de 002/003. El plan fija la matriz y
+  el protocolo de medición, sin usar datos históricos como resultados nuevos.
 - La producción de arte y su revisión visual tienen verificación proporcional.
   Cualquier comportamiento visual nuevo verificable automáticamente sigue
   tester RED → desarrollo → tester GREEN → QA, con regresión jugable pertinente.
