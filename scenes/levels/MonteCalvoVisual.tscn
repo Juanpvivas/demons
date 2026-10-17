@@ -60,6 +60,18 @@ scale = Vector2(1.5311005, 0.861244)
 texture = ExtResource("1_terreno")
 centered = false
 
+[node name="TerrenoExtensionIzquierda" type="Sprite2D" parent="Suelo"]
+texture_filter = 2
+texture_repeat = 1
+position = Vector2(-391.961728, 0)
+scale = Vector2(1.5311005, 0.861244)
+texture = ExtResource("1_terreno")
+centered = false
+flip_h = true
+region_enabled = true
+region_rect = Rect2(0, 0, 256, 1254)
+region_filter_clip_enabled = true
+
 [node name="FondoMontanas" type="Node2D" parent="."]
 z_index = 1
 z_as_relative = true
@@ -79,6 +91,26 @@ texture = ExtResource("2_montanas")
 centered = false
 region_enabled = true
 region_rect = Rect2(0, 320, 1536, 424)
+region_filter_clip_enabled = true
+
+[node name="CieloExtensionIzquierda" type="Sprite2D" parent="FondoMontanas"]
+texture_filter = 2
+texture_repeat = 1
+position = Vector2(-384, 0)
+scale = Vector2(24, 0.75)
+texture = SubResource("GradientTexture2D_cielo")
+centered = false
+
+[node name="PanoramaExtensionIzquierda" type="Sprite2D" parent="FondoMontanas"]
+texture_filter = 2
+texture_repeat = 1
+position = Vector2(-320, 0)
+scale = Vector2(1.25, 0.37735849)
+texture = ExtResource("2_montanas")
+centered = false
+flip_h = true
+region_enabled = true
+region_rect = Rect2(0, 320, 256, 424)
 region_filter_clip_enabled = true
 
 [node name="Bordes" type="Node2D" parent="."]

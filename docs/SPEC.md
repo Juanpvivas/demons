@@ -112,11 +112,29 @@ orienta los materiales y la jerarquía visual; su composición se adapta al úni
 avance central existente.
 
 El entorno es estático y sus trincheras son decorativas: no añaden cobertura,
-obstáculos, carriles, casillas o límites de despliegue. Soldados, enemigos y
-municiones conservan sus formas provisionales por encima del fondo. Personajes,
-HUD, efectos, animaciones y audio quedan para otras iteraciones; el nivel actual
-todavía no instancia `HUD.tscn` ni ofrece controles de recarga o pantallas de fin
-de partida. Esta entrega no completa el acabado visual del juego ni el MVP.
+obstáculos, carriles, casillas o límites de despliegue. El primer incremento de
+[`004-personajes-municion-monte-calvo`](../specs/004-personajes-municion-monte-calvo/spec.md),
+aprobado funcionalmente en T011, sustituye el bloque del soldado inicial y de
+los nuevos despliegues por un colombiano de uniforme oliva, casco y armas
+legibles. Sus poses distinguen espera/disparo de fusil y espera/golpe de machete
+según el modo y los ataques reales. La última bala da prioridad al cambio a
+machete; la recarga existente restaura el fusil conservando la moral. Impacto y
+moral ganada tienen respuestas breves, y la derrota prevalece sobre ellas.
+
+La corrección de I1, aprobada funcionalmente en T036, aumenta solo el hijo
+visual del soldado a una altura opaca neutra aproximada de 72 unidades,
+conservando los pies en raíz+y24 y el cuerpo de 48×48. Un material mate aclara
+los tonos medios y añade un borde interior discreto para separarlo del suelo,
+también en grises. El encuadre local centra el eje de combate al ensanchar la
+pantalla, conserva la composición vertical del iPad y cubre el margen izquierdo
+con cielo, panorama y suelo existentes. No mueve trincheras, actores ni grid.
+
+La caída del soldado se muestra durante 0,40 s en un efecto independiente,
+sin cuerpo, input u ocupación: la celda se libera y el actor jugable se retira
+sin esperar la animación. Las imágenes no aplican daño ni cambian recursos,
+cadencias o resultados. El enemigo y la munición siguen provisionales, pendientes
+de I2 e I3. HUD, controles de recarga, pantallas terminales, audio y resto del
+acabado continúan pendientes; esta entrega parcial no completa el MVP.
 
 La [comparación visual](../specs/002-monte-calvo-terreno-trincheras/evidence/us3.md)
 y la [matriz nativa](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
@@ -126,6 +144,14 @@ El [rendimiento aprobado](../specs/002-monte-calvo-terreno-trincheras/evidence/p
 se limita a esta feature y al Xiaomi 11T Pro físico como referencia provisional,
 según la enmienda 1.2.0, conservada en la constitución 2.1.0. Conserva los picos y la perturbación del observador
 documentados; no certifica otros dispositivos ni ausencia de toda caída.
+
+La aceptación de I1 de 004 distingue Chrome de escritorio y Android Web de la
+app Android en el Xiaomi físico provisional autorizado exclusivamente para 004
+por la constitución 2.2.0. iOS solo acredita el simulador y su renderer software;
+no hardware iOS ni el renderer Mobile. Cada entorno conserva sus propios límites,
+sin heredar resultados de 002/003 ni certificar estabilidad sostenida más allá
+de las muestras revisadas. El seguimiento de los incrementos está en sus
+[tareas](../specs/004-personajes-municion-monte-calvo/tasks.md).
 
 ## 9. Alcance del MVP (primera versión jugable)
 
@@ -139,7 +165,7 @@ documentados; no certifica otros dispositivos ni ausencia de toda caída.
 
 ## 10. Preguntas abiertas / decisiones pendientes
 
-- Acabado visual de personajes, interfaz y efectos, siguiendo la dirección del entorno de Monte Calvo aprobada en §8.
+- Acabado visual del enemigo y la caja de munición (I2/I3 de 004), interfaz y demás efectos, siguiendo la dirección de Monte Calvo aprobada en §8.
 - ¿Habrá progresión entre niveles (más batallas históricas) o es un solo escenario?
 - ¿Narrativa/contexto histórico se presenta dentro del juego (cutscenes, texto) o queda solo como inspiración temática?
 - Balance de costos exactos de cada unidad (se define con playtesting).
@@ -148,7 +174,9 @@ documentados; no certifica otros dispositivos ni ausencia de toda caída.
 
 ### Resueltas (graduadas desde specs de feature)
 
-- ✅ Dirección visual de la primera iteración del terreno y las trincheras de Monte Calvo: entorno pictórico ocre/oliva, montañas azul grisáceo y decoración estática de tierra, madera y sacos, conservando actores provisionales y reglas actuales. Aprobada en T016 de `002-monte-calvo-terreno-trincheras`; §8 y sus enlaces delimitan el alcance y la evidencia. El acabado de personajes/UI/efectos permanece pendiente.
+- ✅ Dirección visual de la primera iteración del terreno y las trincheras de Monte Calvo: entorno pictórico ocre/oliva, montañas azul grisáceo y decoración estática de tierra, madera y sacos, conservando actores provisionales y reglas actuales en aquella entrega. Aprobada en T016 de `002-monte-calvo-terreno-trincheras`; §8 y sus enlaces delimitan el alcance y la evidencia. I1 de 004 avanza después el soldado; enemigo, caja e interfaz continúan pendientes.
+- ✅ Soldado pictórico y presentación de sus estados reales, sin alterar el combate ni esperar a la caída para retirarlo: I1 de `004-personajes-municion-monte-calvo`, aprobado en T011. §8 describe su alcance parcial; el patrón compartido de presentación y efecto independiente se gradúa a `ARCHITECTURE.md` §4.7. No resuelve el acabado del enemigo, la caja o la interfaz.
+- ✅ Legibilidad del soldado y encuadre horizontal de Monte Calvo: corrección de I1 de 004 aprobada funcionalmente en T036. §8 recoge el mayor tamaño visual, contraste mate y encuadre que conserva la composición iPad; física, posiciones y reglas permanecen intactas. No amplía el alcance a I2/I3 o interfaz.
 - ✅ Moral tras recarga: se conserva, no decae con el tiempo, se pierde solo si el soldado es derrotado. (spec `001-soldado-defensor-oleadas`)
 - ✅ Alcance de diagonales: celdas diagonalmente contiguas a la posición del soldado, no un cono más amplio. (spec `001-soldado-defensor-oleadas`)
 - ✅ Disparador de moral: solo al eliminar enemigos, no por impactos sin eliminación. Se corrigió el FR-006 del spec `001-soldado-defensor-oleadas`, que decía "impacta o elimina", para alinearlo con esta definición. (spec `001-soldado-defensor-oleadas`)
@@ -177,3 +205,5 @@ documentados; no certifica otros dispositivos ni ausencia de toda caída.
 | 2026-10-16 | §4–5: referencia de portabilidad sincronizada con la entrega 003 aceptada en su alcance Chrome escritorio/Xiaomi horizontal; paquete revisado localmente, sin publicación, soporte universal o certificación de rendimiento sostenido. No se cierra 002. |
 | 2026-10-16 | T017 de `002-monte-calvo-terreno-trincheras`, tras QA T016: §8 documenta el entorno pictórico y las trincheras estáticas aprobadas, con placeholders e interfaces pendientes; §10 resuelve solo esa dirección inicial. §6.1 incorpora la precedencia recolección→despliegue validada por el ciclo nativo T019–T022. Se enlazan evidencias y límites de iPad Simulator y Xiaomi provisional, sin completar el MVP ni cambiar plataformas. |
 | 2026-10-16 | Integración de main tras PR #16: se conserva 002 aprobada junto con los destinos y la entrega Web de 003; constitución 2.1.0 reúne ambas decisiones. Las entradas anteriores describen sus estados históricos, sin extender la referencia Xiaomi de 002 a Web. |
+| 2026-10-16 | T012 de 004, tras aprobación funcional T011: §8/§10 documentan el soldado pictórico, sus estados reales y la derrota cosmética sin retrasar retiro; enemigo/caja e interfaz siguen pendientes. Se distinguen Xiaomi provisional de 004, Web separado e iOS simulador/software, sin ampliar la aceptación a hardware o estabilidad sostenida. |
+| 2026-10-17 | T037 de 004, tras QA funcional T036: §8/§10 incorporan la corrección de legibilidad del soldado y encuadre local de Monte Calvo, conservando geometría, reglas y composición iPad. Enemigo, caja e interfaz siguen pendientes. |

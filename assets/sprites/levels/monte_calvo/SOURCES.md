@@ -16,7 +16,7 @@ el original producido, dentro del presupuesto de hasta 2048 por lado. El costo
 anterior es una estimación conservadora de ancho × alto × 4, no VRAM medida.
 La revisión de continuidad T005 detectó juntas al repetir 2 × 2; QA aprobó
 la hoja solo para uso único **sin repetición**, con la decisión autorizada
-por el orquestador. No se acredita tileabilidad. La composición T006 usa un
+por el orquestador. No se acredita tileabilidad. La composición original T006 usa un
 solo sprite opaco de 1920 × 1080 de mundo, filtro lineal local y repetición
 desactivada. El margen cubre el rectángulo PC 1152 × 648 y la extensión
 panorámica Android inferida de 1440 × 648 sin modificar coordenadas de juego.
@@ -99,12 +99,32 @@ solo lo cruza el frente decorativo bajo todos los actores al final del
 recorrido. El soldado inicial y=500 permanece separado del borde superior
 visible de la trinchera. El despliegue continúa sujeto a las reglas previas.
 
-Los 19 nodos de la escena permanecen juntos porque componen un solo entorno
+Los 22 nodos actuales de la escena permanecen juntos porque componen un solo entorno
 estático autorado, con capas y atlas compartido; separarlos en escenas por
 sprite añadiría archivos sin reutilización independiente. No existe lógica,
 input, física, navegación o animación en este subárbol. La lectura real con
 actores/pickups, picking y recorte pertenece a T012 y sus reportes; esta
 composición no acredita por sí sola esos resultados.
+
+## Cobertura izquierda — corrección I1 de 004
+
+T034 de `004-personajes-municion-monte-calvo` añade tres sprites estáticos a
+la composición original, aprobados funcionalmente en T036: el encuadre local
+del nivel expone mundo x<0 en pantallas anchas y requiere cubrir ese margen.
+La cámara pertenece al nivel, fuera de esta subescena; las trincheras, bordes
+y posiciones jugables conservan su composición.
+
+`TerrenoExtensionIzquierda` reutiliza la región `(0,0,256,1254)` de
+`terreno.png`, reflejada horizontalmente con la escala original, desde
+x≈-391,96 hasta x=0. `PanoramaExtensionIzquierda` reutiliza la región
+`(0,320,256,424)` de `montanas.png`, también reflejada horizontalmente con la
+escala original, desde x=-320 hasta x=0. `CieloExtensionIzquierda` prolonga
+el mismo `GradientTexture2D` entre x=-384 y x=0. Los filtros y recortes
+mantienen el uso de regiones sin repetición automática.
+
+Esta reutilización no añade PNG ni generación o edición de píxeles, no
+acredita tileabilidad y conserva el origen y las condiciones de uso del arte
+existente. No rediseña el terreno ni añade lógica al entorno decorativo.
 
 ## Prompts de generación
 

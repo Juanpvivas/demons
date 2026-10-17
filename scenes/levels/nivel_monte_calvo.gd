@@ -118,6 +118,9 @@ var _board_manager := BoardManager.new()
 ## propia, son utilidades de lógica que este nivel posee.
 var _wave_spawner := WaveSpawner.new()
 
+## Presentación local, separada de ocupación, economía y oleadas.
+var _combat_visual_effects := CombatVisualEffects.new()
+
 @onready var _tablero: TileMap = $Tablero
 
 ## T043 (FR-013): zona que el jugador defiende — si un `Enemigo` la alcanza
@@ -127,6 +130,9 @@ var _wave_spawner := WaveSpawner.new()
 
 
 func _ready() -> void:
+	add_child(_combat_visual_effects)
+	_combat_visual_effects.setup()
+
 	# El soldado colocado a mano en la escena (T027, setup mínimo del nivel
 	# para el Independent Test de US1) también debe contar como ocupante de
 	# su celda — de lo contrario un click sobre esa misma celda desplegaría
@@ -154,6 +160,7 @@ func _ready() -> void:
 		var soldado_inicial_tipado := soldado_inicial as Soldado
 		soldado_inicial_tipado.set_grid_cell(celda_inicial)
 		soldado_inicial_tipado.soldier_defeated.connect(_on_soldado_defeated)
+		_combat_visual_effects.register_actor(soldado_inicial_tipado)
 
 	# T042: arranca la secuencia de oleadas de este nivel. El `Enemigo`
 	# colocado a mano en la escena (T027, Independent Test de US1/US2) es
@@ -236,6 +243,7 @@ func _try_deploy_soldado(cell: Vector2i) -> void:
 	# inmediatamente después, sin intercalarlos.
 	nuevo_soldado.set_grid_cell(cell)
 	nuevo_soldado.soldier_defeated.connect(_on_soldado_defeated)
+	_combat_visual_effects.register_actor(nuevo_soldado)
 
 
 ## T043 (FR-013): un cuerpo entró en la `Area2D` "PosicionDefendida". Filtra

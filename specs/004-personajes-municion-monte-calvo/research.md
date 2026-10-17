@@ -1,6 +1,9 @@
 # Research: personajes y munición de Monte Calvo
 
-Investigación local, 2026-10-16; solo lectura, sin motor/pruebas/arte ejecutados.
+Decisiones locales de preparación inicial, 2026-10-16. I1 conserva su aprobación
+histórica sobre `87a39c6`; la corrección delimitada en T031 (§8) está aprobada
+funcionalmente en T036. Las descripciones
+de la línea base de las secciones 1–7 pertenecen a la preparación inicial.
 
 ## 1. Integración en escenas existentes
 
@@ -64,7 +67,11 @@ Diez ciclos y dos instancias deben discriminar el comportamiento.
 
 ## 6. Arte compartido de solo lectura
 
-**Decisión**: PNG RGBA/frames por dominio; atlas hasta 1024² por actor, caja 256².
+**Decisión**: PNG RGBA/frames por dominio; texturas importadas de ejecución hasta
+1024² por actor, caja 256². El soldado conserva el PNG original de 1774×887;
+la importación nativa limita su textura a 1024×512 y los recortes usan las
+coordenadas importadas, según su `SOURCES.md`. El límite no exige reducir el
+archivo original ni estimar la memoria de ejecución a partir de él.
 Lossless, borde alfa, sin mipmaps/repetición, filtro lineal local. Reusar frames
 de derrota. Máximo 8.25 MiB RGBA8 estimados, pendiente de memoria real.
 SOURCES recoge original, autor/herramienta/fuente, transformaciones, permisos/
@@ -100,3 +107,31 @@ potentes, ni umbral de carga nuevo.
 Skills consultadas: using-godot-prompter, 2d-essentials, assets-pipeline,
 animation-system, scene-organization, gdscript-patterns, godot-code-review,
 godot-testing y patrones de testing. No hizo falta investigación externa.
+
+## 8. Enmienda T031: tamaño, contraste y encuadre
+
+**Decisión**: reutilizar el atlas del soldado y ajustar solo su hijo
+visual a altura opaca neutra aproximada de 72 unidades, pie raíz+y24 y pivote
+estable ≤1. En CSS 794×305 exigir ≥32 CSS px opacos y reconocimiento sin overlay
+y en grises, con luz/contorno mate discreto mediante material compartido
+inmutable. Añadir visual_material al snapshot neutro y reset; conservar el estilo
+en la caída y limpiar referencias entre usos, sin copiar tintes/pulsos transitorios.
+
+Usar una cámara local sin zoom: mundo x=576 centrado (error ≤1 unidad lógica)
+y origen vertical efectivo y=0 después de resize. Conservar iPad 1152×864,
+equilibrar Xiaomi 1440×648 y Web aproximadamente 1684×648; ampliar únicamente
+cielo/panorama/suelo hacia la izquierda con sus texturas actuales.
+
+**Rationale**: el feedback identifica un soldado pequeño y confundido con suelo,
+y espacio desequilibrado en Xiaomi, mientras la composición de iPad resulta
+adecuada. Separar encaje visual y proyección conserva posiciones, física e input.
+
+**Alternativas descartadas**: regenerar el PNG como requisito, escalar colliders,
+mover trincheras/grid, aumentar zoom, añadir anillos/HUD o rediseñar terreno.
+Fijar camera.position.y=0 desplazaría el origen efectivo; limit_left=0 impediría
+el margen negativo que necesita un viewport ancho. Aplicar el contrato local,
+con las guías camera-system y 2d-essentials consultadas para esta enmienda.
+La corrección pasó QA documental T032 y su ciclo RED T033 → desarrollo T034 →
+GREEN/visual T035 → QA funcional T036. Su consolidación y entrega se siguen en
+las [tareas](tasks.md) y el PR, sin iniciar I2 ni rehacer evidencia histórica.
+La autoría documental no ejecuta motor o pruebas ni sustituye esos gates.

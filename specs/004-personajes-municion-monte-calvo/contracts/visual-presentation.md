@@ -1,13 +1,26 @@
 # Contrato: presentación observacional de Monte Calvo
 
-Diseño previsto; sin implementación o validación de entrega afirmadas.
+Contrato de diseño. I1 conserva su aprobación sobre `87a39c6`; la corrección de
+tamaño, contraste, material y encuadre delimitada en T031 está aprobada
+funcionalmente en T036. El contrato también delimita I2/I3, aún pendientes;
+las [tareas](../tasks.md) y el PR conservan el estado de consolidación y entrega.
 
 ## 1. Frontera protegida
 
 Raíces y transform jugable, grid 96×96, cuerpos 48×48, detector 144×240 offset (0, -144),
 melee 64×64 offset (0, -32), pickup CircleShape2D radio 20 y posiciones/spawn intactos.
-Sin cambios de capas, máscaras, velocidad, input, cámara, renderer, balance, prioridades,
-ocupación u oleadas. Ajustar escala/offset solo en el hijo visual.
+Sin cambios de capas, máscaras, velocidad, InputMap/semántica de input, renderer,
+balance, prioridades, ocupación u oleadas. Escala/offset/contraste del soldado
+solo en el hijo visual. T031 permite exclusivamente una cámara local sin zoom
+y cobertura decorativa izquierda de cielo/panorama/suelo con texturas existentes;
+no rediseñar terreno ni mover trincheras, actores o grid.
+
+La cámara proyecta mundo x=576 al ancho_viewport_lógico/2 con error ≤1 unidad,
+zoom (1,1), y conserva origen vertical efectivo del canvas y=0 al redimensionar.
+No fijar position.y=0 ni limit_left=0: el encuadre ancho necesita mundo x<0.
+Intervalos horizontales previstos: [0,1152] en iPad 1152×864, [-144,1296] en
+Xiaomi 1440×648 y aproximadamente [-266,1418] en Web 1684×648. Conservar la
+distribución del iPad y cubrir esos márgenes sin vacío o corte decorativo nuevo.
 Notificar hechos ya confirmados sin esperar. Daño, munición, moral y cooldowns
 conservan valores/orden. Ningún clip/callback llama take_damage, reload, add_ammo,
 free_cell, notify_enemy_defeated o métodos terminales.
@@ -40,8 +53,11 @@ Nueva señal observacional por actor:
 
 Campos por valor: world_position (Vector2), sprite_frames (SpriteFrames compartido
 solo lectura), defeat_animation (StringName), visual_scale/visual_offset (Vector2),
-flip_h/flip_v (bool), visual_z (int). Sin Node, objetivo, salud, moral, munición o
-callback jugable. Usar transform neutro autorado, sin tinte/pulso de impacto.
+flip_h/flip_v (bool), visual_z (int) y, por T031, visual_material (Material
+compartido inmutable o null). Sin Node, objetivo, salud, moral, munición o
+callback jugable. Usar transform y material de estilo neutros autorados,
+sin tinte/pulso de impacto o moral. Conservar el material en la caída, sin
+mutar parámetros compartidos para feedback de una instancia.
 No compartir diccionario mutable con otra activación.
 
 Tras salud cero, capturar snapshot y emitir evento visual una vez ANTES de las
@@ -66,22 +82,34 @@ que permanece en su posición capturada y no bloquea recolección/despliegue.
 
 prepare_for_spawn conserva stats/salud/posición y reset visual completo antes
 del primer frame de aparición. Release cancela tweens, colas/callbacks.
-Reset: frame, reproducción, escala, offset, tinte, flip, visibilidad y activación.
+Reset: frame, reproducción, escala, offset, tinte, flip, material, visibilidad
+y activación. El presentador restaura el material autorado; el efecto limpia
+el material del uso anterior antes de aplicar otro snapshot, incluido null.
 Hooks seguros también en preinstanciación. No modificar API genérica ObjectPool.
 Efecto adquirido reinicia activación; callback viejo no altera/libera una nueva.
 Probar diez ciclos y reacquire antes de terminar feedback anterior.
 
 ## 5. Arte, huella y procedencia
 
-Actor neutro 48×48, apoyo en base del collider, centro sin desplazar; pivote estable
-entre frames, sin salto mayor de 1 unidad salvo gesto intencional. En canvas 960×540,
+El collider de actor sigue en 48×48. Para T031, el soldado neutro tiene altura
+opaca objetivo aproximada de 72 unidades, sin contar lienzo transparente o
+contorno; escala/offset solo visuales, apoyo en raíz+(0,24) y pivote estable
+entre poses con error ≤1 unidad. Reutilizar el atlas existente, sin exigir
+regenerar el PNG. En CSS 794×305, altura opaca neutra ≥32 CSS px sin pulsos
+de moral/daño. Reconocer figura y arma sobre el suelo, sin overlays y también
+en grises. Usar luz/contorno mate discreto mediante material de estilo
+compartido inmutable; sin anillos, barras, halo de selección o HUD.
+El enemigo mantiene su encaje previsto hasta I2. En canvas 960×540,
 arma principal visible aproximadamente ≥ 8 px de largo/2 px de espesor; revisión
 manual sigue exigiendo reconocer fusil/machete sin tinte.
 Caja opaca/motivo dentro de 32×32 centrados, radio 20 intacto; sin aureola/etiqueta
 que prometa área interactiva extra. Bandos distintos por silueta/uniforme;
 caja por forma/cartuchos/contraste sobre suelo y junto a trincheras.
 
-Atlas actor ≤ 1024² por bando, caja ≤ 256²; alfa y regiones sin vecinos/halos.
+Textura importada de ejecución: atlas actor ≤ 1024² por bando, caja ≤ 256²;
+alfa y regiones sin vecinos/halos. El límite corresponde a la textura importada,
+no al PNG original conservado. Soldado: original 1774×887, textura importada
+1024×512; regiones de AtlasTexture en coordenadas de esta última.
 Compartir texturas/frames; lossless, borde alfa, sin mipmaps/repetición, lineal local.
 No hornear terreno/HUD. SOURCES para 100 % de recursos: original, origen/herramienta,
 transformaciones, condiciones de uso/atribución.
@@ -105,3 +133,7 @@ Quickstart define matriz y pasos: Web 1152×648/960×540 y móvil horizontal,
 apps Android/iOS separadas. No probado queda pendiente y bloquea su cierre.
 GUT verifica semántica/ciclo, no píxeles/tipo de textura. Arte se revisa
 visualmente. Simulador/editor no acreditan navegador/hardware físico.
+La corrección T031 añadió resize/encuadre y material neutro/reset al RED previo
+al cambio y verificó después tamaño opaco, contraste/grises, cobertura, gestos
+reales y regresión por entorno. QA T032 aprobó la enmienda y T036 su
+comportamiento; la consolidación y entrega se siguen en las tareas y el PR.

@@ -1,8 +1,13 @@
-# Quickstart — PREPARACIÓN de la validación de 004
+# Quickstart — validación de 004
 
-Guía futura para los roles del proyecto; **no acredita ejecución ni aceptación**.
+Procedimiento para los roles del proyecto; **no sustituye la ejecución ni QA**.
 Aplicar [spec](spec.md), [plan](plan.md), [modelo](data-model.md),
 [contrato](contracts/visual-presentation.md) y el flujo compartido.
+
+La corrección de legibilidad y encuadre (§7), delimitada en T031, está aprobada
+funcionalmente en T036 por sus propias verificaciones. I1 sobre `87a39c6`
+conserva su alcance histórico; I2/I3 siguen pendientes. Las [tareas](tasks.md)
+y el PR delimitan la consolidación y entrega.
 
 ## 1. Antes de implementar
 
@@ -82,8 +87,9 @@ Probar dos cajas solapadas sin cambiar su semántica ni sus formas físicas.
 La ejecución nativa PC complementa desarrollo. No acredita Web. Un simulador
 iOS solo acredita su propia comprobación; no hardware iOS ni rendimiento físico.
 Cada entorno ausente queda pendiente, sin pasar por extrapolación. Registrar
-recortes existentes separadamente de errores nuevos; no cambiar cámara/input
-para ocultarlos. Otras versiones/navegadores no heredan estos resultados.
+recortes existentes separadamente de errores nuevos. Solo T031 permite el
+ajuste de cámara/cobertura delimitado en §7; input y reglas permanecen protegidos.
+Otras versiones/navegadores no heredan estos resultados.
 
 ## 5. Partida y rendimiento antes/después
 
@@ -119,3 +125,34 @@ El PR en borrador resume comprobaciones y veredicto, enlazando CI cuando exista;
 no añade capturas, logs, JSON o informes nuevos de evidencias a Git.
 Pendientes de hardware, visuales, GREEN o QA siguen pendientes, sin cerrar la
 feature ni extrapolar las aprobaciones históricas de 002/003.
+
+## 7. Corrección I1 — procedimiento de validación
+
+1. QA T032 revisa la enmienda antes del RED T033. El tester comprueba resize:
+   cámara sin zoom, mundo x=576 al 50 % del ancho lógico (error ≤1 unidad),
+   origen vertical efectivo del canvas y=0. No confundir position.y=0 con ese
+   origen ni usar limit_left=0 para impedir mostrar mundo negativo.
+2. Comparar iPad 1152×864 (distribución conservada), Xiaomi 1440×648 y Web
+   aproximadamente 1684×648 (márgenes equilibrados), identificando dimensiones
+   lógicas y CSS reales. Cielo/panorama/suelo deben cubrir el nuevo margen
+   izquierdo reusando texturas; no mover trincheras, actores, grid o detectores.
+3. Revisar el soldado neutro: altura opaca objetivo aproximada de 72 unidades,
+   pie raíz+y24 y pivote entre poses ≤1 unidad. En CSS 794×305 medir ≥32 CSS px
+   de figura opaca, excluyendo lienzo transparente, contorno y pulsos. Comprobar
+   reconocimiento sobre suelo sin overlay y también en una vista temporal en
+   grises. Luz/contorno mate discreto, sin anillos/HUD; reutilizar el atlas.
+4. RED debe cubrir material de estilo compartido inmutable en snapshot neutro,
+   reset y diez activaciones, incluyendo un snapshot con material null después
+   de otro con material. La caída conserva el estilo; no captura tintes/pulsos
+   de daño o moral ni comparte estado mutable entre instancias. No fabricar RED
+   para píxeles o recortes de archivos; la lectura artística es revisión visual.
+5. Tras desarrollo T034, T035 confirma GREEN y regresión, los cuatro gestos de
+   economía por entrada real tras el cambio de proyección, estados/derrota del
+   soldado, cobertura y legibilidad; compara rendimiento por entorno (§5).
+   Las verificaciones pertinentes incluyen Android físico y Web separados;
+   iOS identifica simulador/software sin extrapolar hardware ni Mobile.
+6. QA funcional T036, consolidación T037 y QA final T038 preceden a la entrega
+   corregida. La corrección tiene aprobación funcional T036; el estado de
+   consolidación y entrega figura en las tareas y el PR. Conservar T001–T013
+   como historia sobre `87a39c6`; resultados nuevos al PR, temporales o CI,
+   sin archivos de evidencias nuevos en Git ni inicio de I2/I3.
