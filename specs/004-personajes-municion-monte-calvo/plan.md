@@ -1,13 +1,12 @@
 # Implementation Plan: Personajes y munición de Monte Calvo
 
 **Feature ID**: `004-personajes-municion-monte-calvo`  
-**Planned Branch**: pendiente del orquestador; una rama por incremento.  
+**Execution Branch**: `codex/004-i1-soldado`; una rama por incremento.
 **Date**: 2026-10-16 | **Spec**: [spec.md](spec.md)
 
-Preparación documental revisada, incluidas las [tareas](tasks.md); implementación
-pendiente. No acredita pruebas ejecutadas, arte generado o entrega aprobada.
-El setup de Spec Kit resolvió 004; su campo BRANCH es identificador de feature.
-La rama Git observada fue `codex/003-web-itchio`; no se cambia aquí.
+La preparación inicial se ejecutó en I1, aprobado sobre `87a39c6`. La enmienda
+T031 de legibilidad/encuadre es preparatoria, pendiente de QA T032 y ejecución;
+no acredita el arreglo. I2/I3 siguen pendientes en las [tareas](tasks.md).
 
 ## Summary
 
@@ -23,7 +22,8 @@ del nivel. La animación nunca aplica daño ni decide recursos o resultados.
 templates coincidentes. Sin actualización de motor o dependencias.
 
 **Primary Dependencies**: AnimatedSprite2D, SpriteFrames, AtlasTexture, Tween,
-ObjectPool y GUT 9.7.1 existentes; sin addons/autoloads/AnimationTree nuevos.
+ObjectPool y GUT 9.7.1 existentes; cámara local Camera2D para T031 y material de
+estilo compartido inmutable; sin addons/autoloads/AnimationTree nuevos.
 
 **Storage**: PNG RGBA originales, importación, SpriteFrames.tres y procedencia;
 estado visual efímero por instancia, sin esquemas de stats o persistencia nuevos.
@@ -32,7 +32,8 @@ estado visual efímero por instancia, sin esquemas de stats o persistencia nuevo
 input real, smoke y medición. Runner existente `tools/ci/run_gut.py`.
 
 **Target Platform**: Web escritorio/móvil y apps Android/iOS, separadamente.
-PC nativo solo desarrollo/pruebas. Renderer/presets/input/cámara intactos.
+PC nativo solo desarrollo/pruebas. Renderer/presets/InputMap y semántica de input
+intactos; cámara local acotada a la corrección T031, sin zoom.
 
 **Project Type**: juego 2D Godot.
 
@@ -40,14 +41,27 @@ PC nativo solo desarrollo/pruebas. Renderer/presets/input/cámara intactos.
 2021, referencia provisional exclusiva de 004 (constitución 2.2.0), y medición
 Web separada; carga fría/caliente, frame times y memoria frente a baseline.
 
-**Constraints**: actores 48×48, caja 32×32/collider radio 20 y física intactos.
+**Constraints**: cuerpos de actores 48×48, grid 96×96, detectores y caja
+32×32/collider radio 20 intactos. El soldado cambia solo en su hijo visual:
+altura opaca neutra objetivo aproximada de 72 unidades, pie raíz+y24 y pivote
+estable ≤1 unidad; al menos 32 CSS px opacos en CSS 794×305, reconocible sin
+overlay y en grises con luz/contorno mate discreto, sin anillos o HUD.
+Reutilizar atlas, sin exigir regeneración del PNG. Conservar material autorado
+inmutable en snapshot neutro y reset, sin tintes/pulsos transitorios filtrados.
+Camera2D sin zoom centra mundo x=576 al 50 % del viewport lógico (error ≤1),
+con origen vertical efectivo del canvas y=0. No imponer position.y=0 ni
+limit_left=0: el margen izquierdo muestra mundo negativo en pantallas anchas.
+Conservar la composición iPad 1152×864; equilibrar Xiaomi 1440×648 y Web
+aproximadamente 1684×648 extendiendo solo cielo/panorama/suelo decorativos a la
+izquierda con texturas existentes. No mover trincheras, actores o grid.
 Texturas importadas de ejecución hasta 1024² por actor y caja hasta 256²:
 máximo 8.25 MiB RGBA8 estimados, sin equivaler a VRAM real. El PNG original del
 soldado conserva 1774×887; su importación limita la textura a 1024×512 y los
 recortes usan esas coordenadas. Compartir frames de derrota con el efecto.
 
 **Scale/Scope**: un diseño por bando, dos modos del soldado, una caja, dos
-presentadores y un pool visual mínimo; sin HUD, audio, proyectiles o terreno.
+presentadores y un pool visual mínimo; sin HUD, audio, proyectiles o rediseño
+del terreno. T031 autoriza solo el ajuste de cámara y cobertura descritos arriba.
 
 ## Constitution Check
 
@@ -126,5 +140,8 @@ con QA o justificar indivisibilidad, nunca dividir un ciclo RED/GREEN.
 
 Sin violaciones: el pool visual evita cadáveres físicos y crear/destruir efectos.
 Sin nueva FSM jugable, bus global, stats o controles. Las [tareas](tasks.md) y
-su análisis documental están revisados. La preparación queda lista para entregar
-al orquestador; no inicia la ejecución.
+su análisis inicial conservan su historia. La excepción acotada T031 responde
+al nuevo feedback sin ampliar gameplay: QA documental T032 → RED T033 → desarrollo
+T034 → GREEN/visual T035 → QA funcional T036 → documentación T037 → QA final T038.
+Todos esos gates de la corrección están pendientes; la aprobación anterior de
+I1 no los sustituye. No se inicia I2 ni se declara corregido el producto.

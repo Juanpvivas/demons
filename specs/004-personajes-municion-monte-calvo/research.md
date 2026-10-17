@@ -1,6 +1,9 @@
 # Research: personajes y munición de Monte Calvo
 
-Investigación local, 2026-10-16; solo lectura, sin motor/pruebas/arte ejecutados.
+Decisiones locales de preparación inicial, 2026-10-16. I1 conserva su aprobación
+histórica sobre `87a39c6`; la enmienda T031 (§8) es preparatoria y pendiente de
+QA T032, sin afirmar que el nuevo feedback esté corregido. Las descripciones
+de la línea base de las secciones 1–7 pertenecen a la preparación inicial.
 
 ## 1. Integración en escenas existentes
 
@@ -104,3 +107,30 @@ potentes, ni umbral de carga nuevo.
 Skills consultadas: using-godot-prompter, 2d-essentials, assets-pipeline,
 animation-system, scene-organization, gdscript-patterns, godot-code-review,
 godot-testing y patrones de testing. No hizo falta investigación externa.
+
+## 8. Enmienda T031: tamaño, contraste y encuadre — pendiente de QA
+
+**Decisión propuesta**: reutilizar el atlas del soldado y ajustar solo su hijo
+visual a altura opaca neutra aproximada de 72 unidades, pie raíz+y24 y pivote
+estable ≤1. En CSS 794×305 exigir ≥32 CSS px opacos y reconocimiento sin overlay
+y en grises, con luz/contorno mate discreto mediante material compartido
+inmutable. Añadir visual_material al snapshot neutro y reset; conservar el estilo
+en la caída y limpiar referencias entre usos, sin copiar tintes/pulsos transitorios.
+
+Usar una cámara local sin zoom: mundo x=576 centrado (error ≤1 unidad lógica)
+y origen vertical efectivo y=0 después de resize. Conservar iPad 1152×864,
+equilibrar Xiaomi 1440×648 y Web aproximadamente 1684×648; ampliar únicamente
+cielo/panorama/suelo hacia la izquierda con sus texturas actuales.
+
+**Rationale**: el feedback identifica un soldado pequeño y confundido con suelo,
+y espacio desequilibrado en Xiaomi, mientras la composición de iPad resulta
+adecuada. Separar encaje visual y proyección conserva posiciones, física e input.
+
+**Alternativas descartadas**: regenerar el PNG como requisito, escalar colliders,
+mover trincheras/grid, aumentar zoom, añadir anillos/HUD o rediseñar terreno.
+Fijar camera.position.y=0 desplazaría el origen efectivo; limit_left=0 impediría
+el margen negativo que necesita un viewport ancho. Aplicar el contrato local,
+con las guías camera-system y 2d-essentials consultadas para esta enmienda.
+T032 → RED T033 → desarrollo T034 → GREEN/visual T035 → QA T036 → consolidación
+T037 → QA T038 son gates nuevos pendientes, sin iniciar I2 ni rehacer evidencia
+histórica. No se ejecutaron motor ni pruebas para esta autoría documental.

@@ -2,11 +2,12 @@
 
 **Feature ID**: `004-personajes-municion-monte-calvo`
 
-**Planned Branch**: Pendiente del orquestador; una rama por incremento.
+**Execution Branch**: `codex/004-i1-soldado`; una rama por incremento.
 
 **Created**: 2026-10-16
 
-**Status**: Preparación revisada; implementación pendiente, sin arte generado ni entrega aprobada.
+**Status**: I1 aprobado sobre `87a39c6`; enmienda T031 de legibilidad y encuadre
+en preparación, pendiente de QA T032 e implementación. I2/I3 siguen pendientes.
 
 **Input**: «Entonces preparemos con Spec Kit la siguiente feature de personajes
 y munición de Monte Calvo, siguiendo el flujo que ya tengo definido».
@@ -16,6 +17,11 @@ reemplaza las formas provisionales del soldado colombiano base, del enemigo
 base y de la munición recolectable por personajes y cajas con el estilo
 pictórico del escenario. Incorpora poses y animaciones visuales básicas para
 comunicar las acciones que ya ocurren. No amplía el roster ni cambia las reglas.
+
+**Enmienda T031**: el feedback posterior a I1 pide un soldado más visible sobre
+el suelo y márgenes equilibrados en Xiaomi, conservando la composición de iPad.
+Los criterios siguientes preparan esa corrección; no afirman que esté resuelta
+ni sustituyen las aprobaciones históricas de T001–T013.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -132,8 +138,15 @@ repetir con reserva suficiente y una celda libre bajo la caja.
 - Varias cajas pueden solaparse: se conserva la regla existente de recolección
   y sus áreas, sin resolver el solapamiento mediante cambios de economía/input.
 - El escalado de pantalla no debe ocultar las armas, confundir los bandos o
-  desplazar la imagen respecto de la zona de interacción. Los recortes que ya
-  pertenecen al encuadre actual se registran sin rediseñar cámara o tablero.
+  desplazar el apoyo respecto de la posición jugable. Un viewport ancho centra
+  el eje del combate sin aumentar el zoom ni dejar vacío el margen izquierdo;
+  los recortes ajenos a esta corrección se registran sin rediseñar el tablero.
+- Al redimensionar, el origen vertical efectivo del canvas sigue en y=0;
+  centrar una cámara no significa fijar su posición y=0. Mostrar mundo x<0 en
+  pantallas anchas es necesario; un límite izquierdo en cero no debe impedirlo.
+- La mejora mate de contraste se conserva en la caída mediante un material de
+  estilo compartido e inmutable. Daño/moral no contaminan ese material ni el
+  snapshot neutro, y un efecto reciclado no retiene el material de otro uso.
 - Si falta un recurso visual o no se puede verificar un entorno, se registra
   como fallo o pendiente; no se acepta un placeholder silencioso como arte final.
 
@@ -178,7 +191,11 @@ repetir con reserva suficiente y una celda libre bajo la caja.
   de victoria/derrota. La imagen visual no desplaza las posiciones jugables.
 - **FR-010**: La presentación DEBE conservar legibilidad y correspondencia con
   la interacción en los tamaños de la matriz de aceptación, en Web de escritorio
-  y móvil, Android e iOS nativos. Cada resultado identifica su entorno real;
+  y móvil, Android e iOS nativos. El soldado DEBE ser reconocible sobre el suelo
+  sin overlays y también en grises, con luz/contorno mate discreto. El encuadre
+  DEBE centrar horizontalmente el combate en pantallas anchas, conservar el origen
+  vertical efectivo y la composición de iPad, sin mover las posiciones jugables.
+  Cada resultado identifica su entorno real;
   una ejecución nativa local o un simulador no acredita navegador ni hardware
   físico de otra plataforma.
 - **FR-011**: Cada recurso artístico nuevo DEBE tener procedencia y permisos
@@ -189,8 +206,12 @@ repetir con reserva suficiente y una celda libre bajo la caja.
 - **FR-012**: Quedan fuera HUD, retratos, barras de salud/munición/moral,
   selección o casillas nuevas, controles de recarga, pantallas terminales,
   audio, nuevos proyectiles, explosiones, partículas ambientales, carteles,
-  banderas y cambios del terreno. No se cambian input, tablero, cámara, renderer,
-  exportaciones, distribución ni publicación del juego.
+  banderas y rediseño del terreno. La excepción T031 permite exclusivamente
+  ajustar escala/offset y contraste mate del hijo visual del soldado, una cámara
+  local sin zoom para equilibrar el encuadre y extender a la izquierda la
+  cobertura decorativa de cielo/panorama/suelo con sus texturas existentes.
+  Trincheras, actores y grid conservan sus posiciones. No se cambian InputMap,
+  semántica de input, tablero, renderer, exportaciones, distribución ni publicación.
 
 ### Key Entities
 
@@ -227,8 +248,16 @@ repetir con reserva suficiente y una celda libre bajo la caja.
   confirma cero cambios de datos de balance y de las invariantes de FR-009.
 - **SC-005**: En al menos dos tamaños de escritorio y un tamaño móvil
   horizontal de la matriz se distinguen soldado, enemigo, sus armas y la caja;
-  al cambiar de tamaño conservan su alineación jugable. Web y apps nativas
-  tienen resultados separados, incluidos sus pendientes y límites.
+  al cambiar de tamaño conservan su alineación jugable. Para la corrección I1,
+  el soldado neutro tiene altura opaca objetivo aproximada de 72 unidades,
+  anclaje en raíz+y24 y pivote estable con error ≤1 unidad; en CSS 794×305 su
+  silueta neutra mide al menos 32 CSS px de alto, sin contar transparencia,
+  contorno o pulsos. Se reconoce sobre el suelo sin overlay y también en grises.
+  El eje mundo x=576 se proyecta al 50 % del ancho del viewport lógico con error
+  ≤1 unidad y el origen vertical efectivo del canvas permanece en y=0, sin zoom.
+  Se conserva la distribución iPad 1152×864 y se equilibran márgenes en Xiaomi
+  1440×648 y Web aproximadamente 1684×648, sin vacíos decorativos a la izquierda.
+  Web y apps nativas tienen resultados separados, incluidos pendientes y límites.
 - **SC-006**: Una partida manual completa hasta un resultado terminal no
   presenta errores críticos, actores ausentes por reciclado, bloqueos por
   animación ni cambios de reglas. Victoria y derrota se verifican además por
@@ -250,9 +279,11 @@ repetir con reserva suficiente y una celda libre bajo la caja.
 
 ## Assumptions
 
-- Esta solicitud autoriza preparar la feature con Spec Kit. No inicia la
-  generación de arte, implementación, pruebas, cambios de rama, Issue o PR.
-  Los documentos se entregan al orquestador cuando termine la preparación.
+- La solicitud inicial autorizó la preparación con Spec Kit; la ejecución de
+  I1 se autorizó después y conserva su aprobación histórica sobre `87a39c6`.
+  T031 es autoría preparatoria para el nuevo feedback, pendiente de QA T032 y
+  del ciclo RED → desarrollo → GREEN/visual → QA → consolidación → QA final.
+  No declara implementada la corrección ni inicia I2/I3.
 - Se conserva la versión integrada de 001, 002 y 003 como línea base; el
   concepto aporta la dirección artística y los valores reales del juego
   prevalecen sobre números, barras, distribución y botones ilustrados.
@@ -279,3 +310,6 @@ repetir con reserva suficiente y una celda libre bajo la caja.
   tester RED → desarrollo → tester GREEN → QA, con regresión jugable pertinente.
   El arte sin lógica nueva no necesita fallos artificiales. Solo el orquestador
   marcará tareas aprobadas después de QA.
+- La corrección I1 reutiliza el atlas existente; no exige regenerar el PNG.
+  Aumenta solo la representación visual y su contraste, sin cambiar cuerpos
+  48×48, grid 96×96, detectores, radio de picking 20 o invariantes de FR-009.

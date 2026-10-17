@@ -4,6 +4,10 @@ Diseño previsto; no declara clases implementadas, arte producido o pruebas
 ejecutadas. Complementa [plan](plan.md) y [contrato visual](contracts/visual-presentation.md).
 Los nombres de estados siguientes son conceptuales, no nuevas APIs públicas.
 
+Enmienda T031 preparatoria, pendiente de QA T032: I1 conserva su aprobación
+histórica sobre `87a39c6`; tamaño, contraste, material y encuadre revisados aquí
+no se declaran implementados ni aprobados. I2/I3 siguen pendientes.
+
 ## Límite con los datos jugables
 
 `UnitStats`, `EnemyStats`, las oleadas y el estado mutable de cada actor siguen
@@ -20,12 +24,19 @@ Las duraciones de clips son tiempos cosméticos, nunca cadencias de combate.
 El tamaño de los cuerpos no impone el tamaño del lienzo del arte. Su encaje
 visual se ajusta por separado, conservando el punto de apoyo y la correspondencia
 con las zonas de interacción. No se modifican los detectores de combate.
+T031 fija para el soldado una altura opaca neutra objetivo aproximada de 72
+unidades y pie raíz+y24, con pivote estable ≤1 unidad. En CSS 794×305, la figura
+neutra debe alcanzar ≥32 CSS px opacos, sin contar contorno/transparencia/pulsos,
+y distinguirse del suelo sin overlays y también en grises.
 
 ## 1. Recurso artístico compartido
 
 Un diseño base por bando y una caja; hojas/imágenes con transparencia, sus
 recortes y secuencias de fotogramas constituyen datos visuales compartidos de
 solo lectura. El progreso de reproducción pertenece a cada instancia.
+El material de estilo mate puede compartirse como recurso inmutable; no
+contiene estado de daño/moral. Su referencia autorada pertenece a la base de
+restauración visual, mientras tinte, pulso y reproducción son por instancia.
 
 | Actor | Cobertura mínima |
 |---|---|
@@ -75,7 +86,8 @@ La pose de contacto no calcula, aplica ni promete un ataque independiente.
 Antes del evento que puede liberar o reciclar al actor, la señal observacional
 `defeat_visual_requested(snapshot: Dictionary)` entrega una copia por valor de
 `world_position`, `sprite_frames`, `defeat_animation`, `visual_scale`,
-`visual_offset`, `flip_h`, `flip_v` y `visual_z`, según el contrato. Usa valores
+`visual_offset`, `flip_h`, `flip_v`, `visual_z` y, por T031, `visual_material`
+(`Material` compartido inmutable o null), según el contrato. Usa valores
 neutros autorados, sin pulso o tinte de impacto. Los datos mutables se copian;
 los recursos de arte inmutables pueden compartirse. No retiene una referencia
 al actor, su salud, modo o siguiente aparición ni callbacks de gameplay.
@@ -95,13 +107,25 @@ liberación de celda, victoria/derrota o devolución del enemigo al pool.
 | Daño/acción | Reproducir solo el feedback del hecho confirmado para esa generación |
 | Derrota | Capturar snapshot antes de liberar, solicitar un efecto y cancelar la presentación viva |
 | Release/inactividad | Invalidar callbacks; detener clips/tweens; borrar colas y ocultar |
-| Reutilización | Reiniciar frame/progreso, flip, offset, escala y tinte; observar el nuevo estado real |
+| Reutilización | Reiniciar frame/progreso, flip, offset, escala, tinte y material; observar el nuevo estado real |
 | Fin del efecto | Devolver únicamente esa instancia/generación al pool de efectos |
 
 Los valores base de restauración pertenecen a cada escena/presenter; no se
 reemplaza indiscriminadamente la escala artística por un valor que la desajuste.
 Una generación obsoleta no puede modificar ni liberar una instancia reutilizada.
 El reseteo debe ser seguro también para una instancia nueva aún nunca usada.
+El presentador restaura el material de estilo autorado; el efecto limpia la
+referencia anterior antes de configurar el nuevo snapshot, incluso si es null.
+La caída conserva ese estilo sin capturar pulsos/tintes de impacto o moral.
+
+## 5. Encuadre local y cobertura decorativa — T031 pendiente
+
+La cámara sin zoom adapta solo la proyección: mundo x=576 al 50 % del viewport
+lógico con error ≤1 unidad y origen vertical efectivo del canvas y=0. El mundo
+jugable no se mueve. iPad 1152×864 conserva distribución; Xiaomi 1440×648 y Web
+aproximadamente 1684×648 muestran márgenes equilibrados, incluidos valores x<0.
+Solo cielo/panorama/suelo extienden cobertura a la izquierda con texturas
+existentes; trincheras y grid conservan geometría y posición.
 
 No se añaden campos de gameplay, guardado, servicios externos o autoloads.
 Las formas exactas de comunicación se fijan en el contrato; todo comportamiento
