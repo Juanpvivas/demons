@@ -1,15 +1,17 @@
 # Tasks: Personajes y munición de Monte Calvo
 
-**Estado**: I1 aprobado (T001–T013); I2/I3 pendientes.
+**Estado**: I1 inicial aprobado en `87a39c6`; corrección UX T031–T038 en preparación. I2/I3 pendientes.
 **Issue**: [#18](https://github.com/Juanpvivas/demons/issues/18).
-**Incremento de esta entrega**: I1, T001–T013; soldado y presentación visual compartida.
+**Incremento de esta entrega**: corrección de legibilidad y encuadre de I1 en el [PR #20 en borrador](https://github.com/Juanpvivas/demons/pull/20), sin iniciar I2.
 **Execution Branch**: `codex/004-i1-soldado`, desde `main` en `990be90`.
 **Base del PR funcional**: `codex/004-preparacion`, [PR #19 en borrador](https://github.com/Juanpvivas/demons/pull/19);
 la rama de ejecución conserva su historial y no cambia durante el ciclo.
 El Xiaomi 11T Pro físico `2107113SG` es la referencia provisional exclusiva
-de 004 por decisión de la persona, según la constitución 2.2.0. Los gates
-funcionales de I1 están aprobados; iOS acredita el simulador identificado,
-con sus límites. Los incrementos posteriores conservan sus verificaciones propias.
+de 004 por decisión de la persona, según la constitución 2.2.0. Las aprobaciones
+de T001–T013 corresponden a `87a39c6` y conservan su evidencia histórica. La
+corrección solicitada por la persona requiere sus propios gates antes de actualizar
+la entrega; iOS sigue distinguiendo simulador y hardware. Los incrementos
+posteriores conservan sus verificaciones propias.
 **Input**: [spec](spec.md), [plan](plan.md), [research](research.md),
 [modelo](data-model.md), [contrato](contracts/visual-presentation.md) y
 [quickstart](quickstart.md).
@@ -62,6 +64,30 @@ recarga por ruta existente, sin incorporar controles.
 - [X] T012 [US1] docs-writer: documentar únicamente el soldado/servicio aprobados en `docs/SPEC.md` y, si corresponde graduar un patrón, `docs/ARCHITECTURE.md`; conservar enemigo, caja y otros pendientes. Preparar resumen útil para PR sin registros de verificación versionados; depende de T011 aprobado.
 - [X] T013 [US1] qa-validator: revisar documentación T012 y diff final de `docs/SPEC.md`, `docs/ARCHITECTURE.md` y archivos I1, confirmando vigencia de GREEN/visual/rendimiento. Tras APROBADO, project-orchestrator publica la rama y crea PR en borrador con `Refs` al Issue y trazabilidad RED/GREEN; depende de T012, sin promoverlo ni fusionarlo.
 
+## Corrección de I1 tras revisión de la persona: legibilidad y encuadre
+
+**Origen**: la persona reporta un soldado demasiado pequeño y confundido con el
+suelo, y composición descentrada con exceso de espacio a la derecha en Xiaomi;
+la distribución del iPad debe conservarse. Es una corrección del PR #20, no I2.
+Las casillas históricas T001–T013 no acreditan la corrección todavía pendiente.
+
+**Alcance**: ampliar únicamente la presentación del soldado y su separación
+visual del entorno; centrar horizontalmente el encuadre y cubrir sus márgenes
+con decorado existente. Conservar posiciones jugables, grid, cuerpos/detectores,
+economía, InputMap, semántica de interacción, oleadas y composición vertical del
+iPad. La enmienda documental delimita las excepciones a cámara/huella visual.
+
+- [X] T031 docs-writer: redactar la enmienda preparatoria de `spec.md`, `plan.md`, `research.md`, `data-model.md`, `contracts/visual-presentation.md` y `quickstart.md` para legibilidad/localización del soldado, escala visual aproximada de 72 frente a cuerpo 48, estilo mate y preservación de material autorado en snapshot/reset, encuadre horizontal y cobertura decorativa, sin ampliar las reglas jugables. Conservar los resultados históricos como baseline, sin presentar la corrección como implementada; depende de T013 y de la observación de la persona.
+- [X] T032 qa-validator: revisar coherencia de la enmienda T031 y este bloque antes de implementar. Confirmar límites, criterios observables, matriz afectada y separación entre ajuste artístico y comportamiento que requiere RED; no aprobar código nuevo ni marcar tareas; depende de T031.
+- [ ] T033 godot-tester: escribir y ejecutar RED semántico para eje mundo 576 centrado con distintos aspectos y resize, origen vertical efectivo del canvas en 0, cobertura de fondo y correspondencia pantalla/mundo con recogida/despliegue reales. Cubrir material autorado neutro en snapshot y limpieza al reutilizar efectos si se integra ese estilo, sin referencias al actor ni progreso compartido. No fabricar RED de color/archivos y no alterar evidencia histórica; depende de T032.
+- [ ] T034 dev-godot: corregir presentación del soldado mediante escala/offset y contraste mate sobre los recursos existentes; mantener pies y collider, feedback y derrota coherentes. Implementar encuadre local sin zoom y cobertura decorativa que elimine el margen asimétrico, con reset/snapshot de estilo inmutable cuando aplique. Sin mover trincheras, actores o grid, ni escribir/ejecutar pruebas; depende de T033 y su revisión RED por QA.
+- [ ] T035 godot-tester: confirmar GREEN de T033 y regresión pertinente de presentación, efectos, nivel y routing. Verificar inicial/desplegado, fusil/machete, daño/moral y derrota en tamaño de juego sin overlays, contraste también en grises, pies/huellas y márgenes equilibrados en Xiaomi nativo/Web, escritorio e iPad Simulator. Corroborar cuatro resultados de economía bajo el nuevo canvas, resize y cobertura, y mediciones base/candidato pertinentes sobre el estado corregido; reutilizar solo evidencia no invalidada, sin extrapolar versiones ni entornos. Depende de T034.
+- [ ] T036 qa-validator: validar la corrección de I1 contra la enmienda, RED/GREEN, arte/contraste, geometría efectiva, entrada y mediciones afectadas; comprobar que mantiene la composición iPad y reglas protegidas. Emitir veredicto independiente, sin modificar checkout; depende de T035.
+- [ ] T037 docs-writer: consolidar únicamente la corrección aprobada en `docs/SPEC.md`, `docs/ARCHITECTURE.md` y procedencia/transformaciones de `SOURCES.md` cuando corresponda, conservando I2/I3 e interfaz pendientes. Entregar resumen para actualizar el PR #20, sin versionar registros nuevos; depende de T036 aprobado.
+- [ ] T038 qa-validator: revisar documentación y diff final de la corrección y vigencia de sus verificaciones. Tras APROBADO, project-orchestrator marca sus tareas y actualiza el PR #20 en borrador con Refs al Issue #18, límites y trazabilidad de la corrección, sin promover ni fusionar; depende de T037.
+
+I2 permanece pendiente y comienza después del cierre T038 de esta revisión.
+
 ## Fase 4: I2 / US2 — Enemigo, contacto y reutilización (P1)
 
 **Objetivo independiente**: enemigo pictórico que comunica movimiento real,
@@ -69,8 +95,8 @@ contacto, daño y derrota sin alterar su combate; reutiliza el servicio de I1.
 **Prueba independiente**: cinco escenarios US2, diez ciclos y dos instancias;
 la caja puede continuar provisional. I2 depende de I1 aprobado.
 
-- [ ] T014 [US2] dev-godot: producir diseño/avance/contacto/derrota con la skill de imagen aplicable en `assets/sprites/enemies/monte_calvo/enemigo_atlas.png`, `enemigo_frames.tres` y `SOURCES.md`; respetar paleta, silueta, huella, importación y procedencia del contrato, sin RED de archivos/estética; depende de T013.
-- [ ] T015 [US2] godot-tester: escribir y ejecutar RED en `tests/unit/enemies/test_enemigo_visual.gd` y ampliar `tests/unit/systems/test_combat_visual_effects.gd`: desplazamiento real tras física frente a enemigo bloqueado por Soldado real, daño/contacto sin ataques ficticios, snapshot antes del release síncrono, diez reusos, dos instancias y callbacks stale tras reacquire. Conservar drop/baja/orden aun sin listener; depende de T003 y T013, no de T017.
+- [ ] T014 [US2] dev-godot: producir diseño/avance/contacto/derrota con la skill de imagen aplicable en `assets/sprites/enemies/monte_calvo/enemigo_atlas.png`, `enemigo_frames.tres` y `SOURCES.md`; respetar paleta, silueta, huella, importación y procedencia del contrato, sin RED de archivos/estética; depende de T013 y T038.
+- [ ] T015 [US2] godot-tester: escribir y ejecutar RED en `tests/unit/enemies/test_enemigo_visual.gd` y ampliar `tests/unit/systems/test_combat_visual_effects.gd`: desplazamiento real tras física frente a enemigo bloqueado por Soldado real, daño/contacto sin ataques ficticios, snapshot antes del release síncrono, diez reusos, dos instancias y callbacks stale tras reacquire. Conservar drop/baja/orden aun sin listener; depende de T003, T013 y T038, no de T017.
 - [ ] T016 [US2] qa-validator: revisar RED y cobertura de `tests/unit/enemies/test_enemigo_visual.gd` y `tests/unit/systems/test_combat_visual_effects.gd`; exigir fallo semántico y bloqueo físico real, no asumir que velocidad deseada implica avance. Aprobar solo pruebas RED; depende de T015.
 - [ ] T017 [US2] dev-godot: implementar en `scenes/enemies/EnemigoBase.tscn`, `enemigo.gd`, `enemigo_visual.gd` y `scenes/levels/wave_spawner.gd` el avance/contacto observado, impacto, snapshot previo y reset total por generación; registrar una vez cada instancia física creada con el servicio I1, sin cambiar `core/object_pool.gd` ni el orden jugable. Sin pruebas; depende de T014 y T016.
 - [ ] T018 [US2] godot-tester: confirmar GREEN de T015 y regresión I1/enemigo/spawner/oleadas en `tests/unit/enemies/`, `tests/unit/units/`, `tests/unit/levels/test_wave_spawner.gd` y `tests/unit/systems/test_combat_visual_effects.gd`; comprobar diez ciclos y aislamiento tras reutilización antes de terminar feedback; depende de T017.
@@ -100,7 +126,7 @@ con clic/toque, conservando radio 20 y la precedencia recoger/desplegar.
 
 ## Dependencias y oportunidades de paralelismo
 
-La cadena de entrega es **T001 → T002 → T003 → I1 → I2 → I3 → T030**.
+La cadena de entrega es **T001 → T002 → T003 → I1 → corrección UX (T031–T038) → I2 → I3 → T030**.
 Dentro de I1: T004 y T005/T006 parten de T003; T007 valida RED; T008 reúne
 arte y RED aprobado; T009 → T010 → T011 → T012 → T013 cierra el incremento.
 I2 sigue T014/T015 → T016 → T017 → T018 → T019 → T020 → T021 → T022.
