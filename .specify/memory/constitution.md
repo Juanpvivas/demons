@@ -1,26 +1,34 @@
 <!--
 Sync Impact Report
-- Version change: 2.0.0 + 1.2.0 → 2.1.0 (MINOR sobre 2.0.0).
-- Motivo: integrar las dos decisiones humanas ya aprobadas, sin sustituir una
-  por la otra: Web para itch.io y apps Android/iOS (2026-10-15, enmienda 2.0.0),
-  y Xiaomi 11T Pro 2107113SG de 2021 como referencia provisional exclusiva de
-  002 (2026-10-16, enmienda 1.2.0 integrada en main con PR #16).
+- Version change: 2.1.0 → 2.2.0 (MINOR).
+- Motivo: ante la consulta sobre el hardware de referencia para rendimiento
+  de 004, la persona respondió «Utiliza el xiaomi» (2026-10-16). Se admite el
+  Xiaomi 11T Pro físico 2107113SG de 2021 como referencia provisional exclusiva
+  de 004, por autorización propia; no por herencia de la excepción de 002.
+- Se conserva la integración 2.1.0 de las decisiones previas: Web para itch.io
+  y apps Android/iOS (2026-10-15, enmienda 2.0.0) y Xiaomi provisional exclusivo
+  de 002 (2026-10-16, enmienda 1.2.0 integrada en main con PR #16).
 - Se conservan I/III y las restricciones de 2.0.0: GDScript compartido,
   Web + Android + iOS; PC nativo queda para desarrollo/pruebas. La excepción
   previa C#/.NET no vuelve a habilitarse.
-- Se integra en IV la excepción 1.2.0 como ampliación de la guía de 2.0.0.
+- Se amplía IV con la excepción de 004 y se conserva intacta la de 002.
   No se modifica el objetivo de 60 FPS estables ni la referencia nominal
   global de gama media Android de los últimos ~3 años. La excepción no
-  acredita 003/Web, iOS, otros teléfonos ni rendimiento emulado.
+  acredita resultados de 004: exige nuevas mediciones y QA independiente.
+  No acredita 003/Web, iOS, otros teléfonos ni rendimiento emulado; medir
+  nativo y navegador por separado también al usar el mismo Xiaomi.
 - La aprobación nativa de 002 y sus límites se conservan en su matriz e informe
   de rendimiento. La aceptación Web de 003 sigue limitada a su propia matriz;
   ni la enmienda ni el merge certifican rendimiento sostenido Web.
-- Referencias integradas: docs/SPEC.md, docs/ARCHITECTURE.md, README.md y
-  docs/WEB_EXPORT.md. Los documentos/evidencias de 001, 002 y 003 conservan
-  sus versiones y resultados históricos; esta integración no los revalida.
+- Referencias de 004 alineadas: spec, plan, quickstart, research, contrato
+  visual y nota del checklist. El modelo de datos no requiere cambios.
+  El orquestador alinea las menciones de hardware en tasks.md. Los documentos
+  y evidencias de 001, 002 y 003 conservan sus versiones y resultados históricos;
+  esta enmienda no los revalida.
 - Sin cambios en los cuatro principios, TDD, QA independiente, separación
   Spec Kit/agentes o ratificación inicial. Se mantienen las enmiendas previas
-  y se requiere revisar la evidencia del estado integrado antes de entregar.
+  y se requiere revisar nuevas mediciones del estado de 004 antes de aceptar
+  su rendimiento. La autorización no certifica el dispositivo ni la entrega.
 - Templates y comandos de preparación leen la constitución en ejecución;
   no requieren regeneración por esta integración documental.
 - TODO diferido sin cambios: PERFORMANCE_LOAD_TIME_TARGET, pendiente de medir
@@ -113,6 +121,19 @@ global de gama media Android de los últimos ~3 años permanece vigente. No se
 extrapola esta aceptación provisional a otros teléfonos, a la feature 003,
 a iOS ni al rendimiento de emuladores o simuladores.
 
+**Referencia provisional exclusiva de la feature 004 (2026-10-16):** por decisión
+explícita de la persona («Utiliza el xiaomi»), el Xiaomi 11T Pro físico, modelo
+`2107113SG` de 2021, se admite como dispositivo de referencia provisional para
+aceptar `004-personajes-municion-monte-calvo`. Esta autorización es independiente
+de la excepción de 002 y DEBE conservar los 60 FPS estables durante gameplay
+típico, nuevas mediciones de 004 y revisión independiente de QA sobre sus
+limitaciones. No aprueba resultados ni certifica teléfonos menos potentes.
+La referencia nominal global de gama media Android de los últimos ~3 años
+permanece vigente. La autorización no se extiende a otras features, otros
+teléfonos, iOS ni emuladores/simuladores. Las comprobaciones Web y nativas del
+mismo Xiaomi DEBEN medirse y aceptarse por separado; ni la autorización ni
+un resultado nativo certifican su navegador.
+
 **Razón**: como es un juego 2D pensado para escalar a hordas de enemigos en
 pantalla, el rendimiento en el hardware más débil del público objetivo (móviles
 de gama media/baja) es lo que determina si el juego es jugable, no el
@@ -169,4 +190,4 @@ listo para implementar. Cualquier complejidad técnica que viole un principio
 DEBE justificarse explícitamente en el documento correspondiente (plan o spec)
 o rechazarse.
 
-**Version**: 2.1.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-16
+**Version**: 2.2.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-16
