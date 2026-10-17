@@ -17,6 +17,7 @@ var _authored_offset: Vector2
 var _authored_flip_h: bool
 var _authored_flip_v: bool
 var _authored_z: int
+var _authored_material: Material
 var _action_tween: Tween
 var _hit_tween: Tween
 var _morale_tween: Tween
@@ -92,6 +93,7 @@ func deactivate_visual() -> void:
 	flip_h = _authored_flip_h
 	flip_v = _authored_flip_v
 	z_index = _authored_z
+	material = _authored_material
 	modulate = Color.WHITE
 
 
@@ -106,6 +108,7 @@ func capture_defeat_snapshot(world_position: Vector2) -> Dictionary:
 		"flip_h": _authored_flip_h,
 		"flip_v": _authored_flip_v,
 		"visual_z": _authored_z,
+		"visual_material": _authored_material,
 	}
 
 
@@ -118,6 +121,7 @@ func _capture_authored() -> void:
 	_authored_flip_h = flip_h
 	_authored_flip_v = flip_v
 	_authored_z = z_index
+	_authored_material = material
 
 
 func _finish_attack(generation: int) -> void:

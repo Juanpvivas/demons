@@ -23,6 +23,7 @@ func play_snapshot(snapshot: Dictionary) -> void:
 	_sprite.flip_h = snapshot["flip_h"]
 	_sprite.flip_v = snapshot["flip_v"]
 	_sprite.z_index = snapshot["visual_z"]
+	_sprite.material = snapshot.get("visual_material") as Material
 	_sprite.play(snapshot["defeat_animation"])
 	_sprite.set_frame_and_progress(0, 0.0)
 	_completion_tween = create_tween()
@@ -67,6 +68,7 @@ func _reset_presentation() -> void:
 	_sprite.stop()
 	_sprite.visible = true
 	_sprite.modulate = Color.WHITE
+	_sprite.material = null
 	_sprite.scale = Vector2.ONE
 	_sprite.offset = Vector2.ZERO
 	_sprite.rotation = 0.0
