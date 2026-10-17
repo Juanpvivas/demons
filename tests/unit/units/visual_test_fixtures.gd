@@ -15,4 +15,5 @@ static func frames() -> SpriteFrames:
 	return result
 
 static func snapshot(position := Vector2(320, 240)) -> Dictionary:
-	return {"world_position":position, "sprite_frames":frames(), "defeat_animation":&"defeat", "visual_scale":Vector2.ONE, "visual_offset":Vector2(0, -2), "flip_h":false, "flip_v":false, "visual_z":2}
+	# T033 añade el material nullable al contrato; no cambia el arte sintético.
+	return {"world_position":position, "sprite_frames":frames(), "defeat_animation":&"defeat", "visual_scale":Vector2.ONE, "visual_offset":Vector2(0, -2), "flip_h":false, "flip_v":false, "visual_z":2, "visual_material":null}
