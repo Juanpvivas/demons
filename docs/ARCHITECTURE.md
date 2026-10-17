@@ -377,10 +377,19 @@ tinte, escala y callbacks pertenecen a cada instancia.
 
 Antes de las señales que retiran al actor, este captura un snapshot neutro por
 valor y emite `defeat_visual_requested(snapshot: Dictionary)` una sola vez.
-Incluye posición, frames, animación, escala/offset, flips y z autorados, sin
+Incluye posición, frames, animación, escala/offset, flips, z y material autorados, sin
 tinte/pulso transitorio, referencia al actor o callbacks jugables. Los valores
 mutables se copian; los recursos de arte inmutables pueden compartirse. La
 ausencia de listener o de recursos visuales nunca impide la muerte jugable.
+
+La corrección I1 de 004, aprobada en T036, amplía este patrón con
+`visual_material`, una referencia `Material` inmutable o `null` dentro del
+snapshot. El presentador conserva y restaura el material autorado, incluso
+si se consulta antes de `_ready()`. El efecto limpia su material a `null`
+en cada reset antes de aplicar el siguiente snapshot. El estilo compartido
+no contiene daño, moral ni parámetros mutables por actor: ese feedback sigue
+en la presentación de cada instancia. Así la caída conserva el estilo neutro
+sin filtrar tintes transitorios ni recursos de una activación anterior.
 
 `CombatVisualEffects` es un servicio del nivel, sin autoload, que registra una
 vez cada actor integrado y posee un `ObjectPool` precalentado con diez efectos;
@@ -417,6 +426,13 @@ delimita los tiempos y la frontera jugable.
   en `_ready()` y lo configura con la secuencia de Resources de oleadas;
   también prepara `CombatVisualEffects` y registra al soldado inicial y los
   nuevos despliegues para su derrota visual independiente (§4.7).
+  Una `Camera2D` hermana de `MonteCalvoVisual`, con
+  `monte_calvo_camera.gd`, centra localmente el eje mundo x=576 al iniciar y
+  redimensionar. Sin zoom ni suavizado, se sitúa en `(576, alto_lógico/2)`
+  para mantener el origen vertical efectivo del canvas en y=0. Esta es una
+  decisión de composición de Monte Calvo, no una regla para otras cámaras;
+  en iPad 1152×864 conserva la proyección identidad. El mundo jugable no se
+  desplaza y el input mantiene su conversión inversa del canvas.
   `wave_spawn_position` fija el punto de aparición. El nivel actual no
   instancia `HUD.tscn`: tampoco integra controles de recarga ni pantallas
   de victoria/derrota, aunque los métodos y estados correspondientes tienen
@@ -442,6 +458,12 @@ con importación lossless, corrección del borde alfa y sin mipmaps en esta
 iteración. `.godot/` sigue siendo caché regenerable. La [procedencia y regiones](../assets/sprites/levels/monte_calvo/SOURCES.md)
 documentan los recursos sin convertir la imagen de referencia en un fondo
 con personajes o interfaz incrustados.
+
+La corrección I1 de 004 añade tres sprites estáticos para cubrir únicamente
+el margen izquierdo expuesto por la cámara del nivel: prolongación del cielo
+y recortes reflejados de las texturas existentes de suelo y panorama, sin
+repetición automática ni PNG nuevos. Conserva las piezas de trinchera y sus
+posiciones; esta extensión no acredita tileabilidad de las imágenes.
 
 El entorno carece de scripts, señales, controles, física, navegación o cámara
 propios. Sus trincheras no otorgan cobertura ni restringen colocación. El arte
@@ -661,3 +683,4 @@ las muestras revisadas ni sustituye las verificaciones pendientes de I2/I3.
 | 2026-10-16 | T017 de `002-monte-calvo-terreno-trincheras`, tras QA T016: §2/§5 documentan la subescena visual estática aislada y sus recursos; se corrige la descripción del nivel para reflejar WaveSpawner creado por código y ausencia de HUD integrado. §6/§7 documentan la precedencia de pickup→despliegue aprobada con TDD y distinguen regresión de entrada real, con límites de iPad Simulator y Xiaomi provisional. |
 | 2026-10-16 | Integración de main tras PR #16: se preservan la escena visual y la validación nativa 002 junto con Web/Compatibility de 003; constitución 2.1.0 combina sus decisiones sin extrapolar pruebas ni rendimiento entre plataformas. |
 | 2026-10-16 | T012 de 004, tras aprobación funcional T011: §2/§4.7/§5 gradúan la presentación observadora y derrota cosmética independiente, con snapshot neutro, pool visual precalentado y callbacks por activación. Solo soldado integrado; enemigo/caja pendientes. §7 delimita Xiaomi provisional propio de 004, Web separado e iOS simulador/software. |
+| 2026-10-17 | T037 de 004, tras QA funcional T036: §4.7 gradúa material autorado inmutable/nullable en snapshot y limpieza del efecto; §5/§5.1 describen el encuadre local de Monte Calvo y cobertura decorativa izquierda, conservando la separación entre cámara del nivel y entorno estático. |

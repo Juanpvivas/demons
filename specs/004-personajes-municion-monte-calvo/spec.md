@@ -6,8 +6,9 @@
 
 **Created**: 2026-10-16
 
-**Status**: I1 aprobado sobre `87a39c6`; enmienda T031 de legibilidad y encuadre
-en preparación, pendiente de QA T032 e implementación. I2/I3 siguen pendientes.
+**Status**: I1 inicial aprobado sobre `87a39c6`; corrección de legibilidad y
+encuadre aprobada funcionalmente en T036. I2/I3 siguen pendientes; las
+[tareas](tasks.md) y el PR delimitan la consolidación y entrega.
 
 **Input**: «Entonces preparemos con Spec Kit la siguiente feature de personajes
 y munición de Monte Calvo, siguiendo el flujo que ya tengo definido».
@@ -20,8 +21,8 @@ comunicar las acciones que ya ocurren. No amplía el roster ni cambia las reglas
 
 **Enmienda T031**: el feedback posterior a I1 pide un soldado más visible sobre
 el suelo y márgenes equilibrados en Xiaomi, conservando la composición de iPad.
-Los criterios siguientes preparan esa corrección; no afirman que esté resuelta
-ni sustituyen las aprobaciones históricas de T001–T013.
+La corrección tiene aprobación funcional T036; los criterios siguientes
+conservan su alcance y las aprobaciones históricas de T001–T013.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -281,9 +282,9 @@ repetir con reserva suficiente y una celda libre bajo la caja.
 
 - La solicitud inicial autorizó la preparación con Spec Kit; la ejecución de
   I1 se autorizó después y conserva su aprobación histórica sobre `87a39c6`.
-  T031 es autoría preparatoria para el nuevo feedback, pendiente de QA T032 y
-  del ciclo RED → desarrollo → GREEN/visual → QA → consolidación → QA final.
-  No declara implementada la corrección ni inicia I2/I3.
+  La enmienda T031 para el nuevo feedback pasó QA T032 y su propio ciclo
+  RED → desarrollo → GREEN/visual → QA funcional T036. La consolidación y
+  entrega se siguen en las tareas; I2/I3 no se inician con esta corrección.
 - Se conserva la versión integrada de 001, 002 y 003 como línea base; el
   concepto aporta la dirección artística y los valores reales del juego
   prevalecen sobre números, barras, distribución y botones ilustrados.

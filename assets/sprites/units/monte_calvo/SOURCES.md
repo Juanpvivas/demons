@@ -26,8 +26,11 @@ se conserva toda su transparencia sin extracción por scripts.
 Sus regiones corresponden a la textura importada de 1024 × 512, no a una
 grilla supuesta del original. Los márgenes reconstruyen un lienzo lógico
 común de 384 × 256; el punto de apoyo está en (192, 232). La escala
-del hijo visual es (0.23076923, 0.23076923), con apoyo en y=24 respecto de la
-raíz y altura neutral aproximada de 48 unidades. La raíz y física no cambian.
+del hijo visual, tras la corrección I1 de 004 aprobada funcionalmente en T036,
+es (0.34615385, 0.34615385), con offset (0, -34.666667), apoyo en y=24 respecto
+de la raíz y altura opaca neutra aproximada de 72 unidades. La raíz y física
+de 48×48 no cambian. Este ajuste de escala y offset no modifica el PNG,
+sus recortes ni el lienzo lógico.
 Los cuatro fotogramas de derrota conservan ese apoyo con la caída intencional.
 
 | Presentación | Fotogramas | Duración |
@@ -40,7 +43,22 @@ Los cuatro fotogramas de derrota conservan ese apoyo con la caída intencional.
 
 Los clips solo contienen texturas: no hay pistas, callbacks de gameplay,
 proyectiles, audio, terreno o interfaz incrustados. Los impactos y la moral
-se compondrán sobre la imagen viva mediante el presentador separado.
+se componen sobre la imagen viva mediante el presentador separado.
+
+## Material de legibilidad — corrección I1 de 004
+
+`soldado_readability.gdshader` y `soldado_readability.tres` son código y
+configuración originales creados por el agente `dev-godot` en Codex para el
+proyecto en T034, 2026-10-16. No incorporan un shader de terceros ni generan
+otra imagen. El material compartido
+de solo lectura aclara moderadamente los tonos medios y aplica un borde mate
+oscuro interior a la silueta. Conserva el alfa original, sin ampliar la figura
+ni crear halo; las muestras vecinas se limitan a la región del atlas. El tinte
+por instancia sigue afectando a la imagen para comunicar daño y moral sin
+mutar parámetros compartidos. El snapshot neutro conserva este estilo para
+la caída y el efecto limpia la referencia entre usos. Las condiciones del
+arte generado que siguen se refieren al PNG original, sin añadir una licencia
+de terceros al material.
 
 ## Condiciones de uso
 

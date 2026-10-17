@@ -1,12 +1,13 @@
-# Modelo de presentación — PREPARACIÓN de 004
+# Modelo de presentación de 004
 
-Diseño previsto; no declara clases implementadas, arte producido o pruebas
-ejecutadas. Complementa [plan](plan.md) y [contrato visual](contracts/visual-presentation.md).
-Los nombres de estados siguientes son conceptuales, no nuevas APIs públicas.
+Modelo de diseño que complementa [plan](plan.md) y
+[contrato visual](contracts/visual-presentation.md). Los nombres de estados
+siguientes son conceptuales, no nuevas APIs públicas.
 
-Enmienda T031 preparatoria, pendiente de QA T032: I1 conserva su aprobación
-histórica sobre `87a39c6`; tamaño, contraste, material y encuadre revisados aquí
-no se declaran implementados ni aprobados. I2/I3 siguen pendientes.
+I1 conserva su aprobación histórica sobre `87a39c6`; la corrección de tamaño,
+contraste, material y encuadre está aprobada funcionalmente en T036. El modelo
+del enemigo y la caja sigue previsto para I2/I3. Las [tareas](tasks.md) delimitan
+la consolidación y entrega, sin acreditar esos incrementos pendientes.
 
 ## Límite con los datos jugables
 
@@ -118,7 +119,7 @@ El presentador restaura el material de estilo autorado; el efecto limpia la
 referencia anterior antes de configurar el nuevo snapshot, incluso si es null.
 La caída conserva ese estilo sin capturar pulsos/tintes de impacto o moral.
 
-## 5. Encuadre local y cobertura decorativa — T031 pendiente
+## 5. Encuadre local y cobertura decorativa
 
 La cámara sin zoom adapta solo la proyección: mundo x=576 al 50 % del viewport
 lógico con error ≤1 unidad y origen vertical efectivo del canvas y=0. El mundo

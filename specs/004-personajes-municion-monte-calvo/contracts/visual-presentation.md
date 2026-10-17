@@ -1,8 +1,9 @@
 # Contrato: presentación observacional de Monte Calvo
 
-Contrato de diseño. I1 conserva su aprobación sobre `87a39c6`; los ajustes T031
-de tamaño, contraste, material y encuadre son preparatorios, pendientes de QA
-T032 y del ciclo de implementación/validación propio. I2/I3 no se inician.
+Contrato de diseño. I1 conserva su aprobación sobre `87a39c6`; la corrección de
+tamaño, contraste, material y encuadre delimitada en T031 está aprobada
+funcionalmente en T036. El contrato también delimita I2/I3, aún pendientes;
+las [tareas](../tasks.md) y el PR conservan el estado de consolidación y entrega.
 
 ## 1. Frontera protegida
 
@@ -132,7 +133,7 @@ Quickstart define matriz y pasos: Web 1152×648/960×540 y móvil horizontal,
 apps Android/iOS separadas. No probado queda pendiente y bloquea su cierre.
 GUT verifica semántica/ciclo, no píxeles/tipo de textura. Arte se revisa
 visualmente. Simulador/editor no acreditan navegador/hardware físico.
-Para T031, añadir resize/encuadre y material neutro/reset a RED antes del cambio;
-verificar después tamaño opaco, contraste/grises, cobertura, gestos reales y
-regresión por entorno. QA T032 revisa esta enmienda antes de RED T033; QA T036
-revisa el comportamiento y T038 su consolidación. Estos gates siguen pendientes.
+La corrección T031 añadió resize/encuadre y material neutro/reset al RED previo
+al cambio y verificó después tamaño opaco, contraste/grises, cobertura, gestos
+reales y regresión por entorno. QA T032 aprobó la enmienda y T036 su
+comportamiento; la consolidación y entrega se siguen en las tareas y el PR.

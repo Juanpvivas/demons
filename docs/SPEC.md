@@ -121,6 +121,14 @@ según el modo y los ataques reales. La última bala da prioridad al cambio a
 machete; la recarga existente restaura el fusil conservando la moral. Impacto y
 moral ganada tienen respuestas breves, y la derrota prevalece sobre ellas.
 
+La corrección de I1, aprobada funcionalmente en T036, aumenta solo el hijo
+visual del soldado a una altura opaca neutra aproximada de 72 unidades,
+conservando los pies en raíz+y24 y el cuerpo de 48×48. Un material mate aclara
+los tonos medios y añade un borde interior discreto para separarlo del suelo,
+también en grises. El encuadre local centra el eje de combate al ensanchar la
+pantalla, conserva la composición vertical del iPad y cubre el margen izquierdo
+con cielo, panorama y suelo existentes. No mueve trincheras, actores ni grid.
+
 La caída del soldado se muestra durante 0,40 s en un efecto independiente,
 sin cuerpo, input u ocupación: la celda se libera y el actor jugable se retira
 sin esperar la animación. Las imágenes no aplican daño ni cambian recursos,
@@ -168,6 +176,7 @@ de las muestras revisadas. El seguimiento de los incrementos está en sus
 
 - ✅ Dirección visual de la primera iteración del terreno y las trincheras de Monte Calvo: entorno pictórico ocre/oliva, montañas azul grisáceo y decoración estática de tierra, madera y sacos, conservando actores provisionales y reglas actuales en aquella entrega. Aprobada en T016 de `002-monte-calvo-terreno-trincheras`; §8 y sus enlaces delimitan el alcance y la evidencia. I1 de 004 avanza después el soldado; enemigo, caja e interfaz continúan pendientes.
 - ✅ Soldado pictórico y presentación de sus estados reales, sin alterar el combate ni esperar a la caída para retirarlo: I1 de `004-personajes-municion-monte-calvo`, aprobado en T011. §8 describe su alcance parcial; el patrón compartido de presentación y efecto independiente se gradúa a `ARCHITECTURE.md` §4.7. No resuelve el acabado del enemigo, la caja o la interfaz.
+- ✅ Legibilidad del soldado y encuadre horizontal de Monte Calvo: corrección de I1 de 004 aprobada funcionalmente en T036. §8 recoge el mayor tamaño visual, contraste mate y encuadre que conserva la composición iPad; física, posiciones y reglas permanecen intactas. No amplía el alcance a I2/I3 o interfaz.
 - ✅ Moral tras recarga: se conserva, no decae con el tiempo, se pierde solo si el soldado es derrotado. (spec `001-soldado-defensor-oleadas`)
 - ✅ Alcance de diagonales: celdas diagonalmente contiguas a la posición del soldado, no un cono más amplio. (spec `001-soldado-defensor-oleadas`)
 - ✅ Disparador de moral: solo al eliminar enemigos, no por impactos sin eliminación. Se corrigió el FR-006 del spec `001-soldado-defensor-oleadas`, que decía "impacta o elimina", para alinearlo con esta definición. (spec `001-soldado-defensor-oleadas`)
@@ -197,3 +206,4 @@ de las muestras revisadas. El seguimiento de los incrementos está en sus
 | 2026-10-16 | T017 de `002-monte-calvo-terreno-trincheras`, tras QA T016: §8 documenta el entorno pictórico y las trincheras estáticas aprobadas, con placeholders e interfaces pendientes; §10 resuelve solo esa dirección inicial. §6.1 incorpora la precedencia recolección→despliegue validada por el ciclo nativo T019–T022. Se enlazan evidencias y límites de iPad Simulator y Xiaomi provisional, sin completar el MVP ni cambiar plataformas. |
 | 2026-10-16 | Integración de main tras PR #16: se conserva 002 aprobada junto con los destinos y la entrega Web de 003; constitución 2.1.0 reúne ambas decisiones. Las entradas anteriores describen sus estados históricos, sin extender la referencia Xiaomi de 002 a Web. |
 | 2026-10-16 | T012 de 004, tras aprobación funcional T011: §8/§10 documentan el soldado pictórico, sus estados reales y la derrota cosmética sin retrasar retiro; enemigo/caja e interfaz siguen pendientes. Se distinguen Xiaomi provisional de 004, Web separado e iOS simulador/software, sin ampliar la aceptación a hardware o estabilidad sostenida. |
+| 2026-10-17 | T037 de 004, tras QA funcional T036: §8/§10 incorporan la corrección de legibilidad del soldado y encuadre local de Monte Calvo, conservando geometría, reglas y composición iPad. Enemigo, caja e interfaz siguen pendientes. |

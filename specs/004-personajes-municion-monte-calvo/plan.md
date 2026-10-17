@@ -4,9 +4,9 @@
 **Execution Branch**: `codex/004-i1-soldado`; una rama por incremento.
 **Date**: 2026-10-16 | **Spec**: [spec.md](spec.md)
 
-La preparación inicial se ejecutó en I1, aprobado sobre `87a39c6`. La enmienda
-T031 de legibilidad/encuadre es preparatoria, pendiente de QA T032 y ejecución;
-no acredita el arreglo. I2/I3 siguen pendientes en las [tareas](tasks.md).
+La preparación inicial se ejecutó en I1, aprobado sobre `87a39c6`. La corrección
+de legibilidad/encuadre delimitada en T031 está aprobada funcionalmente en T036.
+I2/I3 y el seguimiento de consolidación/entrega figuran en las [tareas](tasks.md).
 
 ## Summary
 
@@ -88,7 +88,8 @@ Documentación preparada: spec, plan, research, data-model, quickstart, contrato
 [tasks](tasks.md) en esta carpeta. No crear archivos nuevos de evidencias;
 resultados de ejecución al PR.
 
-Rutas previstas, no creadas durante preparación:
+Rutas del diseño; las del soldado y servicio están integradas en I1, mientras
+las del enemigo y la caja corresponden a los incrementos pendientes:
 
 ```text
 assets/sprites/units/monte_calvo/      # soldado_atlas.png/.import, soldado_frames.tres, SOURCES.md
@@ -143,5 +144,6 @@ Sin nueva FSM jugable, bus global, stats o controles. Las [tareas](tasks.md) y
 su análisis inicial conservan su historia. La excepción acotada T031 responde
 al nuevo feedback sin ampliar gameplay: QA documental T032 → RED T033 → desarrollo
 T034 → GREEN/visual T035 → QA funcional T036 → documentación T037 → QA final T038.
-Todos esos gates de la corrección están pendientes; la aprobación anterior de
-I1 no los sustituye. No se inicia I2 ni se declara corregido el producto.
+La corrección completó los gates hasta QA funcional T036 con validación propia,
+sin sustituirlos por la aprobación histórica de I1. El estado de consolidación
+y entrega se conserva en las tareas y el PR. No se inicia I2.

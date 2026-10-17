@@ -1,8 +1,8 @@
 # Research: personajes y munición de Monte Calvo
 
 Decisiones locales de preparación inicial, 2026-10-16. I1 conserva su aprobación
-histórica sobre `87a39c6`; la enmienda T031 (§8) es preparatoria y pendiente de
-QA T032, sin afirmar que el nuevo feedback esté corregido. Las descripciones
+histórica sobre `87a39c6`; la corrección delimitada en T031 (§8) está aprobada
+funcionalmente en T036. Las descripciones
 de la línea base de las secciones 1–7 pertenecen a la preparación inicial.
 
 ## 1. Integración en escenas existentes
@@ -108,9 +108,9 @@ Skills consultadas: using-godot-prompter, 2d-essentials, assets-pipeline,
 animation-system, scene-organization, gdscript-patterns, godot-code-review,
 godot-testing y patrones de testing. No hizo falta investigación externa.
 
-## 8. Enmienda T031: tamaño, contraste y encuadre — pendiente de QA
+## 8. Enmienda T031: tamaño, contraste y encuadre
 
-**Decisión propuesta**: reutilizar el atlas del soldado y ajustar solo su hijo
+**Decisión**: reutilizar el atlas del soldado y ajustar solo su hijo
 visual a altura opaca neutra aproximada de 72 unidades, pie raíz+y24 y pivote
 estable ≤1. En CSS 794×305 exigir ≥32 CSS px opacos y reconocimiento sin overlay
 y en grises, con luz/contorno mate discreto mediante material compartido
@@ -131,6 +131,7 @@ mover trincheras/grid, aumentar zoom, añadir anillos/HUD o rediseñar terreno.
 Fijar camera.position.y=0 desplazaría el origen efectivo; limit_left=0 impediría
 el margen negativo que necesita un viewport ancho. Aplicar el contrato local,
 con las guías camera-system y 2d-essentials consultadas para esta enmienda.
-T032 → RED T033 → desarrollo T034 → GREEN/visual T035 → QA T036 → consolidación
-T037 → QA T038 son gates nuevos pendientes, sin iniciar I2 ni rehacer evidencia
-histórica. No se ejecutaron motor ni pruebas para esta autoría documental.
+La corrección pasó QA documental T032 y su ciclo RED T033 → desarrollo T034 →
+GREEN/visual T035 → QA funcional T036. Su consolidación y entrega se siguen en
+las [tareas](tasks.md) y el PR, sin iniciar I2 ni rehacer evidencia histórica.
+La autoría documental no ejecuta motor o pruebas ni sustituye esos gates.
