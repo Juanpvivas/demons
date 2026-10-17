@@ -1,6 +1,6 @@
 # Tasks: Personajes y munición de Monte Calvo
 
-**Estado**: I1 inicial aprobado en `87a39c6`; corrección UX T031–T036 aprobada funcionalmente, pendiente de consolidación T037 y QA final T038. I2/I3 pendientes.
+**Estado**: I1 inicial aprobado en `87a39c6`; corrección UX T031–T038 aprobada. I2/I3 pendientes.
 **Issue**: [#18](https://github.com/Juanpvivas/demons/issues/18).
 **Incremento de esta entrega**: corrección de legibilidad y encuadre de I1 en el [PR #20 en borrador](https://github.com/Juanpvivas/demons/pull/20), sin iniciar I2.
 **Execution Branch**: `codex/004-i1-soldado`, desde `main` en `990be90`.
@@ -69,7 +69,8 @@ recarga por ruta existente, sin incorporar controles.
 **Origen**: la persona reporta un soldado demasiado pequeño y confundido con el
 suelo, y composición descentrada con exceso de espacio a la derecha en Xiaomi;
 la distribución del iPad debe conservarse. Es una corrección del PR #20, no I2.
-Las casillas históricas T001–T013 no acreditan la corrección todavía pendiente.
+Las casillas históricas T001–T013 no acreditan por sí solas la corrección;
+su aprobación corresponde a T031–T038.
 
 **Alcance**: ampliar únicamente la presentación del soldado y su separación
 visual del entorno; centrar horizontalmente el encuadre y cubrir sus márgenes
@@ -83,8 +84,8 @@ iPad. La enmienda documental delimita las excepciones a cámara/huella visual.
 - [X] T034 dev-godot: corregir presentación del soldado mediante escala/offset y contraste mate sobre los recursos existentes; mantener pies y collider, feedback y derrota coherentes. Implementar encuadre local sin zoom y cobertura decorativa que elimine el margen asimétrico, con reset/snapshot de estilo inmutable cuando aplique. Sin mover trincheras, actores o grid, ni escribir/ejecutar pruebas; depende de T033 y su revisión RED por QA.
 - [X] T035 godot-tester: confirmar GREEN de T033 y regresión pertinente de presentación, efectos, nivel y routing. Verificar inicial/desplegado, fusil/machete, daño/moral y derrota en tamaño de juego sin overlays, contraste también en grises, pies/huellas y márgenes equilibrados en Xiaomi nativo/Web, escritorio e iPad Simulator. Corroborar cuatro resultados de economía bajo el nuevo canvas, resize y cobertura, y mediciones base/candidato pertinentes sobre el estado corregido; reutilizar solo evidencia no invalidada, sin extrapolar versiones ni entornos. Depende de T034.
 - [X] T036 qa-validator: validar la corrección de I1 contra la enmienda, RED/GREEN, arte/contraste, geometría efectiva, entrada y mediciones afectadas; comprobar que mantiene la composición iPad y reglas protegidas. Emitir veredicto independiente, sin modificar checkout; depende de T035.
-- [ ] T037 docs-writer: consolidar únicamente la corrección aprobada en `docs/SPEC.md`, `docs/ARCHITECTURE.md` y procedencia/transformaciones de `SOURCES.md` cuando corresponda, conservando I2/I3 e interfaz pendientes. Entregar resumen para actualizar el PR #20, sin versionar registros nuevos; depende de T036 aprobado.
-- [ ] T038 qa-validator: revisar documentación y diff final de la corrección y vigencia de sus verificaciones. Tras APROBADO, project-orchestrator marca sus tareas y actualiza el PR #20 en borrador con Refs al Issue #18, límites y trazabilidad de la corrección, sin promover ni fusionar; depende de T037.
+- [X] T037 docs-writer: consolidar únicamente la corrección aprobada en `docs/SPEC.md`, `docs/ARCHITECTURE.md` y procedencia/transformaciones de `SOURCES.md` cuando corresponda, conservando I2/I3 e interfaz pendientes. Entregar resumen para actualizar el PR #20, sin versionar registros nuevos; depende de T036 aprobado.
+- [X] T038 qa-validator: revisar documentación y diff final de la corrección y vigencia de sus verificaciones. Tras APROBADO, project-orchestrator marca sus tareas y actualiza el PR #20 en borrador con Refs al Issue #18, límites y trazabilidad de la corrección, sin promover ni fusionar; depende de T037.
 
 I2 permanece pendiente y comienza después del cierre T038 de esta revisión.
 
@@ -163,6 +164,6 @@ o dividir un resultado independiente con QA sin fragmentar el ciclo TDD.
 
 El orquestador prepara una rama por incremento; si la base es otro PR pendiente,
 declara la dependencia y revalida diff/QA al integrarla. Intermedios usan `Refs`;
-solo el cierre completo usa `Closes`. No se genera arte, ejecuta el juego o
-inicia el pipeline desde esta preparación. El siguiente gate es revisión de
-tareas y análisis; su aprobación entrega a los agentes, sin iniciar ejecución.
+solo el cierre completo usa `Closes`. La preparación de Spec Kit terminó con la revisión de tareas y análisis.
+La ejecución posterior se registra en las casillas y en el PR de cada
+incremento; esta entrega no inicia I2/I3.
