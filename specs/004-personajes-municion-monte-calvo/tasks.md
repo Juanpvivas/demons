@@ -1,11 +1,13 @@
 # Tasks: Personajes y munición de Monte Calvo
 
-**Estado**: I1 inicial aprobado en `87a39c6`; corrección UX T031–T038 aprobada. I2/I3 pendientes.
+**Estado**: I1 y corrección UX T031–T038 aprobados e integrados en `main`. I2 en curso; I3 pendiente.
 **Issue**: [#18](https://github.com/Juanpvivas/demons/issues/18).
-**Incremento de esta entrega**: corrección de legibilidad y encuadre de I1 en el [PR #20 en borrador](https://github.com/Juanpvivas/demons/pull/20), sin iniciar I2.
-**Execution Branch**: `codex/004-i1-soldado`, desde `main` en `990be90`.
-**Base del PR funcional**: `codex/004-preparacion`, [PR #19 en borrador](https://github.com/Juanpvivas/demons/pull/19);
-la rama de ejecución conserva su historial y no cambia durante el ciclo.
+**Incremento de esta entrega**: I2 / US2, enemigo, contacto y reutilización (T014–T022), sin iniciar I3.
+**Execution Branch**: `codex/004-i2-enemigo`, desde `main` en `2dc532d`.
+**Base del PR funcional**: `main`, con I1 del [PR #20](https://github.com/Juanpvivas/demons/pull/20)
+y la preparación del [PR #19](https://github.com/Juanpvivas/demons/pull/19) ya integrados;
+la rama de ejecución se mantiene durante el ciclo de I2. El historial y las
+aprobaciones de I1 conservan su alcance original.
 El Xiaomi 11T Pro físico `2107113SG` es la referencia provisional exclusiva
 de 004 por decisión de la persona, según la constitución 2.2.0. Las aprobaciones
 de T001–T013 corresponden a `87a39c6` y conservan su evidencia histórica. La
@@ -87,7 +89,7 @@ iPad. La enmienda documental delimita las excepciones a cámara/huella visual.
 - [X] T037 docs-writer: consolidar únicamente la corrección aprobada en `docs/SPEC.md`, `docs/ARCHITECTURE.md` y procedencia/transformaciones de `SOURCES.md` cuando corresponda, conservando I2/I3 e interfaz pendientes. Entregar resumen para actualizar el PR #20, sin versionar registros nuevos; depende de T036 aprobado.
 - [X] T038 qa-validator: revisar documentación y diff final de la corrección y vigencia de sus verificaciones. Tras APROBADO, project-orchestrator marca sus tareas y actualiza el PR #20 en borrador con Refs al Issue #18, límites y trazabilidad de la corrección, sin promover ni fusionar; depende de T037.
 
-I2 permanece pendiente y comienza después del cierre T038 de esta revisión.
+I2 comienza tras el cierre aprobado de T038 y la integración de I1 en `main`.
 
 ## Fase 4: I2 / US2 — Enemigo, contacto y reutilización (P1)
 
