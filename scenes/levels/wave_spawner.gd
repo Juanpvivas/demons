@@ -83,6 +83,9 @@ var _enemy_pool: ObjectPool
 ## cabecera — un solo carril recto para el MVP).
 var _spawn_position: Vector2
 
+## Servicio local opcional: registro por creación física, nunca por acquire.
+var _combat_visual_effects: CombatVisualEffects
+
 ## Cola de spawns pendientes de la oleada activa, ya aplanada. Vacía cuando
 ## no hay ninguna oleada en curso o cuando ya se sacó el último elemento.
 var _pending_spawns: Array[_PendingSpawn] = []
@@ -107,8 +110,10 @@ func _ready() -> void:
 ## `WaveManager.start_waves()` dispare el primer `wave_started` — si se
 ## llamara después, el primer `wave_started` no encontraría `_enemy_pool`
 ## listo.
-func setup(enemy_scene: PackedScene, initial_pool_size: int, spawn_position: Vector2) -> void:
+func setup(enemy_scene: PackedScene, initial_pool_size: int, spawn_position: Vector2,
+		combat_visual_effects: CombatVisualEffects = null) -> void:
 	_spawn_position = spawn_position
+	_combat_visual_effects = combat_visual_effects
 	_enemy_pool = ObjectPool.new()
 	add_child(_enemy_pool)
 	# Conectado ANTES de `setup()` — ver justificación en la cabecera de
@@ -187,6 +192,8 @@ func _on_enemy_pool_instance_created(instance: Node) -> void:
 	var enemy := instance as Enemigo
 	enemy.set_pool(_enemy_pool)
 	enemy.enemy_defeated.connect(_on_enemy_defeated.bind(enemy))
+	if _combat_visual_effects != null:
+		_combat_visual_effects.register_actor(enemy)
 
 
 ## FR-012/T042: por cada enemigo derrotado que este spawner instanció,

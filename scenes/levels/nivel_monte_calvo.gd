@@ -162,13 +162,18 @@ func _ready() -> void:
 		soldado_inicial_tipado.soldier_defeated.connect(_on_soldado_defeated)
 		_combat_visual_effects.register_actor(soldado_inicial_tipado)
 
+	var enemigo_inicial := get_node_or_null("Enemigo") as Enemigo
+	if enemigo_inicial != null:
+		_combat_visual_effects.register_actor(enemigo_inicial)
+
 	# T042: arranca la secuencia de oleadas de este nivel. El `Enemigo`
 	# colocado a mano en la escena (T027, Independent Test de US1/US2) es
 	# independiente de esto — nunca pasa por `set_pool()`, así que conserva
 	# su `queue_free()` original sin conflicto con las instancias pooleadas
 	# que `WaveSpawner` va a crear.
 	add_child(_wave_spawner)
-	_wave_spawner.setup(enemy_scene, _ENEMY_POOL_INITIAL_SIZE, wave_spawn_position)
+	_wave_spawner.setup(enemy_scene, _ENEMY_POOL_INITIAL_SIZE, wave_spawn_position,
+		_combat_visual_effects)
 	WaveManager.start_waves(waves)
 
 	# T043 (FR-013): conexión de señal solo en `_ready()`

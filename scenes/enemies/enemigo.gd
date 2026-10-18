@@ -78,7 +78,7 @@ const _AMMO_PICKUP_SCENE: PackedScene = preload("res://scenes/levels/AmmoPickup.
 ## del alcance de esta tarea) pueda generar una pickup en ese punto.
 signal enemy_defeated(ammo_dropped: int, position: Vector2)
 
-## Contrato observacional reservado; su emisión pertenece a I2.
+## Snapshot neutro anterior a cualquier retiro/reciclado síncrono.
 signal defeat_visual_requested(snapshot: Dictionary)
 
 ## T043 (`contracts/signals.md`, FR-013): este enemigo alcanzó la "posición
@@ -107,25 +107,21 @@ var _current_health: int = 0
 ## clase y el patrón de reciclado de `ObjectPool` (`WaveSpawner`, T042).
 var _pool: ObjectPool = null
 
-@onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var _sprite: EnemigoVisual = $AnimatedSprite2D
 
 
 func _ready() -> void:
 	assert(stats != null, "Enemigo requiere un EnemyStats asignado en 'stats'")
 	_current_health = stats.max_health
 	add_to_group(ENEMY_GROUP)
-	# T028: el propio enemigo escucha su señal de muerte para disparar el
-	# feedback visual placeholder — mismo patrón de auto-conexión en
-	# `_ready()` que `soldado.gd` usa con `ammo_depleted`
-	# (`docs/ARCHITECTURE.md` §4.2). `_die()` emite esta señal antes de
-	# llamar `queue_free()`, así que el destello se aplica mientras el nodo
-	# sigue siendo válido dentro del mismo frame.
-	enemy_defeated.connect(_on_enemy_defeated_visual)
+	_sprite.reset_visual()
 
 
 func _physics_process(_delta: float) -> void:
+	var before := global_position
 	velocity = Vector2(0.0, stats.move_speed)
 	move_and_slide()
+	_sprite.observe_displacement(global_position - before)
 
 
 ## Aplica `amount` de daño y retorna `true` únicamente si esta llamada dejó
@@ -140,10 +136,8 @@ func take_damage(amount: int) -> bool:
 	if _current_health <= 0:
 		_die()
 		return true
-	# T028: destello de impacto no letal — llamada directa (no señal, no hay
-	# contrato de `contracts/signals.md` para "golpe recibido"), inocua para
-	# los tests existentes que solo observan `take_damage`/`enemy_defeated`.
-	_flash_hit()
+	if amount > 0:
+		_sprite.play_confirmed_hit()
 	return false
 
 
@@ -180,14 +174,20 @@ func set_pool(pool: ObjectPool) -> void:
 ## `_ready()` inicializa una sola vez (`_current_health`), reasigna `stats`
 ## (distintas oleadas pueden reciclar la misma instancia física con
 ## `EnemyStats` distintos) y reposiciona el enemigo en el punto de spawn.
-## También limpia cualquier tinte visual dejado por `_flash_hit()`/la
-## muerte anterior (`_on_enemy_defeated_visual()` tiñe a negro), para que
-## un enemigo reciclado no aparezca ya "golpeado" o "muerto".
+## Reinicia además toda la presentación antes del primer frame del nuevo uso.
 func prepare_for_spawn(new_stats: EnemyStats, spawn_position: Vector2) -> void:
 	stats = new_stats
 	_current_health = stats.max_health
 	global_position = spawn_position
-	_sprite.modulate = Color(1.0, 1.0, 1.0)
+	_sprite.reset_visual()
+
+
+## Puede ocurrir antes de `_ready()` al precalentar un pool fuera del árbol.
+## No necesita stats nuevos; el reset de aparición sigue en prepare_for_spawn.
+func on_pool_released() -> void:
+	var visual := get_node_or_null("AnimatedSprite2D") as EnemigoVisual
+	if visual != null:
+		visual.deactivate_visual()
 
 
 ## Mayor valor = más avanzado hacia la posición defendida (`spec.md`
@@ -211,6 +211,9 @@ func notify_reached_defended_position() -> void:
 
 
 func _die() -> void:
+	var snapshot := _sprite.capture_defeat_snapshot(global_position)
+	_sprite.deactivate_visual()
+	defeat_visual_requested.emit(snapshot)
 	enemy_defeated.emit(stats.ammo_drop, global_position)
 	_spawn_ammo_pickup()
 
@@ -225,14 +228,8 @@ func _die() -> void:
 		# mano en `Nivel_MonteCalvo.tscn` para el Independent Test de
 		# US1/US2 (T027) cae en este caso. Conserva el comportamiento
 		# original: `queue_free()`, nunca `free()`
-		# (`docs/ARCHITECTURE.md` §4.5), evita use-after-free si algo más
-		# todavía tiene una referencia pendiente en el mismo frame (ej.
-		# `Soldado._rifle_candidates`/`_melee_candidates` antes de procesar
-		# `body_exited`). El feedback visual de muerte ya se aplicó de
-		# forma síncrona vía `_on_enemy_defeated_visual` (conectado en
-		# `_ready()`), antes de esta línea — el nodo sigue siendo válido
-		# durante el resto de este frame porque `queue_free()` difiere la
-		# liberación.
+		# (`docs/ARCHITECTURE.md` §4.5). La caída independiente ya recibió
+		# su snapshot; el retiro jugable no espera al efecto visual.
 		queue_free()
 	# Con pool asignado, esta instancia NO se autodestruye: quien escucha
 	# `enemy_defeated` (`WaveSpawner._on_enemy_defeated()`) es responsable
@@ -279,22 +276,3 @@ func _spawn_ammo_pickup() -> void:
 	pickup.global_position = global_position
 	var pickup_id: int = pickup.get_instance_id()
 	EconomyManager.notify_pickup_spawned(pickup_id, global_position, stats.ammo_drop)
-
-
-# --- Feedback visual placeholder (T028) ------------------------------------
-
-## Destello breve al recibir un golpe que no elimina al enemigo — sin
-## sprites artísticos reales todavía (`Soldado`/`EnemigoBase` usan una
-## textura sólida generada vía `GradientTexture2D`), pero suficiente para que
-## un impacto sea perceptible (`constitution.md` Principio III).
-func _flash_hit() -> void:
-	var tween := create_tween()
-	tween.tween_property(_sprite, "modulate", Color(1.0, 0.3, 0.3), 0.05)
-	tween.tween_property(_sprite, "modulate", Color(1.0, 1.0, 1.0), 0.15)
-
-
-## Destello final antes de que el nodo se libere (mismo frame): tiñe el
-## sprite a negro para marcar visualmente la eliminación (FR-007,
-## `contracts/signals.md` fila `enemy_defeated`).
-func _on_enemy_defeated_visual(_ammo_dropped: int, _position: Vector2) -> void:
-	_sprite.modulate = Color(0.05, 0.05, 0.05)
