@@ -1,0 +1,74 @@
+[gd_resource type="SpriteFrames" load_steps=10 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/monte_calvo/enemigo_atlas.png" id="1_atlas"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_walk_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(58, 14, 178, 241)
+margin = Rect2(108.0023, 25.1747, 206, 47)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_walk_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(309, 19, 166, 238)
+margin = Rect2(109.0631, 28.4431, 218, 50)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_walk_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(561, 19, 164, 242)
+margin = Rect2(109.3923, 24.4025, 220, 46)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_walk_4"]
+atlas = ExtResource("1_atlas")
+region = Rect2(817, 24, 167, 232)
+margin = Rect2(114.8760, 34.0203, 217, 56)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_contact"]
+atlas = ExtResource("1_atlas")
+region = Rect2(64, 264, 174, 234)
+margin = Rect2(108.8072, 32.7396, 210, 54)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_defeat_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(311, 277, 163, 211)
+margin = Rect2(110.4859, 55.5524, 221, 77)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_defeat_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(554, 332, 166, 158)
+margin = Rect2(110.4735, 108.2435, 218, 130)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_defeat_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(767, 377, 244, 109)
+margin = Rect2(71.2255, 157.8613, 140, 179)
+filter_clip = true
+
+[resource]
+animations = [{
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_walk_1")}, {
+"duration": 1.0, "texture": SubResource("AtlasTexture_walk_2")}, {
+"duration": 1.0, "texture": SubResource("AtlasTexture_walk_3")}, {
+"duration": 1.0, "texture": SubResource("AtlasTexture_walk_4")}],
+"loop": true,
+"name": &"advance",
+"speed": 6.66666667
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_contact")}],
+"loop": true,
+"name": &"contact",
+"speed": 1.00000000
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_defeat_1")}, {
+"duration": 1.0, "texture": SubResource("AtlasTexture_defeat_2")}, {
+"duration": 1.0, "texture": SubResource("AtlasTexture_defeat_3")}],
+"loop": false,
+"name": &"defeat",
+"speed": 7.50000000
+}]
