@@ -42,7 +42,7 @@ func _pool() -> ObjectPool:
 	var source := _configured_enemy()
 	var packed := PackedScene.new()
 	assert_eq(packed.pack(source), OK)
-	source.queue_free()
+	autofree(source)
 	var pool := ObjectPool.new()
 	add_child_autofree(pool)
 	pool.instance_created.connect(func(node: Node):

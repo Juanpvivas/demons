@@ -258,7 +258,7 @@ func _enemy_pool() -> ObjectPool:
 	visual.offset = Vector2(0, -3)
 	var packed := PackedScene.new()
 	assert_eq(packed.pack(source), OK)
-	source.queue_free()
+	autofree(source)
 	var pool := ObjectPool.new()
 	add_child_autofree(pool)
 	pool.instance_created.connect(func(node: Node): (node as Enemigo).set_pool(pool))
