@@ -16,8 +16,9 @@ y el PR delimitan la consolidación y entrega.
 - Los roles consultan las skills de GodotPrompter aplicables. El tester identifica
   ejecutables, versiones, navegadores y dispositivos realmente accesibles.
 - La referencia física de 004 sigue siendo el Xiaomi 11T Pro `2107113SG` de
-  2021, autorizado el 2026-10-16 (constitución 2.2.0). Desde el 2026-10-19 la
-  persona indica que ya no será posible realizar nuevas pruebas físicas y
+  2021, autorizado el 2026-10-16 (enmienda 2.2.0 conservada en la constitución
+  3.0.0). Desde el 2026-10-19 la persona indica que ya no será posible realizar
+  nuevas pruebas físicas y
   autoriza continuar con Android Emulator. Aplicar la disponibilidad y los
   límites de §4; no volver a condicionar la ejecución emulada a conectar ese
   teléfono.
@@ -83,19 +84,22 @@ Probar dos cajas solapadas sin cambiar su semántica ni sus formas físicas.
 | Entorno mínimo planificado | Tamaño/entrada y alcance |
 |---|---|
 | Web, Chrome escritorio | Canvas 1152×648 y 960×540; clic; resize entre ambos |
-| Web, Chrome Android físico | Sin disponibilidad para nuevas pruebas desde el 2026-10-19; el resultado físico pendiente no se acredita desde el emulador |
 | App Android en teléfono físico | Sin disponibilidad para nuevas pruebas desde el 2026-10-19; conservar el alcance aprobado de los resultados físicos históricos |
-| Web, Chrome en Android Emulator | Entorno adicional autorizado; identificar AVD, API/imagen Android, ABI, versión de Chrome, viewport/densidad, renderer y gesto de SO usado |
-| App Android en Android Emulator | Entorno adicional autorizado; identificar AVD, API/imagen Android, ABI, build del juego, renderer, tamaño/orientación y gesto de SO usado |
-| App iOS nativa | Identificar build, renderer y dispositivo o simulador; entrada realmente usada |
+| APK Android instalado en Android Emulator | Entorno adicional autorizado; identificar AVD, API/imagen Android, ABI, build del juego, renderer, tamaño/orientación y gesto de SO usado |
+| App iOS instalada | Identificar build, renderer y dispositivo o simulador; IPA en hardware o `.app` nativa del simulador; entrada realmente usada |
 
-**Disponibilidad de Android desde el 2026-10-19.** Por decisión de la persona,
-las nuevas verificaciones Android continúan en emulador y no se solicitará
-reconectar hardware físico. Cada resultado identifica explícitamente si
-corresponde a la app nativa o a Chrome en Android Emulator. Los gestos atraviesan
-la entrada del sistema emulado; no se sustituyen por llamadas a métodos del
-juego. El tester verifica acceso real antes de declarar disponible un AVD o
-navegador.
+**Alcance vigente desde el 2026-10-19.** Por decisión de la persona y
+constitución 3.0.0, Web solo se prueba en navegador de computador. Se detienen
+las nuevas verificaciones de navegador Android/iOS, también en emulador o
+simulador. Los resultados Web móviles anteriores conservan su alcance
+histórico y no se convierten en pruebas nativas ni en fallos nuevos.
+
+Las nuevas verificaciones Android continúan con el APK instalado en emulador
+y no se solicitará reconectar hardware físico. Cada resultado identifica la
+app y su build. Los gestos atraviesan la entrada del sistema emulado; no se
+sustituyen por llamadas a métodos del
+juego. El tester verifica acceso real antes de declarar disponible un AVD,
+simulador o navegador de computador.
 
 QA puede aprobar con ese alcance los casos de carga, presentación, entrada,
 economía, reutilización y smoke realmente completados. Las mediciones de carga,
@@ -103,13 +107,15 @@ frame times, FPS y memoria en emulador describen únicamente ese entorno y su
 máquina anfitriona; no acreditan 60 FPS en el Xiaomi ni en otro teléfono. Los
 resultados físicos históricos se conservan sin ampliar su alcance. La falta
 definitiva de nuevas pruebas físicas mantiene pendiente SC-007 y la aceptación
-física exigida por la constitución 2.2.0; esta actualización de disponibilidad
+física exigida por la constitución 3.0.0; esta actualización de disponibilidad
 no los exime ni autoriza el cierre global de I2/004.
+Identificar el renderer real: una comprobación en Compatibility temporal no
+acredita el renderer Mobile de la app de producción.
 
 La ejecución nativa PC complementa desarrollo. No acredita Web. Un simulador
 iOS solo acredita su propia comprobación; no hardware iOS ni rendimiento físico.
-Cada entorno ausente queda pendiente, sin pasar por extrapolación. Registrar
-recortes existentes separadamente de errores nuevos. Solo T031 permite el
+Cada entorno ausente de la matriz vigente queda pendiente, sin pasar por
+extrapolación. Registrar recortes existentes separadamente de errores nuevos. Solo T031 permite el
 ajuste de cámara/cobertura delimitado en §7; input y reglas permanecen protegidos.
 Otras versiones/navegadores no heredan estos resultados.
 
@@ -136,8 +142,8 @@ instrumento. Señalar perturbación del observador y carencias de medición.
 No inventar un límite de carga aún pendiente en la constitución. Los 60 FPS
 estables en el Xiaomi provisional autorizado para 004 se evalúan de forma
 independiente por QA con nuevas mediciones; la autorización no acredita resultados.
-Una media favorable no oculta caídas ni sustituye esa aceptación. Web y nativo
-tienen mediciones distintas incluso sobre el mismo teléfono.
+Una media favorable no oculta caídas ni sustituye esa aceptación. Web en
+computador y apps nativas tienen mediciones distintas; no se mide navegador móvil.
 
 ## 6. Entrega de cada incremento
 
@@ -149,6 +155,11 @@ Pendientes de hardware, visuales, GREEN o QA siguen pendientes, sin cerrar la
 feature ni extrapolar las aprobaciones históricas de 002/003.
 
 ## 7. Corrección I1 — procedimiento de validación
+
+Este procedimiento conserva las dimensiones y los entornos de la corrección
+I1 aprobada. No ordena repetir navegador móvil: para nuevas verificaciones se
+aplica exclusivamente la matriz vigente de §4, preservando las referencias
+históricas de CSS 794×305 y Web aproximadamente 1684×648.
 
 1. QA T032 revisa la enmienda antes del RED T033. El tester comprueba resize:
    cámara sin zoom, mundo x=576 al 50 % del ancho lógico (error ≤1 unidad),

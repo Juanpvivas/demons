@@ -127,6 +127,9 @@ jugable no se mueve. iPad 1152×864 conserva distribución; Xiaomi 1440×648 y W
 aproximadamente 1684×648 muestran márgenes equilibrados, incluidos valores x<0.
 Solo cielo/panorama/suelo extienden cobertura a la izquierda con texturas
 existentes; trincheras y grid conservan geometría y posición.
+Las dimensiones Web citadas describen el encuadre histórico de I1. Desde el
+2026-10-19, Web se verifica solo en computador y Android/iOS como apps nativas
+instaladas, según la constitución 3.0.0 y la matriz de [quickstart](quickstart.md).
 
 No se añaden campos de gameplay, guardado, servicios externos o autoloads.
 Las formas exactas de comunicación se fijan en el contrato; todo comportamiento

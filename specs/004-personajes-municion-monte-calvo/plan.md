@@ -31,15 +31,19 @@ estado visual efímero por instancia, sin esquemas de stats o persistencia nuevo
 **Testing**: GUT para comportamiento visual/ciclo; revisión artística, carga,
 input real, smoke y medición. Runner existente `tools/ci/run_gut.py`.
 
-**Target Platform**: Web escritorio/móvil y apps Android/iOS, separadamente.
+**Target Platform**: Web solo en navegador de computador y apps Android/iOS
+instaladas, por decisión de la persona del 2026-10-19 (constitución 3.0.0).
+Android Emulator usa APK; iOS Simulator usa `.app`, sin acreditar un IPA físico.
 PC nativo solo desarrollo/pruebas. Renderer/presets/InputMap y semántica de input
 intactos; cámara local acotada a la corrección T031, sin zoom.
 
 **Project Type**: juego 2D Godot.
 
 **Performance Goals**: 60 FPS estables en Xiaomi 11T Pro físico `2107113SG` de
-2021, referencia provisional exclusiva de 004 (constitución 2.2.0), y medición
-Web separada; carga fría/caliente, frame times y memoria frente a baseline.
+2021, referencia provisional exclusiva de 004 (enmienda 2.2.0 conservada en la
+constitución 3.0.0), y medición Web en computador separada; carga fría/caliente,
+frame times y memoria frente a baseline. El emulador autorizado no sustituye
+las mediciones físicas pendientes.
 
 **Constraints**: cuerpos de actores 48×48, grid 96×96, detectores y caja
 32×32/collider radio 20 intactos. El soldado cambia solo en su hijo visual:
@@ -51,9 +55,11 @@ inmutable en snapshot neutro y reset, sin tintes/pulsos transitorios filtrados.
 Camera2D sin zoom centra mundo x=576 al 50 % del viewport lógico (error ≤1),
 con origen vertical efectivo del canvas y=0. No imponer position.y=0 ni
 limit_left=0: el margen izquierdo muestra mundo negativo en pantallas anchas.
-Conservar la composición iPad 1152×864; equilibrar Xiaomi 1440×648 y Web
-aproximadamente 1684×648 extendiendo solo cielo/panorama/suelo decorativos a la
+Conservar la composición iPad 1152×864; equilibrar Xiaomi nativo 1440×648 y
+viewports anchos extendiendo solo cielo/panorama/suelo decorativos a la
 izquierda con texturas existentes. No mover trincheras, actores o grid.
+CSS 794×305 y Web aproximadamente 1684×648 corresponden a referencias
+históricas de I1; no requieren continuar pruebas de navegador móvil.
 Texturas importadas de ejecución hasta 1024² por actor y caja hasta 256²:
 máximo 8.25 MiB RGBA8 estimados, sin equivaler a VRAM real. El PNG original del
 soldado conserva 1774×887; su importación limita la textura a 1024×512 y los
@@ -73,13 +79,15 @@ del terreno. T031 autoriza solo el ajuste de cámara y cobertura descritos arrib
 | IV: 60 FPS y pooling | Nueva medición necesaria | Pool de efectos; Xiaomi físico provisional autorizado para 004 |
 | Flujo de preparación y PR pequeños | Spec Kit solo prepara | Tres incrementos completos; futura ejecución por roles |
 
-Sin NEEDS CLARIFICATION de diseño. La constitución 2.2.0 recoge la autorización
+Sin NEEDS CLARIFICATION de diseño. La constitución 3.0.0 conserva la autorización
 explícita del 2026-10-16 para usar el Xiaomi físico provisional exclusivamente en
-004; la referencia nominal global permanece vigente. Antes de medir, identificar
-y obtener acceso a ese equipo. Su ausencia deja pendiente SC-007. La autorización
+004; la referencia nominal global permanece vigente. Desde el 2026-10-19 no
+será posible obtener nuevas pruebas físicas y se continúa con APK en Android
+Emulator, sin pedir reconexión del teléfono. SC-007 físico sigue pendiente. La autorización
 no aprueba resultados: se requieren nuevas mediciones y QA, sin heredar 002/003
-ni certificar equipos menos potentes o iOS. Web y nativo se miden por separado
-también en el mismo Xiaomi. El umbral constitucional de carga permanece pendiente,
+ni certificar equipos menos potentes o iOS. Web solo en computador y apps
+nativas se miden por separado; no se continúan pruebas de navegador móvil.
+El umbral constitucional de carga permanece pendiente,
 sin inventarlo. Cada entorno no probado deja pendiente su aceptación.
 
 ## Project Structure

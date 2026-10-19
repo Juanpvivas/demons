@@ -547,8 +547,12 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
 
 ## 7. Consideraciones multiplataforma
 
-- **Destinos del producto:** Web, con navegador en computador y móvil, y
-  aplicaciones Android/iOS. itch.io es el primer portal Web previsto.
+- **Destinos del producto:** Web solo en navegador de computador y aplicaciones
+  Android/iOS instaladas (APK/IPA). itch.io es el primer portal Web previsto.
+  Por decisión de la persona del 2026-10-19 y constitución 3.0.0, no se
+  continúan pruebas de navegador móvil, tampoco en emulador/simulador. Android
+  Emulator prueba el APK; iOS Simulator usa la app nativa `.app` del simulador,
+  que no equivale a instalar un IPA en hardware.
   Windows/macOS/Linux nativos se conservan como entornos de editor y prueba
   local, sin instaladores del producto. Las capturas y mediciones históricas
   de PC siguen identificadas como tales; no equivalen a resultados Web.
@@ -575,12 +579,13 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   con validaciones de entrada propias de cada plataforma.
 - UI (`HUD.tscn`) usa contenedores con anclas relativas, no posiciones fijas
   en píxeles, para adaptarse a distintas resoluciones y aspect ratios entre
-  aplicaciones móviles y navegadores de computador/móvil.
+  aplicaciones móviles y navegadores de computador.
 - **Ruta gráfica implementada y validada en 003:** `Mobile` se conserva como
   método nativo y `rendering/renderer/rendering_method.web="gl_compatibility"`
   selecciona Compatibility/WebGL 2.0 para Web. El preset `Web` exporta con un
   hilo, sin GDExtension ni PWA y canvas adaptativo. La evidencia proviene del
-  navegador y del Xiaomi horizontal; una captura del editor no la sustituye.
+  navegador de computador y del Xiaomi horizontal bajo la matriz histórica
+  de 003; una captura del editor no la sustituye.
   [Guía y alcance validado](WEB_EXPORT.md).
 - **Paquete Web:** `tools/web/export.sh`, con `GODOT_WEB_BIN` estándar 4.7.1,
   produce `build/web/index.html`, sus compañeros, ZIP y manifest exterior.
@@ -593,11 +598,13 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   terminó con SUCCESS antes de integrar el cierre de 002; el nuevo estado debe
   comprobarse por separado. [Paquetes y alcance](WEB_EXPORT.md#artefacto-de-ci).
   El CI existente conserva GUT/importación y los deploys nativos no cambiaron.
-- Las verificaciones Web identifican navegador, sistema/dispositivo, tamaño,
+- Las verificaciones Web identifican navegador, sistema/computador, tamaño,
   entrada y renderer. Deben comprobar carga, partida, redimensionamiento y
   entrada dentro del navegador, incluida su presentación embebida cuando se
   prepare itch.io. Se conserva la exigencia de 60 FPS en el Android de
-  referencia; los resultados nativos y Web se registran por separado.
+  referencia para la app nativa; los resultados nativos y Web en computador
+  se registran por separado. La autorización de emulador/simulador acredita
+  solo ese entorno; Compatibility temporal no certifica Mobile.
 - Presets de exportación por plataforma se versionan en
   `export_presets.cfg`, sin credenciales ni keystores/certificados dentro
   del repositorio. Cada push a `main` exporta y sube automáticamente un
@@ -617,12 +624,15 @@ conservada en la constitución 2.1.0,
 con los picos y límites del instrumento conservados; no se extrapola a otros
 dispositivos o features.
 
-Para I1 de 004, la constitución 2.2.0 autoriza por separado el Xiaomi 11T Pro
+Para I1 de 004, la enmienda 2.2.0 autoriza por separado el Xiaomi 11T Pro
 físico provisional; se mantiene el objetivo de 60 FPS. Web y app Android tienen
 aceptaciones propias, sin extrapolar por compartir teléfono. La comprobación
 iOS corresponde solo a simulador con renderer software, sin acreditar hardware
 iOS o Mobile. La aceptación de I1 no certifica estabilidad sostenida fuera de
 las muestras revisadas ni sustituye las verificaciones pendientes de I2/I3.
+La constitución 3.0.0 conserva la referencia física nativa y esas aprobaciones
+históricas; las nuevas verificaciones siguen los destinos vigentes de esta
+sección, sin exigir navegador móvil ni convertirlo en prueba de app instalada.
 
 - **Política de versionado para releases de prueba**: ambos workflows de
   deploy tienen un paso que compara `version/code`/`version/name`
@@ -684,3 +694,4 @@ las muestras revisadas ni sustituye las verificaciones pendientes de I2/I3.
 | 2026-10-16 | Integración de main tras PR #16: se preservan la escena visual y la validación nativa 002 junto con Web/Compatibility de 003; constitución 2.1.0 combina sus decisiones sin extrapolar pruebas ni rendimiento entre plataformas. |
 | 2026-10-16 | T012 de 004, tras aprobación funcional T011: §2/§4.7/§5 gradúan la presentación observadora y derrota cosmética independiente, con snapshot neutro, pool visual precalentado y callbacks por activación. Solo soldado integrado; enemigo/caja pendientes. §7 delimita Xiaomi provisional propio de 004, Web separado e iOS simulador/software. |
 | 2026-10-17 | T037 de 004, tras QA funcional T036: §4.7 gradúa material autorado inmutable/nullable en snapshot y limpieza del efecto; §5/§5.1 describen el encuadre local de Monte Calvo y cobertura decorativa izquierda, conservando la separación entre cámara del nivel y entorno estático. |
+| 2026-10-19 | §7: Web solo en computador y Android/iOS como apps instaladas según decisión de la persona y constitución 3.0.0; se preservan las pruebas móviles Web históricas y se distinguen APK/IPA, app de simulador y requisitos físicos nativos |

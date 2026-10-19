@@ -9,11 +9,20 @@ y la preparación del [PR #19](https://github.com/Juanpvivas/demons/pull/19) ya 
 la rama de ejecución se mantiene durante el ciclo de I2. El historial y las
 aprobaciones de I1 conservan su alcance original.
 El Xiaomi 11T Pro físico `2107113SG` es la referencia provisional exclusiva
-de 004 por decisión de la persona, según la constitución 2.2.0. Las aprobaciones
+de 004 por decisión de la persona, según la enmienda 2.2.0 conservada en la
+constitución 3.0.0. Las aprobaciones
 de T001–T013 corresponden a `87a39c6` y conservan su evidencia histórica. La
 corrección solicitada por la persona requiere sus propios gates antes de actualizar
 la entrega; iOS sigue distinguiendo simulador y hardware. Los incrementos
 posteriores conservan sus verificaciones propias.
+
+**Matriz vigente desde el 2026-10-19**: Web solo en navegador de computador;
+Android/iOS como apps instaladas (APK/IPA o `.app` nativa de iOS Simulator).
+No continuar navegador móvil, tampoco en emulador/simulador. Android Emulator
+está autorizado para APK y ya no se solicitará reconectar el teléfono físico;
+SC-007 y sus mediciones físicas nativas siguen pendientes. T001–T013 y
+T031–T038 conservan literalmente sus descripciones, aprobaciones y entornos
+históricos, sin convertir navegador móvil en prueba nativa ni reabrirlos.
 **Input**: [spec](spec.md), [plan](plan.md), [research](research.md),
 [modelo](data-model.md), [contrato](contracts/visual-presentation.md) y
 [quickstart](quickstart.md).
@@ -103,7 +112,7 @@ la caja puede continuar provisional. I2 depende de I1 aprobado.
 - [X] T016 [US2] qa-validator: revisar RED y cobertura de `tests/unit/enemies/test_enemigo_visual.gd` y `tests/unit/systems/test_combat_visual_effects.gd`; exigir fallo semántico y bloqueo físico real, no asumir que velocidad deseada implica avance. Aprobar solo pruebas RED; depende de T015.
 - [ ] T017 [US2] dev-godot: implementar en `scenes/enemies/EnemigoBase.tscn`, `enemigo.gd`, `enemigo_visual.gd` y `scenes/levels/wave_spawner.gd` el avance/contacto observado, impacto, snapshot previo y reset total por generación; registrar una vez cada instancia física creada con el servicio I1, sin cambiar `core/object_pool.gd` ni el orden jugable. Sin pruebas; depende de T014 y T016.
 - [X] T018 [US2] godot-tester: confirmar GREEN de T015 y regresión I1/enemigo/spawner/oleadas en `tests/unit/enemies/`, `tests/unit/units/`, `tests/unit/levels/test_wave_spawner.gd` y `tests/unit/systems/test_combat_visual_effects.gd`; comprobar diez ciclos y aislamiento tras reutilización antes de terminar feedback; depende de T017.
-- [ ] T019 [US2] godot-tester: comparar enemigo integrado y `assets/sprites/enemies/monte_calvo/SOURCES.md`, combate/gestos reales y rendimiento base/candidato por entorno con `specs/004-personajes-municion-monte-calvo/quickstart.md`. Verificar legibilidad/resize y smoke terminal, Xiaomi provisional de 004/60 FPS, Web separado e iOS identificado; pendientes no se presentan aprobados; depende de T018.
+- [ ] T019 [US2] godot-tester: comparar enemigo integrado y `assets/sprites/enemies/monte_calvo/SOURCES.md`, combate/gestos reales y rendimiento base/candidato por entorno con `specs/004-personajes-municion-monte-calvo/quickstart.md`. Verificar legibilidad/resize y smoke terminal en Web de computador, APK instalado en horizontal en Android Emulator autorizado y app iOS instalada identificando hardware/simulador y renderer. El requisito físico nativo Xiaomi provisional de 004/60 FPS y SC-007 permanece pendiente, sin solicitar reconexión ni acreditarlo desde el emulador; no continuar navegador móvil ni presentar pendientes como aprobados; depende de T018.
 - [ ] T020 [US2] qa-validator: validar I2 en `scenes/enemies/`, `scenes/levels/wave_spawner.gd` y servicio visual contra US2, FR-002–003/005–007/009–012, arte, RED/GREEN y T019; comprobar que contacto/animación no gobiernan daño y que no hay residuos ni cambio de pool; depende de T019.
 - [ ] T021 [US2] docs-writer: actualizar `docs/SPEC.md` y los patrones aprobados que correspondan de `docs/ARCHITECTURE.md`, conservando la caja y el cierre como pendientes; entregar resumen del alcance I2 para PR sin evidencias nuevas en Git; depende de T020 aprobado.
 - [ ] T022 [US2] qa-validator: revisar documentación T021 y estado final de `docs/SPEC.md`, `docs/ARCHITECTURE.md` y archivos I2. Tras APROBADO y verificación de base/diff, project-orchestrator publica la rama del incremento y crea PR en borrador con `Refs` al mismo Issue; depende de T021, sin promoverlo ni fusionarlo.
@@ -117,7 +126,7 @@ con clic/toque, conservando radio 20 y la precedencia recoger/desplegar.
 
 - [ ] T023 [US3] dev-godot: producir con la skill de imagen aplicable `assets/sprites/pickups/monte_calvo/caja_municion.png`, importación y `SOURCES.md`; integrar solo el sprite de `scenes/levels/AmmoPickup.tscn`, arte/motivo opaco dentro de 32×32 y radio 20 intacto. Sin lógica ni RED artificial; depende de T022.
 - [ ] T024 [US3] godot-tester: inspeccionar caja/procedencia y confirmar regresión existente en `tests/unit/levels/test_pickup_input_routing.gd`, `test_nivel_montecalvo.gd` y `tests/unit/systems/test_economy_manager.gd`; verificar picking real, cuatro gestos y cajas solapadas según `specs/004-personajes-municion-monte-calvo/quickstart.md`. No añadir tests que solo enumeren archivos/frames ni reconstruir RED histórico; depende de T023.
-- [ ] T025 [US3] godot-tester: completar comparación de las tres representaciones, armas sin depender del tinte, resize y medición final base/candidato según `specs/004-personajes-municion-monte-calvo/quickstart.md`: Web Chrome 1152×648/960×540 y Android horizontal, app Android en el Xiaomi provisional de 004 y app iOS distinguiendo hardware/simulador. Registrar 60 FPS estables, carga y memoria por entorno; ausencias siguen bloqueando su aceptación; depende de T024.
+- [ ] T025 [US3] godot-tester: completar comparación de las tres representaciones, armas sin depender del tinte, resize y medición final base/candidato según `specs/004-personajes-municion-monte-calvo/quickstart.md`: Web Chrome de computador 1152×648/960×540, APK Android instalado en horizontal en el emulador autorizado y app iOS instalada distinguiendo hardware/simulador y renderer; no continuar navegador móvil. Registrar carga y memoria por entorno y conservar pendientes los 60 FPS físicos nativos en el Xiaomi provisional de 004, sin acreditarlos desde emulador ni solicitar reconexión. Ausencias de la matriz vigente siguen bloqueando su aceptación; depende de T024.
 - [ ] T026 [US3] godot-tester: ejecutar suite completa con `tools/ci/run_gut.py`; jugar `scenes/levels/Nivel_MonteCalvo.tscn` con oleadas de producción hasta terminal usando observador temporal de solo lectura del estado y corroboración de producción. Verificar victoria/derrota por separado y recarga por ruta existente; no sustituir la partida por recursos cortos ni inferir estado oculto por sprites; depende de T025.
 - [ ] T027 [US3] qa-validator: validar los tres elementos, diff y T024–T026 contra `specs/004-personajes-municion-monte-calvo/spec.md` completo, sus 12 FR y 8 SC. Exigir suite/partida, matriz, procedencia, pooling/reset, neutralidad jugable y rendimiento; pendientes de plataforma/referencia física de 004 o resultado terminal sin oráculo impiden aprobar cierre; depende de T026.
 - [ ] T028 [US3] docs-writer: consolidar comportamiento aprobado y límites en `docs/SPEC.md`, `docs/ARCHITECTURE.md` y `README.md` cuando corresponda; resolver solo acabado de estos tres elementos, conservando HUD/controles y resto del MVP pendientes. Preparar resumen final para PR sin volcar mediciones o informes; depende de T027 aprobado.

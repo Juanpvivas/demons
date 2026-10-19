@@ -11,16 +11,23 @@ contexto histórico.
 ## Plataformas y publicación
 
 El objetivo es publicar primero una versión **Web jugable en itch.io**,
-desde el navegador de un computador o teléfono, conservando **Android e iOS
-como aplicaciones nativas**. Se admiten ratón y toque según el dispositivo.
+desde el navegador de un computador, conservando **Android e iOS como
+aplicaciones nativas instaladas (APK/IPA)**. Desde el 2026-10-19, por decisión
+de la persona, las pruebas Web se limitan a computador; en Android/iOS se
+prueban las apps instaladas, también en emulador/simulador cuando corresponda
+(APK Android o `.app` nativa de iOS Simulator).
+Se admiten ratón y toque según el destino.
 No se prevén instaladores propios para Windows, macOS o Linux; el editor y
 la ejecución nativa local en computador siguen siendo herramientas de desarrollo.
 
 La feature [`003-web-itchio`](specs/003-web-itchio/spec.md) ya dispone de un
 paquete Web revisado localmente, con entrega aceptada por QA en Chrome de
-escritorio y Xiaomi horizontal: generación, interacción y smoke observados,
-corroboración visual de producción móvil y regreso sin recarga observada. Rendimiento sostenido,
-carga fría, memoria exclusiva y los entornos no probados conservan pendientes.
+escritorio y Xiaomi horizontal bajo su alcance histórico: generación,
+interacción y smoke observados, corroboración visual de producción móvil y
+regreso sin recarga observada. Rendimiento sostenido,
+carga fría y memoria exclusiva conservan sus límites. Los entornos históricos
+no probados mantienen su registro; los navegadores móviles quedan fuera de
+las nuevas verificaciones.
 El juego no está publicado en el portal. Consulta la
 [guía de exportación y estado de validación](docs/WEB_EXPORT.md).
 

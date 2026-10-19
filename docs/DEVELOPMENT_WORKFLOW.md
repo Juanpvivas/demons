@@ -35,6 +35,13 @@ checklist de especificación no equivalen a validación de una implementación.
 Las consultas y correcciones documentales puntuales mantienen su alcance;
 no disparan por sí solas la implementación de una feature, Issues o un PR.
 
+La matriz vigente sigue la constitución 3.0.0: Web solo en navegador de
+computador; Android/iOS como apps instaladas. No continuar pruebas Web en
+navegadores móviles, tampoco en emulador/simulador. Conservar las evidencias
+históricas sin convertirlas en pruebas de apps ni reabrir features anteriores.
+Las pruebas nativas emuladas acreditan solo ese entorno y no eximen requisitos
+de rendimiento físico.
+
 ## Responsabilidades y tipos de tarea
 
 | Trabajo | Agente responsable | Evidencia para QA |
@@ -216,3 +223,4 @@ comprobar que sus comandos y plantillas siguen activos tras una actualización.
 | 2026-10-15 | Personalizaciones empaquetadas en un preset local y workflow independiente; mantenimiento fuera de los archivos core |
 | 2026-10-16 | Incrementos con PR pequeños, ciclos TDD/QA completos, descripciones y commits legibles, archivo duradero de evidencia y cierre final del Issue |
 | 2026-10-16 | Por decisión de la persona, futuros PR sin archivos nuevos de evidencias en Git ni archivo permanente obligatorio; resultados en el PR y comprobaciones reales para QA |
+| 2026-10-19 | Matriz vigente según constitución 3.0.0: Web solo en computador, Android/iOS como apps instaladas y conservación del historial y de los requisitos físicos nativos |

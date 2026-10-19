@@ -23,9 +23,15 @@ Juego de defensa por carriles (estilo *Plants vs. Zombies*) inspirado en la hist
 
 ## 4. Plataformas objetivo
 
-- **Web (prioridad de publicación):** jugable desde el navegador en computador
-  y dispositivos móviles; primer portal previsto: itch.io.
-- **Android e iOS:** se conservan como aplicaciones nativas objetivo.
+- **Web (prioridad de publicación):** jugable solo desde el navegador en
+  computador; primer portal previsto: itch.io.
+- **Android e iOS:** aplicaciones nativas instaladas (APK/IPA o `.app` nativa
+  de iOS Simulator). Las pruebas en emulador/simulador identifican ese entorno
+  y no acreditan hardware físico.
+
+Este alcance rige desde la decisión de la persona del 2026-10-19, recogida en
+la constitución 3.0.0. No se continúan pruebas de navegador en Android/iOS;
+las verificaciones móviles Web anteriores se conservan como historia.
 
 No se prevén instaladores propios Windows/macOS/Linux. El ratón sigue siendo
 una entrada válida en navegador de computador, y la ejecución nativa local
@@ -43,7 +49,8 @@ implica una publicación en el portal. [Alcance y evidencias](WEB_EXPORT.md).
 - **Licencia del motor:** MIT, sin regalías, sin costos.
 - **Portabilidad validada en 003:** Compatibility específico para Web, con
   Godot estándar 4.7.1 y un hilo, manteniendo Mobile para las apps nativas.
-  QA aceptó la entrega en Chrome de escritorio y Xiaomi/Chrome horizontal;
+  QA aceptó históricamente la entrega en Chrome de escritorio y Xiaomi/Chrome
+  horizontal;
   rendimiento sostenido y entornos no probados conservan límites explícitos.
   El paquete está revisado localmente y no publicado en itch.io.
 
@@ -53,7 +60,7 @@ implica una publicación en el portal. [Alcance y evidencias](WEB_EXPORT.md).
 
 **Recurso global: Munición**
 - Se obtiene principalmente de enemigos derrotados (dropean munición al morir, el jugador la recoge/recolecta). *(Supuesto — confirmar si además debería acumularse pasiva y automáticamente con el tiempo, estilo sol en PvZ.)*
-- **Confirmado** (spec `001-soldado-defensor-oleadas`, T031/T032): la recolección de la munición soltada es una acción **explícita** del jugador — tap/click sobre la pickup (`AmmoPickup`, `Area2D`) que aparece en la posición del enemigo derrotado — nunca automática por proximidad. Misma acción discreta (`collect_pickup` del `InputMap`) en touch y mouse; ver rationale en `research.md` §3 de esa feature. Web debe conservar esa semántica en navegador móvil y de computador; su verificación pertenece a 003.
+- **Confirmado** (spec `001-soldado-defensor-oleadas`, T031/T032): la recolección de la munición soltada es una acción **explícita** del jugador — tap/click sobre la pickup (`AmmoPickup`, `Area2D`) que aparece en la posición del enemigo derrotado — nunca automática por proximidad. Misma acción discreta (`collect_pickup` del `InputMap`) en touch y mouse; ver rationale en `research.md` §3 de esa feature. Web en computador y las apps nativas deben conservar esa semántica; 003 documenta su verificación histórica en navegador.
 - **Precedencia confirmada** (`002-monte-calvo-terreno-trincheras`, T019–T022): un clic/toque sobre una pickup recoge su munición sin desplegar además un soldado ni gastar el costo de despliegue, aunque la reserva ya sea suficiente y su celda esté libre. El despliegue sigue requiriendo un gesto sobre una celda libre sin pickup y fondos suficientes. La corrección separada pasó [RED/GREEN y regresión nativas](../specs/002-monte-calvo-terreno-trincheras/evidence/t021-green.md); la [matriz de entrada](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md) distingue ratón, emulación y dispositivos físicos. La [verificación Web de 003/T015–T018](../specs/003-web-itchio/evidence/t017-green.md) conserva su alcance propio en navegador.
 - Uso dual, a elección del jugador:
   1. **Recargar** a un soldado ya desplegado en el tablero (le da más disparos antes de quedarse sin balas).
@@ -145,13 +152,16 @@ se limita a esta feature y al Xiaomi 11T Pro físico como referencia provisional
 según la enmienda 1.2.0, conservada en la constitución 2.1.0. Conserva los picos y la perturbación del observador
 documentados; no certifica otros dispositivos ni ausencia de toda caída.
 
-La aceptación de I1 de 004 distingue Chrome de escritorio y Android Web de la
-app Android en el Xiaomi físico provisional autorizado exclusivamente para 004
+La aceptación histórica de I1 de 004 distingue Chrome de escritorio y Android
+Web de la app Android en el Xiaomi físico provisional autorizado exclusivamente para 004
 por la constitución 2.2.0. iOS solo acredita el simulador y su renderer software;
 no hardware iOS ni el renderer Mobile. Cada entorno conserva sus propios límites,
 sin heredar resultados de 002/003 ni certificar estabilidad sostenida más allá
 de las muestras revisadas. El seguimiento de los incrementos está en sus
 [tareas](../specs/004-personajes-municion-monte-calvo/tasks.md).
+Las nuevas verificaciones siguen §4: navegador solo en computador y apps
+instaladas en Android/iOS; la reducción del alcance Web no exime los requisitos
+de rendimiento físico nativo ni amplía esas aprobaciones históricas.
 
 ## 9. Alcance del MVP (primera versión jugable)
 
@@ -207,3 +217,4 @@ de las muestras revisadas. El seguimiento de los incrementos está en sus
 | 2026-10-16 | Integración de main tras PR #16: se conserva 002 aprobada junto con los destinos y la entrega Web de 003; constitución 2.1.0 reúne ambas decisiones. Las entradas anteriores describen sus estados históricos, sin extender la referencia Xiaomi de 002 a Web. |
 | 2026-10-16 | T012 de 004, tras aprobación funcional T011: §8/§10 documentan el soldado pictórico, sus estados reales y la derrota cosmética sin retrasar retiro; enemigo/caja e interfaz siguen pendientes. Se distinguen Xiaomi provisional de 004, Web separado e iOS simulador/software, sin ampliar la aceptación a hardware o estabilidad sostenida. |
 | 2026-10-17 | T037 de 004, tras QA funcional T036: §8/§10 incorporan la corrección de legibilidad del soldado y encuadre local de Monte Calvo, conservando geometría, reglas y composición iPad. Enemigo, caja e interfaz siguen pendientes. |
+| 2026-10-19 | §4–6/§8: Web solo en computador y Android/iOS como apps instaladas por decisión de la persona y constitución 3.0.0; se conservan las verificaciones Web móviles históricas y los requisitos físicos nativos |
