@@ -3,7 +3,7 @@
 **Feature ID**: `005-cinco-carriles`
 **Planned Branch**: `codex/005-cinco-carriles-preparacion`
 **Created**: 2026-10-19
-**Status**: Aclaraciones principales resueltas; precisiones pendientes para plan.
+**Status**: Especificación documental aprobada por QA — lista para planificación; implementación pendiente.
 
 **Input**: Cinco filas horizontales, con cinco trincheras a la izquierda,
 soldados colombianos disparando hacia la derecha desde ellas y enemigos de
@@ -33,23 +33,22 @@ especifica el comportamiento futuro; no afirma que esté implementado.
   cargados desde el inicio, uno por trinchera, y reserva global cero. Conservar
   cantidades y tiempos actuales de oleadas, con reparto prefijado entre filas.
 
-### Precisiones pendientes para plan
+- Q: ¿Qué velocidad propia tiene el soldado al salir y regresar? → A: 40
+  unidades de mundo por segundo en ambas direcciones, ajustable e independiente
+  de la velocidad enemiga.
+- Q: ¿Cuándo se permite «Recargar» y cómo se evita cobrar otra orden al volver?
+  → A: Solo a un soldado vivo con carga cero; una orden por regreso. El botón
+  se desactiva al aceptar la orden y durante todo el retorno.
+- Q: ¿Cómo continúa el reparto al terminar una oleada? → A: Secuencia
+  1→2→3→4→5 continua entre oleadas, sin reiniciar en la fila 1, conservando
+  conteos y tiempos actuales.
 
-- **C4 — Velocidad de salida/regreso**: [NEEDS CLARIFICATION: ¿Qué velocidad
-  propia tendrá el soldado al salir y regresar: 40/40, 60/60 o 40/60 unidades
-  de mundo por segundo, respectivamente? No se ha elegido ninguna opción.]
-- **C5 — Elegibilidad de recarga**: [NEEDS CLARIFICATION: ¿«Recargar» se permite
-  solo con carga cero o también con una carga parcialmente gastada? Ambas
-  opciones bloquean nuevas recargas durante el regreso; falta elegir la
-  condición que habilita la orden y su cobro.]
-- **C6 — Secuencia de filas**: [NEEDS CLARIFICATION: ¿El reparto prefijado
-  recorre 1→2→3→4→5 de forma continua entre oleadas o vuelve a empezar en la
-  fila 1 al comenzar cada oleada? No se ha elegido ninguna secuencia.]
-
-El botón de recarga introduce una orden con costo observable, no solo una
-presentación de la operación existente. Su habilitación, rechazo y cobro por
-orden necesitan la decisión C5 antes de planificar el comportamiento; no se
-consideran resueltos por conservar el costo unitario equivalente al despliegue.
+El botón introduce una orden con costo observable: una recarga aceptada cobra
+una vez el costo equivalente al despliegue; una orden inválida o repetida
+durante el retorno no cobra. Durante el regreso el soldado ya está recargado:
+no usa fusil ni machete, sigue vulnerable al contacto/daño y reanuda el fusil
+solo al llegar a su trinchera. Estas reglas describen requisitos futuros,
+no una implementación o validación ya entregada.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -77,6 +76,12 @@ hasta la posición defendida.
    en otras filas, **Then** ese contacto no bloquea sus rutas independientes.
 5. **Given** un enemigo que alcanza el límite defendido por cualquiera de las
    filas, **When** cruza por la izquierda, **Then** ocurre una sola derrota.
+6. **Given** que una oleada termina tras asignar su último enemigo a la fila
+   3, **When** aparece el primero de la siguiente, **Then** usa la fila 4;
+   después de la fila 5 se continúa por la 1, sin alterar conteos o tiempos.
+7. **Given** el atacante inicial separado en la fila central 3, **When**
+   comienza la primera oleada, **Then** su primer enemigo usa la fila 1;
+   el atacante inicial no consume ni adelanta la secuencia de oleadas.
 
 ### User Story 2 - Salir con machete al agotar la carga (Priority: P1)
 
@@ -101,16 +106,23 @@ su trinchera para comprobar regreso físico antes de reanudar el fusil.
    **When** se elige la continuación, **Then** busca otro enemigo delante
    en esa fila o espera donde está si no hay ninguno; no ataca una baja
    anterior ni duplica recompensas o cambia de fila.
-4. **Given** un soldado fuera y fondos suficientes para una recarga válida,
+4. **Given** un soldado vivo fuera, con carga cero y fondos suficientes,
    **When** se selecciona su trinchera y se pulsa «Recargar», **Then** se cobra
    esa recarga una vez, conserva salud/moral y regresa físicamente a su origen;
-   no dispara durante el regreso y vuelve al fusil al llegar.
+   el botón queda desactivado desde la aceptación hasta terminar el retorno,
+   no usa fusil ni machete al regresar y vuelve al fusil solo al llegar.
 5. **Given** el soldado derrotado fuera de su trinchera, **When** muere,
    **Then** deja de combatir, pierde su moral y libera su plaza de origen,
    sin esperar a que termine la caída visual.
 6. **Given** un soldado sin balas que espera y enemigos solo detrás o en otra
    fila, **When** se evalúa su salida, **Then** mantiene la posición; al
    aparecer un enemigo delante en su fila reanuda el avance frontal.
+7. **Given** un soldado que sale o regresa sin bloqueo físico, **When** se
+   compara su desplazamiento con enemigos de distintas velocidades, **Then**
+   mantiene su velocidad propia de 40 unidades de mundo/s en ambos trayectos.
+8. **Given** un soldado regresando y un enemigo en contacto, **When** recibe
+   daño, **Then** pierde salud y puede morir; no contraataca con ninguna arma
+   ni gana invulnerabilidad por estar recargado o volviendo a la trinchera.
 
 ### User Story 3 - Administrar plazas y munición (Priority: P2)
 
@@ -140,6 +152,9 @@ cada gesto válido o rechazado, incluida la salida y derrota del dueño de una p
 6. **Given** una trinchera cuyo dueño ha muerto, **When** se solicita recargar
    desde una selección anterior, **Then** no se resucita al muerto ni se cobra
    recarga a otra unidad; la plaza queda disponible para un nuevo despliegue.
+7. **Given** un soldado con carga parcial/llena o una recarga ya aceptada y en
+   retorno, **When** se consulta o repite «Recargar», **Then** el botón está
+   desactivado y no se produce otro cobro o recarga.
 
 ### Edge Cases
 
@@ -151,8 +166,8 @@ cada gesto válido o rechazado, incluida la salida y derrota del dueño de una p
   perseguir enemigos detrás ni buscar otra fila.
 - Recarga sin fondos, solicitud repetida o muerte durante regreso: sin cobro
   parcial por un rechazo, duplicación de un gesto, resurrección ni reserva
-  perpetua de una plaza liberada. La elegibilidad de cargas cero/parciales y
-  las órdenes durante el regreso siguen pendientes de la decisión C5.
+  perpetua de una plaza liberada. Una carga parcial/llena no admite recarga;
+  una orden aceptada desactiva el botón y bloquea otra durante todo el retorno.
 - Contactos múltiples y de distintas filas: sin daño duplicado por el mismo
   ataque ni bloqueo entre filas que no comparten contacto.
 - Reutilización enemiga en otra fila y reinicio: sin objetivos, posiciones,
@@ -173,9 +188,11 @@ cada gesto válido o rechazado, incluida la salida y derrota del dueño de una p
   Reemplazarlo solo después de su muerte y rechazar despliegues en puntos
   inválidos o plazas reservadas antes de cobrar o crear unidades.
 - **FR-003**: Asignar a cada enemigo una fila de avance derecha→izquierda,
-  conservada hasta su retirada, mediante un reparto prefijado entre las cinco
-  filas; C6 cierra su continuidad entre oleadas. No introducir reparto
-  aleatorio ni multiplicar cantidades por cinco.
+  conservada hasta su retirada. Solo los enemigos de oleadas se reparten en
+  secuencia 1→2→3→4→5 continua entre oleadas, sin reiniciarla al pasar a otra.
+  El atacante inicial tiene asignación fija separada en la fila central 3 y
+  no consume ni adelanta esa secuencia. No introducir azar ni multiplicar
+  cantidades por cinco.
 - **FR-004**: El fusil dispara a derecha desde dentro de la trinchera,
   conservando carga, alcance, daño, cadencia y prioridad vigentes: frente y
   celdas diagonalmente contiguas de filas adyacentes, sin ampliar el cono ni
@@ -184,8 +201,9 @@ cada gesto válido o rechazado, incluida la salida y derrota del dueño de una p
   físicamente solo hacia enemigos delante en su fila. Avanza y ataca en esa
   fila; al perder o eliminar objetivo busca otro frontal en la misma fila y,
   si no existe, espera en su posición actual hasta que haya uno o se recargue.
-  Las velocidades propias de salida/regreso se fijan en C4. No basta
-  animación decorativa ni una copia o teletransporte.
+  Su velocidad propia de salida y regreso es 40 unidades de mundo/s, ajustable
+  e independiente de la velocidad enemiga; un contacto físico puede detenerlo.
+  No basta animación decorativa ni una copia o teletransporte.
 - **FR-006**: El machete conserva rango frontal, cadencia y daño por moral;
   el contacto permite daño y derrota reales de ambos actores. Las trincheras
   no conceden cobertura, invulnerabilidad ni bonificaciones estadísticas.
@@ -193,9 +211,13 @@ cada gesto válido o rechazado, incluida la salida y derrota del dueño de una p
   ese tipo y se solicita seleccionando la trinchera y pulsando «Recargar»,
   aunque su soldado esté fuera. La selección muestra la munición y moral
   individuales del dueño. Una recarga válida fuera provoca regreso físico
-  por su fila hasta su trinchera, sin disparar antes de llegar; dentro restaura
-  el fusil sin desplazamiento. La falta de fondos no cobra ni altera el estado.
-  C5 debe cerrar qué cargas permiten ordenar/cobrar y el bloqueo durante el regreso.
+  por su fila hasta su trinchera; dentro restaura el fusil sin desplazamiento.
+  Solo un dueño vivo con carga cero y reserva suficiente admite la orden. Una
+  orden aceptada cobra una vez y desactiva «Recargar» desde su aceptación y
+  durante todo el retorno. Una carga parcial/llena, dueño muerto, falta de
+  fondos u orden durante retorno no admite otro cobro o recarga. En el regreso
+  no usa fusil ni machete y sigue vulnerable al contacto/daño; el fusil solo
+  se reanuda al llegar.
 - **FR-008**: La plaza de origen continúa reservada durante salida, espera,
   contacto y regreso, y se libera al morir sin esperar efectos. No hay dos
   dueños vivos de una plaza ni bajas duplicadas por una misma derrota.
@@ -238,13 +260,20 @@ cada gesto válido o rechazado, incluida la salida y derrota del dueño de una p
   cruce izquierdo producen su resultado correcto, con una sola derrota terminal.
 - **SC-003**: En cada fila se verifica fusil dentro → última bala → machete →
   salida → contacto/ataque, espera sin enemigos frontales y regreso físico tras
-  recarga desde la trinchera; el fusil solo se reanuda al llegar, sin disparos
-  vacíos, cambios de fila o soldados duplicados.
+  recarga desde la trinchera. Los trayectos sin bloqueo se corresponden con
+  40 unidades de mundo/s; al volver no ataca y sigue recibiendo daño. El fusil
+  solo se reanuda al llegar, sin cambios de fila o soldados duplicados.
 - **SC-004**: Cada caso válido/rechazado de despliegue, recarga y recolección
   conserva exactamente saldo, unidades y ocupación esperados; un gesto no
-  realiza dos acciones económicas incompatibles.
-- **SC-005**: Una partida con cinco soldados cargados, reserva cero y oleadas
-  actuales con reparto prefijado se recorre de inicio a terminal sin errores
+  realiza dos acciones económicas incompatibles. Solo carga cero permite
+  recargar y cada retorno admite un cobro; órdenes repetidas en retorno,
+  cargas parciales/llenas y dueños muertos producen cero cobros de recarga.
+- **SC-005**: Una partida con cinco soldados cargados, reserva cero, un
+  atacante inicial y 99 autorados en oleadas conserva los 100 enemigos de
+  producción, conteos y tiempos. Los 99 de oleadas siguen la secuencia 1→5
+  continua; el inicial queda en fila 3 sin consumir la secuencia, de modo que
+  el primer enemigo de la primera oleada usa la fila 1.
+  Se recorre de inicio a terminal sin errores
   críticos; completar todas las oleadas se verifica además por separado y
   produce una sola victoria, sin balance adicional no autorizado.
 - **SC-006**: Los recorridos aplicables se verifican por separado en navegador
@@ -262,8 +291,8 @@ cada gesto válido o rechazado, incluida la salida y derrota del dueño de una p
 - La [imagen aprobada](references/visual-reference.md) fija dirección visual,
   no costos, HUD final, balance o recursos artísticos terminados.
 - Dimensiones y distancias se fijarán expresamente al planificar, sin alterar
-  los stats vigentes por deducción ni tomar números de la imagen. C4–C6 deben
-  resolverse antes de cerrar el plan y sus criterios de comportamiento.
+  los stats vigentes por deducción ni tomar números de la imagen. La velocidad
+  propia de 40 unidades/s se toma de la decisión humana, no de la imagen.
 - Se reutilizan soldado/enemigo actuales y economía, sin roster nuevo,
   selección manual de objetivos o movimiento entre filas no autorizado.
 - Se incorpora el control mínimo confirmado de selección de trinchera y botón

@@ -110,11 +110,14 @@ cero. Sin balas avanzan y atacan solo a enemigos delante en su fila; sin ellos
 esperan donde están. Seleccionar la trinchera muestra la carga/moral del dueño;
 pulsar «Recargar» conserva salud/moral y lo hace regresar físicamente para
 disparar al llegar. Las oleadas mantienen cantidades y tiempos con
-reparto prefijado, conservando además el atacante inicial separado de ellas.
-Quedan por precisar velocidad de salida/regreso, elegibilidad de recarga y
-continuidad del reparto entre oleadas; el botón y su cobro son conducta
-observable pendiente de esa decisión, no solo un cambio visual. Estas reglas
-futuras no alteran todavía el juego actual.
+reparto 1→2→3→4→5 continuo solo para sus enemigos, conservando además el
+atacante inicial separado en fila central 3, sin consumir esa secuencia:
+1 inicial + 99 autorados, 100 enemigos en total. La velocidad
+propia del soldado es 40 unidades de mundo/s al salir y al regresar, ajustable
+e independiente de los enemigos. Solo un soldado vivo con carga cero admite
+recarga; una orden aceptada cobra una vez y desactiva el botón durante todo el
+retorno. Al regresar no usa fusil ni machete, sigue vulnerable al daño y
+reanuda el fusil al llegar. Estas reglas futuras no alteran todavía el juego actual.
 
 **Futuras unidades (post-MVP, no bloquean el prototipo inicial):**
 - [ ] Variantes con distinto alcance/cadencia (ej. mortero de área, francotirador de rango largo)
@@ -203,7 +206,7 @@ de rendimiento físico nativo ni amplía esas aprobaciones históricas.
 
 ## 10. Preguntas abiertas / decisiones pendientes
 
-- Resolver [C4–C6 de 005](../specs/005-cinco-carriles/spec.md#precisiones-pendientes-para-plan): velocidades propias de salida/regreso, recarga solo vacía o también parcial con bloqueo durante regreso, y secuencia de filas continua o reiniciada por oleada. Plazas, ciclo principal y dotación inicial están confirmados; dimensiones y puntos de aparición se fijarán al planificar, sin deducir balance de la imagen.
+- Planificar [005](../specs/005-cinco-carriles/spec.md) con plazas, ciclo/recarga, velocidades e inicio/reparto ya confirmados por la persona. Dimensiones, distancias y puntos de aparición se fijarán en planificación técnica, sin deducir balance de la imagen ni aprobar implementación por esta definición.
 - Acabado visual del enemigo y la caja de munición (I2/I3 de 004), interfaz y demás efectos, siguiendo la dirección de Monte Calvo aprobada en §8.
 - ¿Habrá progresión entre niveles (más batallas históricas) o es un solo escenario?
 - ¿Narrativa/contexto histórico se presenta dentro del juego (cutscenes, texto) o queda solo como inspiración temática?
@@ -250,3 +253,4 @@ de rendimiento físico nativo ni amplía esas aprobaciones históricas.
 | 2026-10-19 | §6.2/§10: decisión de cinco filas horizontales para soldados colombianos, con enemigos de derecha a izquierda, a preparar como siguiente feature conservando I2 de 004; pendiente de especificación e implementación, sin cambiar aún el avance central, el combate ni los stats vigentes |
 | 2026-10-19 | §6.2–6.3/§10: la persona prioriza la preparación de 005 en rama nueva conservando I2 pendiente; confirma fusil dentro de cinco trincheras izquierdas y salida frontal con machete al agotar balas. Referencia visual y decisiones abiertas enlazadas, sin afirmar implementación o aceptación QA del juego |
 | 2026-10-19 | §6.3/§10: aclaradas cinco plazas reservadas, cinco soldados cargados/reserva cero, salida en misma fila y recarga desde trinchera con regreso antes de disparar; oleadas con cantidades/tiempos vigentes y reparto prefijado. Pendiente de planificación e implementación de 005, sin cerrar I2 |
+| 2026-10-19 | §6.3/§10: confirmadas velocidades propias 40/40, recarga solo con carga cero y una orden por retorno, sin ataques durante el regreso vulnerable, y secuencia de filas 1→5 continua entre oleadas; se conservan 1 atacante inicial + 99 autorados. Pendiente QA de especificación completa de 005, sin implementación o cierre I2 |
