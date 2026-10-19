@@ -17,8 +17,12 @@ con el tono respetuoso de [SPEC](../../../docs/SPEC.md).
 La composición se adapta a tamaños de vista y legibilidad, sin copiar
 obligatoriamente perspectiva o dimensiones. No concede cobertura o
 invulnerabilidad. Cifras de oleada, munición, costos, barras y controles del
-dibujo no fijan balance ni aprueban un HUD. Tampoco define soldados iniciales,
-plazas, recarga o reparto: [C1–C3](../spec.md#clarificaciones-pendientes) los aclaran.
+dibujo no fijan balance ni aprueban un HUD. Las decisiones sobre cinco soldados
+iniciales, cinco plazas reservadas, salida frontal, regreso tras recarga y
+reparto prefijado proceden de las
+[aclaraciones expresas de la persona](../spec.md#clarifications), no del dibujo.
+El único control añadido por esas decisiones es seleccionar la trinchera y
+pulsar «Recargar», mostrando munición y moral individuales del soldado.
 
 No se integrará el concepto entero con actores y controles incrustados como
 sustituto del juego. El arte final se preparará según plan y tareas, separando

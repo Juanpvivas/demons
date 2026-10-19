@@ -102,9 +102,19 @@ soldado dispara hacia la derecha desde dentro de su trinchera; al agotarlas,
 sale hacia el enemigo con machete y combate de frente. El soldado actual
 permanece inmóvil incluso en modo machete. La
 [referencia aprobada por la persona](../specs/005-cinco-carriles/references/visual-reference.md)
-orienta la composición; no fija costos, estadísticas ni HUD. Ocupación,
-salida/recarga y defensa inicial continúan abiertas en C1–C3 de 005, sin
-alterar todavía la moral, el daño o la economía vigentes.
+orienta la composición; no fija costos, estadísticas ni HUD. Las
+[aclaraciones de 005](../specs/005-cinco-carriles/spec.md#clarifications)
+confirman cinco plazas reservadas por sus soldados vivos aunque salgan,
+reemplazo solo al morir y cinco soldados cargados al inicio con reserva global
+cero. Sin balas avanzan y atacan solo a enemigos delante en su fila; sin ellos
+esperan donde están. Seleccionar la trinchera muestra la carga/moral del dueño;
+pulsar «Recargar» conserva salud/moral y lo hace regresar físicamente para
+disparar al llegar. Las oleadas mantienen cantidades y tiempos con
+reparto prefijado, conservando además el atacante inicial separado de ellas.
+Quedan por precisar velocidad de salida/regreso, elegibilidad de recarga y
+continuidad del reparto entre oleadas; el botón y su cobro son conducta
+observable pendiente de esa decisión, no solo un cambio visual. Estas reglas
+futuras no alteran todavía el juego actual.
 
 **Futuras unidades (post-MVP, no bloquean el prototipo inicial):**
 - [ ] Variantes con distinto alcance/cadencia (ej. mortero de área, francotirador de rango largo)
@@ -193,7 +203,7 @@ de rendimiento físico nativo ni amplía esas aprobaciones históricas.
 
 ## 10. Preguntas abiertas / decisiones pendientes
 
-- Resolver [C1–C3 de 005](../specs/005-cinco-carriles/spec.md#clarificaciones-pendientes): plazas y ocupación durante la salida, ciclo/objetivos y acción de recarga, dotación inicial y reparto enemigo. Dimensiones, puntos de aparición y parámetros nuevos de movimiento se fijarán antes del desarrollo correspondiente, sin deducir balance de la imagen.
+- Resolver [C4–C6 de 005](../specs/005-cinco-carriles/spec.md#precisiones-pendientes-para-plan): velocidades propias de salida/regreso, recarga solo vacía o también parcial con bloqueo durante regreso, y secuencia de filas continua o reiniciada por oleada. Plazas, ciclo principal y dotación inicial están confirmados; dimensiones y puntos de aparición se fijarán al planificar, sin deducir balance de la imagen.
 - Acabado visual del enemigo y la caja de munición (I2/I3 de 004), interfaz y demás efectos, siguiendo la dirección de Monte Calvo aprobada en §8.
 - ¿Habrá progresión entre niveles (más batallas históricas) o es un solo escenario?
 - ¿Narrativa/contexto histórico se presenta dentro del juego (cutscenes, texto) o queda solo como inspiración temática?
@@ -239,3 +249,4 @@ de rendimiento físico nativo ni amplía esas aprobaciones históricas.
 | 2026-10-19 | §4–6/§8: Web solo en computador y Android/iOS como apps instaladas por decisión de la persona y constitución 3.0.0; se conservan las verificaciones Web móviles históricas y los requisitos físicos nativos |
 | 2026-10-19 | §6.2/§10: decisión de cinco filas horizontales para soldados colombianos, con enemigos de derecha a izquierda, a preparar como siguiente feature conservando I2 de 004; pendiente de especificación e implementación, sin cambiar aún el avance central, el combate ni los stats vigentes |
 | 2026-10-19 | §6.2–6.3/§10: la persona prioriza la preparación de 005 en rama nueva conservando I2 pendiente; confirma fusil dentro de cinco trincheras izquierdas y salida frontal con machete al agotar balas. Referencia visual y decisiones abiertas enlazadas, sin afirmar implementación o aceptación QA del juego |
+| 2026-10-19 | §6.3/§10: aclaradas cinco plazas reservadas, cinco soldados cargados/reserva cero, salida en misma fila y recarga desde trinchera con regreso antes de disparar; oleadas con cantidades/tiempos vigentes y reparto prefijado. Pendiente de planificación e implementación de 005, sin cerrar I2 |

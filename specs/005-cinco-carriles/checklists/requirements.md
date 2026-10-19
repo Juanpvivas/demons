@@ -4,7 +4,8 @@
 **Created**: 2026-10-19
 **Feature**: [spec.md](../spec.md)
 **Estado**: Borrador revisado por QA; 9/16 criterios documentales aprobados.
-C1–C3 siguen pendientes de decisión humana; no está listo para planificación
+C1–C3 están confirmadas; C4–C6 siguen pendientes de decisión humana.
+No está listo para planificación
 ni acredita implementación.
 
 ## Content Quality
@@ -34,9 +35,11 @@ ni acredita implementación.
 
 ## Notes
 
-- C1 bloquea plazas/ocupación/reemplazo: FR-002/008, US3, SC-001/004.
-- C2 bloquea salida/espera/objetivos/recarga y su control: FR-005/007, US2, SC-003.
-- C3 bloquea dotación inicial/reparto: FR-003/010, US1/US3, SC-005.
+- C1–C3 resueltas por la persona: cinco plazas reservadas, ciclo frontal y
+  regreso, selección de trinchera/Recargar y cinco soldados cargados/reserva cero.
+- C4 bloquea velocidades propias de salida y regreso: FR-005, US2, SC-003.
+- C5 bloquea elegibilidad y bloqueo de recarga: FR-007, US2/US3, SC-004.
+- C6 bloquea continuidad del reparto prefijado: FR-003/010, US1/US3, SC-005.
 - QA aprobó conservar este borrador con las aclaraciones abiertas. Puede
   continuar aclaración; no cerrar especificación, fijar tareas ni ejecutar
   desarrollo todavía. Las casillas reflejan solo su alcance documental.
