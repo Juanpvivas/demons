@@ -77,7 +77,15 @@ Esta economía recrea la tensión histórica real: cada bala cuenta, y sobrevivi
 
 ### 6.2 Sistema de colocación
 
-- Grid/carriles, similar a PvZ.
+- **Decisión de la persona del 2026-10-19, pendiente de especificación e
+  implementación:** cinco filas horizontales para colocar soldados
+  colombianos, con enemigos que avanzan de derecha a izquierda, tomando
+  *Plants vs. Zombies* como referencia. Se preparará como siguiente feature,
+  conservando el trabajo actual de I2 de 004.
+- **Estado actual:** Monte Calvo conserva un único avance central enemigo;
+  el sistema de cinco carriles todavía no está implementado. El combate
+  frontal y las diagonales adyacentes, así como los stats vigentes, se
+  conservan; §10 recoge los detalles pendientes del nuevo tablero.
 - Colocación restringida por casillas (snap a grid).
 - Cada unidad ocupa una casilla; algunas pueden tener rango de ataque que cubre varias casillas adelante.
 
@@ -175,6 +183,7 @@ de rendimiento físico nativo ni amplía esas aprobaciones históricas.
 
 ## 10. Preguntas abiertas / decisiones pendientes
 
+- Especificar las dimensiones del tablero y las casillas por carril del sistema de cinco filas horizontales de §6.2, así como el reparto y los puntos de aparición de enemigos entre esas filas.
 - Acabado visual del enemigo y la caja de munición (I2/I3 de 004), interfaz y demás efectos, siguiendo la dirección de Monte Calvo aprobada en §8.
 - ¿Habrá progresión entre niveles (más batallas históricas) o es un solo escenario?
 - ¿Narrativa/contexto histórico se presenta dentro del juego (cutscenes, texto) o queda solo como inspiración temática?
@@ -218,3 +227,4 @@ de rendimiento físico nativo ni amplía esas aprobaciones históricas.
 | 2026-10-16 | T012 de 004, tras aprobación funcional T011: §8/§10 documentan el soldado pictórico, sus estados reales y la derrota cosmética sin retrasar retiro; enemigo/caja e interfaz siguen pendientes. Se distinguen Xiaomi provisional de 004, Web separado e iOS simulador/software, sin ampliar la aceptación a hardware o estabilidad sostenida. |
 | 2026-10-17 | T037 de 004, tras QA funcional T036: §8/§10 incorporan la corrección de legibilidad del soldado y encuadre local de Monte Calvo, conservando geometría, reglas y composición iPad. Enemigo, caja e interfaz siguen pendientes. |
 | 2026-10-19 | §4–6/§8: Web solo en computador y Android/iOS como apps instaladas por decisión de la persona y constitución 3.0.0; se conservan las verificaciones Web móviles históricas y los requisitos físicos nativos |
+| 2026-10-19 | §6.2/§10: decisión de cinco filas horizontales para soldados colombianos, con enemigos de derecha a izquierda, a preparar como siguiente feature conservando I2 de 004; pendiente de especificación e implementación, sin cambiar aún el avance central, el combate ni los stats vigentes |
