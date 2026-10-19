@@ -15,9 +15,12 @@ y el PR delimitan la consolidación y entrega.
   y rama real. Conserva cambios locales y registra la revisión de la línea base.
 - Los roles consultan las skills de GodotPrompter aplicables. El tester identifica
   ejecutables, versiones, navegadores y dispositivos realmente accesibles.
-- Identificar y obtener acceso al Xiaomi 11T Pro físico `2107113SG` de 2021,
-  referencia provisional exclusiva de 004 autorizada el 2026-10-16 (constitución
-  2.2.0). No hereda aprobación de 002/003 ni certifica equipos menos potentes.
+- La referencia física de 004 sigue siendo el Xiaomi 11T Pro `2107113SG` de
+  2021, autorizado el 2026-10-16 (constitución 2.2.0). Desde el 2026-10-19 la
+  persona indica que ya no será posible realizar nuevas pruebas físicas y
+  autoriza continuar con Android Emulator. Aplicar la disponibilidad y los
+  límites de §4; no volver a condicionar la ejecución emulada a conectar ese
+  teléfono.
 - Conservar capturas comparables antes/después con igual encuadre, tamaño y
   estado. Las salidas de verificación van a temporales o CI, nunca a Git.
 - Registrar la línea base de reglas protegidas, importación y GUT, además de
@@ -80,9 +83,28 @@ Probar dos cajas solapadas sin cambiar su semántica ni sus formas físicas.
 | Entorno mínimo planificado | Tamaño/entrada y alcance |
 |---|---|
 | Web, Chrome escritorio | Canvas 1152×648 y 960×540; clic; resize entre ambos |
-| Web, Chrome Android físico | Horizontal; registrar viewport, densidad y versión; toque físico |
-| App Android nativa | Identificar build, renderer, teléfono y orientación; toque físico |
+| Web, Chrome Android físico | Sin disponibilidad para nuevas pruebas desde el 2026-10-19; el resultado físico pendiente no se acredita desde el emulador |
+| App Android en teléfono físico | Sin disponibilidad para nuevas pruebas desde el 2026-10-19; conservar el alcance aprobado de los resultados físicos históricos |
+| Web, Chrome en Android Emulator | Entorno adicional autorizado; identificar AVD, API/imagen Android, ABI, versión de Chrome, viewport/densidad, renderer y gesto de SO usado |
+| App Android en Android Emulator | Entorno adicional autorizado; identificar AVD, API/imagen Android, ABI, build del juego, renderer, tamaño/orientación y gesto de SO usado |
 | App iOS nativa | Identificar build, renderer y dispositivo o simulador; entrada realmente usada |
+
+**Disponibilidad de Android desde el 2026-10-19.** Por decisión de la persona,
+las nuevas verificaciones Android continúan en emulador y no se solicitará
+reconectar hardware físico. Cada resultado identifica explícitamente si
+corresponde a la app nativa o a Chrome en Android Emulator. Los gestos atraviesan
+la entrada del sistema emulado; no se sustituyen por llamadas a métodos del
+juego. El tester verifica acceso real antes de declarar disponible un AVD o
+navegador.
+
+QA puede aprobar con ese alcance los casos de carga, presentación, entrada,
+economía, reutilización y smoke realmente completados. Las mediciones de carga,
+frame times, FPS y memoria en emulador describen únicamente ese entorno y su
+máquina anfitriona; no acreditan 60 FPS en el Xiaomi ni en otro teléfono. Los
+resultados físicos históricos se conservan sin ampliar su alcance. La falta
+definitiva de nuevas pruebas físicas mantiene pendiente SC-007 y la aceptación
+física exigida por la constitución 2.2.0; esta actualización de disponibilidad
+no los exime ni autoriza el cierre global de I2/004.
 
 La ejecución nativa PC complementa desarrollo. No acredita Web. Un simulador
 iOS solo acredita su propia comprobación; no hardware iOS ni rendimiento físico.

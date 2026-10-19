@@ -300,12 +300,15 @@ repetir con reserva suficiente y una celda libre bajo la caja.
 - Los efectos breves de daño/derrota que se necesiten para comunicar los hechos
   forman parte de los estados básicos; no abren un sistema de efectos de combate
   completo ni cambian el ciclo de vida de los actores.
-- Antes de ejecutar las verificaciones de rendimiento se identificará y
-  obtendrá acceso al Xiaomi 11T Pro físico `2107113SG` de 2021 autorizado como
-  referencia provisional exclusiva de 004. Su ausencia mantiene pendiente esa
-  aceptación. La decisión explícita del 2026-10-16 no amplía la referencia
-  nominal global ni hereda la aprobación de 002/003. El plan fija la matriz y
-  el protocolo de medición, sin usar datos históricos como resultados nuevos.
+- La referencia física provisional exclusiva de 004 sigue siendo el Xiaomi
+  11T Pro `2107113SG` de 2021, autorizado el 2026-10-16 por la constitución
+  2.2.0. Desde el 2026-10-19 la persona informa que ya no será posible realizar
+  nuevas pruebas físicas y autoriza continuar con Android Emulator conforme a
+  la matriz de [quickstart](quickstart.md#4-verificación-visual-y-gestos-reales).
+  La ejecución emulada acredita solo su entorno; no sustituye las nuevas
+  mediciones físicas de SC-007, cuya aceptación permanece pendiente. Se
+  conservan las aprobaciones históricas y sus límites, sin heredar resultados
+  de 002/003 ni certificar hardware desde el emulador.
 - La producción de arte y su revisión visual tienen verificación proporcional.
   Cualquier comportamiento visual nuevo verificable automáticamente sigue
   tester RED → desarrollo → tester GREEN → QA, con regresión jugable pertinente.
