@@ -2,7 +2,7 @@
 
 **Feature ID**: `005-cinco-carriles` | **Planned Branch**: `codex/005-cinco-carriles-preparacion` | **Date**: 2026-10-19 | **Spec**: [spec.md](spec.md)
 
-**Estado**: preparación documental aprobada por QA; plan y tareas listos para el orquestador. Implementación pendiente.
+**Estado**: preparación aprobada; I1 implementado con GREEN y revisión funcional parcial. Integración conjunta con 004-I2 pendiente de QA según constitución 4.0.0; publicación pendiente. I2–I5 no se inician con esta transición.
 
 ## Summary
 
@@ -14,8 +14,9 @@ El control mínimo permite seleccionar la trinchera y pulsar «Recargar»,
 mostrando carga/moral individuales.
 
 Se reutilizan economía, stats, oleadas, pooling y presentación de I2. Su base
-`f90e888` permanece en `codex/004-i2-enemigo`: 005 no modifica sus tareas ni
-aprueba las validaciones pendientes de 004. La imagen aprobada orienta piezas
+`f90e888` permanece en `codex/004-i2-enemigo`: la transición conserva IDs,
+aprobaciones e historia de 004 y registra sus pendientes de publicación, sin
+aprobarlos por esta enmienda. La imagen aprobada orienta piezas
 de arte separadas; no sustituye al juego con actores/controles incrustados.
 
 ## Technical Context
@@ -27,7 +28,7 @@ de arte separadas; no sustituye al juego con actores/controles incrustados.
 | Persistencia | Ninguna nueva; Resources compartidos de solo lectura y estado local por actor/partida |
 | Testing | GUT unitario/integración con cuerpos reales; gestos de SO y revisión visual separados |
 | Destinos | Web en computador; APK Android Emulator; `.app` iOS Simulator; PC nativo solo desarrollo |
-| Rendimiento |60 FPS físicos de constitución IV; medir Web por navegador/computador; emulación no certifica hardware |
+| Rendimiento | Comparación base/candidato por entorno para integración; 60 FPS físicos de constitución IV/SC-007 antes de publicación; emulación no certifica hardware |
 | Alcance | Cinco plazas, cinco soldados iniciales, un atacante inicial +99 de diez oleadas, sin multiplicarlos |
 | Restricciones | Costos/daño/cargas/moral/cadencias vigentes; recolección manual/precedencia; renderers/presets sin cambios |
 
@@ -41,18 +42,22 @@ Gates evaluados antes de investigación y tras diseño:
 | II — TDD | Tester RED semántico → dev → tester GREEN/regresión → QA → docs por comportamiento. Arte/documentos usan revisión proporcional; no fabricar RED de cobertura existente. |
 | III — UX/plataformas | Estados y recarga claros, mismo significado ratón/toque; cinco filas visibles; solo apps instaladas en móviles. |
 | IV — Rendimiento | Inicial/oleadas en mismo pool, sin cambiar `ObjectPool`; efectos conservan pooling. SC-007 pendiente sin hardware. No heredar referencias Xiaomi de 002/004. |
-| Governance | Spec aprobado documentalmente antes del plan; QA del plan antes de tareas y revisión de tareas antes de ejecutar. No cambiar constitución para eludir aceptación. |
+| Governance | Spec/plan/tareas revisados; enmienda 4.0.0 autorizada explícitamente por la persona separa integración de publicación, conserva aceptación física pendiente y no acredita resultados. |
 
-**Resultado del diseño**: sin desviaciones constitucionales propuestas.
-No es aprobación de implementación ni permiso de cierre sin SC-007. Cada
-incremento cumple sus verificaciones obligatorias antes de recibir APROBADO
-como implementación o declararse entregado. Si el cambio arriesga FPS, requiere
-medición en la referencia física antes de su aceptación/merge (constitución IV).
-Sin hardware se permiten preparación, RED y desarrollo funcional, pero ese
-incremento permanece WIP aunque exista un PR en borrador; no se pedirá
-reconexión física ni se reabrirán pruebas Web móviles. El PR exclusivamente
-documental de esta preparación sí puede entregarse tras su QA. El umbral
-global de carga sigue pendiente según constitución IV.
+**Gates vigentes (enmienda autorizada del 2026-10-19):** integración requiere
+TDD/GREEN, regresión, compilación/exportación aplicables, verificaciones
+funcionales de Web/APK/.app disponibles, documentación, CI y `APROBADO PARA
+INTEGRACIÓN` independiente. Fallos reales de fuente, build o funcionalidad
+bloquean ese gate. La certificación física, renderer de producción o paquete
+final ausentes mantienen pendiente publicación y no bloquean por sí solas
+integración. QA examina las diferencias de rendimiento observadas y sus límites.
+
+Publicación requiere además `APROBADO PARA PUBLICACIÓN`, artefacto/configuración
+de destino, matriz completa y medición física de IV/SC-007; no queda aprobada
+por integrar. No se pedirá reconexión física ni se reabrirán navegadores móviles.
+Compatibility/software de QA no certifican Mobile, GPU/hardware, empaquetado
+final ni 60 FPS. El umbral global de carga sigue pendiente. Ninguna feature se
+declara completa ni el Issue se cierra con requisitos restantes.
 
 ## Diseño técnico
 
@@ -95,18 +100,23 @@ sin reescribir los hallazgos históricos de física.
 
 ## Incrementos previstos
 
-Ramas propuestas a crear solo por orquestador. Preparación depende de I2
-`f90e888`, aún no integrado; no presentar diff acumulado contra `main` como
-exclusivamente 005. Declarar base/dependencias en PR y revisar diff/QA de nuevo
-al integrar una base. Los IDs se generan después de aprobar este plan.
+La preparación partió de I2 `f90e888`; sus aprobaciones históricas se conservan.
+Transición autorizada: `codex/005-i1-tablero` contiene 004-I2 y 005-I1 y se usa
+para un único PR contra `main` (base de revisión `2dc532d`). QA revisa el conjunto,
+no solo el diff de 005. Se justifica el tamaño excepcional para consolidar una
+base funcional ya acumulada, sin fragmentar TDD ni reescribir historial. El PR
+usa `Refs #18` y `Refs #22`, sigue en borrador y no cierra las features. No se
+fusiona automáticamente ni distribuye builds. Tras integrarlo, las ramas
+superadas pueden eliminarse conservando el código en `main`. Los incrementos
+posteriores vuelven a ramas breves por resultado; no se inicia I2 en este PR.
 
 | Incremento | Resultado y rama propuesta | TDD y gate de destinos propio, antes de QA/docs |
 |---|---|---|
-| I1 | Tablero horizontal, cinco plazas/soldados, fusil orientado, 100 enemigos/cursor/pool y derrota izquierda. `codex/005-i1-tablero` | RED geometría/economía/spawn/targets/terminal → dev → GREEN/regresión. Web/APK/.app: carga y partida a terminal, fusil/derrota visibles, entrada real en plazas/pickups y resize. Comparar carga/frame times base-candidato; población/consultas/pool introducen riesgo de FPS y requieren medición física. Machete móvil sigue pendiente de I2. |
-| I2 | Salida/espera/contacto real de machete, 40/40 propios y liberación de origen. `codex/005-i2-machete` | RED movimiento/daño mutuo/objetivos/reciclado → dev → GREEN/regresión/playtest. Web/APK/.app: ciclo machete por filas, contacto visible/real, gestos de recolección/reemplazo, resize y partida a terminal. Comparar rendimiento base-candidato y medir físicamente por cuerpos/consultas móviles nuevos. |
-| I3 | Recarga atómica/regreso vulnerable y selección/panel/botón integrados. `codex/005-i3-recarga` | RED elegibilidad/cobro/retorno/selección obsoleta/entrada → dev → GREEN/regresión. Web/APK/.app: ratón/toque real, UI/retorno/daño visibles, saldo antes/después, resize y partida. Comparar rendimiento base-candidato y medición física pertinente al nuevo retorno/contacto/UI. |
-| I4 | Arte lateral/trincheras, presentación de todos los estados y encuadre/HUD adaptables. `codex/005-i4-presentacion` | RED de conducta nueva de presentador/resize → dev → GREEN/regresión pertinente; arte sin RED artificial. Web/APK/.app: QA visual filas1/3/5, input real tras resize, carga y partida. Comparar carga/frame times base-candidato y medición física por riesgo de nuevos recursos/efectos. |
-| I5 | Consolidación integrada y documentación final. `codex/005-i5-validacion` | Suite completa y trazabilidad de gates I1–I4; repetir solo evidencia invalidada por integración o pendiente. Defectos nuevos vuelven a TDD. No sustituye verificaciones de cada PR ni convierte WIP en entrega; SC-007 pendiente impide cierre completo. |
+| I1 | Tablero horizontal, cinco plazas/soldados, fusil orientado, 100 enemigos/cursor/pool y derrota izquierda. `codex/005-i1-tablero` | RED geometría/economía/spawn/targets/terminal → dev → GREEN/regresión. Web/APK/.app: carga y partida a terminal, fusil/derrota visibles, entrada real en plazas/pickups y resize. Comparar carga/frame times base-candidato; población/consultas/pool introducen riesgo de FPS: QA evalúa las muestras disponibles para integración; la medición física queda en el gate de publicación. Machete móvil sigue pendiente de I2. |
+| I2 | Salida/espera/contacto real de machete, 40/40 propios y liberación de origen. `codex/005-i2-machete` | RED movimiento/daño mutuo/objetivos/reciclado → dev → GREEN/regresión/playtest. Web/APK/.app: ciclo machete por filas, contacto visible/real, gestos de recolección/reemplazo, resize y partida a terminal. Comparar rendimiento base-candidato para integración; medición física por cuerpos/consultas nuevos antes de publicación. |
+| I3 | Recarga atómica/regreso vulnerable y selección/panel/botón integrados. `codex/005-i3-recarga` | RED elegibilidad/cobro/retorno/selección obsoleta/entrada → dev → GREEN/regresión. Web/APK/.app: ratón/toque real, UI/retorno/daño visibles, saldo antes/después, resize y partida. Comparar rendimiento base-candidato para integración; medición física del nuevo retorno/contacto/UI antes de publicación. |
+| I4 | Arte lateral/trincheras, presentación de todos los estados y encuadre/HUD adaptables. `codex/005-i4-presentacion` | RED de conducta nueva de presentador/resize → dev → GREEN/regresión pertinente; arte sin RED artificial. Web/APK/.app: QA visual filas1/3/5, input real tras resize, carga y partida. Comparar carga/frame times base-candidato para integración; medición física de recursos/efectos antes de publicación. |
+| I5 | Consolidación integrada y documentación final. `codex/005-i5-validacion` | Suite completa y trazabilidad de gates I1–I4; repetir solo evidencia invalidada por integración o pendiente. Defectos nuevos vuelven a TDD. No sustituye verificaciones de cada PR; SC-007 pendiente impide publicación y cierre completo, sin impedir integrar el alcance funcional aprobado. |
 
 En cada fila de esta tabla, Web significa navegador de computador, APK app en
 Android Emulator y .app app nativa de iOS Simulator. Son entornos de verificación
@@ -114,7 +124,7 @@ funcional separados; no acreditan la medición física indicada. Comparar base y
 candidato del incremento con carga/recorrido equivalentes, identificando renderer
 y límites. Reutilizar solo evidencia del mismo estado aún válida; no posponer a
 I5 entrada, visual, resize, partida o rendimiento pertinentes al PR actual.
-Los detalles de medición y bloqueo de aceptación se concentran en
+Los detalles de medición y los gates separados se concentran en
 [quickstart](quickstart.md#gate-de-cada-incremento).
 
 Objetivo por PR: ≤400 líneas manuales sumando adiciones/eliminaciones y ≤20
@@ -123,7 +133,7 @@ eje/detección/defensa deben cambiar juntos para no entregar orientación rota.
 Antes de ejecutar, orquestador revisa tamaño y separa setup/contratos independientes
 cuando sea comprobable, o justifica la unidad mínima. No acumular incrementos
 independientes ni fusionar RED con implementación pendiente. PR en borrador,
-`Refs #22`; solo último elegible usa `Closes #22`, nunca merge automático.
+`Refs #22` (y `Refs #18` en la transición conjunta); solo último elegible usa `Closes #22`, nunca merge automático.
 
 ## Project Structure
 
@@ -158,12 +168,14 @@ tests/unit/{systems,levels,units,enemies,ui}/
 | SC-007 | Mediciones separadas; hardware pendiente sin excepción implícita |
 
 [Research](research.md), modelo, contrato y [quickstart](quickstart.md) resuelven
-el diseño sin logs o resultados futuros. C4–C6 resueltos. Siguiente gate: QA del
-plan, después generación/análisis de tareas. Ejecución posterior por orquestador
-equivalente a `/implementar-feature 005-cinco-carriles`; no se invoca aquí.
+el diseño sin volcar registros. C4–C6 resueltos. La preparación y tareas tuvieron
+su revisión; el siguiente gate de esta transición es QA de integración del
+estado conjunto. Esta enmienda documental no lo aprueba ni ejecuta nuevas
+mecánicas.
 
 ## Complexity Tracking
 
-Sin violaciones propuestas; hardware pendiente se conserva como aceptación
-sin cumplir, no como excepción aprobada. No hay hooks `before_plan/after_plan`
+Hardware pendiente se conserva como aceptación de publicación sin cumplir,
+no como excepción ni prueba aprobada. El tamaño de la transición conjunta se
+justifica y revisa por QA conforme al flujo, sin rebajar el gate de integración. No hay hooks `before_plan/after_plan`
 que ejecutar: `.specify/extensions.yml` no existe en este checkout.

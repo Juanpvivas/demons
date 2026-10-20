@@ -96,6 +96,24 @@ no declares comprobaciones realizadas sin evidencia.
 
 ### Entrega del incremento
 
+Identifica primero el gate solicitado, según constitución 4.0.0:
+
+- **Integración:** TDD/GREEN, regresión, fuente/build/exportación aplicables,
+  función/entrada/visual/smoke en entornos disponibles, documentación y CI.
+  Falta de hardware o certificación de renderer/paquete final no bloquean por
+  sí solas; fallos reales del alcance sí. Examina diferencias de rendimiento
+  y sus riesgos, sin ocultar datos ni inferir causalidad.
+- **Publicación:** exige además artefacto exacto de destino, firma/instalación/
+  versión, renderer de producción, matriz y rendimiento físico IV/SC aplicables.
+  Compatibility/software o `.app` de simulador no certifican Mobile, hardware,
+  GPU, empaquetado final ni 60 FPS físicos. Pendientes impiden publicar.
+
+Usa `APROBADO PARA INTEGRACIÓN` o `APROBADO PARA PUBLICACIÓN` en el gate final,
+con alcance y pendientes explícitos. Una aprobación parcial de una tarea con
+ambos gates no permite marcar su totalidad ni cerrar feature/Issue. El merge
+no distribuye; no apruebes envíos por un guard o una confirmación sin evidencia.
+Las tareas RED/documentales conservan su veredicto proporcional `APROBADO`.
+
 Valida el alcance de cada PR, sus dependencias, documentación y evidencia del
 estado entregado. Un PR funcional requiere GREEN/regresión y QA completos;
 una tarea RED aprobada no permite entregar su comportamiento pendiente.
@@ -118,7 +136,7 @@ Reporta:
 - Qué tarea auditaste (ID + descripción corta).
 - Tipo, etapa (RED, implementación GREEN o verificación sin cambio de lógica),
   grupo relacionado y evidencia revisada, con sus límites.
-- **Veredicto**: `APROBADO` / `RECHAZADO` / `AMBIGUO — requiere decisión humana`.
+- **Veredicto**: `APROBADO` (tarea proporcional), `APROBADO PARA INTEGRACIÓN`, `APROBADO PARA PUBLICACIÓN`, `RECHAZADO` o `AMBIGUO — requiere decisión humana`; identifica el gate y su alcance.
 - Si `RECHAZADO`, clasifica la causa raíz para que el orquestador sepa a quién reasignar:
   - **Bug de implementación** → reasignar a `dev-godot`.
   - **Test débil o falso positivo** → reasignar a `godot-tester`.

@@ -1,12 +1,14 @@
 # Implementation Plan: Personajes y munición de Monte Calvo
 
 **Feature ID**: `004-personajes-municion-monte-calvo`  
-**Execution Branch**: `codex/004-i1-soldado`; una rama por incremento.
+**Execution Branch**: `codex/005-i1-tablero` para la transición conjunta autorizada 004-I2 + 005-I1; las ramas históricas conservan su trazabilidad.
 **Date**: 2026-10-16 | **Spec**: [spec.md](spec.md)
 
 La preparación inicial se ejecutó en I1, aprobado sobre `87a39c6`. La corrección
 de legibilidad/encuadre delimitada en T031 está aprobada funcionalmente en T036.
 I2/I3 y el seguimiento de consolidación/entrega figuran en las [tareas](tasks.md).
+La enmienda 4.0.0 separa integración y publicación; la transición reúne I2 y
+005-I1 en un único PR hacia `main`, sin iniciar I3 ni declarar completa 004.
 
 ## Summary
 
@@ -41,9 +43,10 @@ intactos; cámara local acotada a la corrección T031, sin zoom.
 
 **Performance Goals**: 60 FPS estables en Xiaomi 11T Pro físico `2107113SG` de
 2021, referencia provisional exclusiva de 004 (enmienda 2.2.0 conservada en la
-constitución 3.0.0), y medición Web en computador separada; carga fría/caliente,
-frame times y memoria frente a baseline. El emulador autorizado no sustituye
-las mediciones físicas pendientes.
+constitución 4.0.0), como requisito de publicación, y medición Web en computador
+separada; carga fría/caliente, frame times y memoria frente a baseline.
+El emulador autorizado no sustituye las mediciones físicas pendientes; QA
+evalúa las muestras disponibles y sus diferencias para integración funcional.
 
 **Constraints**: cuerpos de actores 48×48, grid 96×96, detectores y caja
 32×32/collider radio 20 intactos. El soldado cambia solo en su hijo visual:
@@ -76,10 +79,10 @@ del terreno. T031 autoriza solo el ajuste de cámara y cobertura descritos arrib
 | I: Resources/separación/GDScript | Aplicable | Balance protegido; presentación observacional |
 | II: TDD y QA independiente | Nueva lógica visual testeable | RED → dev → GREEN → QA; arte sin RED artificial |
 | III: lectura y respeto histórico | Estados existentes | Silueta/armas y feedback, matriz por entorno |
-| IV: 60 FPS y pooling | Nueva medición necesaria | Pool de efectos; Xiaomi físico provisional autorizado para 004 |
-| Flujo de preparación y PR pequeños | Spec Kit solo prepara | Tres incrementos completos; futura ejecución por roles |
+| IV: 60 FPS y pooling | Medición física pendiente de publicación | Pool de efectos; Xiaomi físico provisional autorizado para 004, sin certificar resultados desde emulación |
+| V: integración/publicación | TDD, build, CI y QA funcional para integrar | Certificación adicional física/renderer/paquete para publicar; transición conjunta 004-I2/005-I1 |
 
-Sin NEEDS CLARIFICATION de diseño. La constitución 3.0.0 conserva la autorización
+Sin NEEDS CLARIFICATION de diseño. La constitución 4.0.0 conserva la autorización
 explícita del 2026-10-16 para usar el Xiaomi físico provisional exclusivamente en
 004; la referencia nominal global permanece vigente. Desde el 2026-10-19 no
 será posible obtener nuevas pruebas físicas y se continúa con APK en Android
@@ -88,7 +91,12 @@ no aprueba resultados: se requieren nuevas mediciones y QA, sin heredar 002/003
 ni certificar equipos menos potentes o iOS. Web solo en computador y apps
 nativas se miden por separado; no se continúan pruebas de navegador móvil.
 El umbral constitucional de carga permanece pendiente,
-sin inventarlo. Cada entorno no probado deja pendiente su aceptación.
+sin inventarlo. Cada entorno no probado deja pendiente su aceptación de
+publicación; no impide por sí solo integración funcional bajo el principio V.
+Fallos reales de fuente, build o funcionamiento bloquean integración. La revisión
+de QA distingue `APROBADO PARA INTEGRACIÓN` de `APROBADO PARA PUBLICACIÓN` y declara
+las variantes Compatibility/software sin certificar Mobile, hardware, GPU,
+empaquetado final ni 60 FPS. Un merge no distribuye a testers ni portales.
 
 ## Project Structure
 
@@ -140,6 +148,13 @@ Cada comportamiento conserva tester RED → dev → tester GREEN → QA → docs
 Arte tiene inspección visual/carga proporcional y regresión, sin RED artificial.
 I3 no pospone QA/regresión pertinentes de I1/I2. Un Issue por feature, rama
 por incremento del orquestador, PR en borrador; Refs intermedios y Closes final.
+Excepción de transición autorizada: I2 ya está contenido en
+`codex/005-i1-tablero`; un único PR contra `main` (`2dc532d` como base de revisión)
+se revisa como 004-I2 + 005-I1, con `Refs #18` y `Refs #22`, sin `Closes`.
+Su tamaño acumulado requiere justificación y QA conjunta; se conserva el
+historial y no se fusiona automáticamente. Después se retoman ramas breves.
+La aprobación de integración no completa las features ni SC-007.
+
 Orientación 400 líneas manuales/20 archivos por diff, declarando binarios y
 generados aparte. I1 incluye solo infraestructura mínima inseparable de la
 derrota inmediata; si excede, dividir un resultado artístico independiente
@@ -154,4 +169,5 @@ al nuevo feedback sin ampliar gameplay: QA documental T032 → RED T033 → desa
 T034 → GREEN/visual T035 → QA funcional T036 → documentación T037 → QA final T038.
 La corrección completó los gates hasta QA funcional T036 con validación propia,
 sin sustituirlos por la aprobación histórica de I1. El estado de consolidación
-y entrega se conserva en las tareas y el PR. No se inicia I2.
+y entrega se conserva en las tareas y el PR. Esta transición integra I2 ya
+desarrollado junto con 005-I1; no inicia I3 ni nuevas mecánicas.

@@ -42,3 +42,7 @@ no acredita implementación ni rendimiento.
   su propia revisión posterior antes de la implementación con TDD.
 - El hardware físico ausente mantiene pendiente el rendimiento constitucional;
   no se propone excepción ni se pide reconectar Android.
+
+- La enmienda autorizada 4.0.0 separa integración y publicación. SC-007 queda
+  pendiente de publicación; esta aclaración no modifica las aprobaciones
+  documentales históricas ni aprueba implementación o rendimiento.

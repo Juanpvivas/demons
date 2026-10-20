@@ -1,7 +1,7 @@
 # Research: Cinco carriles horizontales
 
 Investigación local para planificación; sin juego/builds/pruebas ejecutados.
-Fuentes: [spec](spec.md), constitución 3.0.0, arquitectura/flujo y código real
+Fuentes: [spec](spec.md), constitución vigente 4.0.0, arquitectura/flujo y código real
 conservado de I2. Skills GodotPrompter consultadas: Resources, estados, física,
 entrada, testing, cámara, UI adaptable y animación; no fijar rutas personales.
 
@@ -49,5 +49,7 @@ Probar misma instancia inicial → WAVE → inicial en fila distinta y no solo d
 Aprobaciones heredadas corresponden al estado anterior. Repetir recorridos
 que afectan tablero/input/presentación. Compatibility temporal no certifica
 Mobile; iOS Simulator no certifica IPA físico. Sin hardware no se aprueba
-SC-007, pero preparación y desarrollo funcional siguen posibles. No quedan
-aclaraciones de producto pendientes para generar tareas.
+SC-007 ni publicación. La enmienda 4.0.0 permite integración funcional con
+GREEN/build/CI y QA independiente, documentando diferencias de rendimiento y
+certificaciones pendientes; no convierte el simulador en hardware ni completa
+la feature. No quedan aclaraciones de producto pendientes.

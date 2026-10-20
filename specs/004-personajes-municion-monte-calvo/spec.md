@@ -274,7 +274,8 @@ repetir con reserva suficiente y una celda libre bajo la caja.
   presenta errores críticos, actores ausentes por reciclado, bloqueos por
   animación ni cambios de reglas. Victoria y derrota se verifican además por
   separado con las rutas de comprobación existentes.
-- **SC-007**: Se mantiene el objetivo constitucional de 60 FPS estables en
+- **SC-007**: Antes de publicación se mantiene el objetivo constitucional de
+  60 FPS estables en
   gameplay típico sobre el Xiaomi 11T Pro físico `2107113SG` de 2021, referencia
   provisional exclusiva de 004 autorizada el 2026-10-16 y recogida en la
   enmienda 2.2.0, conservada en la constitución 3.0.0. Se requieren nuevas
@@ -283,7 +284,9 @@ repetir con reserva suficiente y una celda libre bajo la caja.
   rendimiento por separado en los navegadores de computador de aceptación Web
   y en las apps nativas; no se heredan resultados de 002/003.
   La autorización no acredita iOS. La carga se registra sin inventar el límite
-  aún pendiente de la constitución.
+  aún pendiente de la constitución. Constituye un gate de publicación separado
+  de integración funcional según la enmienda 4.0.0; permanece pendiente donde
+  no hay medición física y no se da por cumplido con un merge.
 - **SC-008**: El 100 % de los recursos artísticos nuevos tiene procedencia y
   permisos documentados. Cada escenario exigido queda identificado como
   aprobado, fallido o pendiente en la revisión de entrega; los resultados y
@@ -331,3 +334,12 @@ repetir con reserva suficiente y una celda libre bajo la caja.
 - La corrección I1 reutiliza el atlas existente; no exige regenerar el PNG.
   Aumenta solo la representación visual y su contraste, sin cambiar cuerpos
   48×48, grid 96×96, detectores, radio de picking 20 o invariantes de FR-009.
+
+## Enmienda de integración y publicación (2026-10-19)
+
+La persona autorizó la constitución 4.0.0 y el PR conjunto 004-I2 + 005-I1.
+La integración funcional requiere TDD/GREEN, regresión, compilación/exportación
+aplicables, documentación, CI y QA independiente en entornos disponibles. No
+aprueba SC-007, renderer/paquete de producción ni hardware. Esos requisitos
+siguen pendientes de publicación y no se eximen por falta de dispositivo.
+No se inicia 004-I3, no se cierra el Issue y no se distribuye automáticamente.

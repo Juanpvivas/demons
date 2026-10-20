@@ -607,11 +607,17 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   solo ese entorno; Compatibility temporal no certifica Mobile.
 - Presets de exportación por plataforma se versionan en
   `export_presets.cfg`, sin credenciales ni keystores/certificados dentro
-  del repositorio. Cada push a `main` exporta y sube automáticamente un
-  build de prueba a **Android/Firebase App Distribution**
-  (`.github/workflows/deploy-android-testers.yml`) y a **iOS/TestFlight**
-  (`.github/workflows/deploy-ios-testflight.yml`) — ver esos archivos para
-  el detalle y los secrets de CI requeridos.
+  del repositorio. Según constitución 4.0.0, merge/push a `main` integra
+  desarrollo y no dispara distribución externa. Los workflows
+  **Android/Firebase App Distribution** (`.github/workflows/deploy-android-testers.yml`)
+  e **iOS/TestFlight** (`.github/workflows/deploy-ios-testflight.yml`) se ejecutan
+  manualmente con `workflow_dispatch`, sólo sobre `main`, y requieren una
+  `approval_status` con valor inicial `PENDIENTE` frente a `APROBADO PARA
+  PUBLICACIÓN`, y `human_authorized` booleano `false` por defecto para esa
+  revisión. El guard de evento/main y ambas confirmaciones se comprueba antes
+  de checkout, acceso a secrets y build/envío; no certifica por sí mismo el contenido de la confirmación.
+  QA y la persona deben revisar el artefacto y los pendientes de publicación
+  antes de activar la distribución. Ver los workflows para secrets y controles.
 
 La [validación nativa de 002](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
 separa ratón PC, gestos de SO en Android Emulator, muestreo humano Xiaomi y
@@ -635,18 +641,15 @@ históricas; las nuevas verificaciones siguen los destinos vigentes de esta
 sección, sin exigir navegador móvil ni convertirlo en prueba de app instalada.
 
 - **Política de versionado para releases de prueba**: ambos workflows de
-  deploy tienen un paso que compara `version/code`/`version/name`
-  (Android) o `application/version`/`application/short_version` (iOS) en
-  `export_presets.cfg` contra el commit del último deploy exitoso de ese
-  mismo workflow, y **fallan a propósito si la versión no cambió** — no
-  está permitido re-subir el mismo build sin bump de versión (TestFlight
-  directamente lo rechaza; Firebase lo permite pero confunde a los
-  testers sobre qué build están probando). Antes de mergear a `main` una
-  feature/spec que deba llegar a los testers, hay que subir la versión
-  correspondiente en `export_presets.cfg`. Este chequeo solo corre en
-  push automático — un `workflow_dispatch` manual lo saltea a propósito,
-  para poder reintentar o depurar el pipeline de deploy en sí sin
-  necesidad de un bump de versión artificial.
+  deploy comparan `version/code`/`version/name` (Android) o
+  `application/version`/`application/short_version` (iOS) de
+  `export_presets.cfg` contra el último deploy exitoso del mismo workflow y
+  fallan si la versión no cambió. El guard también se aplica al despacho
+  manual, sin bypass de versionado. El bump se prepara para una distribución
+  autorizada y no es requisito de un merge que sólo integra código. La revisión
+  exacta y su artefacto deben tener `APROBADO PARA PUBLICACIÓN`, incluyendo
+  renderer, empaquetado, firma/instalación y rendimiento físico aplicables.
+  Compatibility/software de QA no certifican ese destino.
 
 ## 8. Relación con Spec Kit y los agentes
 
@@ -695,3 +698,4 @@ sección, sin exigir navegador móvil ni convertirlo en prueba de app instalada.
 | 2026-10-16 | T012 de 004, tras aprobación funcional T011: §2/§4.7/§5 gradúan la presentación observadora y derrota cosmética independiente, con snapshot neutro, pool visual precalentado y callbacks por activación. Solo soldado integrado; enemigo/caja pendientes. §7 delimita Xiaomi provisional propio de 004, Web separado e iOS simulador/software. |
 | 2026-10-17 | T037 de 004, tras QA funcional T036: §4.7 gradúa material autorado inmutable/nullable en snapshot y limpieza del efecto; §5/§5.1 describen el encuadre local de Monte Calvo y cobertura decorativa izquierda, conservando la separación entre cámara del nivel y entorno estático. |
 | 2026-10-19 | §7: Web solo en computador y Android/iOS como apps instaladas según decisión de la persona y constitución 3.0.0; se preservan las pruebas móviles Web históricas y se distinguen APK/IPA, app de simulador y requisitos físicos nativos |
+| 2026-10-19 | Constitución 4.0.0: main de integración separado de publicación; distribución manual sólo main con confirmación explícita QA/humana y guard de versiones sin bypass |

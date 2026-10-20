@@ -36,11 +36,12 @@ recorrido equivalentes, midiendo carga y frame times/FPS en cada entorno
 aplicable. Declarar diferencias de gestos/carga y límites que impiden atribuir
 causalidad. El riesgo de FPS por población, consultas/cuerpos móviles o recursos
 visuales exige además medición física según constitución IV antes de
-aceptación/merge. Sin hardware puede avanzarse en preparación, RED y desarrollo
-funcional, pero el incremento conserva WIP y requisitos pendientes: un PR en
-borrador no significa implementación APROBADA ni entregada. No solicitar
-reconexión, cambiar referencias o eximir la medición. El paquete documental de
-preparación sí puede entregarse tras QA documental.
+publicación. Para integración QA evalúa las muestras disponibles, sus
+diferencias y límites; exige GREEN, compilación y comportamiento correctos,
+sin convertir Compatibility/software en certificación Mobile o física.
+Sin hardware puede aprobar `APROBADO PARA INTEGRACIÓN` con publicación
+pendiente; no equivale a feature completa ni `APROBADO PARA PUBLICACIÓN`.
+No solicitar reconexión, cambiar referencias o eximir la medición.
 
 ## Matriz automatizada mínima
 
@@ -87,11 +88,14 @@ gestos coinciden con lo visto y controles no ocultan plazas ni bloquean canvas.
 | Web de computador | Exportar/servir con [WEB_EXPORT](../../docs/WEB_EXPORT.md); identificar navegador/computador/renderer/build, entrada/resize/partida y carga/rendimiento. Matriz inicial Chrome/macOS disponible; otros navegadores sin certificación inferida. |
 | Android Emulator | APK instalado, no Chrome. Identificar AVD/API/renderer/build; gesto y ciclo completo. Mobile requiere ejecución propia; Compatibility temporal se informa separado. No solicitar reconexión física. |
 | iOS Simulator | `.app` nativa, nunca Safari; modelo/OS/renderer/build y gesto/estados/ciclo. No acredita IPA físico o renderer Mobile en hardware. |
-| Referencia física constitucional | SC-007: 60 FPS pendiente sin hardware; no heredar Xiaomi/resultados 004 ni sustituir con emulación. No impide preparación o desarrollo funcional. |
+| Referencia física constitucional | SC-007: 60 FPS pendiente sin hardware; no heredar Xiaomi/resultados 004 ni sustituir con emulación. Gate de publicación separado, sin impedir por sí solo integración funcional aprobada. |
 
-Antes de compartir builds con testers externos: smoke apertura→nivel→partida
-hasta terminal sin errores críticos y política de versiones nativas de
+Antes de compartir builds con testers externos o portales: `APROBADO PARA
+PUBLICACIÓN`, artefacto/renderer/hardware de destino y SC-007 aplicables,
+smoke apertura→nivel→partida hasta terminal sin errores críticos, autorización
+explícita y política de versiones nativas de
 [arquitectura §7](../../docs/ARCHITECTURE.md#7-consideraciones-multiplataforma).
+Integrar a main no inicia esa distribución.
 No cambiar presets/renderers para aparentar aceptación. No usar scripts
 personales/temporales de I2 como dependencia de 005 ni abrir navegador móvil.
 
@@ -99,7 +103,8 @@ Logs/muestras en temporales o CI; entregar a QA commit/entorno/comandos,
 FPS/frame times/carga y límites, y resumirlo en PR sin evidencias nuevas Git.
 Separar carga fría/caliente e inicio medido de carga completa; recorridos con
 gestos distintos no son benchmark causal. Umbral global de carga pendiente:
-no inventarlo ni declararlo aprobado. SC-007 y criterios obligatorios pendientes
-impiden aprobar/entregar el incremento afectado y marcar feature completa o
-cerrar Issue; todo borrador WIP declara alcance y límites. Emulación permite
-avanzar funcionalmente, sin excepción implícita.
+no inventarlo ni declararlo aprobado. SC-007 y certificación de publicación
+pendientes impiden publicar, marcar feature completa o cerrar Issue. Integración
+puede aprobarse por separado bajo constitución 4.0.0; GREEN, build o función
+fallidos impiden ese gate. El PR declara alcance, muestras, riesgos y pendientes,
+sin excepción implícita ni resultados físicos inferidos.

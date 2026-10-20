@@ -49,3 +49,8 @@ o QA de entrega.
   aprobada esta enmienda ni el juego antes de su QA independiente.
 - Estas casillas corresponden a calidad documental. No sustituyen las tareas
   de implementación ni el veredicto QA sobre el juego.
+
+Constitución 4.0.0 separa integración funcional de publicación. SC-007 y las
+certificaciones físicas/renderer/paquete pendientes corresponden a publicación;
+no se dan por aprobadas ni se alteran las aprobaciones históricas. QA evalúa
+integración por separado con GREEN, build, función, documentación y CI.

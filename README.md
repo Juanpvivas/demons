@@ -110,20 +110,29 @@ reciben un mensaje de bienvenida en su primera contribución
   alcance y QA aceptó la entrega 003; la demo sigue en desarrollo, con las
   mediciones y los entornos no certificados identificados explícitamente.
   [Guía y matriz real](docs/WEB_EXPORT.md).
-- **Android**: cada push a `main` exporta un APK debug (verificado en
-  local: firma correctamente y pasa `apksigner verify`) y lo sube a
-  **Firebase App Distribution** (`.github/workflows/deploy-android-testers.yml`).
+
+La constitución [4.0.0](.specify/memory/constitution.md) separa integrar de
+publicar: QA funcional, pruebas/build y CI permiten integrar a `main`; compartir
+con testers o portales requiere además artefacto/renderer de destino,
+certificaciones físicas aplicables y `APROBADO PARA PUBLICACIÓN`. Los guards de
+versión se mantienen también en los despachos manuales, sin bypass.
+
+- **Android**: la distribución a **Firebase App Distribution**
+  (`.github/workflows/deploy-android-testers.yml`) requiere despacho manual
+  desde `main`, confirmación explícita de QA de publicación y autorización
+  humana para esa revisión. Un push/merge ya no la inicia. El APK debug se
+  verificó históricamente en local con `apksigner verify`; cada artefacto de
+  publicación requiere su propia verificación.
   Package: `com.juanpvivas.demons`. Los secrets `FIREBASE_ANDROID_APP_ID` y
   `FIREBASE_SERVICE_ACCOUNT` ya están configurados en el repo (Settings →
   Secrets and variables → Actions) — falta confirmar que un run real del
   workflow sube el APK a Firebase con éxito.
-- **iOS**: cada push a `main` exporta el proyecto Xcode (Godot;
-  verificado en local que genera limpio con Xcode 27 y Team ID
-  `XA43X2P8W2`), lo archiva/firma con `xcodebuild` y lo sube a
-  **TestFlight** (`.github/workflows/deploy-ios-testflight.yml`) —
-  verificado con un run real en CI. El pipeline en sí es 100% automático
-  (un push a `main` dispara todo solo), pero la **firma de código es
-  Manual, no Automatic**: usa un certificado y un provisioning profile de
+- **iOS**: el pipeline exporta el proyecto Xcode y archiva/firma para
+  **TestFlight** (`.github/workflows/deploy-ios-testflight.yml`), con generación
+  local y un run real históricos verificados. Su distribución requiere despacho
+  manual desde `main`, confirmación de QA de publicación y autorización humana
+  para esa revisión; un merge no la inicia. La **firma de código es Manual,
+  no Automatic**: usa un certificado y un provisioning profile de
   distribución ya creados de antemano (secrets `APPLE_DISTRIBUTION_CERT_P12`
   y `APPLE_DISTRIBUTION_PROVISIONING_PROFILE`), en vez de dejar que Xcode
   los gestione solo en cada corrida. Se eligió así porque la firma

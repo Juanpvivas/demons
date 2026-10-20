@@ -3,7 +3,7 @@
 **Feature ID**: `005-cinco-carriles`
 **Planned Branch**: `codex/005-cinco-carriles-preparacion`
 **Created**: 2026-10-19
-**Status**: Preparación documental aprobada por QA — especificación, plan y tareas completos; implementación pendiente.
+**Status**: Preparación aprobada; I1 con GREEN y revisión funcional parcial. Pendiente QA de integración conjunta 004-I2/005-I1. Las mecánicas posteriores y la publicación siguen pendientes.
 
 **Input**: Cinco filas horizontales, con cinco trincheras a la izquierda,
 soldados colombianos disparando hacia la derecha desde ellas y enemigos de
@@ -11,9 +11,11 @@ derecha a izquierda. Al agotar la munición, el soldado sale hacia el enemigo
 con machete y combate de frente. La persona aprobó la imagen como referencia
 y pidió conservar I2, abrir rama y preparar la especificación antes de desarrollar.
 
-005 pasa a ser la prioridad por petición expresa. Parte de I2/004 conservado
-en `f90e888`, sin aprobar su cierre ni modificar sus tareas. Este documento
-especifica el comportamiento futuro; no afirma que esté implementado.
+005 pasa a ser la prioridad por petición expresa. Su preparación partió de
+I2/004 conservado en `f90e888`, sin aprobar su cierre. La transición autorizada
+reúne 004-I2 y 005-I1 en un PR de integración, conservando pendientes y sus IDs.
+Este spec abarca también comportamientos posteriores aún no implementados;
+las tareas y QA distinguen el alcance de cada entrega.
 
 ## Clarifications
 
@@ -281,7 +283,8 @@ cada gesto válido o rechazado, incluida la salida y derrota del dueño de una p
   hardware físico ni otros renderers. La revisión visual distingue FR-011
   en filas superior, central e inferior, también tras cambiar la vista.
 - **SC-007**: Gameplay típico a 60 FPS estables en la referencia física de
-  constitución IV; sin hardware disponible, la aceptación sigue pendiente,
+  constitución IV antes de publicación; sin hardware disponible, esa aceptación
+  sigue pendiente,
   sin heredar referencias provisionales de 002/004 ni sustituirla por emulación.
   Web registra carga/rendimiento por navegador y computador; el umbral global
   de carga continúa pendiente conforme a constitución.
@@ -300,11 +303,16 @@ cada gesto válido o rechazado, incluida la salida y derrota del dueño de una p
   existe la operación de recarga, sin ese control integrado en el nivel;
   la selección no modifica recursos y la imagen no autoriza un HUD completo.
 - La dependencia I2 está conservada en `codex/004-i2-enemigo` remoto desde
-  `f90e888`; tareas y pendientes de 004 siguen intactos y no quedan aprobados aquí.
-- Rigen constitución 3.0.0 y [flujo del proyecto](../../docs/DEVELOPMENT_WORKFLOW.md):
+  `f90e888`; la transición conserva IDs, aprobaciones e historia de 004 y
+  registra sus pendientes de publicación, sin darlos por aprobados aquí.
+- Rigen constitución 4.0.0 y [flujo del proyecto](../../docs/DEVELOPMENT_WORKFLOW.md):
   completar plan/tareas y revisión antes de ejecutar tester RED →
   desarrollo → tester GREEN → QA → documentación. No fabricar RED histórico.
 - Web solo en computador; Android/iOS solo apps instaladas. No se cambian
   renderer o exportación al preparar. Android físico no está disponible y no
   se solicitará reconexión; emulador/simulador permiten avanzar funcionalmente,
   conservando los límites constitucionales y sin nueva excepción implícita.
+
+La integración funcional y la publicación se aprueban por separado según
+constitución 4.0.0. SC-007 conserva su medición física y no se marca cumplido
+por integrar; un PR parcial tampoco completa 005 ni cierra su Issue.

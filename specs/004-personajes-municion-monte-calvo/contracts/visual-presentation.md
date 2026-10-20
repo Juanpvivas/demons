@@ -145,3 +145,8 @@ La corrección T031 añadió resize/encuadre y material neutro/reset al RED prev
 al cambio y verificó después tamaño opaco, contraste/grises, cobertura, gestos
 reales y regresión por entorno. QA T032 aprobó la enmienda y T036 su
 comportamiento; la consolidación y entrega se siguen en las tareas y el PR.
+
+Constitución 4.0.0 separa integración funcional de publicación. SC-007 y las
+certificaciones físicas/renderer/paquete pendientes corresponden a publicación;
+no se dan por aprobadas ni se alteran las aprobaciones históricas. QA evalúa
+integración por separado con GREEN, build, función, documentación y CI.

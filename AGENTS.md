@@ -118,6 +118,21 @@ persona `Squash and merge` para dejar un commit por PR en `main`, conservando
 la trazabilidad RED/GREEN en el cuerpo del PR; no reescribas historial compartido o
 aprobado sin autorización.
 
+Según la constitución 4.0.0, **integración y publicación tienen gates distintos**.
+`main` recibe incrementos funcionales con TDD/GREEN, compilación, CI,
+documentación y `APROBADO PARA INTEGRACIÓN` independiente. Hardware físico,
+renderer o paquete final sin certificar permanecen pendientes de publicación;
+no se convierten en resultados aprobados ni bloquean por sí solos integración.
+Los fallos reales de fuente, build o funcionalidad sí la bloquean. QA debe
+examinar y declarar las caídas de rendimiento observadas y sus límites.
+
+Distribuir a testers externos, Firebase, TestFlight, itch.io o tiendas exige
+además `APROBADO PARA PUBLICACIÓN`, los requisitos físicos/60 FPS aplicables,
+artefacto/renderer/versionado de destino y autorización explícita de la persona.
+Un merge no publica: los workflows de distribución requieren gate explícito.
+Solo el orquestador marca el alcance aprobado; una tarea que también contenga
+publicación mantiene pendiente esa parte y no se marca completa por integración.
+
 Las consultas y correcciones documentales puntuales conservan su alcance;
 no disparan automáticamente la implementación de una feature.
 
@@ -184,3 +199,4 @@ no afirmes haberla aplicado ni sustituyas su consulta por conocimiento genérico
 | 2026-10-16 | Entregas por incrementos con PR pequeños, TDD y QA completos, evidencia proporcional y cierre del Issue solo al completar la feature |
 | 2026-10-16 | Futuros PR sin archivos nuevos de evidencias en Git; resultados y QA en el PR, manteniendo pruebas y documentación útil |
 | 2026-10-19 | Por decisión de la persona y constitución 3.0.0, Web solo en computador; Android/iOS solo apps instaladas, sin continuar pruebas de navegador móvil y conservando evidencias históricas y requisitos nativos |
+| 2026-10-19 | Constitución 4.0.0: gates separados de integración funcional y publicación; requisitos físicos conservados para publicar, sin distribución automática por merge |

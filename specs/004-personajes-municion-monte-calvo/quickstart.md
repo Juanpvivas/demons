@@ -107,8 +107,12 @@ frame times, FPS y memoria en emulador describen únicamente ese entorno y su
 máquina anfitriona; no acreditan 60 FPS en el Xiaomi ni en otro teléfono. Los
 resultados físicos históricos se conservan sin ampliar su alcance. La falta
 definitiva de nuevas pruebas físicas mantiene pendiente SC-007 y la aceptación
-física exigida por la constitución 3.0.0; esta actualización de disponibilidad
-no los exime ni autoriza el cierre global de I2/004.
+física de publicación exigida por la constitución 4.0.0; no los exime ni autoriza
+cerrar 004. Integración funcional tiene un gate separado: GREEN/regresión,
+compilación/exportación aplicables, entrada/smoke, documentación, CI y QA
+independiente sobre el alcance disponible. Fallos reales de fuente, build o
+función lo bloquean; falta de certificación física/renderer/paquete por sí sola
+no lo bloquea. QA evalúa también las diferencias de rendimiento observadas.
 Identificar el renderer real: una comprobación en Compatibility temporal no
 acredita el renderer Mobile de la app de producción.
 
@@ -126,6 +130,12 @@ pantalla de resultado, identificar victoria/derrota con un observador temporal
 de solo lectura del estado real; corroborar la ruta en producción. No anunciar
 un resultado oculto solo por apariencia o por una partida de recursos reducidos.
 Verificar además victoria y derrota por separado mediante las rutas existentes.
+
+El protocolo sostenido que sigue acredita publicación, incluido SC-007, cuando
+el hardware esté disponible. Para integración, las muestras comparativas
+base/candidato acotadas de los entornos disponibles se registran con sus
+condiciones reales y QA evalúa su suficiencia funcional y riesgo, sin presentarlas
+como ese protocolo sostenido ni repetirlas para buscar un resultado favorable.
 
 Antes de medir fijar estado/revisión, dispositivo, batería/temperatura, renderer,
 resolución, herramientas, acciones/oleadas y duración. Usar iguales condiciones
@@ -151,8 +161,13 @@ El tester entrega comandos/pasos, resultados y límites al orquestador. QA
 revisa el estado final y documentación útil después de sus correcciones.
 El PR en borrador resume comprobaciones y veredicto, enlazando CI cuando exista;
 no añade capturas, logs, JSON o informes nuevos de evidencias a Git.
-Pendientes de hardware, visuales, GREEN o QA siguen pendientes, sin cerrar la
-feature ni extrapolar las aprobaciones históricas de 002/003.
+QA emite `APROBADO PARA INTEGRACIÓN` para el alcance funcional o `APROBADO PARA
+PUBLICACIÓN` cuando se cumplen además artefacto/renderer/hardware de destino,
+firma/versionado y SC-007. Distribución a testers/portales requiere autorización
+explícita; merge a main no dispara envíos. Hardware y certificaciones ausentes
+permanecen pendientes de publicación, sin cerrar la feature ni extrapolar
+aprobaciones históricas de 002/003. Fallos de fuente/build, visuales del alcance,
+GREEN o QA siguen bloqueando integración.
 
 ## 7. Corrección I1 — procedimiento de validación
 

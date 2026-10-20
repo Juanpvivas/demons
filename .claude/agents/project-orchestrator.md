@@ -136,10 +136,24 @@ archivo permanente; conserva la historia existente y la trazabilidad RED/GREEN.
 
 ## 6. Entregar cada incremento aprobado
 
+Declara si se evalúa integración o publicación (constitución 4.0.0). Integrar
+exige TDD/GREEN, regresión, build/exportación aplicables, función en entornos
+disponibles, documentación, CI y `APROBADO PARA INTEGRACIÓN`. Físico/renderer/
+paquete final sin certificar siguen pendientes de publicación; fallos reales de
+fuente, build o función impiden integrar. Publicar exige además artefacto de
+destino, firma/versionado, matriz y rendimiento físico/SC aplicables,
+`APROBADO PARA PUBLICACIÓN` y autorización explícita para enviar esa revisión.
+No marques cumplidos esos pendientes desde simuladores ni por integrar código.
+Una tarea mixta requiere conservar pendiente su parte de publicación.
+
+Merge a main no distribuye. Los workflows de distribución sólo admiten despacho
+manual desde main con confirmación QA/humana desactivada por defecto y guard de
+versiones siempre vigente, sin bypass. No ejecutes el despacho por crear un PR.
+
 1. Invoca `docs-writer` en **modo consolidación del incremento**. No presentes
    la feature como completa si quedan tareas o criterios pendientes.
 2. Pide a `godot-tester` GREEN, regresión y verificaciones manuales pertinentes
-   al incremento y a la constitución. Al cierre de la feature exige la **suite
+   al gate del incremento y a la constitución. Al cierre de la feature exige la **suite
    completa GUT**, smoke test (abre, carga y partida completa), playtesting de
    balance y dispositivo cuando apliquen. Comprueba el estado entregado tras
    la consolidación. Si ya existe evidencia válida de ese estado, reutilízala;

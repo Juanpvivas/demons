@@ -141,3 +141,11 @@ La corrección pasó QA documental T032 y su ciclo RED T033 → desarrollo T034 
 GREEN/visual T035 → QA funcional T036. Su consolidación y entrega se siguen en
 las [tareas](tasks.md) y el PR, sin iniciar I2 ni rehacer evidencia histórica.
 La autoría documental no ejecuta motor o pruebas ni sustituye esos gates.
+
+## Separación de gates autorizada (2026-10-19)
+
+Constitución 4.0.0: muestras de entornos disponibles y QA funcional sustentan
+integración; certificación física/60 FPS, renderer y artefacto de destino
+sustentan publicación por separado. No hay herencia de SC-007 ni resultados
+favorables inferidos. Los datos peores también se conservan y QA evalúa el
+riesgo. El PR conjunto autorizado consolida 004-I2 y 005-I1 sin cerrar features.
