@@ -3,7 +3,7 @@
 **Feature ID**: `005-cinco-carriles`
 **Planned Branch**: `codex/005-cinco-carriles-preparacion`
 **Created**: 2026-10-19
-**Status**: Especificación documental aprobada por QA — lista para planificación; implementación pendiente.
+**Status**: Preparación documental aprobada por QA — especificación, plan y tareas completos; implementación pendiente.
 
 **Input**: Cinco filas horizontales, con cinco trincheras a la izquierda,
 soldados colombianos disparando hacia la derecha desde ellas y enemigos de
