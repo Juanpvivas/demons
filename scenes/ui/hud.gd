@@ -52,6 +52,8 @@ extends CanvasLayer
 ## Intención con identidad capturada: el nivel revalidará dueño y selección.
 signal reload_requested(soldier_instance_id: int)
 
+var _selected_soldier: Soldado
+
 
 @onready var _ammo_label: Label = $Root/Info/AmmoLabel
 @onready var _rejection_label: Label = $Root/Info/RejectionLabel
@@ -60,19 +62,68 @@ signal reload_requested(soldier_instance_id: int)
 @onready var _wave_message_timer: Timer = $WaveMessageTimer
 @onready var _game_over_screen: Control = $GameOverScreen
 @onready var _game_over_label: Label = $GameOverScreen/CenterContainer/GameOverLabel
+@onready var _selection_panel: Control = $SelectionPanel
+@onready var _selection_label: Label = $SelectionPanel/Contents/Details/SelectionLabel
+@onready var _individual_ammo_label: Label = $SelectionPanel/Contents/Details/IndividualAmmoLabel
+@onready var _morale_label: Label = $SelectionPanel/Contents/Details/MoraleLabel
+@onready var _reload_button: Button = $SelectionPanel/Contents/ReloadButton
 
 
-## Setup I3: sin selección, controles nuevos ni órdenes antes del RED.
-func set_selected_soldier(_soldier: Soldado) -> void:
-	pass
+func set_selected_soldier(soldier: Soldado) -> void:
+	if is_instance_valid(_selected_soldier):
+		_selected_soldier.reload_state_changed.disconnect(_refresh_selection)
+	_selected_soldier = soldier
+	if is_instance_valid(_selected_soldier):
+		_selected_soldier.reload_state_changed.connect(_refresh_selection)
+	_refresh_selection()
 
 
 func get_selected_soldier() -> Soldado:
+	if is_instance_valid(_selected_soldier) and _selected_soldier.get_reload_state().alive:
+		return _selected_soldier
 	return null
 
 
 func request_selected_reload() -> void:
-	pass
+	var soldier := get_selected_soldier()
+	if soldier != null and soldier.can_reload():
+		reload_requested.emit(soldier.get_instance_id())
+
+
+func _refresh_selection() -> void:
+	var soldier := get_selected_soldier()
+	_reload_button.disabled = soldier == null or not soldier.can_reload()
+	_selection_panel.visible = soldier != null
+	if soldier == null:
+		return
+	var state := soldier.get_reload_state()
+	var returning: bool = state.movement_state == Soldado.MovementState.RETURNING
+	_selection_label.text = "Fila %d%s" % [state.lane_id + 1, " · Regresando" if returning else ""]
+	_individual_ammo_label.text = "Carga: %d/%d" % [state.ammo, state.max_ammo]
+	_morale_label.text = "Moral: %g" % state.morale
+
+
+func _on_game_state_changed(_state: int) -> void:
+	_refresh_selection()
+
+
+func _apply_safe_area() -> void:
+	if not (OS.has_feature("android") or OS.has_feature("ios")):
+		return
+	var safe := DisplayServer.get_display_safe_area()
+	var screen := DisplayServer.screen_get_size()
+	if safe.size.x <= 0 or safe.size.y <= 0 or screen.x <= 0 or screen.y <= 0:
+		return
+	var ratio := get_viewport().get_visible_rect().size / Vector2(screen)
+	var left := maxi(16, ceili(safe.position.x * ratio.x))
+	var top := maxi(16, ceili(safe.position.y * ratio.y))
+	var right := maxi(16, ceili((screen.x - safe.end.x) * ratio.x))
+	$Root.add_theme_constant_override("margin_left", left)
+	$Root.add_theme_constant_override("margin_top", top)
+	_selection_panel.offset_right = -right
+	_selection_panel.offset_left = -right - 324
+	_selection_panel.offset_top = top
+	_selection_panel.offset_bottom = top + 70
 
 
 func _ready() -> void:
@@ -87,6 +138,11 @@ func _ready() -> void:
 
 	GameStateManager.game_won.connect(_on_game_won)
 	GameStateManager.game_lost.connect(_on_game_lost)
+	GameStateManager.game_state_changed.connect(_on_game_state_changed)
+	_reload_button.pressed.connect(request_selected_reload)
+	get_viewport().size_changed.connect(_apply_safe_area)
+	_apply_safe_area()
+	_refresh_selection()
 
 	# Estado inicial mostrado sin esperar el primer cambio: el pool global
 	# ya puede tener un valor != 0 si este HUD se instancia después de que
@@ -100,6 +156,7 @@ func _ready() -> void:
 
 func _on_ammo_pool_changed(new_amount: int) -> void:
 	_update_ammo_label(new_amount)
+	_refresh_selection()
 
 
 func _update_ammo_label(amount: int) -> void:

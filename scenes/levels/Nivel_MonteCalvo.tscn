@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scenes/levels/nivel_monte_calvo.gd" id="3_nivel_monte_calvo"]
 [ext_resource type="PackedScene" path="res://scenes/levels/MonteCalvoVisual.tscn" id="4_monte_calvo_visual"]
 [ext_resource type="Script" path="res://scenes/levels/monte_calvo_camera.gd" id="5_camera"]
 [ext_resource type="Resource" path="res://resources/levels/monte_calvo_board.tres" id="6_board"]
 [ext_resource type="Script" path="res://scenes/levels/horizontal_board_visual.gd" id="7_board_visual"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="8_hud"]
 
 [sub_resource type="TileSet" id="TileSet_tablero"]
 tile_size = Vector2i(96, 96)
@@ -37,3 +38,5 @@ board_config = ExtResource("6_board")
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(576, 324)
 script = ExtResource("5_camera")
+
+[node name="HUD" parent="." instance=ExtResource("8_hud")]

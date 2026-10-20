@@ -30,26 +30,44 @@ var _board_manager := BoardManager.new()
 var _wave_spawner := WaveSpawner.new()
 var _combat_visual_effects := CombatVisualEffects.new()
 var _deploying_cells: Dictionary[Vector2i, bool] = {}
+var _selected_soldier: Soldado
+var _selected_home := Vector2i(-1, -1)
 
 @onready var _tablero: TileMap = $Tablero
 @onready var _posicion_defendida: Area2D = $PosicionDefendida
 @onready var _defended_shape: CollisionShape2D = $PosicionDefendida/CollisionShape2D
 @onready var _legacy_trenches: Node2D = $MonteCalvoVisual/Trincheras
 @onready var _board_visual: LaneBoardVisual = $HorizontalBoardVisual
+@onready var _hud = $HUD
 
 
-## Setup I3: estas entradas no seleccionan ni cobran hasta implementar RED.
-func select_trench(_cell: Vector2i) -> bool:
-	return false
+func select_trench(cell: Vector2i) -> bool:
+	if GameStateManager._current_state != GameStateManager.GameState.PLAYING:
+		return false
+	if not board_config.home_cells.has(cell):
+		return false
+	var soldier := _board_manager.get_occupant(cell) as Soldado
+	if not is_instance_valid(soldier) or not soldier.get_reload_state().alive:
+		return false
+	_selected_home = cell
+	_selected_soldier = soldier
+	_hud.set_selected_soldier(soldier)
+	return true
 
 
 func get_selected_soldier() -> Soldado:
+	if is_instance_valid(_selected_soldier) and _selected_soldier.get_reload_state().alive \
+			and _board_manager.get_occupant(_selected_home) == _selected_soldier:
+		return _selected_soldier
 	return null
 
 
 ## La identidad será obligatoria para rechazar intenciones de dueños anteriores.
-func request_selected_reload(_expected_instance_id: int) -> bool:
-	return false
+func request_selected_reload(expected_instance_id: int) -> bool:
+	var soldier := get_selected_soldier()
+	if soldier == null or soldier.get_instance_id() != expected_instance_id:
+		return false
+	return soldier.request_reload()
 
 
 func _ready() -> void:
@@ -58,6 +76,7 @@ func _ready() -> void:
 	_legacy_trenches.visible = false
 	_board_visual.board_config = board_config
 	EconomyManager.reset_ammo_pool()
+	_hud.reload_requested.connect(request_selected_reload)
 	add_child(_combat_visual_effects)
 	_combat_visual_effects.setup()
 
@@ -96,7 +115,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	# exclusivamente una recogida, también con mouse emulado de touch.
 	if _has_pickable_ammo_at(world_position):
 		return
-	_try_deploy_soldado(_world_to_cell(world_position))
+	var cell := _world_to_cell(world_position)
+	if not select_trench(cell):
+		_try_deploy_soldado(cell)
+	get_viewport().set_input_as_handled()
 
 
 func _has_pickable_ammo_at(world_position: Vector2) -> bool:
@@ -149,6 +171,10 @@ func _on_posicion_defendida_body_entered(body: Node2D) -> void:
 
 func _on_soldado_defeated(grid_cell: Vector2i) -> void:
 	_board_manager.free_cell(grid_cell)
+	if grid_cell == _selected_home:
+		_selected_soldier = null
+		_selected_home = Vector2i(-1, -1)
+		_hud.set_selected_soldier(null)
 
 
 func _screen_to_world(screen_position: Vector2) -> Vector2:
