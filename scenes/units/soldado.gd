@@ -522,6 +522,33 @@ func get_lane_id() -> int:
 	return board_config.home_cells.find(_grid_cell)
 
 
+## Snapshot de lectura para selección/HUD; no autoriza una orden económica.
+func get_reload_state() -> Dictionary:
+	return {
+		"instance_id": get_instance_id(),
+		"home_cell": _grid_cell,
+		"lane_id": get_lane_id(),
+		"ammo": _current_ammo,
+		"max_ammo": stats.max_ammo,
+		"morale": _current_morale,
+		"health": _current_health,
+		"alive": _current_health > 0 and not is_queued_for_deletion(),
+		"mode": _mode,
+		"movement_state": _movement_state,
+		"reload_cost": stats.deploy_ammo_cost,
+		"can_reload": can_reload(),
+	}
+
+
+## Setup I3: elegibilidad y aceptación se implementan después del RED.
+func can_reload() -> bool:
+	return false
+
+
+func request_reload() -> bool:
+	return false
+
+
 ## Aplica `amount` de daño y retorna `true` únicamente si esta llamada dejó
 ## la salud en 0 o menos (mismo contrato que `Enemigo.take_damage()`, ver
 ## cabecera de este archivo y de `enemigo.gd`). Al llegar a 0, el soldado

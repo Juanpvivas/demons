@@ -49,6 +49,10 @@
 ## instanciarse muchas veces en runtime.
 extends CanvasLayer
 
+## Intención con identidad capturada: el nivel revalidará dueño y selección.
+signal reload_requested(soldier_instance_id: int)
+
+
 @onready var _ammo_label: Label = $Root/Info/AmmoLabel
 @onready var _rejection_label: Label = $Root/Info/RejectionLabel
 @onready var _rejection_message_timer: Timer = $RejectionMessageTimer
@@ -56,6 +60,19 @@ extends CanvasLayer
 @onready var _wave_message_timer: Timer = $WaveMessageTimer
 @onready var _game_over_screen: Control = $GameOverScreen
 @onready var _game_over_label: Label = $GameOverScreen/CenterContainer/GameOverLabel
+
+
+## Setup I3: sin selección, controles nuevos ni órdenes antes del RED.
+func set_selected_soldier(_soldier: Soldado) -> void:
+	pass
+
+
+func get_selected_soldier() -> Soldado:
+	return null
+
+
+func request_selected_reload() -> void:
+	pass
 
 
 func _ready() -> void:

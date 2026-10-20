@@ -38,6 +38,20 @@ var _deploying_cells: Dictionary[Vector2i, bool] = {}
 @onready var _board_visual: LaneBoardVisual = $HorizontalBoardVisual
 
 
+## Setup I3: estas entradas no seleccionan ni cobran hasta implementar RED.
+func select_trench(_cell: Vector2i) -> bool:
+	return false
+
+
+func get_selected_soldier() -> Soldado:
+	return null
+
+
+## La identidad será obligatoria para rechazar intenciones de dueños anteriores.
+func request_selected_reload(_expected_instance_id: int) -> bool:
+	return false
+
+
 func _ready() -> void:
 	assert(board_config != null, "Monte Calvo requiere su configuración de tablero")
 	GameStateManager.start_new_match()
