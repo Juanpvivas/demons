@@ -77,11 +77,12 @@ Esta economía recrea la tensión histórica real: cada bala cuenta, y sobrevivi
 
 ### 6.2 Sistema de colocación
 
-- **Decisión de la persona del 2026-10-19, pendiente de especificación e
-  implementación:** cinco filas horizontales para colocar soldados
-  colombianos, con enemigos que avanzan de derecha a izquierda, tomando
-  *Plants vs. Zombies* como referencia. Se preparará como siguiente feature,
-  conservando el trabajo actual de I2 de 004.
+- **Decisión de la persona del 2026-10-19, en preparación y sin implementar:**
+  cinco filas horizontales con cinco trincheras a la izquierda y enemigos de
+  derecha a izquierda, tomando *Plants vs. Zombies* como referencia. La
+  prioridad pasa a preparar [005-cinco-carriles](../specs/005-cinco-carriles/spec.md)
+  en una nueva rama, conservando I2 de 004 guardado con sus validaciones
+  pendientes; no se declara terminado ni aprobado por este cambio de diseño.
 - **Estado actual:** Monte Calvo conserva un único avance central enemigo;
   el sistema de cinco carriles todavía no está implementado. El combate
   frontal y las diagonales adyacentes, así como los stats vigentes, se
@@ -95,6 +96,28 @@ Esta economía recrea la tensión histórica real: cada bala cuenta, y sobrevivi
 - **Modo fusil** (por defecto al desplegarlo): dispara a enemigos dentro de su cono de detección (carril frontal + diagonales adyacentes), con una cantidad limitada de disparos definida por su munición actual.
 - **Modo machete** (automático al quedarse sin munición): combate cuerpo a cuerpo, rango de 1 casilla frontal, daño escalado según la moral acumulada en modo fusil.
 - Stats a definir: disparos por carga, daño por disparo, cadencia de disparo, alcance del cono de detección, fórmula de daño machete según moral (ej. daño_base + moral × multiplicador).
+
+**Diseño futuro confirmado para 005, aún sin implementar:** con balas el
+soldado dispara hacia la derecha desde dentro de su trinchera; al agotarlas,
+sale hacia el enemigo con machete y combate de frente. El soldado actual
+permanece inmóvil incluso en modo machete. La
+[referencia aprobada por la persona](../specs/005-cinco-carriles/references/visual-reference.md)
+orienta la composición; no fija costos, estadísticas ni HUD. Las
+[aclaraciones de 005](../specs/005-cinco-carriles/spec.md#clarifications)
+confirman cinco plazas reservadas por sus soldados vivos aunque salgan,
+reemplazo solo al morir y cinco soldados cargados al inicio con reserva global
+cero. Sin balas avanzan y atacan solo a enemigos delante en su fila; sin ellos
+esperan donde están. Seleccionar la trinchera muestra la carga/moral del dueño;
+pulsar «Recargar» conserva salud/moral y lo hace regresar físicamente para
+disparar al llegar. Las oleadas mantienen cantidades y tiempos con
+reparto 1→2→3→4→5 continuo solo para sus enemigos, conservando además el
+atacante inicial separado en fila central 3, sin consumir esa secuencia:
+1 inicial + 99 autorados, 100 enemigos en total. La velocidad
+propia del soldado es 40 unidades de mundo/s al salir y al regresar, ajustable
+e independiente de los enemigos. Solo un soldado vivo con carga cero admite
+recarga; una orden aceptada cobra una vez y desactiva el botón durante todo el
+retorno. Al regresar no usa fusil ni machete, sigue vulnerable al daño y
+reanuda el fusil al llegar. Estas reglas futuras no alteran todavía el juego actual.
 
 **Futuras unidades (post-MVP, no bloquean el prototipo inicial):**
 - [ ] Variantes con distinto alcance/cadencia (ej. mortero de área, francotirador de rango largo)
@@ -183,7 +206,7 @@ de rendimiento físico nativo ni amplía esas aprobaciones históricas.
 
 ## 10. Preguntas abiertas / decisiones pendientes
 
-- Especificar las dimensiones del tablero y las casillas por carril del sistema de cinco filas horizontales de §6.2, así como el reparto y los puntos de aparición de enemigos entre esas filas.
+- Planificar [005](../specs/005-cinco-carriles/spec.md) con plazas, ciclo/recarga, velocidades e inicio/reparto ya confirmados por la persona. Dimensiones, distancias y puntos de aparición se fijarán en planificación técnica, sin deducir balance de la imagen ni aprobar implementación por esta definición.
 - Acabado visual del enemigo y la caja de munición (I2/I3 de 004), interfaz y demás efectos, siguiendo la dirección de Monte Calvo aprobada en §8.
 - ¿Habrá progresión entre niveles (más batallas históricas) o es un solo escenario?
 - ¿Narrativa/contexto histórico se presenta dentro del juego (cutscenes, texto) o queda solo como inspiración temática?
@@ -228,3 +251,6 @@ de rendimiento físico nativo ni amplía esas aprobaciones históricas.
 | 2026-10-17 | T037 de 004, tras QA funcional T036: §8/§10 incorporan la corrección de legibilidad del soldado y encuadre local de Monte Calvo, conservando geometría, reglas y composición iPad. Enemigo, caja e interfaz siguen pendientes. |
 | 2026-10-19 | §4–6/§8: Web solo en computador y Android/iOS como apps instaladas por decisión de la persona y constitución 3.0.0; se conservan las verificaciones Web móviles históricas y los requisitos físicos nativos |
 | 2026-10-19 | §6.2/§10: decisión de cinco filas horizontales para soldados colombianos, con enemigos de derecha a izquierda, a preparar como siguiente feature conservando I2 de 004; pendiente de especificación e implementación, sin cambiar aún el avance central, el combate ni los stats vigentes |
+| 2026-10-19 | §6.2–6.3/§10: la persona prioriza la preparación de 005 en rama nueva conservando I2 pendiente; confirma fusil dentro de cinco trincheras izquierdas y salida frontal con machete al agotar balas. Referencia visual y decisiones abiertas enlazadas, sin afirmar implementación o aceptación QA del juego |
+| 2026-10-19 | §6.3/§10: aclaradas cinco plazas reservadas, cinco soldados cargados/reserva cero, salida en misma fila y recarga desde trinchera con regreso antes de disparar; oleadas con cantidades/tiempos vigentes y reparto prefijado. Pendiente de planificación e implementación de 005, sin cerrar I2 |
+| 2026-10-19 | §6.3/§10: confirmadas velocidades propias 40/40, recarga solo con carga cero y una orden por retorno, sin ataques durante el regreso vulnerable, y secuencia de filas 1→5 continua entre oleadas; se conservan 1 atacante inicial + 99 autorados. Pendiente QA de especificación completa de 005, sin implementación o cierre I2 |
