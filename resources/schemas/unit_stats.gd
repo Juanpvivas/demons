@@ -43,6 +43,12 @@ extends Resource
 ## munición disponible (FR-006).
 @export_range(0.0, 10.0, 0.1) var moral_per_kill: float = 1.0
 
+@export_group("Movimiento por carril")
+
+## Velocidades propias, independientes de los stats del enemigo.
+@export_range(0.1, 500.0, 0.1) var advance_speed: float = 40.0
+@export_range(0.1, 500.0, 0.1) var return_speed: float = 40.0
+
 @export_group("Despliegue")
 
 ## Costo en munición recolectada para desplegar un soldado nuevo de este

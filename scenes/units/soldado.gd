@@ -3,8 +3,10 @@
 ## agotar munición, y transiciona automáticamente a combate cuerpo a cuerpo
 ## con machete contra enemigos en "RangoMelee" (FR-002 a FR-006).
 ##
-## `StaticBody2D` raíz (`docs/ARCHITECTURE.md` §5) — el soldado no se mueve,
-## solo dispara/ataca desde su celda.
+## 005/I2: cuerpo móvil; el fusil permanece en su hogar y el machete avanza
+## solo hacia un frontal de su fila. Las consultas del tick físico sustituyen
+## los overlaps almacenados del soldado estático anterior. El hallazgo histórico
+## de T053 se conserva en `docs/ARCHITECTURE.md` §4.2.
 ##
 ## Contrato asumido de `Enemigo`, cumplido desde T018/T025/T026 (la clase
 ## `Enemigo` ya existe en `scenes/enemies/enemigo.gd`):
@@ -29,21 +31,9 @@
 ##   mientras ese enemigo esté dentro de "RangoMelee" (T053, rehecha —
 ##   ver `_process_incoming_melee_damage()`).
 ##
-## **T053, rehecha — daño mutuo dentro de "RangoMelee" (`spec.md` Edge Case:
-## "un soldado en modo cuerpo a cuerpo es derrotado por los enemigos")**: la
-## implementación original de T053 le daba a `Enemigo` su propia `Area2D`
-## "RangoAtaque" para detectar y atacar a este soldado. `qa-validator`
-## encontró con evidencia empírica que una `Area2D` hija de un
-## `CharacterBody2D` que llama `move_and_slide()` en cada `_physics_process`
-## (como sería "RangoAtaque" sobre `Enemigo`) nunca actualiza su lista
-## interna de overlaps contra un `StaticBody2D` (este `Soldado`) — esa
-## `Area2D` nunca dispararía `body_entered`/`body_exited` contra un `Soldado`
-## real en juego real. Decisión de la persona dueña del proyecto: invertir
-## qué lado dispara la interacción. Este soldado ahora es quien, desde la
-## misma "RangoMelee" que ya usa de forma fiable para atacar a machete
-## (T023), también se aplica a sí mismo el daño de cualquier `Enemigo`
-## presente ahí, vía `get_melee_damage()` de cada uno — ver
-## `_process_incoming_melee_damage()`.
+## Se conserva la autoridad de daño mutuo del soldado establecida en T053:
+## cada atacante válido aporta `get_melee_damage()` y el soldado aplica el
+## pulso entrante de 1 s. I2 cambia su detección, no esa regla de combate.
 ##
 ## TODO (T047 — revisión de todo el código nuevo contra ARCHITECTURE.md):
 ## `_current_target`/`_current_melee_target` siguen tipados como `Node2D` y
@@ -55,11 +45,10 @@
 ## de `qa-validator` en T027/T028 — no se corrige aquí porque es cambio de
 ## lógica, fuera del alcance de documentación.
 class_name Soldado
-extends StaticBody2D
+extends CharacterBody2D
 
 ## Grupo al que se espera que pertenezca todo `Enemigo` (contrato asumido,
-## ver comentario de cabecera). Filtra los cuerpos detectados por las
-## `Area2D` de este soldado.
+## ver comentario de cabecera). Filtra los cuerpos de las consultas físicas.
 const ENEMY_GROUP: String = "enemies"
 
 ## Munición llega a 0, justo antes de pasar a modo machete (FR-004).
@@ -82,6 +71,9 @@ signal defeat_visual_requested(snapshot: Dictionary)
 
 ## Modo de combate activo (`docs/ARCHITECTURE.md` §4.4).
 enum SoldierMode { RIFLE, MELEE }
+
+## Estado de desplazamiento separado del arma. RETURNING pertenece a I3.
+enum MovementState { HOME, ADVANCING, MELEE_CONTACT, WAITING, RETURNING, DEAD }
 
 ## Molde de datos base/máximos de este soldado — solo lectura, nunca
 ## mutado en runtime (`docs/ARCHITECTURE.md` §4.3).
@@ -109,6 +101,9 @@ var _current_health: int = 0
 ## `BoardManager` libere la celda correcta.
 var _grid_cell: Vector2i
 
+var _movement_state: MovementState = MovementState.HOME
+var _home_position: Vector2
+
 ## Objetivo activo de fusil — nunca más de uno a la vez (FR-002).
 var _current_target: Node2D = null
 var _current_target_generation: int = -1
@@ -118,12 +113,14 @@ var _current_target_generation: int = -1
 var _current_melee_target: Node2D = null
 var _current_melee_generation: int = -1
 
-## Candidatos actualmente dentro de "DeteccionRango" (no se re-escanea la
-## escena en `_process()` — `research.md` §1).
+## Candidatos del tick físico, sin recorrer nodos de la escena ni depender
+## de las señales Area2D de un cuerpo móvil.
 var _rifle_candidates: Array[Node2D] = []
-
-## Candidatos actualmente dentro de "RangoMelee".
 var _melee_candidates: Array[Node2D] = []
+var _front_candidates: Array[Node2D] = []
+var _candidate_generations: Dictionary[int, int] = {}
+var _search_shape := RectangleShape2D.new()
+var _search_query := PhysicsShapeQueryParameters2D.new()
 
 ## Cuenta regresiva hasta el próximo disparo de fusil, en segundos.
 var _rifle_cooldown: float = 0.0
@@ -144,8 +141,6 @@ var _melee_cooldown: float = 0.0
 ## criterio que `_melee_cooldown`/`_rifle_cooldown`).
 var _incoming_melee_cooldown: float = 0.0
 
-@onready var _deteccion_rango: Area2D = $DeteccionRango
-@onready var _rango_melee: Area2D = $RangoMelee
 @onready var _sprite: SoldadoVisual = $AnimatedSprite2D
 @onready var _rifle_shape: CollisionShape2D = $DeteccionRango/CollisionShape2D
 @onready var _melee_shape: CollisionShape2D = $RangoMelee/CollisionShape2D
@@ -166,13 +161,13 @@ const _INCOMING_MELEE_ATTACK_INTERVAL: float = 1.0
 
 func _ready() -> void:
 	assert(stats != null, "Soldado requiere un UnitStats asignado en 'stats'")
+	_home_position = global_position
 	_current_ammo = stats.max_ammo
 	_current_health = stats.max_health
 
-	_deteccion_rango.body_entered.connect(_on_deteccion_rango_body_entered)
-	_deteccion_rango.body_exited.connect(_on_deteccion_rango_body_exited)
-	_rango_melee.body_entered.connect(_on_rango_melee_body_entered)
-	_rango_melee.body_exited.connect(_on_rango_melee_body_exited)
+	_search_query.shape = _search_shape
+	_search_query.collide_with_areas = false
+	_search_query.exclude = [get_rid()]
 	# El propio soldado escucha su señal para transicionar de modo — mismo
 	# patrón ya documentado en `docs/ARCHITECTURE.md` §4.2.
 	ammo_depleted.connect(_on_ammo_depleted)
@@ -182,24 +177,88 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if _current_health <= 0 or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
-		_current_target = null
-		_current_melee_target = null
+	velocity = Vector2.ZERO
+	if not _can_process_combat():
+		_clear_combat_targets()
 		return
+	_refresh_physics_candidates()
 	match _mode:
 		SoldierMode.RIFLE:
 			_process_rifle(delta)
 		SoldierMode.MELEE:
 			_process_melee(delta)
-	# T053 (rehecha): daño mutuo, independiente del modo activo (ver
-	# comentario de `_incoming_melee_cooldown`).
+	# Una baja puede cambiar a WON de forma síncrona durante el ataque.
+	if not _can_process_combat():
+		velocity = Vector2.ZERO
+		_clear_combat_targets()
+		return
 	_process_incoming_melee_damage(delta)
+
+
+func _can_process_combat() -> bool:
+	return _current_health > 0 and GameStateManager._current_state == GameStateManager.GameState.PLAYING
+
+
+func _clear_combat_targets() -> void:
+	if _current_health > 0:
+		_movement_state = MovementState.HOME if _is_at_home() else MovementState.WAITING
+	_current_target = null
+	_current_target_generation = -1
+	_current_melee_target = null
+	_current_melee_generation = -1
+	_rifle_candidates.clear()
+	_melee_candidates.clear()
+	_front_candidates.clear()
+	_candidate_generations.clear()
+
+
+## El fusil consulta su alcance; el machete busca hasta el extremo del tablero
+## en su fila. Los filtros posteriores conservan las formas autoradas.
+func _refresh_physics_candidates() -> void:
+	_rifle_candidates.clear()
+	_melee_candidates.clear()
+	_front_candidates.clear()
+	_candidate_generations.clear()
+	var rifle_rect := _rifle_shape.shape.get_rect()
+	var width := _rifle_shape.position.x + rifle_rect.end.x
+	var height := rifle_rect.size.y
+	if _mode == SoldierMode.MELEE:
+		width = maxf(board_config.design_rect.end.x - global_position.x, width)
+		height = board_config.cell_size.y
+	_search_shape.size = Vector2(width, height)
+	_search_query.transform = Transform2D(0.0, global_position + Vector2(width * 0.5, 0.0))
+	_search_query.collision_mask = collision_mask
+	# Crecer hasta obtener el conjunto completo: el orden interno de física
+	# no puede ocultar candidatos válidos por un límite fijo de resultados.
+	var result_limit := 32
+	var space := get_world_2d().direct_space_state
+	var hits := space.intersect_shape(_search_query, result_limit)
+	while hits.size() == result_limit:
+		result_limit *= 2
+		hits = space.intersect_shape(_search_query, result_limit)
+	for hit: Dictionary in hits:
+		var body := hit["collider"] as Node2D
+		if body == null or _candidate_generations.has(body.get_instance_id()):
+			continue
+		_candidate_generations[body.get_instance_id()] = _generation_of(body)
+		if _is_rifle_eligible(body):
+			_rifle_candidates.append(body)
+		if _is_front_eligible(body):
+			_front_candidates.append(body)
+		if _is_melee_eligible(body):
+			_melee_candidates.append(body)
 
 
 # --- Modo fusil (T021, T022) --------------------------------------------
 
 func _process_rifle(delta: float) -> void:
-	if not _is_rifle_eligible(_current_target) or _generation_of(_current_target) != _current_target_generation:
+	if not _is_at_home():
+		return
+	_movement_state = MovementState.HOME
+	if not is_instance_valid(_current_target) \
+			or not _rifle_candidates.has(_current_target) \
+			or not _is_rifle_eligible(_current_target) \
+			or _generation_of(_current_target) != _current_target_generation:
 		_recompute_rifle_target()
 	if _current_target == null or _current_ammo <= 0:
 		return
@@ -231,20 +290,6 @@ func _fire_at_current_target() -> void:
 		ammo_depleted.emit()
 
 
-func _on_deteccion_rango_body_entered(body: Node2D) -> void:
-	if not body.is_in_group(ENEMY_GROUP) or _rifle_candidates.has(body):
-		return
-	_rifle_candidates.append(body)
-	# Se elige durante el tick físico: incluye todos los cuerpos que entraron
-	# juntos y nunca reemplaza un blanco que continúa siendo elegible.
-
-
-func _on_deteccion_rango_body_exited(body: Node2D) -> void:
-	if not _rifle_candidates.has(body):
-		return
-	_remove_rifle_candidate(body)
-
-
 func _remove_rifle_candidate(body: Node2D) -> void:
 	_rifle_candidates.erase(body)
 	if body == _current_target:
@@ -266,15 +311,35 @@ func _recompute_rifle_target() -> void:
 # --- Modo machete (T023) -------------------------------------------------
 
 func _process_melee(delta: float) -> void:
-	if not _is_melee_eligible(_current_melee_target) or _generation_of(_current_melee_target) != _current_melee_generation:
+	if not is_instance_valid(_current_melee_target) \
+			or not _melee_candidates.has(_current_melee_target) \
+			or not _is_melee_eligible(_current_melee_target) \
+			or _generation_of(_current_melee_target) != _current_melee_generation:
+		_recompute_melee_target()
+	if _current_melee_target == null:
+		if _front_candidates.is_empty():
+			_movement_state = MovementState.HOME if _is_at_home() else MovementState.WAITING
+			return
+		# Todos los frontales de esta fila requieren el mismo avance +X.
+		# El foco de combate solo se adquiere al entrar en alcance real.
+		_movement_state = MovementState.ADVANCING
+		velocity = Vector2(stats.advance_speed, 0.0)
+		move_and_slide()
+		_refresh_physics_candidates()
 		_recompute_melee_target()
 	if _current_melee_target == null:
 		return
+	# Detenerse desde el primer golpe, aunque el enemigo aún se aproxime
+	# dentro del alcance y los cuerpos todavía no hayan chocado.
+	velocity = Vector2.ZERO
+	_movement_state = MovementState.MELEE_CONTACT
 	_melee_cooldown -= delta
 	if _melee_cooldown > 0.0:
 		return
 	_attack_current_melee_target()
 	_melee_cooldown = 1.0 / stats.fire_rate
+	if _current_melee_target == null:
+		_movement_state = MovementState.HOME if _is_at_home() else MovementState.WAITING
 
 
 func _attack_current_melee_target() -> void:
@@ -298,21 +363,9 @@ func _current_machete_damage() -> int:
 	return roundi(stats.machete_base_damage + _current_morale * stats.machete_moral_multiplier)
 
 
-func _on_rango_melee_body_entered(body: Node2D) -> void:
-	if not body.is_in_group(ENEMY_GROUP) or _melee_candidates.has(body):
-		return
-	_melee_candidates.append(body)
-	# La selección se difiere al tick físico, como en fusil.
-
-
-func _on_rango_melee_body_exited(body: Node2D) -> void:
-	if not _melee_candidates.has(body):
-		return
-	_remove_melee_candidate(body)
-
-
 func _remove_melee_candidate(body: Node2D) -> void:
 	_melee_candidates.erase(body)
+	_front_candidates.erase(body)
 	if body == _current_melee_target:
 		_current_melee_target = null
 		_recompute_melee_target()
@@ -333,29 +386,28 @@ func _recompute_melee_target() -> void:
 ## `_current_melee_target`, sin dividir fuego), el daño ENTRANTE se aplica
 ## por cada `Enemigo` presente en `_melee_candidates` — un soldado rodeado
 ## por varios enemigos cuerpo a cuerpo recibe el golpe de cada uno, aunque
-## él mismo solo pueda atacar a uno a la vez. Se dispara desde este lado
-## (`Soldado`, `StaticBody2D`) porque es el que detecta overlaps de forma
-## fiable — ver la nota de motor documentada en la cabecera de este archivo
-## y en `enemigo.gd`.
+## él mismo solo pueda atacar a uno a la vez. La consulta deduplica cuerpos
+## y conserva su generación anterior a callbacks de daño/reciclado.
 func _process_incoming_melee_damage(delta: float) -> void:
 	if _melee_candidates.is_empty():
 		return
 	_incoming_melee_cooldown -= delta
 	if _incoming_melee_cooldown > 0.0:
 		return
-	for enemy in _melee_candidates:
+	for enemy: Node2D in _melee_candidates.duplicate():
+		if not _can_process_combat():
+			break
 		if not _is_melee_eligible(enemy) or not enemy.has_method("get_melee_damage"):
 			continue
-		# `take_damage()` es defensivo ante llamadas repetidas una vez que
-		# `_current_health` llega a 0 (ver cabecera de esa función) — seguro
-		# de llamar por cada enemigo restante aunque uno anterior ya haya
-		# derrotado a este soldado en esta misma pasada.
 		take_damage(enemy.call("get_melee_damage"))
 	_incoming_melee_cooldown = _INCOMING_MELEE_ATTACK_INTERVAL
 
 
 func _is_live_candidate(body: Node2D) -> bool:
-	if not is_instance_valid(body) or body.is_queued_for_deletion() or not body.is_in_group(ENEMY_GROUP):
+	if not is_instance_valid(body) or not body.is_inside_tree() \
+			or body.is_queued_for_deletion() or not body.is_in_group(ENEMY_GROUP):
+		return false
+	if _candidate_generations.get(body.get_instance_id(), -2) != _generation_of(body):
 		return false
 	if body is Enemigo:
 		return (body as Enemigo).is_targetable()
@@ -384,8 +436,16 @@ func _is_rifle_eligible(body: Node2D) -> bool:
 
 
 func _is_melee_eligible(body: Node2D) -> bool:
+	return _is_front_eligible(body) and _body_overlaps_range(body, _melee_shape)
+
+
+func _is_front_eligible(body: Node2D) -> bool:
 	return _is_live_candidate(body) and body.global_position.x > global_position.x \
-		and _candidate_cell(body).y == _grid_cell.y and _body_overlaps_range(body, _melee_shape)
+		and _candidate_cell(body).y == _grid_cell.y
+
+
+func _is_at_home() -> bool:
+	return global_position.distance_to(_home_position) <= 0.01
 
 
 ## Solape de las formas reales, sin convertir el extremo del área en una
@@ -423,9 +483,14 @@ func _on_ammo_depleted() -> void:
 func reload() -> void:
 	if _current_health <= 0 or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
 		return
+	# I2 conserva la operación heredada dentro del hogar. La recarga fuera
+	# requiere el retorno físico y la transacción de I3; no cobrarla aquí.
+	if not _is_at_home():
+		return
 	if not EconomyManager.try_spend_ammo(stats.deploy_ammo_cost):
 		return
 	_current_ammo = stats.max_ammo
+	_movement_state = MovementState.HOME
 	_set_mode(SoldierMode.RIFLE)
 
 
@@ -443,6 +508,18 @@ func _set_mode(new_mode: SoldierMode) -> void:
 ## `soldier_defeated` reporte la celda correcta si más adelante es derrotado.
 func set_grid_cell(cell: Vector2i) -> void:
 	_grid_cell = cell
+
+
+func get_movement_state() -> MovementState:
+	return _movement_state
+
+
+func get_home_position() -> Vector2:
+	return _home_position
+
+
+func get_lane_id() -> int:
+	return board_config.home_cells.find(_grid_cell)
 
 
 ## Aplica `amount` de daño y retorna `true` únicamente si esta llamada dejó
@@ -464,6 +541,9 @@ func take_damage(amount: int) -> bool:
 
 
 func _die() -> void:
+	_movement_state = MovementState.DEAD
+	velocity = Vector2.ZERO
+	_clear_combat_targets()
 	var snapshot := _sprite.capture_defeat_snapshot(global_position)
 	_sprite.deactivate_visual()
 	defeat_visual_requested.emit(snapshot)

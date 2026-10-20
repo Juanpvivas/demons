@@ -34,16 +34,25 @@ El juego no está publicado en el portal. Consulta la
 ## Estado actual
 
 El incremento conjunto [004-I2](specs/004-personajes-municion-monte-calvo/tasks.md)
-y [005-I1](specs/005-cinco-carriles/tasks.md) incorpora el enemigo pictórico y
-un tablero funcional de cinco filas horizontales. Empieza con cinco soldados
+y [005-I1](specs/005-cinco-carriles/tasks.md), integrado en `main` mediante el
+[PR #24](https://github.com/Juanpvivas/demons/pull/24) (`658dd7e`), incorpora el
+enemigo pictórico y un tablero funcional de cinco filas horizontales. Empieza con cinco soldados
 cargados en las plazas izquierdas, gratis y con reserva cero; disparan hacia
 la derecha y los enemigos avanzan hacia la izquierda. Un inicial en fila 3 y
 99 enemigos de oleadas comparten pool, con reparto 1→5 continuo para las oleadas.
 La recogida manual conserva su precedencia sobre desplegar/cobrar.
 
-Es una integración parcial: el soldado sigue inmóvil incluso con machete.
-Salida/contacto móvil, selección/recarga y regreso son 005-I2/I3; las bandas y
-plazas actuales son provisionales hasta las trincheras/poses laterales de I4.
+005-I2 añade salida física con machete en `codex/005-i2-machete`, con aprobación
+funcional para integración y su PR en borrador por preparar; aún no está en
+`main`. Al agotar las balas, el mismo soldado avanza a 40 unidades/s hacia un
+enemigo frontal de su fila, se detiene para combatir y espera donde está si
+no queda ninguno delante. Ambos cuerpos pueden recibir daño y morir; su plaza
+sigue reservada mientras viva y queda libre al morir, aunque esté fuera.
+
+Selección, recarga desde la trinchera y regreso físico siguen pendientes de
+005-I3. La operación de recarga heredada sólo se permite desde la posición del
+hogar; fuera se rechaza sin gasto. Las bandas y plazas actuales son
+provisionales hasta las trincheras/poses laterales de I4.
 La caja amarilla sigue pendiente de 004-I3. Las features 004/005 y la publicación
 permanecen abiertas: esta integración no acredita 60 FPS físicos, renderer
 Mobile, hardware ni empaquetado final.

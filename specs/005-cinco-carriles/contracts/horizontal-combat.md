@@ -1,7 +1,10 @@
 # Contrato: Tablero, combate e interacción horizontal
 
-Contrato futuro para agentes/tester; sin API remota nueva. Firmas concretas
-se definirán mediante setup/RED sin cambiar estas invariantes.
+Contrato de la feature para agentes/tester; sin API remota nueva. I1 está
+integrado en `main`; salida/espera/contacto I2 tiene aprobación funcional para
+integración en `codex/005-i2-machete`, aún sin integrar. Recarga/selección/regreso
+siguen pendientes de I3 y la presentación lateral de I4. Las firmas concretas
+se definen mediante setup/RED sin cambiar estas invariantes.
 [Spec](../spec.md) · [Modelo](../data-model.md).
 
 ## Tablero, spawns y terminal
@@ -48,11 +51,18 @@ se definirán mediante setup/RED sin cambiar estas invariantes.
 - Regreso físico a 40 cancela blancos/ofensiva, conserva contacto/daño entrante.
   Muerte cancela orden y libera origen lejano. Alcanzar origen no se decide
   por animación, espera arbitraria o teletransporte.
-- Validar vivo/activo y generación de blancos; nodo reciclado no recibe ataque
+- Validar la instancia antes de operaciones tipadas; después vivo/activo,
+  elegibilidad y generación de blancos. Nodo reciclado no recibe ataque
   destinado a su uso anterior. Reinicio/terminal limpian órdenes, candidatos,
   intenciones de movimiento y callbacks visuales.
 
 ## Recarga, selección e input
+
+Las reglas de selección/transacción/regreso siguientes pertenecen a I3.
+Durante I2, `reload()` sólo conserva su operación heredada para actor vivo,
+PLAYING, fondos y posición de hogar (distancia ≤0,01), sin exigir enum `HOME`
+ni carga cero; fuera rechaza sin gasto. `return_speed=40` queda preparado sin
+ruta activa. La precedencia de picking vigente se conserva.
 
 1. Resolver selección contra dueño vivo actual y PLAYING. Habilitar solo
    carga 0, sin orden aceptada/RETURNING, con fondos≥costo. Panel muestra fila,

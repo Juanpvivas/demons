@@ -2,15 +2,19 @@
 
 **Feature**: `005-cinco-carriles` · **Issue**: [#22](https://github.com/Juanpvivas/demons/issues/22) · **Rama de preparación**: `codex/005-cinco-carriles-preparacion`.
 **Input**: [spec](spec.md), [plan aprobado documentalmente](plan.md), [modelo](data-model.md), [contrato](contracts/horizontal-combat.md), [quickstart](quickstart.md) y [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
-**Estado**: I1, documentación y transición aprobados para integración conjunta con 004-I2 en el PR #24, en borrador hacia main desde `codex/005-i1-tablero`. Publicación T071 e I2–I5 permanecen pendientes; la integración humana aún no se ha realizado.
-**PR conjunto de integración**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; aprobación para integración, publicación pendiente.
+**Estado**: I1 y 004-I2 integrados en `main` mediante Squash and merge del PR #24 (`658dd7e`). I2 implementado y aprobado para integración en `codex/005-i2-machete`, creada desde ese main; PR [#25](https://github.com/Juanpvivas/demons/pull/25) en borrador hacia `main`. Publicación T071 e I3–I5 permanecen pendientes.
+**PR conjunto integrado**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; integración realizada el 2026-10-20, publicación pendiente.
 
-Transición autorizada: `codex/005-i1-tablero` ya contiene 004-I2 y 005-I1.
-Se prepara un único PR hacia `main` (`2dc532d` como base de revisión), con
-`Refs #18` y `Refs #22`, sin cerrar features, reescribir historial ni merge
-automático. Se justifica tamaño acumulado y se revisa el conjunto por QA.
-Tras integrar, las ramas superadas pueden eliminarse conservando el código en
-main. Los siguientes incrementos vuelven a ramas breves desde main actualizado.
+Transición completada: el PR #24 reunió 004-I2 y 005-I1 desde
+`codex/005-i1-tablero` hacia `main` (`2dc532d` como base de revisión).
+La persona autorizó el squash y la eliminación de las dos ramas superadas,
+realizados tras comprobar que todo el contenido aprobado quedó integrado.
+Las features siguen abiertas y la publicación pendiente. I2 retoma una rama
+breve desde `main` actualizado con alcance T018–T031; recarga/regreso I3 y
+presentación lateral I4 no se implementan en este incremento.
+Durante I2, la API de recarga existente se conserva dentro del hogar; fuera
+de él rechaza la orden sin gasto hasta incorporar el regreso de I3. El fusil
+sigue limitado a HOME y esa adaptación requiere RED antes de implementarse.
 
 ## Reglas de ejecución y gates
 
@@ -75,20 +79,20 @@ main. Los siguientes incrementos vuelven a ramas breves desde main actualizado.
 **Objetivo**: mismo soldado sale/espera/combate en su fila y libera origen al morir.
 **Criterio independiente**: última bala mata único→espera; si queda frontal→sale a40 propios, contacto detiene sin atravesar y ambos reciben daño real.
 
-- [ ] T018 [US2] project-orchestrator: tras integración humana del PR conjunto T017, preparar rama breve `codex/005-i2-machete` desde main actualizado y declarar alcance/IDs; no iniciar I2 durante la transición; depende de T017 integrado y su QA funcional vigente.
-- [ ] T019 [US2] dev-godot: disponer interfaces de estado/movimiento invocables y campos propios `advance_speed/return_speed` de `resources/schemas/unit_stats.gd`/`resources/units/soldado_base_stats.tres`,40/40 según modelo; no implementar salida/contacto/retorno ni modificar pruebas; depende de T018.
-- [ ] T020 [P] [US2] godot-tester RED: escribir `tests/unit/units/test_soldado_lane_motion.gd` para última bala→machete, único blanco muerto→espera, siguiente frontal→avance, perder blanco→espera/reanudar y excluir detrás/otras filas; medir40 propios con ticks y dos velocidades EnemyStats distintas; depende de T019.
-- [ ] T021 [P] [US2] godot-tester RED: escribir `tests/unit/units/test_soldado_mobile_contact.gd` para dos cuerpos realmente móviles, bloqueo sin atravesar, alcance/daño mutuo/cooldowns y múltiples atacantes sin duplicación; origen reservado/muerte libera y blanco reciclado inválido; depende de T019.
-- [ ] T022 [US2] qa-validator: validar fallo semántico y cobertura de T020/T021 contra `specs/005-cinco-carriles/contracts/horizontal-combat.md`, sin aceptar callbacks simulados como contacto real; depende de T020 y T021.
-- [ ] T023 [US2] dev-godot: convertir raíz de `scenes/units/Soldado.tscn`/`soldado.gd` a cuerpo móvil y estados de salida/espera/contacto de misma fila; usar velocidades propias, buscar solo frontal y conservar vida/moral/arma/plaza de origen; depende de T022 aprobada.
-- [ ] T024 [US2] dev-godot: implementar consulta física puntual/filtros y contacto real en `scenes/units/soldado.gd`/`scenes/enemies/enemigo.gd`, conservando daño/cadencias, exclusión de blancos inactivos/generación y bloqueo entre cuerpos sin cambio de fila; liberar origen desde `scenes/levels/nivel_monte_calvo.gd`; depende de T023.
-- [ ] T025 [US2] godot-tester GREEN: confirmar T020/T021 y regresión de `tests/unit/{units,enemies,levels,systems}/` sobre movimiento/contacto real, targeting, salud/moral/carga, muerte fuera, pool/efectos y terminales; depende de T024.
-- [ ] T026 [US2] qa-validator: revisión funcional parcial de T023–T025 contra `specs/005-cinco-carriles/spec.md`, con suficiencia para continuar y gates pendientes; sin APROBADO de implementación/entrega; depende de T025.
-- [ ] T027 [US2] godot-tester: gate funcional I2 de `specs/005-cinco-carriles/quickstart.md`, Web/APK/.app disponibles con machete/contacto por filas, gestos/resize/partida y playtest espacial; comparar base/candidato y declarar diferencias/riesgos. Certificación física/renderer/paquete final se conserva en T071; depende de T025.
-- [ ] T028 [US2] qa-validator: APROBADO PARA INTEGRACIÓN de I2 sólo tras gate funcional T027 y conformidad código/RED/GREEN/contrato; evaluar diferencias/riesgos y conservar publicación en T071 sin extrapolar emulación a hardware; depende de T026, T027 completas y T014 aprobada.
-- [ ] T029 [US2] docs-writer: documentar movimiento/contacto aprobados y evolución de soldado estático en `docs/ARCHITECTURE.md`/`docs/SPEC.md`, conservando hallazgos históricos y recarga I3 pendiente; depende de T028 aprobada.
-- [ ] T030 [US2] qa-validator: revisar resultado/documentación final I2 y vigencia del estado probado en `docs/ARCHITECTURE.md`/`docs/SPEC.md` y fuentes T023/T024; depende de T029.
-- [ ] T031 [US2] project-orchestrator: actualizar `specs/005-cinco-carriles/tasks.md` solo tras aprobaciones y preparar PR I2 en borrador `Refs #22` con base/tamaño/QA/TDD; nunca entrega aprobada con gates pendientes; depende de T030 aprobada.
+- [X] T018 [US2] project-orchestrator: tras integración humana del PR conjunto T017, preparar rama breve `codex/005-i2-machete` desde main actualizado y declarar alcance/IDs; no iniciar I2 durante la transición; depende de T017 integrado y su QA funcional vigente.
+- [X] T019 [US2] dev-godot: disponer interfaces de estado/movimiento invocables y campos propios `advance_speed/return_speed` de `resources/schemas/unit_stats.gd`/`resources/units/soldado_base_stats.tres`,40/40 según modelo; no implementar salida/contacto/retorno ni modificar pruebas; depende de T018.
+- [X] T020 [P] [US2] godot-tester RED: escribir `tests/unit/units/test_soldado_lane_motion.gd` para última bala→machete, único blanco muerto→espera, siguiente frontal→avance, perder blanco→espera/reanudar y excluir detrás/otras filas; medir40 propios con ticks y dos velocidades EnemyStats distintas; depende de T019.
+- [X] T021 [P] [US2] godot-tester RED: escribir `tests/unit/units/test_soldado_mobile_contact.gd` para dos cuerpos realmente móviles, bloqueo sin atravesar, alcance/daño mutuo/cooldowns y múltiples atacantes sin duplicación; origen reservado/muerte libera y blanco reciclado inválido; depende de T019.
+- [X] T022 [US2] qa-validator: validar fallo semántico y cobertura de T020/T021 contra `specs/005-cinco-carriles/contracts/horizontal-combat.md`, sin aceptar callbacks simulados como contacto real; depende de T020 y T021.
+- [X] T023 [US2] dev-godot: convertir raíz de `scenes/units/Soldado.tscn`/`soldado.gd` a cuerpo móvil y estados de salida/espera/contacto de misma fila; usar velocidades propias, buscar solo frontal y conservar vida/moral/arma/plaza de origen; depende de T022 aprobada.
+- [X] T024 [US2] dev-godot: implementar consulta física puntual/filtros y contacto real en `scenes/units/soldado.gd`/`scenes/enemies/enemigo.gd`, conservando daño/cadencias, exclusión de blancos inactivos/generación y bloqueo entre cuerpos sin cambio de fila; liberar origen desde `scenes/levels/nivel_monte_calvo.gd`; depende de T023.
+- [X] T025 [US2] godot-tester GREEN: confirmar T020/T021 y regresión de `tests/unit/{units,enemies,levels,systems}/` sobre movimiento/contacto real, targeting, salud/moral/carga, muerte fuera, pool/efectos y terminales; depende de T024.
+- [X] T026 [US2] qa-validator: revisión funcional parcial de T023–T025 contra `specs/005-cinco-carriles/spec.md`, con suficiencia para continuar y gates pendientes; sin APROBADO de implementación/entrega; depende de T025.
+- [X] T027 [US2] godot-tester: gate funcional I2 de `specs/005-cinco-carriles/quickstart.md`, Web/APK/.app disponibles con machete/contacto por filas, gestos/resize/partida y playtest espacial; comparar base/candidato y declarar diferencias/riesgos. Certificación física/renderer/paquete final se conserva en T071; depende de T025.
+- [X] T028 [US2] qa-validator: APROBADO PARA INTEGRACIÓN de I2 sólo tras gate funcional T027 y conformidad código/RED/GREEN/contrato; evaluar diferencias/riesgos y conservar publicación en T071 sin extrapolar emulación a hardware; depende de T026, T027 completas y T014 aprobada.
+- [X] T029 [US2] docs-writer: documentar movimiento/contacto aprobados y evolución de soldado estático en `docs/ARCHITECTURE.md`/`docs/SPEC.md`, conservando hallazgos históricos y recarga I3 pendiente; depende de T028 aprobada.
+- [X] T030 [US2] qa-validator: revisar resultado/documentación final I2 y vigencia del estado probado en `docs/ARCHITECTURE.md`/`docs/SPEC.md` y fuentes T023/T024; depende de T029.
+- [X] T031 [US2] project-orchestrator: actualizar `specs/005-cinco-carriles/tasks.md` solo tras aprobaciones y preparar PR I2 en borrador `Refs #22` con base/tamaño/QA/TDD; nunca entrega aprobada con gates pendientes; depende de T030 aprobada.
 
 ## Fase 5 — US3: Administrar plazas y munición (P2) · I3
 

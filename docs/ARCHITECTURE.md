@@ -194,8 +194,9 @@ Reglas complementarias:
   ni, con más razón, para nodos externos (eso ya lo cubre la regla anterior
   contra `get_node("../../...")`).
 
-**Una `Area2D` detectora debe pertenecer al lado ESTÁTICO de la interacción,
-no al que se mueve con `move_and_slide()`.** Hallazgo de motor confirmado de
+**Hallazgo histórico sobre overlaps almacenados de `Area2D`:** la detectora
+se situó en el lado estático de la interacción, en lugar del cuerpo que se
+movía con `move_and_slide()`. Hallazgo de motor confirmado de
 forma empírica durante T053 de `001-soldado-defensor-oleadas` (`qa-validator`,
 usando `PhysicsDirectSpaceState2D.intersect_shape()` para verificar overlap
 geométrico real y sostenido, no solo lectura de código): una `Area2D` hija de
@@ -208,15 +209,26 @@ práctica para cualquier feature futura: si dos nodos necesitan detectarse
 mutuamente por `Area2D` y uno de ellos se mueve con `move_and_slide()`, la
 `Area2D` de detección debe vivir en el nodo que NO se mueve así (o, si ambos
 se mueven, evaluar una alternativa a `Area2D`/señales para esa detección
-puntual). Caso real ya resuelto en el repo con este patrón: el daño cuerpo a
+puntual). Caso resuelto entonces en el repo con este patrón: el daño cuerpo a
 cuerpo que un `Enemigo` (`CharacterBody2D`, se mueve con `move_and_slide()`)
-inflige a un `Soldado` (`StaticBody2D`, estático) se detecta y se dispara
+infligía a un `Soldado` (`StaticBody2D`, estático) se detectaba y se disparaba
 desde la `Area2D` "RangoMelee" del propio `Soldado` — la misma que ya usaba
 de forma fiable para su ataque a machete (T023) — en vez de una `Area2D`
 propia de `Enemigo` (implementación original de T053, descartada tras este
 hallazgo). Ver cabecera de `scenes/units/soldado.gd`/`scenes/enemies/enemigo.gd`
 para el detalle completo y `docs/SPEC.md` §10 para el gap de diseño que esto
 resolvió.
+
+**Evolución aprobada en 005-I2:** los dos actores son `CharacterBody2D` y
+se mueven físicamente. `Soldado` consulta `intersect_shape()` en el tick
+físico, filtra candidatos por frente/fila y contrasta el solape de las formas
+reales para fusil y machete. Repite la consulta tras avanzar antes de resolver
+el contacto. `DeteccionRango` y `RangoMelee` conservan sus formas autoradas,
+con monitoring desactivado; ya no aportan listas almacenadas ni señales de
+overlap al combate. El daño entrante sigue bajo autoridad del soldado: cada
+enemigo elegible aporta su daño al pulso de 1 s, sin una segunda ruta de ataque
+en `Enemigo`. Esta alternativa para dos cuerpos móviles conserva el hallazgo
+anterior y no lo convierte en una afirmación sobre todas las áreas del motor.
 
 ### 4.3 Datos como Resource, nunca hardcodeados
 
@@ -278,6 +290,12 @@ estado runtime del nivel/actor. No se escriben en `UnitStats`/`EnemyStats` ni
 se derivan de la decoración. `BoardManager` sigue siendo un mapa genérico;
 el nivel aplica whitelist y reserva de gasto antes de crear un dueño.
 
+`UnitStats.advance_speed` y `return_speed` son velocidades propias del soldado,
+ambas 40 en `soldado_base_stats.tres`, independientes de `EnemyStats.move_speed`.
+I2 usa `advance_speed`; `return_speed` queda preparado para I3, sin retorno
+implementado. Hogar, fila, estado de movimiento y blancos siguen siendo estado
+por actor, no datos mutables del Resource.
+
 ### 4.4 Modo fusil / modo machete como estado simple
 
 Para el alcance actual (MVP, una sola unidad con dos modos), un enum +
@@ -287,6 +305,14 @@ máquina de estados formal todavía:
 ```gdscript
 enum SoldierMode { RIFLE, MELEE }
 ```
+
+005-I2 conserva ese enum de arma y añade otro de desplazamiento:
+`HOME`, `ADVANCING`, `MELEE_CONTACT`, `WAITING`, `RETURNING` y `DEAD`.
+`RETURNING` es una interfaz reservada para I3, todavía sin ruta activa.
+El fusil sólo opera en la posición del hogar; el machete avanza hacia un frontal
+de su fila, se detiene al entrar en alcance o espera si no hay frontal.
+Movimiento, arma y presentación mantienen responsabilidades separadas, sin
+un framework de FSM ni navegación libre.
 
 Si en el futuro se agregan más unidades con comportamientos más complejos
 (múltiples transiciones, sub-estados), se reevalúa migrar a un patrón de
@@ -354,6 +380,17 @@ descargar el nivel o salir al menú, fuera del ciclo de vida del pool), se
 usa siempre `queue_free()` y nunca `free()` — `free()` libera el nodo de
 forma inmediata y puede causar use-after-free si algo todavía tiene una
 referencia pendiente en el mismo frame.
+
+**Validez antes de operaciones tipadas:** una referencia guardada puede apuntar
+a un nodo ya liberado aunque no sea `null`. Comprobar `is_instance_valid()`
+antes de pasarla a un método con parámetro de nodo tipado o a operaciones como
+`Array[Node2D].has()`, no sólo antes de leer sus propiedades dentro del helper.
+Después se valida que siga en el árbol, no esté pendiente de borrado, esté
+activo y cumpla la elegibilidad del sistema. En actores reciclados, comprobar
+además identidad y generación de activación: una instancia válida puede
+representar otro uso del pool. Este orden se gradúa desde los blancos de
+fusil/machete de 005-I2 y complementa la captura de contexto anterior a callbacks
+síncronos; no sustituye ninguno de esos controles.
 
 ### 4.6 Compatibilidad del lenguaje con Web
 
@@ -432,26 +469,29 @@ delimita los tiempos y la frontera jugable.
 
 ## 5. Composición de escenas (ejemplo concreto)
 
-- **`Soldado.tscn`**: `StaticBody2D` raíz (el soldado se coloca en una
-  celda y no se mueve — no hay `move_and_slide()` en su flujo; `StaticBody2D`
-  le da colisión física real para enemigos/proyectiles sin implicar
-  movimiento por código, a diferencia de `CharacterBody2D`) → `AnimatedSprite2D` +
-  `Area2D` "DeteccionRango" (cono frontal + diagonales) + `Area2D`
-  "RangoMelee" + `CollisionShape2D`. Script `soldado.gd`; el hijo visual usa
+- **`Soldado.tscn`**: desde 005-I2, raíz `CharacterBody2D` en modo flotante y
+  cuerpo 48×48, con avance horizontal mediante `move_and_slide()` en
+  `_physics_process()`. Sus hijos son `AnimatedSprite2D`, `CollisionShape2D`
+  y las áreas "DeteccionRango"/"RangoMelee", usadas como geometría de alcance
+  por las consultas del tick (§4.2). Script `soldado.gd`; el hijo visual usa
   `soldado_visual.gd` y los frames de `assets/sprites/units/monte_calvo/`, con
   [procedencia e importación](../assets/sprites/units/monte_calvo/SOURCES.md).
 - **`EnemigoBase.tscn`**: `CharacterBody2D` raíz, `CollisionShape2D` e hijo
   `AnimatedSprite2D` con `enemigo_visual.gd` y atlas/frames de
   `assets/sprites/enemies/monte_calvo/`. Avanza con `move_and_slide()` hacia −X
   manteniendo la fila; `get_advance_progress()` usa −X para priorizar cercanía
-  a defensa. La detección/daño de contacto siguen del lado estático del soldado.
+  a defensa. La detección/daño mutuo de contacto se resuelve desde el soldado
+  mediante consultas físicas, aunque ambos cuerpos puedan moverse.
 - **`Nivel_MonteCalvo.tscn`**: raíz `Node2D`, `Tablero` (`TileMap` 96×96),
   `PosicionDefendida`, `MonteCalvoVisual`, `HorizontalBoardVisual` y `Camera2D`.
   Al iniciar una partida el nivel reinicia GameStateManager y la reserva global,
   crea gratuitamente cinco soldados cargados y prepara el servicio visual y
   spawner; los actores iniciales ya no están colocados a mano en el `.tscn`.
   La whitelist contiene `(1,1)`…`(1,5)`, con centros `(144,144)`…`(144,528)`;
-  muerte libera la celda de origen. Se valida plaza libre antes del gasto y
+  movimiento no cambia la celda de origen (`_grid_cell`) ni el hogar
+  (`_home_position`), de modo que la plaza permanece reservada durante salida,
+  espera y contacto. La muerte libera ese origen, también lejos del hogar,
+  sin esperar el efecto visual. Se valida plaza libre antes del gasto y
   se protege la creación frente a reentrada síncrona de callbacks económicos.
   La defensa real es `Rect2(48,96,48,480)`; un cruce notifica una única derrota.
 - **Spawner de Monte Calvo:** un inicial inmediato en fila 3 y 99 enemigos de
@@ -465,13 +505,22 @@ delimita los tiempos y la frontera jugable.
   pantalla→mundo con el canvas inverso antes de resolver celda o pickup.
   La precedencia de pickup (§7) se conserva sobre plazas libres/ocupadas, bajo
   actores y con cajas solapadas. Fuera de PLAYING no se despliega ni recoge.
-- **Combate de I1/005:** `Soldado` conserva raíz `StaticBody2D`, inmóvil incluso
-  en modo machete. Su broadphase de fusil se orienta hacia +X y el filtro exige
+- **Combate horizontal:** el fusil permanece en el hogar. Su broadphase se
+  orienta hacia +X y el filtro exige
   frente, misma fila o celda diagonal directamente contigua, solape real de
   formas y generación activa. El tramo longitudinal autorado es [24,264]; no
   es una distancia al centro del enemigo. Conserva blanco elegible y, al perderlo,
-  elige el más avanzado hacia −X. Machete móvil, selección/recarga y arte lateral
-  pertenecen a 005-I2/I3/I4; el nivel aún no instancia HUD o pantallas terminales.
+  elige el más avanzado hacia −X. Con carga cero, el mismo actor busca un
+  frontal de su fila, avanza a `stats.advance_speed` y se detiene en alcance
+  para golpear; sin frontal espera en su posición, sin perseguir detrás o en
+  otra fila. La colisión real conserva separación y cada actor puede morir.
+  Terminal y muerte cancelan blancos e intención de movimiento.
+- **Recarga heredada durante I2:** `reload()` requiere actor vivo, PLAYING,
+  fondos y distancia al hogar ≤0,01 unidades. No exige el enum `HOME` ni carga
+  cero; fuera rechaza sin gasto. Conserva vida/moral y repone el fusil en el
+  hogar. Selección, botón, elegibilidad estricta, transacción de una orden y
+  regreso vulnerable son I3; las poses laterales son I4. El nivel aún no
+  instancia HUD o pantallas terminales.
 
 ### 5.1 Entorno decorativo separado del nivel
 
@@ -516,9 +565,10 @@ registran los encuadres comprobados y el recorte inferior existente.
 todavía):** ninguna escena del proyecto (`Soldado.tscn`, `EnemigoBase.tscn`)
 declara `collision_layer`/`collision_mask` explícitos — todo `CollisionObject2D`
 queda en el default de Godot (layer 1 / mask 1), por lo que `Soldado`
-(`StaticBody2D`) y `Enemigo` (`CharacterBody2D`) colisionan físicamente entre
-sí sin que nadie lo haya decidido a propósito. Esto no es una convención
-adoptada — es la ausencia de una, detectada como gap de diseño durante T043
+(`CharacterBody2D` desde 005-I2) y `Enemigo` (`CharacterBody2D`) colisionan
+físicamente entre sí. La detección original de este gap ocurrió cuando el
+soldado era estático; I2 conserva las capas existentes. Esto no es una
+convención adoptada de capas — es la ausencia de una, detectada durante T043
 de `001-soldado-defensor-oleadas` (ver `docs/SPEC.md` §10). Si en algún
 momento se define una convención explícita de capas de colisión para el
 proyecto, documentarla aquí.
@@ -742,3 +792,4 @@ sección, sin exigir navegador móvil ni convertirlo en prueba de app instalada.
 | 2026-10-19 | §7: Web solo en computador y Android/iOS como apps instaladas según decisión de la persona y constitución 3.0.0; se preservan las pruebas móviles Web históricas y se distinguen APK/IPA, app de simulador y requisitos físicos nativos |
 | 2026-10-19 | Constitución 4.0.0: main de integración separado de publicación; distribución manual sólo main con confirmación explícita QA/humana y guard de versiones sin bypass |
 | 2026-10-19 | 005/T015 y 004/T021: geometría de nivel en Resource, cinco actores creados por partida, orientación horizontal y cursor/origen del pool; presentación enemiga observadora con reset por activación, cámara centrada en ambos ejes y arte/controles/publicación delimitados |
+| 2026-10-20 | 005/T029 tras QA T028: evolución a dos cuerpos móviles, consultas físicas por tick y hogar estable; estados/velocidades propios y recarga heredada delimitados frente a I3. Se gradúa validar referencias antes de operaciones tipadas y después elegibilidad/activación, conservando el hallazgo histórico de overlaps. |

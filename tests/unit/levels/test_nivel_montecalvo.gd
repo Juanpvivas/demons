@@ -146,13 +146,16 @@ func test_enemigo_avanzando_en_menos_x_entra_en_rango_y_es_eliminado_sin_interve
 	var level := _load_level()
 	var soldado := _central_soldier(level)
 	var enemigo := _initial_enemy(level)
-	var deteccion_rango: Area2D = soldado.get_node("DeteccionRango")
+	# 005/I2 conserva las formas, pero detecta con consultas físicas de tick;
+	# Area2D ya no mantiene overlaps sobre el cuerpo móvil.
+	var rango: CollisionShape2D = soldado.get_node("DeteccionRango/CollisionShape2D")
+	var cuerpo: CollisionShape2D = enemigo.get_node("CollisionShape2D")
 	enemigo.enemy_defeated.connect(_on_enemy_defeated)
 
 	# Precondición: al arrancar, el enemigo todavía no está dentro del
 	# rango de detección (geometría documentada arriba)
-	assert_does_not_have(
-		deteccion_rango.get_overlapping_bodies(), enemigo,
+	assert_false(
+		rango.shape.collide(rango.global_transform, cuerpo.shape, cuerpo.global_transform),
 		"precondición del test: el enemigo no debe empezar ya dentro de DeteccionRango"
 	)
 
@@ -163,8 +166,8 @@ func test_enemigo_avanzando_en_menos_x_entra_en_rango_y_es_eliminado_sin_interve
 
 	# Then: la geometría del nivel efectivamente hace que el enemigo entre
 	# en el área de detección real del soldado
-	assert_has(
-		deteccion_rango.get_overlapping_bodies(), enemigo,
+	assert_true(
+		rango.shape.collide(rango.global_transform, cuerpo.shape, cuerpo.global_transform),
 		"tras avanzar en −X la distancia diseñada, el enemigo debe solapar con DeteccionRango del soldado"
 	)
 

@@ -1,12 +1,10 @@
 extends CharacterBody2D
-## Test double de `Enemigo` (`scenes/enemies/enemigo.gd`), que todavía no
-## existe (lo implementa otro grupo en paralelo — T018/T025/T026 de
-## `tasks.md`). Implementa exactamente el contrato asumido y documentado en
-## la cabecera de `scenes/units/soldado.gd`:
+## Test double del contrato de `Enemigo` (`scenes/enemies/enemigo.gd`).
+## Conserva el log tras morir para las aserciones, pero retira grupo/colisión
+## como el actor real: una consulta física no puede readquirir su cadáver.
 ##
 ## - Pertenece al grupo `"enemies"` (`Soldado.ENEMY_GROUP`), usado para
-##   filtrar los cuerpos detectados por las `Area2D` "DeteccionRango" y
-##   "RangoMelee" del soldado.
+##   filtrar los cuerpos detectados por el soldado.
 ## - Expone `take_damage(amount: int) -> bool`, que aplica el daño y
 ##   retorna `true` únicamente si ese impacto dejó `health` en 0 o menos.
 ## - Expone opcionalmente `get_advance_progress() -> float` (mayor valor =
@@ -18,13 +16,8 @@ extends CharacterBody2D
 ##   (T015-T034) que reutiliza este double sin haber configurado esto nunca.
 ##
 ## Es un `CharacterBody2D` (igual que especifica `docs/ARCHITECTURE.md` §5
-## para `EnemigoBase.tscn`) con una `CollisionShape2D` propia, para que las
-## `Area2D` "DeteccionRango"/"RangoMelee" de `Soldado` puedan detectarlo vía
-## `body_entered` real (capas de colisión por defecto = 1 en ambos lados,
-## igual que en `Soldado.tscn`, que no las sobreescribe).
-##
-## Vive en `tests/unit/units/` (no en `scenes/enemies/`) para no pisar el
-## trabajo del grupo que implementará el `Enemigo` real.
+## para `EnemigoBase.tscn`) con una `CollisionShape2D` propia y las capas de
+## colisión por defecto del proyecto. Vive sólo en tests.
 
 ## Salud restante. Configurable antes de agregar el nodo al árbol.
 var health: int = 100
@@ -58,9 +51,16 @@ func _ready() -> void:
 
 
 func take_damage(amount: int) -> bool:
+	if health <= 0:
+		return false
 	damage_received.append(amount)
 	health -= amount
-	return health <= 0
+	if health > 0:
+		return false
+	remove_from_group("enemies")
+	set_deferred("collision_layer", 0)
+	set_deferred("collision_mask", 0)
+	return true
 
 
 func get_advance_progress() -> float:
