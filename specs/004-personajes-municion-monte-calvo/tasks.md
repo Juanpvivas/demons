@@ -1,6 +1,7 @@
 # Tasks: Personajes y munición de Monte Calvo
 
-**Estado**: I1 y corrección UX T031–T038 aprobados e integrados en `main`. I2 y su documentación aprobados para integración conjunta con 005-I1; CI remoto y QA final del PR pendientes. I3 y publicación T039 pendientes.
+**Estado**: I1 y corrección UX T031–T038 aprobados e integrados en `main`. I2 y su documentación aprobados para integración conjunta con 005-I1 en el PR #24, en borrador y pendiente de integración humana. I3 y publicación T039 pendientes.
+**PR conjunto de integración**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; aprobación para integración, publicación pendiente.
 **Issue**: [#18](https://github.com/Juanpvivas/demons/issues/18).
 **Incremento de esta entrega**: I2 / US2, enemigo, contacto y reutilización (T014–T022), sin iniciar I3.
 **Execution Branch**: `codex/005-i1-tablero` para transición conjunta autorizada 004-I2 + 005-I1, contra `main` en `2dc532d`; rama histórica 004 conservada hasta integrar.
@@ -116,7 +117,7 @@ la caja puede continuar provisional. I2 depende de I1 aprobado.
 - [X] T019 [US2] godot-tester: comparar enemigo integrado y `assets/sprites/enemies/monte_calvo/SOURCES.md`, combate/gestos reales y rendimiento base/candidato por entorno con `specs/004-personajes-municion-monte-calvo/quickstart.md`. Verificar legibilidad/resize y smoke terminal en Web de computador, APK instalado en horizontal en Android Emulator autorizado y app iOS instalada identificando hardware/simulador y renderer. El requisito físico nativo Xiaomi provisional de 004/60 FPS, SC-007 y certificación renderer/paquete final permanecen pendientes de publicación en T039, sin solicitar reconexión ni acreditarlo desde el emulador; no continuar navegador móvil ni presentar pendientes como aprobados; depende de T018.
 - [X] T020 [US2] qa-validator: validar I2 en `scenes/enemies/`, `scenes/levels/wave_spawner.gd` y servicio visual contra US2, FR-002–003/005–007/009–012, arte, RED/GREEN y T019; emitir APROBADO PARA INTEGRACIÓN con build/función/CI conformes, evaluar diferencias de rendimiento y conservar publicación pendiente en T039; comprobar que contacto/animación no gobiernan daño y que no hay residuos ni cambio de pool; depende de T019.
 - [X] T021 [US2] docs-writer: actualizar `docs/SPEC.md` y los patrones aprobados que correspondan de `docs/ARCHITECTURE.md`, conservando la caja y el cierre como pendientes; entregar resumen del alcance I2 para PR sin evidencias nuevas en Git; depende de T020 aprobado.
-- [ ] T022 [US2] qa-validator: revisar documentación T021 y estado final de `docs/SPEC.md`, `docs/ARCHITECTURE.md` y archivos I2. Tras APROBADO PARA INTEGRACIÓN y verificación de base/diff, project-orchestrator consolida único PR conjunto 004-I2 + 005-I1 hacia main desde codex/005-i1-tablero, Refs #18 y Refs #22; depende de T021 y QA de transición 005/T070, sin Closes, promoción, merge ni distribución automática.
+- [X] T022 [US2] qa-validator: revisar documentación T021 y estado final de `docs/SPEC.md`, `docs/ARCHITECTURE.md` y archivos I2. Tras APROBADO PARA INTEGRACIÓN y verificación de base/diff, project-orchestrator consolida único PR conjunto 004-I2 + 005-I1 hacia main desde codex/005-i1-tablero, Refs #18 y Refs #22; depende de T021 y QA de transición 005/T070, sin Closes, promoción, merge ni distribución automática.
 
 ## Fase 5: I3 / US3 — Caja de munición e integración final (P2)
 

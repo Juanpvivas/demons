@@ -2,7 +2,8 @@
 
 **Feature**: `005-cinco-carriles` · **Issue**: [#22](https://github.com/Juanpvivas/demons/issues/22) · **Rama de preparación**: `codex/005-cinco-carriles-preparacion`.
 **Input**: [spec](spec.md), [plan aprobado documentalmente](plan.md), [modelo](data-model.md), [contrato](contracts/horizontal-combat.md), [quickstart](quickstart.md) y [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
-**Estado**: I1 y su documentación aprobados para integración conjunta con 004-I2, en `codex/005-i1-tablero`. CI remoto, QA final T070 y PR T017 pendientes. Publicación T071 e I2–I5 permanecen pendientes; aún no integrado en main.
+**Estado**: I1, documentación y transición aprobados para integración conjunta con 004-I2 en el PR #24, en borrador hacia main desde `codex/005-i1-tablero`. Publicación T071 e I2–I5 permanecen pendientes; la integración humana aún no se ha realizado.
+**PR conjunto de integración**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; aprobación para integración, publicación pendiente.
 
 Transición autorizada: `codex/005-i1-tablero` ya contiene 004-I2 y 005-I1.
 Se prepara un único PR hacia `main` (`2dc532d` como base de revisión), con
@@ -67,7 +68,7 @@ main. Los siguientes incrementos vuelven a ramas breves desde main actualizado.
 - [X] T014 [US1] qa-validator: emitir APROBADO PARA INTEGRACIÓN de I1 sólo con GREEN, código/contrato, controles funcionales T013, compilación aplicable y CI; evaluar diferencias de rendimiento sin inferir hardware desde software. Falta de certificación física/renderer/paquete final queda en T071 y no bloquea por sí sola; fallos reales de fuente/build/función sí. La aprobación habilita T009/T010 con su alcance explícito; depende de T012 y T013 completas.
 - [X] T015 [US1] docs-writer: documentar I1 aprobado para integración y pendientes I2/I3/I4/publicación en `docs/SPEC.md`/`docs/ARCHITECTURE.md`, consolidándolo con 004-I2 aprobado sin alterar historia; sin registros de validación; depende de T014 y 004/T020 aprobadas para integración.
 - [X] T016 [US1] qa-validator: revisar diff/documentación final I1 y vigencia del estado probado en `docs/SPEC.md`, `docs/ARCHITECTURE.md` y fuentes T009/T010; si cambia conducta devolver al ciclo correspondiente; depende de T015.
-- [ ] T017 [US1] project-orchestrator: registrar tareas aprobadas, revisar diff/base/tamaño conjunto y preparar único PR 004-I2 + 005-I1 hacia main en borrador con Refs #18 y Refs #22, trazabilidad RED/GREEN/QA y publicación pendiente. Sin Closes, promoción, merge ni distribución automática; depende de T016, 004/T022 y T070 aprobadas para integración.
+- [X] T017 [US1] project-orchestrator: registrar tareas aprobadas, revisar diff/base/tamaño conjunto y preparar único PR 004-I2 + 005-I1 hacia main en borrador con Refs #18 y Refs #22, trazabilidad RED/GREEN/QA y publicación pendiente. Sin Closes, promoción, merge ni distribución automática; depende de T016, 004/T022 y T070 aprobadas para integración.
 
 ## Fase 4 — US2: Salir con machete al agotar la carga (P1) · I2
 
@@ -146,7 +147,7 @@ main. Los siguientes incrementos vuelven a ramas breves desde main actualizado.
 - [X] T067 godot-tester RED: escribir y ejecutar pruebas de los workflows Android/iOS que exijan ausencia de deploy por push/merge, workflow_dispatch sólo main, approval_status PENDIENTE por defecto frente a APROBADO PARA PUBLICACIÓN, human_authorized false por defecto y guard antes de checkout/secrets; exigir versionado también manual, sin bypass. Registrar fallo semántico; depende del contrato de T066, no de T068.
 - [X] T068 dev-godot: implementar guards de distribución Android/iOS guiados por T067, sin alterar gameplay ni ejecutar pruebas; no distribuir artefactos; depende de RED T067 válido.
 - [X] T069 godot-tester GREEN: confirmar T067, regresión de workflows/versionado y vigencia de regresión del juego; ejecutar sólo comprobaciones invalidadas por cambios y declarar estado/errores/límites; sin ejecutar deploy externo; depende de T068.
-- [ ] T070 qa-validator: revisar enmienda T066, TDD/guards T067–T069 y estado conjunto; APROBADO PARA INTEGRACIÓN sólo con documentación/build/CI/función conformes, conservando pendientes en T071 y 004/T039. No sustituye aceptación funcional 005/T014 y 004/T020; depende de T066, T069, T014, 004/T020 y documentación revisada T016 y 004/T021. Precede a 004/T022, sin dependencia circular.
+- [X] T070 qa-validator: revisar enmienda T066, TDD/guards T067–T069 y estado conjunto; APROBADO PARA INTEGRACIÓN sólo con documentación/build/CI/función conformes, conservando pendientes en T071 y 004/T039. No sustituye aceptación funcional 005/T014 y 004/T020; depende de T066, T069, T014, 004/T020 y documentación revisada T016 y 004/T021. Precede a 004/T022, sin dependencia circular.
 - [ ] T071 godot-tester y qa-validator, secuenciales: gate abierto de publicación de 005, con artefacto/revisión exactos, renderer y empaquetado final, firma/instalación/versionado, matriz y medición física SC-007/60 FPS de constitución IV. QA sólo emite APROBADO PARA PUBLICACIÓN con requisitos aplicables completos; sin hardware permanece pendiente, sin heredar Xiaomi de 004 ni pedir reconexión. El orquestador exige además autorización humana antes de distribuir; no depende de aprobar publicación para integrar I1–I5.
 
 ## Dependencias y oportunidades de paralelo
