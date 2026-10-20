@@ -50,6 +50,14 @@ func _ready() -> void:
 	WaveManager.all_waves_completed.connect(_on_all_waves_completed)
 
 
+## Un nivel nuevo inicia otra partida; no hereda el terminal anterior.
+func start_new_match() -> void:
+	if _current_state == GameState.PLAYING:
+		return
+	_current_state = GameState.PLAYING
+	game_state_changed.emit(_current_state)
+
+
 ## Método público llamado directamente por quien detecta que un `Enemigo`
 ## alcanzó la posición defendida (`nivel_monte_calvo.gd`, T043/FR-013) — ver
 ## nota de cabecera sobre por qué no se conecta a la señal de instancia

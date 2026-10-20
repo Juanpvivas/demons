@@ -40,6 +40,7 @@ var _deploying_cells: Dictionary[Vector2i, bool] = {}
 
 func _ready() -> void:
 	assert(board_config != null, "Monte Calvo requiere su configuración de tablero")
+	GameStateManager.start_new_match()
 	_legacy_trenches.visible = false
 	_board_visual.board_config = board_config
 	EconomyManager.reset_ammo_pool()
