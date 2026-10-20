@@ -255,7 +255,8 @@ func _process_rifle(delta: float) -> void:
 	if not _is_at_home():
 		return
 	_movement_state = MovementState.HOME
-	if not _rifle_candidates.has(_current_target) \
+	if not is_instance_valid(_current_target) \
+			or not _rifle_candidates.has(_current_target) \
 			or not _is_rifle_eligible(_current_target) \
 			or _generation_of(_current_target) != _current_target_generation:
 		_recompute_rifle_target()
@@ -310,7 +311,8 @@ func _recompute_rifle_target() -> void:
 # --- Modo machete (T023) -------------------------------------------------
 
 func _process_melee(delta: float) -> void:
-	if not _melee_candidates.has(_current_melee_target) \
+	if not is_instance_valid(_current_melee_target) \
+			or not _melee_candidates.has(_current_melee_target) \
 			or not _is_melee_eligible(_current_melee_target) \
 			or _generation_of(_current_melee_target) != _current_melee_generation:
 		_recompute_melee_target()
