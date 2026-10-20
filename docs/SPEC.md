@@ -77,47 +77,50 @@ Esta economía recrea la tensión histórica real: cada bala cuenta, y sobrevivi
 
 ### 6.2 Sistema de colocación
 
-- **Decisión de la persona del 2026-10-19, en preparación y sin implementar:**
-  cinco filas horizontales con cinco trincheras a la izquierda y enemigos de
-  derecha a izquierda, tomando *Plants vs. Zombies* como referencia. La
-  prioridad pasa a preparar [005-cinco-carriles](../specs/005-cinco-carriles/spec.md)
-  en una nueva rama, conservando I2 de 004 guardado con sus validaciones
-  pendientes; no se declara terminado ni aprobado por este cambio de diseño.
-- **Estado actual:** Monte Calvo conserva un único avance central enemigo;
-  el sistema de cinco carriles todavía no está implementado. El combate
-  frontal y las diagonales adyacentes, así como los stats vigentes, se
-  conservan; §10 recoge los detalles pendientes del nuevo tablero.
-- Colocación restringida por casillas (snap a grid).
-- Cada unidad ocupa una casilla; algunas pueden tener rango de ataque que cubre varias casillas adelante.
+El tablero de [005-I1](../specs/005-cinco-carriles/spec.md) tiene cinco filas
+horizontales y cinco plazas de defensa a la izquierda, una por fila. Empieza
+con cinco soldados cargados, sin cobrar sus despliegues, y reserva global de
+munición cero. Sólo esas cinco casillas admiten un soldado: una plaza ocupada
+o un punto exterior se rechazan antes de gastar. La muerte libera la plaza
+para un único reemplazo con fondos suficientes. El snap sigue usando el grid.
+
+Los soldados permanecen quietos, disparando hacia la derecha; los enemigos
+avanzan desde la derecha hacia la defensa izquierda sin cambiar de fila.
+El fusil cubre el frente de su fila y sólo las dos celdas diagonalmente
+contiguas dentro del alcance físico vigente. No ataca hacia atrás, en
+diagonales profundas ni dos filas más allá. Conserva un blanco elegible;
+cuando necesita elegir, prioriza al más avanzado hacia la izquierda.
+
+Una recogida de munición bajo un actor o sobre una plaza libre/ocupada conserva
+su precedencia: no despliega ni cobra con el mismo gesto. Las cajas solapadas
+mantienen la semántica existente. La cámara centra el tablero en ambos ejes;
+los gestos se convierten con la transformación inversa del canvas tras resize.
+Las bandas y plazas numeradas son una guía provisional; las trincheras y poses
+laterales definitivas pertenecen a 005-I4. Ninguna decoración concede cobertura.
 
 ### 6.3 Tipos de unidad (borrador inicial — por refinar)
 
 **Soldado base (única unidad inicial, dos modos):**
-- **Modo fusil** (por defecto al desplegarlo): dispara a enemigos dentro de su cono de detección (carril frontal + diagonales adyacentes), con una cantidad limitada de disparos definida por su munición actual.
+- **Modo fusil** (por defecto al desplegarlo): dispara hacia +X a enemigos elegibles del frente de su fila o celdas diagonalmente contiguas, dentro del alcance físico del arma, con una cantidad limitada de disparos definida por su munición actual.
 - **Modo machete** (automático al quedarse sin munición): combate cuerpo a cuerpo, rango de 1 casilla frontal, daño escalado según la moral acumulada en modo fusil.
-- Stats a definir: disparos por carga, daño por disparo, cadencia de disparo, alcance del cono de detección, fórmula de daño machete según moral (ej. daño_base + moral × multiplicador).
+- Los stats vigentes viven en `UnitStats`/`soldado_base_stats.tres`; el cambio de orientación no altera daño, carga, moral, costo o cadencia.
 
-**Diseño futuro confirmado para 005, aún sin implementar:** con balas el
-soldado dispara hacia la derecha desde dentro de su trinchera; al agotarlas,
-sale hacia el enemigo con machete y combate de frente. El soldado actual
-permanece inmóvil incluso en modo machete. La
-[referencia aprobada por la persona](../specs/005-cinco-carriles/references/visual-reference.md)
-orienta la composición; no fija costos, estadísticas ni HUD. Las
-[aclaraciones de 005](../specs/005-cinco-carriles/spec.md#clarifications)
-confirman cinco plazas reservadas por sus soldados vivos aunque salgan,
-reemplazo solo al morir y cinco soldados cargados al inicio con reserva global
-cero. Sin balas avanzan y atacan solo a enemigos delante en su fila; sin ellos
-esperan donde están. Seleccionar la trinchera muestra la carga/moral del dueño;
-pulsar «Recargar» conserva salud/moral y lo hace regresar físicamente para
-disparar al llegar. Las oleadas mantienen cantidades y tiempos con
-reparto 1→2→3→4→5 continuo solo para sus enemigos, conservando además el
-atacante inicial separado en fila central 3, sin consumir esa secuencia:
-1 inicial + 99 autorados, 100 enemigos en total. La velocidad
-propia del soldado es 40 unidades de mundo/s al salir y al regresar, ajustable
-e independiente de los enemigos. Solo un soldado vivo con carga cero admite
-recarga; una orden aceptada cobra una vez y desactiva el botón durante todo el
-retorno. Al regresar no usa fusil ni machete, sigue vulnerable al daño y
-reanuda el fusil al llegar. Estas reglas futuras no alteran todavía el juego actual.
+**Pendiente de 005-I2/I3:** al agotar la munición, el soldado saldrá hacia
+un enemigo delante en su misma fila y combatirá de frente; sin enemigos
+frontales esperará donde esté. Su plaza seguirá reservada mientras viva y
+sólo podrá reemplazarse al morir. La velocidad propia de salida y regreso será
+40 unidades de mundo/s, independiente de los stats enemigos.
+
+Seleccionar la trinchera mostrará carga/moral de su dueño; «Recargar» sólo
+aceptará un soldado vivo con carga cero y fondos suficientes. Cobrará una vez,
+conservará salud/moral e iniciará un regreso físico vulnerable, sin ofensiva,
+hasta reanudar el fusil al llegar; el botón estará desactivado durante el
+retorno. Ese movimiento y control aún no están integrados: el soldado actual
+sigue inmóvil incluso en modo machete y conserva su operación de recarga
+existente sin un botón jugable en el nivel.
+
+La [referencia aprobada](../specs/005-cinco-carriles/references/visual-reference.md)
+orienta la composición futura y no fija costos, estadísticas ni HUD final.
 
 **Futuras unidades (post-MVP, no bloquean el prototipo inicial):**
 - [ ] Variantes con distinto alcance/cadencia (ej. mortero de área, francotirador de rango largo)
@@ -128,16 +131,25 @@ reanuda el fusil al llegar. Estas reglas futuras no alteran todavía el juego ac
 - Oleadas crecientes en dificultad, representando el avance de tropas chinas/norcoreanas.
 - Definición de enemigos vía `Resource` personalizados (stats: vida, velocidad, daño, tipo).
 - Sistema de spawn controlado por `Timer` + cola de oleadas.
+- Monte Calvo conserva un atacante inicial inmediato en la fila central 3 y
+  99 enemigos autorados en diez oleadas: 100 en total, sin cambiar cantidades
+  ni tiempos. Los de oleadas siguen 1→2→3→4→5 continuamente entre oleadas;
+  el inicial no consume ni reinicia esa secuencia. Ambos usan el mismo pool.
+- Sólo las bajas de los 99 enemigos de oleadas cuentan para victoria; el
+  atacante inicial conserva combate, munición y moral vigentes. El cruce real
+  de cualquier enemigo por la defensa izquierda produce una única derrota.
+  Los estados terminales bloquean nuevas acciones y otra partida reinicia
+  estado, reserva y cursor.
 
 ## 7. Estructura técnica en Godot (borrador)
 
 - **Autoload `EconomyManager`:** controla el contador global de Munición recolectada, expone señal `ammo_pool_changed`.
-- **`TileMap`:** define el grid de carriles y posiciones válidas de colocación.
-- **Detección multidireccional por soldado:** en vez de un único `Area2D` en línea recta, se evalúan varias celdas/carriles (frontal + diagonal superior + diagonal inferior) dentro del alcance del arma, para elegir el enemigo válido más cercano. Puede implementarse como una `Area2D` con forma de cono/trapecio, o revisando explícitamente las celdas de los carriles adyacentes vía el `TileMap`. **Confirmado** (spec `001-soldado-defensor-oleadas`): las "diagonales adyacentes" son únicamente las celdas diagonalmente contiguas a la posición del soldado (adyacencia directa), no un cono más amplio de varias celdas de profundidad. Cuando hay varios enemigos elegibles a la vez, el objetivo prioritario por defecto es el más avanzado (más cercano a la posición defendida); el soldado no divide su fuego entre objetivos.
+- **Tablero:** `TileMap` convierte mundo↔celda; `LaneBoardConfig` define cinco plazas/entradas y zona defendida. El nivel valida esas plazas antes de cobrar y `BoardManager` mantiene su ocupación.
+- **Detección por soldado:** un área física amplia orientada a +X reúne candidatos y un filtro explícito exige frente, fila o diagonal directamente contigua y solape real con el alcance autorado. Se conserva el objetivo activo mientras siga siendo elegible; al elegir otro, se prioriza el más avanzado hacia la defensa izquierda, sin dividir fuego. La generación de activación evita atacar a un uso anterior del mismo cuerpo reciclado.
 - **Stats por instancia de soldado:** cada soldado en escena mantiene su propio estado local (munición actual, moral acumulada, modo activo: fusil/machete) — no vive en el `EconomyManager` global, solo el pool de munición recolectada es global.
 - **`AnimatedSprite2D` / `AnimationPlayer`:** animaciones de disparo, cambio a modo machete, ataque cuerpo a cuerpo y muerte.
 - **Unidades y enemigos como `Resource` (.tres):** stats base (daño, cadencia, alcance, fórmula de daño machete) desacoplados del código, para poder balancear sin tocar scripts.
-- **Señal `enemy_defeated`:** emitida por cada enemigo al morir, con la cantidad de munición que suelta; conectada a `EconomyManager` para sumar al pool global, y al soldado que dio el golpe final para sumar moral individual.
+- **Baja y recolección:** `enemy_defeated` permite al spawner contar sólo bajas de oleada y reciclar al enemigo. El actor genera una pickup en su posición de muerte y notifica su aparición; la reserva global sólo aumenta al recogerla. El soldado confirma la baja para sumar moral únicamente si fue con fusil. El contexto de baja se conserva aunque el pool reutilice el cuerpo síncronamente.
 
 ## 8. Arte y estilo visual
 
@@ -146,8 +158,10 @@ reanuda el fusil al llegar. Estas reglas futuras no alteran todavía el juego ac
 suelo ocre/oliva y montañas azul grisáceo entre la bruma. El centro de combate
 mantiene menos detalle que los bordes; tierra excavada, madera y sacos de arena
 enmarcan la posición defendida. La [referencia aprobada](../specs/002-monte-calvo-terreno-trincheras/references/visual-reference.md)
-orienta los materiales y la jerarquía visual; su composición se adapta al único
-avance central existente.
+orienta los materiales y la jerarquía visual. La composición original de un
+avance central se conserva como antecedente; 005-I1 la acompaña de cinco bandas
+y plazas provisionales y oculta las antiguas trincheras inferiores en el nivel.
+Las piezas laterales de la nueva referencia siguen pendientes de 005-I4.
 
 El entorno es estático y sus trincheras son decorativas: no añaden cobertura,
 obstáculos, carriles, casillas o límites de despliegue. El primer incremento de
@@ -165,14 +179,28 @@ conservando los pies en raíz+y24 y el cuerpo de 48×48. Un material mate aclara
 los tonos medios y añade un borde interior discreto para separarlo del suelo,
 también en grises. El encuadre local centra el eje de combate al ensanchar la
 pantalla, conserva la composición vertical del iPad y cubre el margen izquierdo
-con cielo, panorama y suelo existentes. No mueve trincheras, actores ni grid.
+con cielo, panorama y suelo existentes. Esa corrección no movió trincheras,
+actores ni grid. Después, 005-I1 centra el rectángulo completo del tablero en
+ambos ejes sin desplazar la geometría jugable al redimensionar.
 
 La caída del soldado se muestra durante 0,40 s en un efecto independiente,
 sin cuerpo, input u ocupación: la celda se libera y el actor jugable se retira
 sin esperar la animación. Las imágenes no aplican daño ni cambian recursos,
-cadencias o resultados. El enemigo y la munición siguen provisionales, pendientes
-de I2 e I3. HUD, controles de recarga, pantallas terminales, audio y resto del
-acabado continúan pendientes; esta entrega parcial no completa el MVP.
+cadencias o resultados.
+
+004-I2 incorpora la infantería enemiga pictórica y su presentación observadora:
+el avance se representa sólo si hubo desplazamiento físico real, el bloqueo
+muestra contacto y el impacto responde a daño confirmado. La baja captura su
+apariencia neutra antes del reciclado y usa la misma caída independiente. El
+reset por activación limpia poses, tintes, tweens y callbacks anteriores; la
+animación no gobierna daño, recompensas ni retiro. La procedencia está en
+[el catálogo del enemigo](../assets/sprites/enemies/monte_calvo/SOURCES.md).
+Su orientación visual actual aún necesita las poses laterales de 005-I4.
+
+La caja amarilla de munición sigue provisional, pendiente de 004-I3. También
+siguen pendientes el movimiento con machete 005-I2, selección/recarga 005-I3,
+arte lateral 005-I4, HUD, pantallas terminales, audio y resto del acabado.
+Esta integración parcial no completa las features 004/005 ni el MVP.
 
 La [comparación visual](../specs/002-monte-calvo-terreno-trincheras/evidence/us3.md)
 y la [matriz nativa](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
@@ -194,6 +222,12 @@ Las nuevas verificaciones siguen §4: navegador solo en computador y apps
 instaladas en Android/iOS; la reducción del alcance Web no exime los requisitos
 de rendimiento físico nativo ni amplía esas aprobaciones históricas.
 
+La constitución 4.0.0 distingue integración funcional de publicación. La
+integración conjunta 004-I2/005-I1 no certifica 60 FPS físicos, Mobile, GPU,
+renderer o empaquetado final; esos gates y SC-007 permanecen pendientes de
+publicación en las tareas de cada feature. Las comprobaciones de emulador,
+simulador y Compatibility/software conservan sólo su propio alcance.
+
 ## 9. Alcance del MVP (primera versión jugable)
 
 - [ ] 1 nivel (ej. defensa de Monte Calvo)
@@ -206,8 +240,8 @@ de rendimiento físico nativo ni amplía esas aprobaciones históricas.
 
 ## 10. Preguntas abiertas / decisiones pendientes
 
-- Planificar [005](../specs/005-cinco-carriles/spec.md) con plazas, ciclo/recarga, velocidades e inicio/reparto ya confirmados por la persona. Dimensiones, distancias y puntos de aparición se fijarán en planificación técnica, sin deducir balance de la imagen ni aprobar implementación por esta definición.
-- Acabado visual del enemigo y la caja de munición (I2/I3 de 004), interfaz y demás efectos, siguiendo la dirección de Monte Calvo aprobada en §8.
+- Implementar los incrementos restantes de [005](../specs/005-cinco-carriles/tasks.md): salida/contacto con machete, regreso por recarga y controles, arte lateral y consolidación. I1 ya define cinco plazas, inicio/reparto, geometría y orientación; no deducir balance de la imagen.
+- Caja de munición de 004-I3, poses laterales de 005-I4, interfaz y demás acabado, siguiendo la dirección aprobada en §8; SC-007 y certificaciones de publicación siguen pendientes.
 - ¿Habrá progresión entre niveles (más batallas históricas) o es un solo escenario?
 - ¿Narrativa/contexto histórico se presenta dentro del juego (cutscenes, texto) o queda solo como inspiración temática?
 - Balance de costos exactos de cada unidad (se define con playtesting).
@@ -216,6 +250,8 @@ de rendimiento físico nativo ni amplía esas aprobaciones históricas.
 
 ### Resueltas (graduadas desde specs de feature)
 
+- ✅ Tablero horizontal de cinco filas/plazas y fusil hacia +X, enemigos hacia −X, cinco cargas gratuitas/reserva cero y reparto continuo de oleadas sin alterar los 100 enemigos: 005-I1. Se conserva soldado estático y se delimitan los movimientos/controles posteriores en §6.
+- ✅ Presentación observadora del enemigo, contacto basado en movimiento real, snapshot anterior al reciclado y reset por activación: 004-I2, extendiendo el patrón común sin dar autoridad jugable a la animación.
 - ✅ Dirección visual de la primera iteración del terreno y las trincheras de Monte Calvo: entorno pictórico ocre/oliva, montañas azul grisáceo y decoración estática de tierra, madera y sacos, conservando actores provisionales y reglas actuales en aquella entrega. Aprobada en T016 de `002-monte-calvo-terreno-trincheras`; §8 y sus enlaces delimitan el alcance y la evidencia. I1 de 004 avanza después el soldado; enemigo, caja e interfaz continúan pendientes.
 - ✅ Soldado pictórico y presentación de sus estados reales, sin alterar el combate ni esperar a la caída para retirarlo: I1 de `004-personajes-municion-monte-calvo`, aprobado en T011. §8 describe su alcance parcial; el patrón compartido de presentación y efecto independiente se gradúa a `ARCHITECTURE.md` §4.7. No resuelve el acabado del enemigo, la caja o la interfaz.
 - ✅ Legibilidad del soldado y encuadre horizontal de Monte Calvo: corrección de I1 de 004 aprobada funcionalmente en T036. §8 recoge el mayor tamaño visual, contraste mate y encuadre que conserva la composición iPad; física, posiciones y reglas permanecen intactas. No amplía el alcance a I2/I3 o interfaz.
@@ -254,3 +290,4 @@ de rendimiento físico nativo ni amplía esas aprobaciones históricas.
 | 2026-10-19 | §6.2–6.3/§10: la persona prioriza la preparación de 005 en rama nueva conservando I2 pendiente; confirma fusil dentro de cinco trincheras izquierdas y salida frontal con machete al agotar balas. Referencia visual y decisiones abiertas enlazadas, sin afirmar implementación o aceptación QA del juego |
 | 2026-10-19 | §6.3/§10: aclaradas cinco plazas reservadas, cinco soldados cargados/reserva cero, salida en misma fila y recarga desde trinchera con regreso antes de disparar; oleadas con cantidades/tiempos vigentes y reparto prefijado. Pendiente de planificación e implementación de 005, sin cerrar I2 |
 | 2026-10-19 | §6.3/§10: confirmadas velocidades propias 40/40, recarga solo con carga cero y una orden por retorno, sin ataques durante el regreso vulnerable, y secuencia de filas 1→5 continua entre oleadas; se conservan 1 atacante inicial + 99 autorados. Pendiente QA de especificación completa de 005, sin implementación o cierre I2 |
+| 2026-10-19 | 005/T015 y 004/T021: consolidación de integración funcional del tablero de cinco filas y presentación del enemigo; se distinguen machete móvil, recarga UI, arte lateral, caja y publicación aún pendientes |

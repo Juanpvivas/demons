@@ -170,7 +170,7 @@ func test_spawned_enemies_receive_the_enemy_stats_of_their_own_spawn_entry() -> 
 func test_spawned_enemy_appears_at_the_configured_spawn_position() -> void:
 	# Given/When: una oleada de un solo enemigo. Espera el mínimo margen
 	# necesario para el único spawn (0.05s de spawn_interval) y no más: el
-	# enemigo avanza en +Y por su cuenta apenas existe
+	# enemigo avanza en −X por su cuenta apenas existe
 	# (`scenes/enemies/enemigo.gd._physics_process()`), así que esperar de
 	# más movería su posición y este test dejaría de medir el punto de
 	# APARICIÓN para pasar a medir cuánto avanzó, contaminando la aserción.
@@ -180,7 +180,7 @@ func test_spawned_enemy_appears_at_the_configured_spawn_position() -> void:
 
 	# Then: aparece en la posición de mundo fijada en setup(), con una
 	# tolerancia acorde al avance máximo posible en ese margen mínimo
-	# (move_speed de producción por defecto: 60px/s * ~0.01s adicional < 1px)
+	# (default EnemyStats usado en este fixture: 60px/s * ~0.01s adicional < 1px)
 	var enemy: Enemigo = _spawner._enemy_pool.get_children()[0]
 	assert_almost_eq(
 		enemy.global_position, SPAWN_POSITION, Vector2(2.0, 2.0),

@@ -33,6 +33,21 @@ El juego no está publicado en el portal. Consulta la
 
 ## Estado actual
 
+El incremento conjunto [004-I2](specs/004-personajes-municion-monte-calvo/tasks.md)
+y [005-I1](specs/005-cinco-carriles/tasks.md) incorpora el enemigo pictórico y
+un tablero funcional de cinco filas horizontales. Empieza con cinco soldados
+cargados en las plazas izquierdas, gratis y con reserva cero; disparan hacia
+la derecha y los enemigos avanzan hacia la izquierda. Un inicial en fila 3 y
+99 enemigos de oleadas comparten pool, con reparto 1→5 continuo para las oleadas.
+La recogida manual conserva su precedencia sobre desplegar/cobrar.
+
+Es una integración parcial: el soldado sigue inmóvil incluso con machete.
+Salida/contacto móvil, selección/recarga y regreso son 005-I2/I3; las bandas y
+plazas actuales son provisionales hasta las trincheras/poses laterales de I4.
+La caja amarilla sigue pendiente de 004-I3. Las features 004/005 y la publicación
+permanecen abiertas: esta integración no acredita 60 FPS físicos, renderer
+Mobile, hardware ni empaquetado final.
+
 La feature `001-soldado-defensor-oleadas` (`specs/001-soldado-defensor-oleadas/`)
 está completa: un soldado defensor automático que dispara con fusil mientras
 tiene munición y pasa a machete al quedarse sin ella (con daño escalado por
