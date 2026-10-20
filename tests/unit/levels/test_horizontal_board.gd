@@ -273,3 +273,83 @@ func test_won_stops_real_combat_without_waiting_for_attack_animation() -> void:
 
 func test_lost_stops_real_combat_without_waiting_for_attack_animation() -> void:
 	await _assert_no_combat_after_terminal(GameStateManager.GameState.LOST)
+
+
+func _one_wave_fixture() -> Array[WaveData]:
+	var entry := WaveSpawnEntry.new()
+	entry.enemy_stats = load("res://resources/enemies/enemigo_infanteria_base.tres")
+	entry.count = 1
+	entry.spawn_interval = 0.05
+	var wave := WaveData.new()
+	wave.wave_number = 1
+	wave.spawn_entries = [entry]
+	return [wave]
+
+
+func _active_wave_enemies(spawner: WaveSpawner) -> Array:
+	return spawner._enemy_pool.get_children().filter(func(node: Node):
+		return node is Enemigo and node.is_targetable() and node.spawn_origin == Enemigo.SpawnOrigin.WAVE)
+
+
+func _assert_new_match_clears_a_real_terminal(terminal: int) -> void:
+	watch_signals(GameStateManager)
+	_level = LevelScene.instantiate()
+	_level.waves = _one_wave_fixture()
+	_host.add_child(_level)
+	if terminal == GameStateManager.GameState.WON:
+		var first_spawner: WaveSpawner = _level.get("_wave_spawner")
+		await wait_until(func(): return not _active_wave_enemies(first_spawner).is_empty(), 0.5)
+		var waves := _active_wave_enemies(first_spawner)
+		assert_eq(waves.size(), 1, "Control: una oleada real activa su enemigo")
+		if waves.size() != 1:
+			return
+		(waves[0] as Enemigo).take_damage(9999)
+	else:
+		(_level.get("_wave_spawner") as Node).process_mode = Node.PROCESS_MODE_DISABLED
+		var board: BoardManager = _level.get("_board_manager")
+		var owner := board.get_occupant(Config.home_cells[0]) as Soldado
+		assert_not_null(owner)
+		if owner == null:
+			return
+		owner.take_damage(9999)
+		_enemy_at(Vector2(144, 144), 0, _level)
+		await wait_physics_frames(24)
+	assert_eq(GameStateManager._current_state, terminal, "Control: terminal por combate/Managers/física reales")
+	var won_before: int = get_signal_emit_count(GameStateManager, "game_won")
+	var lost_before: int = get_signal_emit_count(GameStateManager, "game_lost")
+	var previous := _level
+	previous.queue_free() # Acción bajo prueba: descargar la partida terminada.
+	await wait_physics_frames(2)
+	assert_false(is_instance_valid(previous), "La partida anterior sí se retiró")
+	EconomyManager.collected_ammo = 31
+	# No reset de GameStateManager desde el fixture entre las dos partidas.
+	_level = LevelScene.instantiate()
+	_level.waves = _one_wave_fixture()
+	_host.add_child(_level)
+	assert_eq(GameStateManager._current_state, GameStateManager.GameState.PLAYING, "Una nueva partida no hereda WON/LOST")
+	assert_eq(EconomyManager.collected_ammo, 0)
+	assert_eq(_soldiers(_level).size(), 5)
+	for soldier: Soldado in _soldiers(_level):
+		assert_eq(soldier._current_ammo, soldier.stats.max_ammo)
+	var spawner: WaveSpawner = _level.get("_wave_spawner")
+	var initials := spawner._enemy_pool.get_children().filter(func(node: Node):
+		return node is Enemigo and node.is_targetable() and node.spawn_origin == Enemigo.SpawnOrigin.INITIAL)
+	assert_eq(initials.size(), 1, "La nueva partida activa su inicial t0")
+	if initials.size() == 1:
+		assert_eq(initials[0].lane_id, 2)
+		assert_eq(initials[0].global_position, Vector2(1008, 336))
+	await wait_until(func(): return not _active_wave_enemies(spawner).is_empty(), 0.5)
+	var wave_enemies := _active_wave_enemies(spawner)
+	assert_eq(wave_enemies.size(), 1, "La nueva oleada sigue activa tras reiniciar")
+	if wave_enemies.size() == 1:
+		assert_eq(wave_enemies[0].lane_id, 0, "El primer WAVE vuelve a fila1")
+	assert_signal_emit_count(GameStateManager, "game_won", won_before, "Sin victoria tardía heredada")
+	assert_signal_emit_count(GameStateManager, "game_lost", lost_before, "Sin derrota tardía heredada")
+
+
+func test_new_match_after_real_won_resets_state_initial_and_wave_cursor() -> void:
+	await _assert_new_match_clears_a_real_terminal(GameStateManager.GameState.WON)
+
+
+func test_new_match_after_real_lost_resets_state_initial_and_wave_cursor() -> void:
+	await _assert_new_match_clears_a_real_terminal(GameStateManager.GameState.LOST)
