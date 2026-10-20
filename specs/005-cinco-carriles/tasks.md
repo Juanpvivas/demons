@@ -2,16 +2,16 @@
 
 **Feature**: `005-cinco-carriles` · **Issue**: [#22](https://github.com/Juanpvivas/demons/issues/22) · **Rama de preparación**: `codex/005-cinco-carriles-preparacion`.
 **Input**: [spec](spec.md), [plan aprobado documentalmente](plan.md), [modelo](data-model.md), [contrato](contracts/horizontal-combat.md), [quickstart](quickstart.md) y [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
-**Estado**: I1 y 004-I2 integrados en `main` mediante Squash and merge del PR #24 (`658dd7e`). I2 implementado y aprobado para integración en `codex/005-i2-machete`, creada desde ese main; PR [#25](https://github.com/Juanpvivas/demons/pull/25) en borrador hacia `main`. Publicación T071 e I3–I5 permanecen pendientes.
+**Estado**: I1 y 004-I2 integrados en `main` mediante Squash and merge del PR #24 (`658dd7e`). I2 integrado en `main` mediante Squash and merge del PR [#25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 en curso en `codex/005-i3-recarga`, creada desde ese main; alcance T032–T045. I4–I5 y publicación T071 permanecen pendientes.
 **PR conjunto integrado**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; integración realizada el 2026-10-20, publicación pendiente.
 
 Transición completada: el PR #24 reunió 004-I2 y 005-I1 desde
 `codex/005-i1-tablero` hacia `main` (`2dc532d` como base de revisión).
 La persona autorizó el squash y la eliminación de las dos ramas superadas,
 realizados tras comprobar que todo el contenido aprobado quedó integrado.
-Las features siguen abiertas y la publicación pendiente. I2 retoma una rama
-breve desde `main` actualizado con alcance T018–T031; recarga/regreso I3 y
-presentación lateral I4 no se implementan en este incremento.
+Las features siguen abiertas y la publicación pendiente. I2 se integró mediante el PR #25 el 2026-10-20. I3 continúa en una rama
+breve desde `main` actualizado con alcance T032–T045: selección, recarga
+atómica y regreso vulnerable. Presentación lateral I4 queda pendiente.
 Durante I2, la API de recarga existente se conserva dentro del hogar; fuera
 de él rechaza la orden sin gasto hasta incorporar el regreso de I3. El fusil
 sigue limitado a HOME y esa adaptación requiere RED antes de implementarse.
