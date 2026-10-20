@@ -83,6 +83,9 @@ signal defeat_visual_requested(snapshot: Dictionary)
 ## Modo de combate activo (`docs/ARCHITECTURE.md` §4.4).
 enum SoldierMode { RIFLE, MELEE }
 
+## Contrato de desplazamiento; la conducta móvil se implementa tras RED.
+enum MovementState { HOME, ADVANCING, MELEE_CONTACT, WAITING, RETURNING, DEAD }
+
 ## Molde de datos base/máximos de este soldado — solo lectura, nunca
 ## mutado en runtime (`docs/ARCHITECTURE.md` §4.3).
 @export var stats: UnitStats
@@ -108,6 +111,9 @@ var _current_health: int = 0
 ## después de instanciarlo. Se reporta en `soldier_defeated` para que
 ## `BoardManager` libere la celda correcta.
 var _grid_cell: Vector2i
+
+var _movement_state: MovementState = MovementState.HOME
+var _home_position: Vector2
 
 ## Objetivo activo de fusil — nunca más de uno a la vez (FR-002).
 var _current_target: Node2D = null
@@ -166,6 +172,7 @@ const _INCOMING_MELEE_ATTACK_INTERVAL: float = 1.0
 
 func _ready() -> void:
 	assert(stats != null, "Soldado requiere un UnitStats asignado en 'stats'")
+	_home_position = global_position
 	_current_ammo = stats.max_ammo
 	_current_health = stats.max_health
 
@@ -443,6 +450,18 @@ func _set_mode(new_mode: SoldierMode) -> void:
 ## `soldier_defeated` reporte la celda correcta si más adelante es derrotado.
 func set_grid_cell(cell: Vector2i) -> void:
 	_grid_cell = cell
+
+
+func get_movement_state() -> MovementState:
+	return _movement_state
+
+
+func get_home_position() -> Vector2:
+	return _home_position
+
+
+func get_lane_id() -> int:
+	return board_config.home_cells.find(_grid_cell)
 
 
 ## Aplica `amount` de daño y retorna `true` únicamente si esta llamada dejó

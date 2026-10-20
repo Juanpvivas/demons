@@ -2,15 +2,19 @@
 
 **Feature**: `005-cinco-carriles` · **Issue**: [#22](https://github.com/Juanpvivas/demons/issues/22) · **Rama de preparación**: `codex/005-cinco-carriles-preparacion`.
 **Input**: [spec](spec.md), [plan aprobado documentalmente](plan.md), [modelo](data-model.md), [contrato](contracts/horizontal-combat.md), [quickstart](quickstart.md) y [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
-**Estado**: I1, documentación y transición aprobados para integración conjunta con 004-I2 en el PR #24, en borrador hacia main desde `codex/005-i1-tablero`. Publicación T071 e I2–I5 permanecen pendientes; la integración humana aún no se ha realizado.
-**PR conjunto de integración**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; aprobación para integración, publicación pendiente.
+**Estado**: I1 y 004-I2 integrados en `main` mediante Squash and merge del PR #24 (`658dd7e`). I2 en ejecución en `codex/005-i2-machete`, creada desde ese main actualizado; publicación T071 e I3–I5 permanecen pendientes.
+**PR conjunto integrado**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; integración realizada el 2026-10-20, publicación pendiente.
 
-Transición autorizada: `codex/005-i1-tablero` ya contiene 004-I2 y 005-I1.
-Se prepara un único PR hacia `main` (`2dc532d` como base de revisión), con
-`Refs #18` y `Refs #22`, sin cerrar features, reescribir historial ni merge
-automático. Se justifica tamaño acumulado y se revisa el conjunto por QA.
-Tras integrar, las ramas superadas pueden eliminarse conservando el código en
-main. Los siguientes incrementos vuelven a ramas breves desde main actualizado.
+Transición completada: el PR #24 reunió 004-I2 y 005-I1 desde
+`codex/005-i1-tablero` hacia `main` (`2dc532d` como base de revisión).
+La persona autorizó el squash y la eliminación de las dos ramas superadas,
+realizados tras comprobar que todo el contenido aprobado quedó integrado.
+Las features siguen abiertas y la publicación pendiente. I2 retoma una rama
+breve desde `main` actualizado con alcance T018–T031; recarga/regreso I3 y
+presentación lateral I4 no se implementan en este incremento.
+Durante I2, la API de recarga existente se conserva dentro del hogar; fuera
+de él rechaza la orden sin gasto hasta incorporar el regreso de I3. El fusil
+sigue limitado a HOME y esa adaptación requiere RED antes de implementarse.
 
 ## Reglas de ejecución y gates
 
@@ -75,8 +79,8 @@ main. Los siguientes incrementos vuelven a ramas breves desde main actualizado.
 **Objetivo**: mismo soldado sale/espera/combate en su fila y libera origen al morir.
 **Criterio independiente**: última bala mata único→espera; si queda frontal→sale a40 propios, contacto detiene sin atravesar y ambos reciben daño real.
 
-- [ ] T018 [US2] project-orchestrator: tras integración humana del PR conjunto T017, preparar rama breve `codex/005-i2-machete` desde main actualizado y declarar alcance/IDs; no iniciar I2 durante la transición; depende de T017 integrado y su QA funcional vigente.
-- [ ] T019 [US2] dev-godot: disponer interfaces de estado/movimiento invocables y campos propios `advance_speed/return_speed` de `resources/schemas/unit_stats.gd`/`resources/units/soldado_base_stats.tres`,40/40 según modelo; no implementar salida/contacto/retorno ni modificar pruebas; depende de T018.
+- [X] T018 [US2] project-orchestrator: tras integración humana del PR conjunto T017, preparar rama breve `codex/005-i2-machete` desde main actualizado y declarar alcance/IDs; no iniciar I2 durante la transición; depende de T017 integrado y su QA funcional vigente.
+- [X] T019 [US2] dev-godot: disponer interfaces de estado/movimiento invocables y campos propios `advance_speed/return_speed` de `resources/schemas/unit_stats.gd`/`resources/units/soldado_base_stats.tres`,40/40 según modelo; no implementar salida/contacto/retorno ni modificar pruebas; depende de T018.
 - [ ] T020 [P] [US2] godot-tester RED: escribir `tests/unit/units/test_soldado_lane_motion.gd` para última bala→machete, único blanco muerto→espera, siguiente frontal→avance, perder blanco→espera/reanudar y excluir detrás/otras filas; medir40 propios con ticks y dos velocidades EnemyStats distintas; depende de T019.
 - [ ] T021 [P] [US2] godot-tester RED: escribir `tests/unit/units/test_soldado_mobile_contact.gd` para dos cuerpos realmente móviles, bloqueo sin atravesar, alcance/daño mutuo/cooldowns y múltiples atacantes sin duplicación; origen reservado/muerte libera y blanco reciclado inválido; depende de T019.
 - [ ] T022 [US2] qa-validator: validar fallo semántico y cobertura de T020/T021 contra `specs/005-cinco-carriles/contracts/horizontal-combat.md`, sin aceptar callbacks simulados como contacto real; depende de T020 y T021.
