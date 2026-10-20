@@ -30,12 +30,17 @@ const ENEMY_SCENE_PATH := "res://scenes/enemies/EnemigoBase.tscn"
 const UNIT_STATS_SCRIPT_PATH := "res://resources/schemas/unit_stats.gd"
 const ENEMY_STATS_SCRIPT_PATH := "res://resources/schemas/enemy_stats.gd"
 
-# Mismo offset usado en `test_soldado.gd`: cae dentro de "DeteccionRango"
-# (rango global x:[-72,72] y:[-264,-24]) pero fuera de "RangoMelee".
-const RIFLE_ONLY_OFFSET := Vector2(0, -150)
+# 005/I1: frente +X desde una de las cinco trincheras. Los actores y el
+# avance −X siguen siendo reales; no se simulan detección ni impactos.
+const HOME_CELL := Vector2i(1, 3)
+const HOME_POSITION := Vector2(144, 336)
+const RIFLE_ONLY_OFFSET := Vector2(150, 0)
 
 var _soldado: Node
 var _enemy: Node
+var _world: Node2D
+var _game_state_before: int
+var _ammo_before: int
 
 # Capturados por conexión propia (no por `watch_signals`) porque el enemigo
 # real se libera (`queue_free`) tras `enemy_defeated`: para cuando se espera
@@ -48,17 +53,29 @@ var _enemy_defeated_ammo_dropped: int = -1
 
 
 func before_each() -> void:
+	_game_state_before = GameStateManager.get("_current_state")
+	_ammo_before = EconomyManager.collected_ammo
+	GameStateManager.set("_current_state", GameStateManager.GameState.PLAYING)
+	_world = Node2D.new()
+	add_child_autofree(_world)
 	_soldado = null
 	_enemy = null
 	_enemy_defeated_emitted = false
 	_enemy_defeated_ammo_dropped = -1
 
 
+func after_each() -> void:
+	GameStateManager.set("_current_state", _game_state_before)
+	EconomyManager.collected_ammo = _ammo_before
+
+
 func _spawn_real_soldado() -> Node:
 	# Sin overrides: usa el `UnitStats` de producción ya asignado en
 	# `Soldado.tscn` (`soldado_base_stats.tres`).
 	_soldado = load(SOLDADO_SCENE_PATH).instantiate()
-	add_child_autofree(_soldado)
+	_soldado.position = HOME_POSITION
+	_soldado.call("set_grid_cell", HOME_CELL)
+	_world.add_child(_soldado)
 	return _soldado
 
 
@@ -75,7 +92,7 @@ func _spawn_real_enemy_at_offset(offset: Vector2, stats_overrides: Dictionary = 
 		stats.ammo_drop = stats_overrides.get("ammo_drop", 3)
 		_enemy.stats = stats
 	_enemy.enemy_defeated.connect(_on_enemy_defeated)
-	add_child_autofree(_enemy)
+	_world.add_child(_enemy)
 	_enemy.global_position = _soldado.global_position + offset
 	return _enemy
 
@@ -162,7 +179,7 @@ func test_real_soldado_fires_depletes_ammo_and_finishes_a_real_enemigo_with_mach
 	# Given: un soldado con munición muy limitada y cadencia rápida (para que
 	# el test corra en tiempo razonable), y un enemigo real con salud
 	# suficiente para sobrevivir el fusil pero morir a machetazos una vez
-	# alcance el rango melee mientras sigue avanzando en +Y
+	# alcance el rango melee mientras sigue avanzando en −X
 	var unit_stats: Resource = load(UNIT_STATS_SCRIPT_PATH).new()
 	unit_stats.max_ammo = 2
 	unit_stats.damage_per_shot = 5
@@ -174,7 +191,9 @@ func test_real_soldado_fires_depletes_ammo_and_finishes_a_real_enemigo_with_mach
 
 	_soldado = load(SOLDADO_SCENE_PATH).instantiate()
 	_soldado.stats = unit_stats
-	add_child_autofree(_soldado)
+	_soldado.position = HOME_POSITION
+	_soldado.call("set_grid_cell", HOME_CELL)
+	_world.add_child(_soldado)
 	watch_signals(_soldado)
 
 	# 2 disparos de fusil (10 de daño) no deben eliminarlo; move_speed
@@ -207,7 +226,7 @@ func test_real_soldado_fires_depletes_ammo_and_finishes_a_real_enemigo_with_mach
 		"el enemigo real (salud=30) no debe morir con solo 2 disparos de fusil (10 de daño)"
 	)
 
-	# When: el enemigo real, avanzando en +Y por su propia cuenta
+	# When: el enemigo real, avanzando en −X por su propia cuenta
 	# (`enemigo.gd._physics_process`), sin intervención del jugador, alcanza
 	# el rango de melee del soldado y este lo ataca con machete hasta
 	# eliminarlo

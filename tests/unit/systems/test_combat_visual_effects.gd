@@ -15,6 +15,7 @@ func before_each() -> void:
 	for key: String in ["waves", "current_wave_index", "_total_enemies_in_current_wave", "_defeated_in_current_wave"]:
 		_wave_before[key] = WaveManager.get(key)
 	_state_before = GameStateManager._current_state
+	GameStateManager._current_state = GameStateManager.GameState.PLAYING
 	_ammo_before = EconomyManager.collected_ammo
 
 func after_each() -> void:
@@ -31,7 +32,8 @@ func _soldier() -> Soldado:
 	visual.offset = Vector2.ZERO
 	visual.flip_h = false
 	visual.flip_v = false
-	soldier.position = Vector2(320, 240)
+	soldier.position = Vector2(144, 240)
+	soldier.set_grid_cell(Vector2i(1, 2))
 	return add_child_autofree(soldier)
 
 func _service(size := 2) -> CombatVisualEffects:
@@ -94,22 +96,22 @@ func test_real_defeat_requests_one_snapshot_before_immediate_gameplay_retirement
 	assert_eq(events, ["visual", "gameplay"], "Una petición por muerte, antes del retiro")
 	assert_true(soldier.is_queued_for_deletion(), "La muerte no espera0.40s de animación")
 	if snapshots.is_empty(): return
-	assert_eq(snapshots[0]["world_position"], Vector2(320, 240))
+	assert_eq(snapshots[0]["world_position"], Vector2(144, 240))
 	assert_eq(snapshots[0]["visual_scale"], Vector2.ONE)
 
 func test_death_without_any_visual_listener_still_retires_soldier_and_clears_morale() -> void:
 	var soldier := _soldier()
 	var cells: Array = []
-	soldier.set_grid_cell(Vector2i(6, 5))
+	soldier.set_grid_cell(Vector2i(1, 2))
 	var enemy := EnemyDouble.new()
 	enemy.health = soldier.stats.damage_per_shot
-	enemy.position = soldier.position + Vector2(0, -150)
+	enemy.position = soldier.position + Vector2(150, 0)
 	add_child_autofree(enemy)
 	await wait_until(func(): return soldier._current_morale > 0.0, 0.50)
 	assert_eq(soldier._current_morale, 1.0)
 	soldier.soldier_defeated.connect(func(cell: Vector2i): cells.append(cell))
 	assert_true(soldier.take_damage(soldier.stats.max_health))
-	assert_eq(cells, [Vector2i(6, 5)])
+	assert_eq(cells, [Vector2i(1, 2)])
 	assert_eq(soldier._current_morale, 0.0)
 	assert_true(soldier.is_queued_for_deletion())
 
@@ -233,7 +235,12 @@ func test_newly_deployed_soldier_is_registered_for_one_effect_and_immediate_cell
 	var level: Node = load("res://scenes/levels/Nivel_MonteCalvo.tscn").instantiate()
 	add_child_autofree(level)
 	EconomyManager.add_ammo(20)
-	var cell := Vector2i(5, 5)
+	var cell := Vector2i(1, 5)
+	var previous := level._board_manager.get_occupant(cell) as Soldado
+	# Aislar el efecto de la unidad nueva sin eliminar reglas de ocupación.
+	for connection: Dictionary in previous.get_signal_connection_list("defeat_visual_requested"):
+		previous.disconnect("defeat_visual_requested", connection["callable"])
+	previous.take_damage(previous.stats.max_health)
 	level._try_deploy_soldado(cell)
 	var soldier := level._board_manager.get_occupant(cell) as Soldado
 	assert_not_null(soldier, "Ruta de despliegue real produce un soldado nuevo")
@@ -304,6 +311,7 @@ func test_enemy_without_visual_listener_still_drops_credits_wave_and_releases_on
 	var level: Node = load("res://scenes/levels/Nivel_MonteCalvo.tscn").instantiate()
 	add_child_autofree(level)
 	var pool: ObjectPool = level._wave_spawner._enemy_pool
+	var active_before := pool.in_use_count()
 	var enemy := pool.acquire() as Enemigo
 	enemy.prepare_for_spawn(enemy.stats, Vector2(600, 200))
 	for connection: Dictionary in enemy.get_signal_connection_list("defeat_visual_requested"):
@@ -314,7 +322,7 @@ func test_enemy_without_visual_listener_still_drops_credits_wave_and_releases_on
 	assert_true(enemy.take_damage(enemy.stats.max_health))
 	assert_false(enemy.take_damage(1))
 	assert_eq(WaveManager._defeated_in_current_wave, before + 1)
-	assert_eq(pool.in_use_count(), 0)
+	assert_eq(pool.in_use_count(), active_before, "El inicial independiente sigue en uso")
 	assert_signal_emit_count(enemy, "enemy_defeated", 1)
 	assert_signal_emit_count(EconomyManager, "ammo_pickup_spawned", 1)
 	assert_false(enemy.visible)
@@ -322,7 +330,10 @@ func test_enemy_without_visual_listener_still_drops_credits_wave_and_releases_on
 func test_level_registers_initial_enemy_and_each_new_physical_pool_instance_once() -> void:
 	var level: Node = load("res://scenes/levels/Nivel_MonteCalvo.tscn").instantiate()
 	add_child_autofree(level)
-	var initial := level.get_node("Enemigo") as Enemigo
+	var initials: Array = level._wave_spawner._enemy_pool._in_use.filter(func(node: Node): return node is Enemigo and node.spawn_origin == Enemigo.SpawnOrigin.INITIAL)
+	assert_eq(initials.size(), 1)
+	if initials.size() != 1: return
+	var initial := initials[0] as Enemigo
 	var service: CombatVisualEffects = level._combat_visual_effects
 	assert_eq(initial.get_signal_connection_list("defeat_visual_requested").size(), 1, "Registro del enemigo inicial")
 	initial.take_damage(initial.stats.max_health)

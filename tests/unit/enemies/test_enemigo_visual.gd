@@ -2,6 +2,14 @@ extends GutTest
 ## 004/T015: presentación observacional sobre física y combate reales.
 const EnemyScene := preload("res://scenes/enemies/EnemigoBase.tscn")
 const Visual := preload("res://scenes/enemies/enemigo_visual.gd")
+var _saved_state: int
+
+func before_each() -> void:
+	_saved_state = GameStateManager._current_state
+	GameStateManager._current_state = GameStateManager.GameState.PLAYING
+
+func after_each() -> void:
+	GameStateManager._current_state = _saved_state
 
 func _frames() -> SpriteFrames:
 	var frames := SpriteFrames.new()
@@ -26,14 +34,15 @@ func _configured_enemy() -> Enemigo:
 	visual.offset = Vector2(0, -3)
 	return enemy
 
-func _enemy(position := Vector2(300, 200)) -> Enemigo:
+func _enemy(position := Vector2(336, 336)) -> Enemigo:
 	var enemy := _configured_enemy()
 	enemy.position = position
 	return add_child_autofree(enemy)
 
 func _soldier() -> Soldado:
 	var soldier: Soldado = load("res://scenes/units/Soldado.tscn").instantiate()
-	soldier.position = Vector2(300, 300)
+	soldier.position = Vector2(144, 336)
+	soldier.set_grid_cell(Vector2i(1, 3))
 	add_child_autofree(soldier)
 	soldier.set_physics_process(false)
 	return soldier
@@ -62,13 +71,13 @@ func test_real_post_physics_displacement_drives_advance() -> void:
 
 func test_real_soldier_blocks_enemy_and_stops_advance_despite_desired_velocity() -> void:
 	_soldier()
-	var enemy := _enemy(Vector2(300, 250))
+	var enemy := _enemy(Vector2(194, 336))
 	await wait_physics_frames(12)
 	var blocked_at := enemy.global_position
 	await wait_physics_frames(3)
 	assert_lte(enemy.global_position.distance_to(blocked_at), 0.01, "Soldado real bloquea el CharacterBody2D")
 	assert_gt(enemy.get_slide_collision_count(), 0)
-	assert_eq(enemy.get_node("AnimatedSprite2D").animation, &"contact", "+Y deseada no acredita avance si la física lo detuvo")
+	assert_eq(enemy.get_node("AnimatedSprite2D").animation, &"contact", "−X deseada no acredita avance si la física lo detuvo")
 
 func test_movement_threshold_uses_actual_world_displacement() -> void:
 	var visual := Visual.new()
@@ -84,7 +93,7 @@ func test_movement_threshold_uses_actual_world_displacement() -> void:
 
 func test_contact_pose_never_attacks_and_real_contact_damage_keeps_existing_rule() -> void:
 	var soldier := _soldier()
-	var enemy := _enemy(Vector2(300, 250))
+	var enemy := _enemy(Vector2(194, 336))
 	var visual: EnemigoVisual = enemy.get_node("AnimatedSprite2D")
 	await wait_physics_frames(12)
 	var health := soldier._current_health
@@ -113,8 +122,8 @@ func test_nonlethal_hit_is_brief_overlay_without_changing_movement_or_health_rul
 
 func test_two_real_enemies_keep_pose_tint_and_progress_independent() -> void:
 	_soldier()
-	var blocked := _enemy(Vector2(300, 250))
-	var moving := _enemy(Vector2(600, 200))
+	var blocked := _enemy(Vector2(194, 336))
+	var moving := _enemy(Vector2(600, 144))
 	await wait_physics_frames(12)
 	blocked.take_damage(1)
 	await wait_seconds(0.03)

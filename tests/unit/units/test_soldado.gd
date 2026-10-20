@@ -77,7 +77,7 @@ extends GutTest
 ## `enemigo_double.gd`, porque la conducta de "atacar activamente" que
 ## ejercitan es responsabilidad de `enemigo.gd` (T053), no del double. Usan
 ## `move_speed` mínimo (`MOVE_SPEED_SLOW_ENEMY`) y lo posicionan cerca del
-## borde de entrada de "RangoMelee" (`MELEE_TOP_OFFSET`) para maximizar el
+## borde de entrada de "RangoMelee" (`MELEE_FRONT_OFFSET`) para maximizar el
 ## tiempo de permanencia en rango, sin asumir ninguna cadencia de ataque
 ## específica de T053 (deliberadamente no especificada por `tasks.md`, que
 ## solo exige "documentar el supuesto de implementación elegido").
@@ -89,26 +89,19 @@ const ENEMY_SCENE_PATH := "res://scenes/enemies/EnemigoBase.tscn"
 const ENEMY_STATS_SCRIPT_PATH := "res://resources/schemas/enemy_stats.gd"
 const EnemigoDouble := preload("res://tests/unit/units/enemigo_double.gd")
 
-# Posiciones relativas al soldado que caen dentro de las formas de colisión
-# reales definidas en `Soldado.tscn`:
-#   - "DeteccionRango": CollisionShape2D en (0, -144), tamaño 144x240
-#     -> rango global x:[-72,72] y:[-264,-24].
-#   - "RangoMelee": CollisionShape2D en (0, -32), tamaño 64x64
-#     -> rango global x:[-32,32] y:[-64,0].
-# `RIFLE_ONLY_OFFSET`/`_B` caen dentro de "DeteccionRango" pero fuera de
-# "RangoMelee"; `MELEE_OFFSET` cae dentro de ambas (las formas se solapan
-# por diseño en la franja cercana al soldado, lo cual es irrelevante para
-# estos tests porque cada uno controla explícitamente en qué modo espera
-# que el soldado esté al llegar ese enemigo).
-const RIFLE_ONLY_OFFSET := Vector2(0, -150)
-const RIFLE_ONLY_OFFSET_B := Vector2(40, -150)
-const MELEE_OFFSET := Vector2(0, -40)
+# 005/I1 rota los fixtures al frente +X y a una trinchera válida. Conserva
+# las aserciones históricas de daño, carga, moral, salud y derrota.
+# Fusil: tramo longitudinal local [24,264], frente propio o diagonal directa.
+# Machete: forma 64×64 en (+32,0). El segundo blanco de fusil cae en la celda
+# diagonal (2,2) del soldado situado en (1,3).
+const HOME_CELL := Vector2i(1, 3)
+const HOME_POSITION := Vector2(144, 336)
+const RIFLE_ONLY_OFFSET := Vector2(150, 0)
+const RIFLE_ONLY_OFFSET_B := Vector2(96, -96)
+const MELEE_OFFSET := Vector2(40, 0)
 
-# T051: offset casi en el borde superior de "RangoMelee" (rango local
-# y:[-64,0], ver comentario de cabecera de este bloque) — maximiza el tiempo
-# que un `Enemigo` real, avanzando lentamente en +Y, permanece DENTRO de
-# "RangoMelee" antes de cruzarlo por completo y salir por el otro lado.
-const MELEE_TOP_OFFSET := Vector2(0, -60)
+# Entrada frontal al alcance melee; el enemigo real avanza hacia −X.
+const MELEE_FRONT_OFFSET := Vector2(60, 0)
 
 # Cuántos frames de física esperar para que una Area2D detecte overlap y
 # el soldado dispare/ataque al menos una vez con el cooldown configurado.
@@ -120,10 +113,9 @@ const FRAMES_TO_FIRE_SEVERAL_SHOTS := 40
 # (`Soldado._INCOMING_MELEE_ATTACK_INTERVAL = 1.0`, deliberadamente no
 # asumida aquí como constante propia de este test para no acoplarse a un
 # detalle interno de `soldado.gd`), alcance a golpear al soldado al menos una
-# vez mientras permanece dentro de "RangoMelee". A `MOVE_SPEED_SLOW_ENEMY` (mínimo
-# permitido por `EnemyStats.move_speed`), el enemigo tarda ~6.4s (~384
-# frames) en atravesar por completo la franja de 64px de "RangoMelee" desde
-# `MELEE_TOP_OFFSET` — 400 frames cubre ese cruce completo con margen.
+# vez mientras permanece dentro de "RangoMelee". El enemigo avanza lentamente
+# hacia −X hasta el bloqueo físico; 400 frames conservan una ventana amplia
+# para observar su ataque y la derrota, sin alterar la cadencia existente.
 const FRAMES_TO_DEFEAT_SOLDIER := 400
 
 # Stats por defecto compartidos por la mayoría de los tests; cada test que
@@ -145,6 +137,9 @@ const MOVE_SPEED_SLOW_ENEMY := 10.0
 var _soldado_script: Script
 var _soldado: Node
 var _stats: Resource
+var _world: Node2D
+var _game_state_before: int
+var _ammo_before: int
 
 # Capturados por conexión propia a `soldier_defeated` (no por `watch_signals`)
 # en `test_soldier_is_defeated_by_a_real_enemy_attacking_within_rango_melee`
@@ -163,11 +158,21 @@ var _soldier_defeated_cell: Vector2i = Vector2i(-1, -1)
 
 
 func before_each() -> void:
+	_game_state_before = GameStateManager.get("_current_state")
+	_ammo_before = EconomyManager.collected_ammo
+	GameStateManager.set("_current_state", GameStateManager.GameState.PLAYING)
+	_world = Node2D.new()
+	add_child_autofree(_world)
 	_soldado_script = load(SOLDADO_SCRIPT_PATH)
 	_soldado = null
 	_stats = null
 	_soldier_defeated_emitted = false
 	_soldier_defeated_cell = Vector2i(-1, -1)
+
+
+func after_each() -> void:
+	GameStateManager.set("_current_state", _game_state_before)
+	EconomyManager.collected_ammo = _ammo_before
 
 
 func _on_soldier_defeated(cell: Vector2i) -> void:
@@ -194,14 +199,16 @@ func _spawn_soldado(overrides: Dictionary = {}) -> Node:
 
 	_soldado = load(SOLDADO_SCENE_PATH).instantiate()
 	_soldado.stats = _stats
-	add_child_autofree(_soldado)
+	_soldado.position = HOME_POSITION
+	_soldado.call("set_grid_cell", HOME_CELL)
+	_world.add_child(_soldado)
 	return _soldado
 
 
 func _spawn_enemy(offset: Vector2, health: int = 1000) -> Node:
 	var enemy := EnemigoDouble.new()
 	enemy.health = health
-	add_child_autofree(enemy)
+	_world.add_child(enemy)
 	enemy.global_position = _soldado.global_position + offset
 	return enemy
 
@@ -220,7 +227,7 @@ func _spawn_real_enemy(offset: Vector2, stats_overrides: Dictionary = {}) -> Nod
 	enemy_stats.melee_damage = stats_overrides.get("melee_damage", 10)
 	enemy_stats.ammo_drop = stats_overrides.get("ammo_drop", 5)
 	enemy.stats = enemy_stats
-	add_child_autofree(enemy)
+	_world.add_child(enemy)
 	enemy.global_position = _soldado.global_position + offset
 	return enemy
 
@@ -681,6 +688,7 @@ func test_soldier_is_defeated_by_a_real_enemy_attacking_within_rango_melee() -> 
 	_spawn_soldado({"max_health": 10})
 	var expected_cell := Vector2i(1, 2)
 	_soldado.call("set_grid_cell", expected_cell)
+	_soldado.global_position = Vector2(144, 240)
 	# NO se usa watch_signals()/assert_signal_emitted() aquí a propósito:
 	# `FRAMES_TO_DEFEAT_SOLDIER` (400 frames) es una ventana lo bastante
 	# amplia como para que, tras la muerte del soldado, transcurran muchos
@@ -707,7 +715,7 @@ func test_soldier_is_defeated_by_a_real_enemy_attacking_within_rango_melee() -> 
 	# suficiente para atacarlo activamente (Edge Case de derrota de
 	# `spec.md`: "un soldado en modo cuerpo a cuerpo es derrotado por los
 	# enemigos")
-	_spawn_real_enemy(MELEE_TOP_OFFSET, {"melee_damage": 10})
+	_spawn_real_enemy(MELEE_FRONT_OFFSET, {"melee_damage": 10})
 	await wait_physics_frames(FRAMES_TO_DEFEAT_SOLDIER)
 
 	# Then: el soldado real fue derrotado por el ataque real del enemigo —
@@ -745,14 +753,14 @@ func test_soldier_takes_incoming_melee_damage_from_every_candidate_present_not_o
 	var enemy_a := EnemigoDouble.new()
 	enemy_a.health = 1000
 	enemy_a.melee_damage = 4
-	add_child_autofree(enemy_a)
-	enemy_a.global_position = _soldado.global_position + Vector2(-20, -40)
+	_world.add_child(enemy_a)
+	enemy_a.global_position = _soldado.global_position + Vector2(40, -20)
 
 	var enemy_b := EnemigoDouble.new()
 	enemy_b.health = 1000
 	enemy_b.melee_damage = 7
-	add_child_autofree(enemy_b)
-	enemy_b.global_position = _soldado.global_position + Vector2(20, -40)
+	_world.add_child(enemy_b)
+	enemy_b.global_position = _soldado.global_position + Vector2(40, 20)
 
 	# When: transcurre tiempo suficiente para que ambos sean detectados y
 	# reciba exactamente el primer golpe de cada uno (_incoming_melee_cooldown
