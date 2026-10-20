@@ -2,7 +2,7 @@
 
 **Feature**: `005-cinco-carriles` · **Issue**: [#22](https://github.com/Juanpvivas/demons/issues/22) · **Rama de preparación**: `codex/005-cinco-carriles-preparacion`.
 **Input**: [spec](spec.md), [plan aprobado documentalmente](plan.md), [modelo](data-model.md), [contrato](contracts/horizontal-combat.md), [quickstart](quickstart.md) y [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
-**Estado**: I1 y 004-I2 integrados en `main` mediante Squash and merge del PR #24 (`658dd7e`). I2 implementado y aprobado para integración en `codex/005-i2-machete`, creada desde ese main; PR en preparación. Publicación T071 e I3–I5 permanecen pendientes.
+**Estado**: I1 y 004-I2 integrados en `main` mediante Squash and merge del PR #24 (`658dd7e`). I2 implementado y aprobado para integración en `codex/005-i2-machete`, creada desde ese main; PR [#25](https://github.com/Juanpvivas/demons/pull/25) en borrador hacia `main`. Publicación T071 e I3–I5 permanecen pendientes.
 **PR conjunto integrado**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; integración realizada el 2026-10-20, publicación pendiente.
 
 Transición completada: el PR #24 reunió 004-I2 y 005-I1 desde
@@ -92,7 +92,7 @@ sigue limitado a HOME y esa adaptación requiere RED antes de implementarse.
 - [X] T028 [US2] qa-validator: APROBADO PARA INTEGRACIÓN de I2 sólo tras gate funcional T027 y conformidad código/RED/GREEN/contrato; evaluar diferencias/riesgos y conservar publicación en T071 sin extrapolar emulación a hardware; depende de T026, T027 completas y T014 aprobada.
 - [X] T029 [US2] docs-writer: documentar movimiento/contacto aprobados y evolución de soldado estático en `docs/ARCHITECTURE.md`/`docs/SPEC.md`, conservando hallazgos históricos y recarga I3 pendiente; depende de T028 aprobada.
 - [X] T030 [US2] qa-validator: revisar resultado/documentación final I2 y vigencia del estado probado en `docs/ARCHITECTURE.md`/`docs/SPEC.md` y fuentes T023/T024; depende de T029.
-- [ ] T031 [US2] project-orchestrator: actualizar `specs/005-cinco-carriles/tasks.md` solo tras aprobaciones y preparar PR I2 en borrador `Refs #22` con base/tamaño/QA/TDD; nunca entrega aprobada con gates pendientes; depende de T030 aprobada.
+- [X] T031 [US2] project-orchestrator: actualizar `specs/005-cinco-carriles/tasks.md` solo tras aprobaciones y preparar PR I2 en borrador `Refs #22` con base/tamaño/QA/TDD; nunca entrega aprobada con gates pendientes; depende de T030 aprobada.
 
 ## Fase 5 — US3: Administrar plazas y munición (P2) · I3
 
