@@ -84,8 +84,8 @@ munición cero. Sólo esas cinco casillas admiten un soldado: una plaza ocupada
 o un punto exterior se rechazan antes de gastar. La muerte libera la plaza
 para un único reemplazo con fondos suficientes. El snap sigue usando el grid.
 
-Los soldados permanecen quietos, disparando hacia la derecha; los enemigos
-avanzan desde la derecha hacia la defensa izquierda sin cambiar de fila.
+Los soldados con balas permanecen en su hogar, disparando hacia la derecha;
+los enemigos avanzan desde la derecha hacia la defensa izquierda sin cambiar de fila.
 El fusil cubre el frente de su fila y sólo las dos celdas diagonalmente
 contiguas dentro del alcance físico vigente. No ataca hacia atrás, en
 diagonales profundas ni dos filas más allá. Conserva un blanco elegible;
@@ -105,19 +105,30 @@ laterales definitivas pertenecen a 005-I4. Ninguna decoración concede cobertura
 - **Modo machete** (automático al quedarse sin munición): combate cuerpo a cuerpo, rango de 1 casilla frontal, daño escalado según la moral acumulada en modo fusil.
 - Los stats vigentes viven en `UnitStats`/`soldado_base_stats.tres`; el cambio de orientación no altera daño, carga, moral, costo o cadencia.
 
-**Pendiente de 005-I2/I3:** al agotar la munición, el soldado saldrá hacia
-un enemigo delante en su misma fila y combatirá de frente; sin enemigos
-frontales esperará donde esté. Su plaza seguirá reservada mientras viva y
-sólo podrá reemplazarse al morir. La velocidad propia de salida y regreso será
-40 unidades de mundo/s, independiente de los stats enemigos.
+**005-I2, aprobado funcionalmente para integración en su rama:** al agotar
+la munición, el mismo soldado pasa a machete y sale hacia un enemigo delante
+en su fila, sin cambiar de carril. Avanza a 40 unidades de mundo/s, con velocidad
+propia ajustable en `UnitStats`/`.tres`, independiente de los stats enemigos.
+Se detiene al entrar en alcance frontal y combate con las reglas vigentes de
+daño, cadencia y moral; la colisión entre cuerpos impide atravesarse. Si pierde
+o elimina el blanco, busca otro frontal de su fila o espera donde está. Una
+última bala que elimina al único enemigo frontal no provoca una salida sin
+objetivo. No persigue enemigos detrás ni en otras filas.
 
-Seleccionar la trinchera mostrará carga/moral de su dueño; «Recargar» sólo
-aceptará un soldado vivo con carga cero y fondos suficientes. Cobrará una vez,
+La plaza permanece reservada mientras viva, aunque se aleje. Ambos actores
+reciben daño real y pueden morir; al morir, el soldado deja de combatir,
+pierde su moral y libera su plaza de origen sin esperar la caída visual.
+
+**Pendiente de 005-I3:** seleccionar la trinchera mostrará carga/moral de su
+dueño; «Recargar» sólo aceptará un soldado vivo con carga cero y fondos suficientes. Cobrará una vez,
 conservará salud/moral e iniciará un regreso físico vulnerable, sin ofensiva,
 hasta reanudar el fusil al llegar; el botón estará desactivado durante el
-retorno. Ese movimiento y control aún no están integrados: el soldado actual
-sigue inmóvil incluso en modo machete y conserva su operación de recarga
-existente sin un botón jugable en el nivel.
+retorno. La velocidad de regreso de 40 unidades/s ya está preparada como dato,
+pero todavía no tiene una ruta activa. I2 conserva la operación heredada de
+recarga para un soldado vivo, en PLAYING y en la posición de su hogar
+(tolerancia ≤0,01 unidades), con fondos suficientes; fuera rechaza sin cobrar.
+Esa operación no exige aún carga cero ni un estado de movimiento concreto;
+la elegibilidad estricta, la transacción nueva y el control jugable son I3.
 
 La [referencia aprobada](../specs/005-cinco-carriles/references/visual-reference.md)
 orienta la composición futura y no fija costos, estadísticas ni HUD final.
@@ -145,7 +156,8 @@ orienta la composición futura y no fija costos, estadísticas ni HUD final.
 
 - **Autoload `EconomyManager`:** controla el contador global de Munición recolectada, expone señal `ammo_pool_changed`.
 - **Tablero:** `TileMap` convierte mundo↔celda; `LaneBoardConfig` define cinco plazas/entradas y zona defendida. El nivel valida esas plazas antes de cobrar y `BoardManager` mantiene su ocupación.
-- **Detección por soldado:** un área física amplia orientada a +X reúne candidatos y un filtro explícito exige frente, fila o diagonal directamente contigua y solape real con el alcance autorado. Se conserva el objetivo activo mientras siga siendo elegible; al elegir otro, se prioriza el más avanzado hacia la defensa izquierda, sin dividir fuego. La generación de activación evita atacar a un uso anterior del mismo cuerpo reciclado.
+- **Movimiento y detección por soldado:** ambos actores usan `CharacterBody2D`; el soldado avanza con `move_and_slide()` en el tick físico. Consultas físicas de ese tick reúnen candidatos y los filtros conservan frente, fila, alcance y diagonales directas del fusil. El machete busca un frontal de su fila incluso lejos, pero sólo daña dentro de su alcance. No depende de overlaps almacenados de áreas móviles ni mueve sólo el sprite.
+- **Validez de blancos:** se comprueba la instancia antes de operaciones tipadas; después, presencia activa, elegibilidad y generación de activación. Se conserva el blanco elegible; al perderlo se prioriza el más avanzado hacia la defensa izquierda, sin dividir fuego ni atacar a un uso anterior del mismo cuerpo reciclado.
 - **Stats por instancia de soldado:** cada soldado en escena mantiene su propio estado local (munición actual, moral acumulada, modo activo: fusil/machete) — no vive en el `EconomyManager` global, solo el pool de munición recolectada es global.
 - **`AnimatedSprite2D` / `AnimationPlayer`:** animaciones de disparo, cambio a modo machete, ataque cuerpo a cuerpo y muerte.
 - **Unidades y enemigos como `Resource` (.tres):** stats base (daño, cadencia, alcance, fórmula de daño machete) desacoplados del código, para poder balancear sin tocar scripts.
@@ -197,9 +209,11 @@ animación no gobierna daño, recompensas ni retiro. La procedencia está en
 [el catálogo del enemigo](../assets/sprites/enemies/monte_calvo/SOURCES.md).
 Su orientación visual actual aún necesita las poses laterales de 005-I4.
 
-La caja amarilla de munición sigue provisional, pendiente de 004-I3. También
-siguen pendientes el movimiento con machete 005-I2, selección/recarga 005-I3,
-arte lateral 005-I4, HUD, pantallas terminales, audio y resto del acabado.
+La caja amarilla de munición sigue provisional, pendiente de 004-I3. El
+movimiento/contacto de machete de 005-I2 conserva las poses existentes; las
+poses laterales y la presentación completa de marcha son 005-I4. También
+siguen pendientes selección/recarga y regreso 005-I3, HUD, pantallas terminales,
+audio y resto del acabado.
 Esta integración parcial no completa las features 004/005 ni el MVP.
 
 La [comparación visual](../specs/002-monte-calvo-terreno-trincheras/evidence/us3.md)
@@ -223,7 +237,9 @@ instaladas en Android/iOS; la reducción del alcance Web no exime los requisitos
 de rendimiento físico nativo ni amplía esas aprobaciones históricas.
 
 La constitución 4.0.0 distingue integración funcional de publicación. La
-integración conjunta 004-I2/005-I1 no certifica 60 FPS físicos, Mobile, GPU,
+integración conjunta 004-I2/005-I1, realizada en `main` mediante el
+[PR #24](https://github.com/Juanpvivas/demons/pull/24), y la aprobación funcional
+de 005-I2 en su rama no certifican 60 FPS físicos, Mobile, GPU,
 renderer o empaquetado final; esos gates y SC-007 permanecen pendientes de
 publicación en las tareas de cada feature. Las comprobaciones de emulador,
 simulador y Compatibility/software conservan sólo su propio alcance.
@@ -240,7 +256,7 @@ simulador y Compatibility/software conservan sólo su propio alcance.
 
 ## 10. Preguntas abiertas / decisiones pendientes
 
-- Implementar los incrementos restantes de [005](../specs/005-cinco-carriles/tasks.md): salida/contacto con machete, regreso por recarga y controles, arte lateral y consolidación. I1 ya define cinco plazas, inicio/reparto, geometría y orientación; no deducir balance de la imagen.
+- Implementar los incrementos restantes de [005](../specs/005-cinco-carriles/tasks.md): regreso por recarga y controles I3, arte lateral I4 y consolidación I5. I1 está integrado en `main`; I2 tiene aprobación funcional para integración en `codex/005-i2-machete`, pendiente de su PR e integración. No deducir balance de la imagen.
 - Caja de munición de 004-I3, poses laterales de 005-I4, interfaz y demás acabado, siguiendo la dirección aprobada en §8; SC-007 y certificaciones de publicación siguen pendientes.
 - ¿Habrá progresión entre niveles (más batallas históricas) o es un solo escenario?
 - ¿Narrativa/contexto histórico se presenta dentro del juego (cutscenes, texto) o queda solo como inspiración temática?
@@ -250,7 +266,8 @@ simulador y Compatibility/software conservan sólo su propio alcance.
 
 ### Resueltas (graduadas desde specs de feature)
 
-- ✅ Tablero horizontal de cinco filas/plazas y fusil hacia +X, enemigos hacia −X, cinco cargas gratuitas/reserva cero y reparto continuo de oleadas sin alterar los 100 enemigos: 005-I1. Se conserva soldado estático y se delimitan los movimientos/controles posteriores en §6.
+- ✅ Tablero horizontal de cinco filas/plazas y fusil hacia +X, enemigos hacia −X, cinco cargas gratuitas/reserva cero y reparto continuo de oleadas sin alterar los 100 enemigos: 005-I1, integrado con 004-I2 mediante PR #24 (`658dd7e`).
+- ✅ Salida/espera/contacto real de machete en la misma fila, velocidad propia 40, hogar reservado y liberación al morir fuera: 005-I2/T023–T028, aprobado funcionalmente para integración en su rama. §6.3 distingue la recarga heredada del futuro regreso/UI de I3; no implica que I2 ya esté en `main` ni aprobado para publicación.
 - ✅ Presentación observadora del enemigo, contacto basado en movimiento real, snapshot anterior al reciclado y reset por activación: 004-I2, extendiendo el patrón común sin dar autoridad jugable a la animación.
 - ✅ Dirección visual de la primera iteración del terreno y las trincheras de Monte Calvo: entorno pictórico ocre/oliva, montañas azul grisáceo y decoración estática de tierra, madera y sacos, conservando actores provisionales y reglas actuales en aquella entrega. Aprobada en T016 de `002-monte-calvo-terreno-trincheras`; §8 y sus enlaces delimitan el alcance y la evidencia. I1 de 004 avanza después el soldado; enemigo, caja e interfaz continúan pendientes.
 - ✅ Soldado pictórico y presentación de sus estados reales, sin alterar el combate ni esperar a la caída para retirarlo: I1 de `004-personajes-municion-monte-calvo`, aprobado en T011. §8 describe su alcance parcial; el patrón compartido de presentación y efecto independiente se gradúa a `ARCHITECTURE.md` §4.7. No resuelve el acabado del enemigo, la caja o la interfaz.
@@ -291,3 +308,4 @@ simulador y Compatibility/software conservan sólo su propio alcance.
 | 2026-10-19 | §6.3/§10: aclaradas cinco plazas reservadas, cinco soldados cargados/reserva cero, salida en misma fila y recarga desde trinchera con regreso antes de disparar; oleadas con cantidades/tiempos vigentes y reparto prefijado. Pendiente de planificación e implementación de 005, sin cerrar I2 |
 | 2026-10-19 | §6.3/§10: confirmadas velocidades propias 40/40, recarga solo con carga cero y una orden por retorno, sin ataques durante el regreso vulnerable, y secuencia de filas 1→5 continua entre oleadas; se conservan 1 atacante inicial + 99 autorados. Pendiente QA de especificación completa de 005, sin implementación o cierre I2 |
 | 2026-10-19 | 005/T015 y 004/T021: consolidación de integración funcional del tablero de cinco filas y presentación del enemigo; se distinguen machete móvil, recarga UI, arte lateral, caja y publicación aún pendientes |
+| 2026-10-20 | 005/T029 tras QA T028: salida, espera y contacto móvil con machete en su carril, velocidad propia y hogar reservado; recarga heredada limitada a la posición del hogar. Se actualiza el estado integrado de PR #24 y se conservan I3, arte lateral y publicación pendientes. |

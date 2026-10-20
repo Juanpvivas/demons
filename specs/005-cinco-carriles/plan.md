@@ -2,21 +2,21 @@
 
 **Feature ID**: `005-cinco-carriles` | **Planned Branch**: `codex/005-cinco-carriles-preparacion` | **Date**: 2026-10-19 | **Spec**: [spec.md](spec.md)
 
-**Estado**: preparación aprobada; I1 implementado con GREEN y revisión funcional parcial. Integración conjunta con 004-I2 pendiente de QA según constitución 4.0.0; publicación pendiente. I2–I5 no se inician con esta transición.
+**Estado**: preparación aprobada; I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 aprobado funcionalmente para integración en `codex/005-i2-machete`, pendiente de consolidación y PR en borrador; aún no integrado. I3–I5 y publicación T071 pendientes.
 
 ## Summary
 
-Cinco filas con soldados cargados en trincheras izquierdas, reserva inicial
+Resultado completo previsto de la feature: cinco filas con soldados cargados en trincheras izquierdas, reserva inicial
 cero y enemigos hacia −X. El soldado vacío sale con machete a 40 unidades/s
 solo en su fila; una recarga válida cobra una vez y lo devuelve físicamente
 a 40, vulnerable y sin atacar hasta llegar. Su plaza se reserva mientras viva.
 El control mínimo permite seleccionar la trinchera y pulsar «Recargar»,
 mostrando carga/moral individuales.
 
-Se reutilizan economía, stats, oleadas, pooling y presentación de I2. Su base
-`f90e888` permanece en `codex/004-i2-enemigo`: la transición conserva IDs,
-aprobaciones e historia de 004 y registra sus pendientes de publicación, sin
-aprobarlos por esta enmienda. La imagen aprobada orienta piezas
+Se reutilizan economía, stats, oleadas, pooling y presentación de 004-I2,
+integrados con 005-I1 en `main` mediante PR #24. Su punto de partida `f90e888`
+y las aprobaciones históricas se conservan aunque las ramas superadas se
+eliminaron; publicación de 004 sigue pendiente. La imagen aprobada orienta piezas
 de arte separadas; no sustituye al juego con actores/controles incrustados.
 
 ## Technical Context
@@ -65,7 +65,8 @@ declara completa ni el Issue se cierra con requisitos restantes.
    plazas/entradas explícitas; [modelo](data-model.md). `BoardManager` conserva
    ocupación por origen; el nivel valida whitelist antes de gastar. Moverse
    no altera `home_cell`, por lo que morir fuera libera la plaza correcta.
-2. **Movimiento/contacto**: `Soldado` pasa de `StaticBody2D` a
+2. **Movimiento/contacto (I2 aprobado funcionalmente)**: `Soldado` pasa de
+   `StaticBody2D` a
    `CharacterBody2D`, movimiento horizontal en `_physics_process()` y colisión
    real. Modo de arma y desplazamiento separados. Consultas físicas puntuales
    con filtros semánticos sustituyen la dependencia de overlaps almacenados
@@ -74,13 +75,15 @@ declara completa ni el Issue se cierra con requisitos restantes.
    de fila/frente/diagonal contigua y alcance longitudinal autorado. Mantener
    blanco elegible activo; al perderlo elegir el más avanzado (`−X`). Machete
    puede buscar un frontal lejano para acercarse, pero solo daña dentro del
-   rango vigente. Validar identidad y activación antes de usar un blanco.
+   rango vigente. Validar la instancia antes de operaciones tipadas; después
+   elegibilidad, identidad y activación antes de usar un blanco.
 4. **Spawns**: `WaveSpawner` mantiene cursor 1→5 continuo y origen por
    activación `INITIAL`/`WAVE`. Inicial t0/fila 3 usa el pool sin consumir cursor
    ni notificar baja de oleada; conserva drop 3/moral/visual/derrota. Los 99
    restantes conservan Resources/orden/Timers, incluido retraso del primer
    spawn. Registro visual y conexiones una vez por instancia física.
-5. **Recarga/UI**: nivel resuelve plaza→dueño actual; actor valida/acepta
+5. **Recarga/UI (I3 pendiente)**: nivel resolverá plaza→dueño actual; actor
+   validará/aceptará
    atómicamente antes de notificar gasto. Solo vivo/vacío/fondos/PLAYING,
    bloqueo desde aceptación y todo retorno. UI observa señales y revalida
    identidad; deshabilitar botón no es la única protección. [Contrato](contracts/horizontal-combat.md).
@@ -91,28 +94,32 @@ declara completa ni el Issue se cierra con requisitos restantes.
 
 ### Evolución de convenciones existentes
 
-[ARCHITECTURE §4.2/§5](../../docs/ARCHITECTURE.md) describe soldado estático y
-consulta desde ese lado.005 cambia esa premisa: ambos cuerpos serán móviles;
-contacto, separación y daño entrante durante retorno requieren instancias reales.
-Se conserva enum del arma y se añade estado de movimiento pequeño, sin framework
-de FSM, navegación libre o autoload nuevo. Tras QA se documenta esta evolución,
-sin reescribir los hallazgos históricos de física.
+[ARCHITECTURE §4.2/§5](../../docs/ARCHITECTURE.md) conserva el hallazgo histórico
+del soldado estático y documenta la evolución aprobada de I2: ambos cuerpos
+móviles, consulta del tick físico y colisión real, con enum de arma y otro de
+movimiento pequeño, sin framework de FSM, navegación libre o autoload nuevo.
+La plaza y posición de hogar permanecen estables al moverse. La recarga heredada
+sólo opera en la posición de hogar (≤0,01), con actor vivo, PLAYING y fondos;
+no exige enum `HOME` ni carga cero. Fuera rechaza sin cobro hasta I3.
+`advance_speed=40` se usa en I2; `return_speed=40` queda preparado sin retorno
+activo. Contacto y daño durante ese futuro regreso se validarán en I3, sin
+atribuirlos a la aprobación actual.
 
 ## Incrementos previstos
 
-La preparación partió de I2 `f90e888`; sus aprobaciones históricas se conservan.
-Transición autorizada: `codex/005-i1-tablero` contiene 004-I2 y 005-I1 y se usa
-para un único PR contra `main` (base de revisión `2dc532d`). QA revisa el conjunto,
-no solo el diff de 005. Se justifica el tamaño excepcional para consolidar una
-base funcional ya acumulada, sin fragmentar TDD ni reescribir historial. El PR
-usa `Refs #18` y `Refs #22`, sigue en borrador y no cierra las features. No se
-fusiona automáticamente ni distribuye builds. Tras integrarlo, las ramas
-superadas pueden eliminarse conservando el código en `main`. Los incrementos
-posteriores vuelven a ramas breves por resultado; no se inicia I2 en este PR.
+La preparación partió de 004-I2 `f90e888`; sus aprobaciones históricas se
+conservan. La transición conjunta 004-I2/005-I1 se integró desde
+`codex/005-i1-tablero` contra `main` (base de revisión `2dc532d`) mediante
+[PR #24](https://github.com/Juanpvivas/demons/pull/24), squash `658dd7e`, con
+autorización humana. QA revisó el conjunto y su tamaño excepcional, sin
+fragmentar TDD ni reescribir historial. El PR usó `Refs #18` y `Refs #22` y no
+cerró las features ni distribuyó builds. Las dos ramas superadas se eliminaron
+tras verificar su integración. I2 retoma una rama breve desde ese `main`;
+los siguientes incrementos conservan ese flujo tras integrar el PR anterior.
 
 | Incremento | Resultado y rama propuesta | TDD y gate de destinos propio, antes de QA/docs |
 |---|---|---|
-| I1 | Tablero horizontal, cinco plazas/soldados, fusil orientado, 100 enemigos/cursor/pool y derrota izquierda. `codex/005-i1-tablero` | RED geometría/economía/spawn/targets/terminal → dev → GREEN/regresión. Web/APK/.app: carga y partida a terminal, fusil/derrota visibles, entrada real en plazas/pickups y resize. Comparar carga/frame times base-candidato; población/consultas/pool introducen riesgo de FPS: QA evalúa las muestras disponibles para integración; la medición física queda en el gate de publicación. Machete móvil sigue pendiente de I2. |
+| I1 | Tablero horizontal, cinco plazas/soldados, fusil orientado, 100 enemigos/cursor/pool y derrota izquierda. `codex/005-i1-tablero` (integrado por PR #24; rama eliminada) | RED geometría/economía/spawn/targets/terminal → dev → GREEN/regresión. Web/APK/.app: carga y partida a terminal, fusil/derrota visibles, entrada real en plazas/pickups y resize. Comparar carga/frame times base-candidato; población/consultas/pool introducen riesgo de FPS: QA evalúa las muestras disponibles para integración; la medición física queda en el gate de publicación. Machete móvil fuera del alcance de I1. |
 | I2 | Salida/espera/contacto real de machete, 40/40 propios y liberación de origen. `codex/005-i2-machete` | RED movimiento/daño mutuo/objetivos/reciclado → dev → GREEN/regresión/playtest. Web/APK/.app: ciclo machete por filas, contacto visible/real, gestos de recolección/reemplazo, resize y partida a terminal. Comparar rendimiento base-candidato para integración; medición física por cuerpos/consultas nuevos antes de publicación. |
 | I3 | Recarga atómica/regreso vulnerable y selección/panel/botón integrados. `codex/005-i3-recarga` | RED elegibilidad/cobro/retorno/selección obsoleta/entrada → dev → GREEN/regresión. Web/APK/.app: ratón/toque real, UI/retorno/daño visibles, saldo antes/después, resize y partida. Comparar rendimiento base-candidato para integración; medición física del nuevo retorno/contacto/UI antes de publicación. |
 | I4 | Arte lateral/trincheras, presentación de todos los estados y encuadre/HUD adaptables. `codex/005-i4-presentacion` | RED de conducta nueva de presentador/resize → dev → GREEN/regresión pertinente; arte sin RED artificial. Web/APK/.app: QA visual filas1/3/5, input real tras resize, carga y partida. Comparar carga/frame times base-candidato para integración; medición física de recursos/efectos antes de publicación. |
@@ -142,7 +149,7 @@ specs/005-cinco-carriles/
 ├── spec.md / plan.md / research.md / data-model.md / quickstart.md
 ├── contracts/horizontal-combat.md
 ├── references/                          # concepto, no arte final
-└── tasks.md                             # siguiente etapa; no creado por plan
+└── tasks.md                             # seguimiento por incremento y gate
 resources/schemas/lane_board_config.gd    # nuevo Resource de geometría
 resources/levels/monte_calvo_board.tres   # nuevo dato de nivel
 resources/schemas/unit_stats.gd          # velocidades propias
@@ -168,10 +175,10 @@ tests/unit/{systems,levels,units,enemies,ui}/
 | SC-007 | Mediciones separadas; hardware pendiente sin excepción implícita |
 
 [Research](research.md), modelo, contrato y [quickstart](quickstart.md) resuelven
-el diseño sin volcar registros. C4–C6 resueltos. La preparación y tareas tuvieron
-su revisión; el siguiente gate de esta transición es QA de integración del
-estado conjunto. Esta enmienda documental no lo aprueba ni ejecuta nuevas
-mecánicas.
+el diseño sin volcar registros. C4–C6 resueltos. I1 ya está integrado; I2 cuenta
+con aprobación funcional T028 para integración en su rama. Su consolidación
+documental T029 y revisión final T030 preceden al PR en borrador T031.
+I3–I5 conservan sus gates propios y T071 permanece abierto para publicación.
 
 ## Complexity Tracking
 

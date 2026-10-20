@@ -3,7 +3,7 @@
 **Feature ID**: `005-cinco-carriles`
 **Planned Branch**: `codex/005-cinco-carriles-preparacion`
 **Created**: 2026-10-19
-**Status**: Preparación aprobada; I1 con GREEN y revisión funcional parcial. Pendiente QA de integración conjunta 004-I2/005-I1. Las mecánicas posteriores y la publicación siguen pendientes.
+**Status**: Preparación aprobada. I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 aprobado funcionalmente para integración en `codex/005-i2-machete`, pendiente de consolidación y PR en borrador; todavía fuera de `main`. I3–I5 y publicación T071 pendientes.
 
 **Input**: Cinco filas horizontales, con cinco trincheras a la izquierda,
 soldados colombianos disparando hacia la derecha desde ellas y enemigos de
@@ -12,10 +12,20 @@ con machete y combate de frente. La persona aprobó la imagen como referencia
 y pidió conservar I2, abrir rama y preparar la especificación antes de desarrollar.
 
 005 pasa a ser la prioridad por petición expresa. Su preparación partió de
-I2/004 conservado en `f90e888`, sin aprobar su cierre. La transición autorizada
-reúne 004-I2 y 005-I1 en un PR de integración, conservando pendientes y sus IDs.
+I2/004 conservado en `f90e888`, sin aprobar entonces su cierre. La transición
+autorizada integró 004-I2 y 005-I1 mediante el
+[PR #24](https://github.com/Juanpvivas/demons/pull/24), conservando pendientes
+y sus IDs. Las ramas superadas se eliminaron tras comprobar su integración;
+I2 de 005 parte de `main` actualizado en una rama propia.
 Este spec abarca también comportamientos posteriores aún no implementados;
 las tareas y QA distinguen el alcance de cada entrega.
+
+El alcance funcional aprobado de I2 es salida/espera/contacto de machete y
+liberación de origen al morir. Durante este incremento, la recarga heredada
+sólo opera para un soldado vivo, PLAYING y en su posición de hogar (≤0,01
+unidades), con fondos; fuera rechaza sin gasto. No incorpora todavía los
+requisitos de carga cero, transacción, selección, botón o regreso de I3.
+`return_speed=40` es un dato preparado sin ruta activa.
 
 ## Clarifications
 
@@ -302,9 +312,10 @@ cada gesto válido o rechazado, incluida la salida y derrota del dueño de una p
   «Recargar», con munición/moral del soldado individual. Actualmente solo
   existe la operación de recarga, sin ese control integrado en el nivel;
   la selección no modifica recursos y la imagen no autoriza un HUD completo.
-- La dependencia I2 está conservada en `codex/004-i2-enemigo` remoto desde
-  `f90e888`; la transición conserva IDs, aprobaciones e historia de 004 y
-  registra sus pendientes de publicación, sin darlos por aprobados aquí.
+- La dependencia 004-I2, cuyo punto de partida fue `f90e888`, está integrada
+  con 005-I1 en `main` desde PR #24 (`658dd7e`); su antigua rama ya se eliminó.
+  Se conservan IDs, aprobaciones e historia de 004 y sus pendientes de
+  publicación, sin darlos por aprobados aquí.
 - Rigen constitución 4.0.0 y [flujo del proyecto](../../docs/DEVELOPMENT_WORKFLOW.md):
   completar plan/tareas y revisión antes de ejecutar tester RED →
   desarrollo → tester GREEN → QA → documentación. No fabricar RED histórico.
