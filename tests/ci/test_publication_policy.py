@@ -29,6 +29,13 @@ TARGETS = (
 FAKE_GH_HISTORY = r'''import json, os, pathlib, re, sys
 args = sys.argv[1:]
 history = json.loads(pathlib.Path(os.environ['FIXTURE_HISTORY']).read_text())
+fault = os.environ.get('FIXTURE_FAULT', '')
+if (fault == 'gh_list' and args[:2] == ['run', 'list']) or (fault == 'gh_details' and args[:2] == ['run', 'view']):
+    print('Fixture GitHub CLI request failed', file=sys.stderr)
+    sys.exit(9)
+if (fault == 'invalid_json_runs' and args[:2] == ['run', 'list']) or (fault == 'invalid_json_jobs' and args[:2] == ['run', 'view']):
+    print('Not a valid JSON response')
+    sys.exit(0)
 def option(flag, default=None):
     return args[args.index(flag) + 1] if flag in args else default
 def unsupported():
@@ -287,7 +294,7 @@ class PublicationPolicyTests(unittest.TestCase):
                 self.assertTrue(all(guard_index < index for index in sensitive))
 
     def invoke_version_guard(self, workflow, code, name, *, prior=True, changed_key=None,
-                             skipped_run=False):
+                             skipped_run=False, fault=None):
         with tempfile.TemporaryDirectory(prefix="demons-publication-gate-") as directory:
             root = Path(directory)
             env = os.environ.copy()
@@ -350,6 +357,10 @@ class PublicationPolicyTests(unittest.TestCase):
             history = [history_run(201, previous, True)] if prior else []
             if skipped_run:
                 history.insert(0, history_run(202, skipped_sha, False))
+            if fault == "invalid_sha":
+                history[0]["headSha"] = "f" * 40
+            elif fault == "history_cap":
+                history = [history_run(202 + index, skipped_sha, False) for index in range(100)]
             history_path = root / "history.json"
             history_path.write_text(json.dumps(history))
             fake_bin = root / "bin"
@@ -358,12 +369,13 @@ class PublicationPolicyTests(unittest.TestCase):
             fake_gh.write_text(f"#!{sys.executable}\n" + FAKE_GH_HISTORY)
             fake_gh.chmod(0o755)
             env.update({"PATH": str(fake_bin) + os.pathsep + env["PATH"],
-                        "FIXTURE_HISTORY": str(history_path)})
+                        "FIXTURE_HISTORY": str(history_path), "FIXTURE_FAULT": fault or ""})
             _, guard = workflow.version_guard()
             result = subprocess.run(["bash", "--noprofile", "--norc", "-eo", "pipefail", "-c", scalar(guard["run"])],
                                     cwd=root, env=env, capture_output=True, text=True, timeout=10)
             self.assertNotIn("FAKE_GH_UNSUPPORTED", result.stderr, result.stderr)
-            self.assertNotIn("Traceback (most recent call last)", result.stderr, result.stderr)
+            if fault not in ("invalid_json_runs", "invalid_json_jobs"):
+                self.assertNotIn("Traceback (most recent call last)", result.stderr, result.stderr)
             result.history_description = json.dumps(history, ensure_ascii=False)
             return result
 
@@ -405,6 +417,40 @@ class PublicationPolicyTests(unittest.TestCase):
             with self.subTest(platform=platform):
                 result = self.invoke_version_guard(workflow, code, name, changed_key=code, skipped_run=True)
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr + result.history_description)
+
+    # Supplemental GREEN coverage of the already implemented fail-closed paths;
+    # these cases are not evidence of RED before the implementation.
+    def test_github_run_list_error_blocks_distribution(self):
+        for platform, workflow, code, name in self.workflows():
+            with self.subTest(platform=platform):
+                result = self.invoke_version_guard(workflow, code, name, changed_key=code, fault="gh_list")
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_github_job_details_error_blocks_distribution(self):
+        for platform, workflow, code, name in self.workflows():
+            with self.subTest(platform=platform):
+                result = self.invoke_version_guard(workflow, code, name, changed_key=code, fault="gh_details")
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_invalid_history_or_job_json_blocks_distribution(self):
+        for platform, workflow, code, name in self.workflows():
+            for fault in ("invalid_json_runs", "invalid_json_jobs"):
+                with self.subTest(platform=platform, fault=fault):
+                    result = self.invoke_version_guard(workflow, code, name, changed_key=code, fault=fault)
+                    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_unknown_history_sha_or_git_diff_error_blocks_distribution(self):
+        for platform, workflow, code, name in self.workflows():
+            with self.subTest(platform=platform):
+                result = self.invoke_version_guard(workflow, code, name, changed_key=code, fault="invalid_sha")
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_full_history_window_without_proven_publication_blocks_distribution(self):
+        for platform, workflow, code, name in self.workflows():
+            with self.subTest(platform=platform):
+                result = self.invoke_version_guard(workflow, code, name, prior=False, skipped_run=True, fault="history_cap")
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn("Historial de publicación incompleto", result.stdout)
 
 
 if __name__ == "__main__":
