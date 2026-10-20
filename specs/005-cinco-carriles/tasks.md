@@ -2,7 +2,7 @@
 
 **Feature**: `005-cinco-carriles` · **Issue**: [#22](https://github.com/Juanpvivas/demons/issues/22) · **Rama de preparación**: `codex/005-cinco-carriles-preparacion`.
 **Input**: [spec](spec.md), [plan aprobado documentalmente](plan.md), [modelo](data-model.md), [contrato](contracts/horizontal-combat.md), [quickstart](quickstart.md) y [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
-**Estado**: I1 y 004-I2 integrados en `main` mediante Squash and merge del PR #24 (`658dd7e`). I2 integrado en `main` mediante Squash and merge del PR [#25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 aprobado para integración en `codex/005-i3-recarga`, creada desde ese main; documentación y revisión final T043/T044 aprobadas, PR en borrador T045 en preparación. I4–I5 y publicación T071 permanecen pendientes.
+**Estado**: I1 y 004-I2 integrados en `main` mediante Squash and merge del PR #24 (`658dd7e`). I2 integrado en `main` mediante Squash and merge del PR [#25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 aprobado para integración en `codex/005-i3-recarga`, creada desde ese main; T032–T045 aprobadas y entrega en el PR [#26](https://github.com/Juanpvivas/demons/pull/26) en borrador hacia `main`, todavía sin integrar. I4–I5 y publicación T071 permanecen pendientes.
 **PR conjunto integrado**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; integración realizada el 2026-10-20, publicación pendiente.
 
 Transición completada: el PR #24 reunió 004-I2 y 005-I1 desde
@@ -112,7 +112,7 @@ sigue limitado a HOME y esa adaptación requiere RED antes de implementarse.
 - [X] T042 [US3] qa-validator: APROBADO PARA INTEGRACIÓN de I3 con verificaciones funcionales T041 y contrato satisfechos; evaluar diferencias/riesgos y declarar certificaciones pendientes en T071, sin inferir otro renderer; fallos reales de fuente/build/función bloquean; depende de T040, T041 completas y T028 aprobada.
 - [X] T043 [US3] docs-writer: documentar interacción/recarga aprobadas y límites en `docs/SPEC.md`/`docs/ARCHITECTURE.md`, sin resultados simulados o registros de validación; depende de T042 aprobada.
 - [X] T044 [US3] qa-validator: revisar documentación y diff final I3 de `docs/SPEC.md`/`docs/ARCHITECTURE.md` con fuentes T037/T038 y estado probado vigente; depende de T043.
-- [ ] T045 [US3] project-orchestrator: registrar aprobaciones en `specs/005-cinco-carriles/tasks.md` y preparar PR I3 en borrador `Refs #22`, con base/tamaño/TDD/QA y sin entrega si falta gate obligatorio; depende de T044 aprobada.
+- [X] T045 [US3] project-orchestrator: registrar aprobaciones en `specs/005-cinco-carriles/tasks.md` y preparar PR I3 en borrador `Refs #22`, con base/tamaño/TDD/QA y sin entrega si falta gate obligatorio; depende de T044 aprobada.
 
 ## Fase 6 — Composición/presentación transversal · I4
 
