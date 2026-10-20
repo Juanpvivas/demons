@@ -30,6 +30,7 @@ res://
 │   │                           #   EnemyStats, WaveData) — el "molde", no los datos
 │   ├── units/                  # soldado_base_stats.tres, futuras unidades
 │   ├── enemies/                # stats de cada tipo de enemigo (.tres)
+│   ├── levels/                 # LaneBoardConfig concreto por nivel (.tres)
 │   └── waves/                  # definición de oleadas por nivel (.tres)
 ├── autoloads/                   # Singletons globales (ver sección 4.1)
 ├── core/                          # Lógica compartida NO-autoload (ver sección 4.5)
@@ -269,6 +270,14 @@ de `@export` simple, para que el Inspector muestre un slider con límites en
 vez de un campo numérico libre. `Resource`s con muchos campos se organizan
 con `@export_group`/`@export_category` en vez de una lista plana.
 
+`LaneBoardConfig` aplica la misma separación a geometría de nivel: rectángulo
+de diseño, tamaño de celda, plazas, entradas y zona defendida son datos
+compartidos de sólo lectura en `resources/levels/monte_calvo_board.tres`.
+Ocupación, carril, origen `INITIAL`/`WAVE`, generación y contexto de baja son
+estado runtime del nivel/actor. No se escriben en `UnitStats`/`EnemyStats` ni
+se derivan de la decoración. `BoardManager` sigue siendo un mapa genérico;
+el nivel aplica whitelist y reserva de gasto antes de crear un dueño.
+
 ### 4.4 Modo fusil / modo machete como estado simple
 
 Para el alcance actual (MVP, una sola unidad con dos modos), un enum +
@@ -401,10 +410,24 @@ sigue a una instancia reutilizada. Cada reset cancela tweens y restaura la
 presentación; una generación/activación invalida callbacks obsoletos para que
 no restauren poses ni liberen otro uso de la misma instancia.
 
-I1 integra únicamente al soldado inicial y a los nuevos despliegues. La señal
-de enemigo y `EnemigoVisual` son interfaces mínimas reservadas; no acreditan
-arte, emisión de derrota o reset del enemigo. Su integración pertenece a I2,
-y la caja a I3. El [contrato de 004](../specs/004-personajes-municion-monte-calvo/contracts/visual-presentation.md)
+004-I2 extiende el patrón a `EnemigoVisual`: el actor comunica desplazamiento
+real después de `move_and_slide()`, y el presentador elige avance o contacto;
+la velocidad deseada por sí sola no implica movimiento. Impacto sólo responde
+a daño confirmado. Antes de callbacks de derrota/reciclado síncronos se capturan
+snapshot y contexto de recompensa por valor. Cada nueva activación restaura
+valores autorados, limpia transitorios e invalida callbacks antiguos mediante
+generación, sin que la caída siga al enemigo reutilizado.
+
+`WaveSpawner` registra una vez cada instancia física con el servicio visual,
+no una vez por acquire. El mismo cuerpo puede servir a `INITIAL` y `WAVE`:
+`prepare_for_spawn()` reasigna stats, salud, posición, fila, origen, generación
+y presentación. Un enemigo inactivo no es blanco y su cuerpo se deshabilita;
+los objetivos del soldado validan identidad/generación además de geometría.
+La recompensa conserva el contexto anterior aunque se reutilice el nodo dentro
+de una señal síncrona. `ObjectPool` conserva su API genérica.
+
+La caja de 004-I3 y las poses laterales de 005-I4 continúan pendientes.
+El [contrato de 004](../specs/004-personajes-municion-monte-calvo/contracts/visual-presentation.md)
 delimita los tiempos y la frontera jugable.
 
 ## 5. Composición de escenas (ejemplo concreto)
@@ -417,27 +440,38 @@ delimita los tiempos y la frontera jugable.
   "RangoMelee" + `CollisionShape2D`. Script `soldado.gd`; el hijo visual usa
   `soldado_visual.gd` y los frames de `assets/sprites/units/monte_calvo/`, con
   [procedencia e importación](../assets/sprites/units/monte_calvo/SOURCES.md).
-- **`EnemigoBase.tscn`**: `CharacterBody2D` raíz (los enemigos sí avanzan
-  por el carril con `move_and_slide()`), con `soldado.gd` reemplazado
-  por `enemigo.gd`, estructura de hijos análoga.
-- **`Nivel_MonteCalvo.tscn`**: raíz `Node2D`, `Tablero` (`TileMap` con
-  celdas de 96×96), soldado y enemigo iniciales, `PosicionDefendida` e
-  instancia hija de `MonteCalvoVisual.tscn`. El script crea `WaveSpawner`
-  en `_ready()` y lo configura con la secuencia de Resources de oleadas;
-  también prepara `CombatVisualEffects` y registra al soldado inicial y los
-  nuevos despliegues para su derrota visual independiente (§4.7).
-  Una `Camera2D` hermana de `MonteCalvoVisual`, con
-  `monte_calvo_camera.gd`, centra localmente el eje mundo x=576 al iniciar y
-  redimensionar. Sin zoom ni suavizado, se sitúa en `(576, alto_lógico/2)`
-  para mantener el origen vertical efectivo del canvas en y=0. Esta es una
-  decisión de composición de Monte Calvo, no una regla para otras cámaras;
-  en iPad 1152×864 conserva la proyección identidad. El mundo jugable no se
-  desplaza y el input mantiene su conversión inversa del canvas.
-  `wave_spawn_position` fija el punto de aparición. El nivel actual no
-  instancia `HUD.tscn`: tampoco integra controles de recarga ni pantallas
-  de victoria/derrota, aunque los métodos y estados correspondientes tienen
-  cobertura automatizada. Véanse el [contrato](../specs/002-monte-calvo-terreno-trincheras/contracts/visual-boundary.md)
-  y el [smoke](../specs/002-monte-calvo-terreno-trincheras/evidence/smoke.md).
+- **`EnemigoBase.tscn`**: `CharacterBody2D` raíz, `CollisionShape2D` e hijo
+  `AnimatedSprite2D` con `enemigo_visual.gd` y atlas/frames de
+  `assets/sprites/enemies/monte_calvo/`. Avanza con `move_and_slide()` hacia −X
+  manteniendo la fila; `get_advance_progress()` usa −X para priorizar cercanía
+  a defensa. La detección/daño de contacto siguen del lado estático del soldado.
+- **`Nivel_MonteCalvo.tscn`**: raíz `Node2D`, `Tablero` (`TileMap` 96×96),
+  `PosicionDefendida`, `MonteCalvoVisual`, `HorizontalBoardVisual` y `Camera2D`.
+  Al iniciar una partida el nivel reinicia GameStateManager y la reserva global,
+  crea gratuitamente cinco soldados cargados y prepara el servicio visual y
+  spawner; los actores iniciales ya no están colocados a mano en el `.tscn`.
+  La whitelist contiene `(1,1)`…`(1,5)`, con centros `(144,144)`…`(144,528)`;
+  muerte libera la celda de origen. Se valida plaza libre antes del gasto y
+  se protege la creación frente a reentrada síncrona de callbacks económicos.
+  La defensa real es `Rect2(48,96,48,480)`; un cruce notifica una única derrota.
+- **Spawner de Monte Calvo:** un inicial inmediato en fila 3 y 99 enemigos de
+  diez Resources de oleadas usan el mismo pool. El inicial no consume cursor
+  ni contador de bajas WAVE; los de oleadas usan 1→5 continuamente entre oleadas
+  con sus intervalos originales. Sólo sus bajas notifican `WaveManager` para
+  victoria. El contexto de origen se lee antes del release síncrono.
+- **Cámara y entrada:** `monte_calvo_camera.gd` centra el rectángulo de diseño
+  1152×648 en `(576,324)` en ambos ejes al iniciar y redimensionar, manteniendo
+  `canvas_items/expand`, sin zoom ni mover actores/grid. El nivel convierte
+  pantalla→mundo con el canvas inverso antes de resolver celda o pickup.
+  La precedencia de pickup (§7) se conserva sobre plazas libres/ocupadas, bajo
+  actores y con cajas solapadas. Fuera de PLAYING no se despliega ni recoge.
+- **Combate de I1/005:** `Soldado` conserva raíz `StaticBody2D`, inmóvil incluso
+  en modo machete. Su broadphase de fusil se orienta hacia +X y el filtro exige
+  frente, misma fila o celda diagonal directamente contigua, solape real de
+  formas y generación activa. El tramo longitudinal autorado es [24,264]; no
+  es una distancia al centro del enemigo. Conserva blanco elegible y, al perderlo,
+  elige el más avanzado hacia −X. Machete móvil, selección/recarga y arte lateral
+  pertenecen a 005-I2/I3/I4; el nivel aún no instancia HUD o pantallas terminales.
 
 ### 5.1 Entorno decorativo separado del nivel
 
@@ -467,10 +501,13 @@ posiciones; esta extensión no acredita tileabilidad de las imágenes.
 
 El entorno carece de scripts, señales, controles, física, navegación o cámara
 propios. Sus trincheras no otorgan cobertura ni restringen colocación. El arte
-se adapta a las posiciones existentes, incluido el soldado inicial y el snap
-de los nuevos despliegues; `BoardManager` conserva ocupación/liberación sin
-límites finitos del tablero. No se migró `TileMap`, no se cambió el stretch
-`canvas_items`/`expand` y no se añadieron efectos animados, luces o parallax.
+se adapta a posiciones definidas por el nivel; `BoardManager` conserva
+ocupación/liberación y la whitelist vive en la composición del nivel. 005-I1
+oculta sólo la instancia de las trincheras inferiores antiguas y añade
+`LaneBoardVisual` como guía provisional de cinco bandas/plazas numeradas,
+sin input, física, economía ni autoridad sobre esas plazas. La subescena
+ambiental se conserva; las trincheras y poses laterales definitivas son 005-I4.
+No se migró `TileMap` ni cambió `canvas_items`/`expand`.
 La [comparación de US3](../specs/002-monte-calvo-terreno-trincheras/evidence/us3.md)
 y la [matriz de pantallas/entrada](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
 registran los encuadres comprobados y el recorte inferior existente.
@@ -547,8 +584,12 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
 
 ## 7. Consideraciones multiplataforma
 
-- **Destinos del producto:** Web, con navegador en computador y móvil, y
-  aplicaciones Android/iOS. itch.io es el primer portal Web previsto.
+- **Destinos del producto:** Web solo en navegador de computador y aplicaciones
+  Android/iOS instaladas (APK/IPA). itch.io es el primer portal Web previsto.
+  Por decisión de la persona del 2026-10-19 y constitución 3.0.0, no se
+  continúan pruebas de navegador móvil, tampoco en emulador/simulador. Android
+  Emulator prueba el APK; iOS Simulator usa la app nativa `.app` del simulador,
+  que no equivale a instalar un IPA en hardware.
   Windows/macOS/Linux nativos se conservan como entornos de editor y prueba
   local, sin instaladores del producto. Las capturas y mediciones históricas
   de PC siguen identificadas como tales; no equivalen a resultados Web.
@@ -575,12 +616,13 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   con validaciones de entrada propias de cada plataforma.
 - UI (`HUD.tscn`) usa contenedores con anclas relativas, no posiciones fijas
   en píxeles, para adaptarse a distintas resoluciones y aspect ratios entre
-  aplicaciones móviles y navegadores de computador/móvil.
+  aplicaciones móviles y navegadores de computador.
 - **Ruta gráfica implementada y validada en 003:** `Mobile` se conserva como
   método nativo y `rendering/renderer/rendering_method.web="gl_compatibility"`
   selecciona Compatibility/WebGL 2.0 para Web. El preset `Web` exporta con un
   hilo, sin GDExtension ni PWA y canvas adaptativo. La evidencia proviene del
-  navegador y del Xiaomi horizontal; una captura del editor no la sustituye.
+  navegador de computador y del Xiaomi horizontal bajo la matriz histórica
+  de 003; una captura del editor no la sustituye.
   [Guía y alcance validado](WEB_EXPORT.md).
 - **Paquete Web:** `tools/web/export.sh`, con `GODOT_WEB_BIN` estándar 4.7.1,
   produce `build/web/index.html`, sus compañeros, ZIP y manifest exterior.
@@ -593,18 +635,26 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   terminó con SUCCESS antes de integrar el cierre de 002; el nuevo estado debe
   comprobarse por separado. [Paquetes y alcance](WEB_EXPORT.md#artefacto-de-ci).
   El CI existente conserva GUT/importación y los deploys nativos no cambiaron.
-- Las verificaciones Web identifican navegador, sistema/dispositivo, tamaño,
+- Las verificaciones Web identifican navegador, sistema/computador, tamaño,
   entrada y renderer. Deben comprobar carga, partida, redimensionamiento y
   entrada dentro del navegador, incluida su presentación embebida cuando se
   prepare itch.io. Se conserva la exigencia de 60 FPS en el Android de
-  referencia; los resultados nativos y Web se registran por separado.
+  referencia para la app nativa; los resultados nativos y Web en computador
+  se registran por separado. La autorización de emulador/simulador acredita
+  solo ese entorno; Compatibility temporal no certifica Mobile.
 - Presets de exportación por plataforma se versionan en
   `export_presets.cfg`, sin credenciales ni keystores/certificados dentro
-  del repositorio. Cada push a `main` exporta y sube automáticamente un
-  build de prueba a **Android/Firebase App Distribution**
-  (`.github/workflows/deploy-android-testers.yml`) y a **iOS/TestFlight**
-  (`.github/workflows/deploy-ios-testflight.yml`) — ver esos archivos para
-  el detalle y los secrets de CI requeridos.
+  del repositorio. Según constitución 4.0.0, merge/push a `main` integra
+  desarrollo y no dispara distribución externa. Los workflows
+  **Android/Firebase App Distribution** (`.github/workflows/deploy-android-testers.yml`)
+  e **iOS/TestFlight** (`.github/workflows/deploy-ios-testflight.yml`) se ejecutan
+  manualmente con `workflow_dispatch`, sólo sobre `main`, y requieren una
+  `approval_status` con valor inicial `PENDIENTE` frente a `APROBADO PARA
+  PUBLICACIÓN`, y `human_authorized` booleano `false` por defecto para esa
+  revisión. El guard de evento/main y ambas confirmaciones se comprueba antes
+  de checkout, acceso a secrets y build/envío; no certifica por sí mismo el contenido de la confirmación.
+  QA y la persona deben revisar el artefacto y los pendientes de publicación
+  antes de activar la distribución. Ver los workflows para secrets y controles.
 
 La [validación nativa de 002](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
 separa ratón PC, gestos de SO en Android Emulator, muestreo humano Xiaomi y
@@ -617,26 +667,31 @@ conservada en la constitución 2.1.0,
 con los picos y límites del instrumento conservados; no se extrapola a otros
 dispositivos o features.
 
-Para I1 de 004, la constitución 2.2.0 autoriza por separado el Xiaomi 11T Pro
+Para I1 de 004, la enmienda 2.2.0 autoriza por separado el Xiaomi 11T Pro
 físico provisional; se mantiene el objetivo de 60 FPS. Web y app Android tienen
 aceptaciones propias, sin extrapolar por compartir teléfono. La comprobación
 iOS corresponde solo a simulador con renderer software, sin acreditar hardware
 iOS o Mobile. La aceptación de I1 no certifica estabilidad sostenida fuera de
 las muestras revisadas ni sustituye las verificaciones pendientes de I2/I3.
+La constitución 3.0.0 conserva la referencia física nativa y esas aprobaciones
+históricas; las nuevas verificaciones siguen los destinos vigentes de esta
+sección, sin exigir navegador móvil ni convertirlo en prueba de app instalada.
 
 - **Política de versionado para releases de prueba**: ambos workflows de
-  deploy tienen un paso que compara `version/code`/`version/name`
-  (Android) o `application/version`/`application/short_version` (iOS) en
-  `export_presets.cfg` contra el commit del último deploy exitoso de ese
-  mismo workflow, y **fallan a propósito si la versión no cambió** — no
-  está permitido re-subir el mismo build sin bump de versión (TestFlight
-  directamente lo rechaza; Firebase lo permite pero confunde a los
-  testers sobre qué build están probando). Antes de mergear a `main` una
-  feature/spec que deba llegar a los testers, hay que subir la versión
-  correspondiente en `export_presets.cfg`. Este chequeo solo corre en
-  push automático — un `workflow_dispatch` manual lo saltea a propósito,
-  para poder reintentar o depurar el pipeline de deploy en sí sin
-  necesidad de un bump de versión artificial.
+  deploy comparan `version/code`/`version/name` (Android) o
+  `application/version`/`application/short_version` (iOS) de
+  `export_presets.cfg` contra el último deploy exitoso del mismo workflow y
+  fallan si la versión no cambió. El guard también se aplica al despacho
+  manual, sin bypass de versionado. El bump se prepara para una distribución
+  autorizada y no es requisito de un merge que sólo integra código. La revisión
+  exacta y su artefacto deben tener `APROBADO PARA PUBLICACIÓN`, incluyendo
+  renderer, empaquetado, firma/instalación y rendimiento físico aplicables.
+  Compatibility/software de QA no certifican ese destino.
+  La comparación identifica un envío real por su paso de subida exitoso, no por
+  el resultado global de un run omitido o fallido después de subir. Consulta
+  hasta 100 runs completados de main; si agota esa ventana sin confirmar un
+  envío previo, o falla API/JSON/Git, bloquea distribución. El operador debe
+  resolver el historial antes de reintentar, sin desactivar el guard.
 
 ## 8. Relación con Spec Kit y los agentes
 
@@ -684,3 +739,6 @@ las muestras revisadas ni sustituye las verificaciones pendientes de I2/I3.
 | 2026-10-16 | Integración de main tras PR #16: se preservan la escena visual y la validación nativa 002 junto con Web/Compatibility de 003; constitución 2.1.0 combina sus decisiones sin extrapolar pruebas ni rendimiento entre plataformas. |
 | 2026-10-16 | T012 de 004, tras aprobación funcional T011: §2/§4.7/§5 gradúan la presentación observadora y derrota cosmética independiente, con snapshot neutro, pool visual precalentado y callbacks por activación. Solo soldado integrado; enemigo/caja pendientes. §7 delimita Xiaomi provisional propio de 004, Web separado e iOS simulador/software. |
 | 2026-10-17 | T037 de 004, tras QA funcional T036: §4.7 gradúa material autorado inmutable/nullable en snapshot y limpieza del efecto; §5/§5.1 describen el encuadre local de Monte Calvo y cobertura decorativa izquierda, conservando la separación entre cámara del nivel y entorno estático. |
+| 2026-10-19 | §7: Web solo en computador y Android/iOS como apps instaladas según decisión de la persona y constitución 3.0.0; se preservan las pruebas móviles Web históricas y se distinguen APK/IPA, app de simulador y requisitos físicos nativos |
+| 2026-10-19 | Constitución 4.0.0: main de integración separado de publicación; distribución manual sólo main con confirmación explícita QA/humana y guard de versiones sin bypass |
+| 2026-10-19 | 005/T015 y 004/T021: geometría de nivel en Resource, cinco actores creados por partida, orientación horizontal y cursor/origen del pool; presentación enemiga observadora con reset por activación, cámara centrada en ambos ejes y arte/controles/publicación delimitados |

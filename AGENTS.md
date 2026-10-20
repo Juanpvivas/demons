@@ -3,8 +3,10 @@
 Este archivo reúne las instrucciones compartidas para cualquier asistente que
 trabaje en este repositorio: un juego 2D de defensa por carriles en Godot 4.x,
 con GDScript y pruebas GUT, orientado a Web y aplicaciones Android/iOS.
-Web incluye navegadores en computador y móvil; itch.io es el primer portal
-previsto. La ejecución nativa en PC se conserva para desarrollo y pruebas,
+Web se publica y prueba solo en navegadores de computador; Android/iOS se
+prueban como apps instaladas (APK/IPA o `.app` nativa de iOS Simulator).
+No continuar pruebas Web en navegadores móviles. itch.io es el primer portal
+Web previsto. La ejecución nativa en PC se conserva para desarrollo y pruebas,
 sin instaladores Windows/macOS/Linux como destino de publicación.
 
 Mantén aquí el flujo común. `CLAUDE.md` importa esta guía y solo contiene la
@@ -32,9 +34,10 @@ cárgalo explícitamente al iniciar el trabajo.
    alcance sin una tarea que lo contemple.
 5. **Distingue el destino probado:** una prueba en el editor/ejecutable local,
    en Web o en Android/iOS nativos acredita solo ese entorno. Conserva las
-   evidencias históricas de PC y registra las verificaciones Web por navegador
-   y dispositivo; no cierres pendientes de una feature anterior por cambiar
-   las plataformas del producto.
+   evidencias históricas y registra las verificaciones Web por navegador y
+   computador, y las nativas por app/dispositivo o emulador/simulador. No
+   conviertas pruebas Web móviles históricas en pruebas nativas ni cierres
+   pendientes de una feature anterior por cambiar las plataformas del producto.
 
 ## Documentos de referencia
 
@@ -115,6 +118,21 @@ persona `Squash and merge` para dejar un commit por PR en `main`, conservando
 la trazabilidad RED/GREEN en el cuerpo del PR; no reescribas historial compartido o
 aprobado sin autorización.
 
+Según la constitución 4.0.0, **integración y publicación tienen gates distintos**.
+`main` recibe incrementos funcionales con TDD/GREEN, compilación, CI,
+documentación y `APROBADO PARA INTEGRACIÓN` independiente. Hardware físico,
+renderer o paquete final sin certificar permanecen pendientes de publicación;
+no se convierten en resultados aprobados ni bloquean por sí solos integración.
+Los fallos reales de fuente, build o funcionalidad sí la bloquean. QA debe
+examinar y declarar las caídas de rendimiento observadas y sus límites.
+
+Distribuir a testers externos, Firebase, TestFlight, itch.io o tiendas exige
+además `APROBADO PARA PUBLICACIÓN`, los requisitos físicos/60 FPS aplicables,
+artefacto/renderer/versionado de destino y autorización explícita de la persona.
+Un merge no publica: los workflows de distribución requieren gate explícito.
+Solo el orquestador marca el alcance aprobado; una tarea que también contenga
+publicación mantiene pendiente esa parte y no se marca completa por integración.
+
 Las consultas y correcciones documentales puntuales conservan su alcance;
 no disparan automáticamente la implementación de una feature.
 
@@ -180,3 +198,5 @@ no afirmes haberla aplicado ni sustituyas su consulta por conocimiento genérico
 | 2026-10-15 | Destinos Web + Android/iOS; navegador de computador incluido y PC nativo reservado a desarrollo/pruebas, sin convertir evidencia histórica en validación Web |
 | 2026-10-16 | Entregas por incrementos con PR pequeños, TDD y QA completos, evidencia proporcional y cierre del Issue solo al completar la feature |
 | 2026-10-16 | Futuros PR sin archivos nuevos de evidencias en Git; resultados y QA en el PR, manteniendo pruebas y documentación útil |
+| 2026-10-19 | Por decisión de la persona y constitución 3.0.0, Web solo en computador; Android/iOS solo apps instaladas, sin continuar pruebas de navegador móvil y conservando evidencias históricas y requisitos nativos |
+| 2026-10-19 | Constitución 4.0.0: gates separados de integración funcional y publicación; requisitos físicos conservados para publicar, sin distribución automática por merge |

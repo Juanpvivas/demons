@@ -5,8 +5,8 @@ name: Deploy iOS test build
 # xcodebuild él mismo), lo archiva y firma con xcodebuild usando firma
 # MANUAL (certificado + provisioning profile ya creados de antemano), y
 # lo sube a TestFlight. Corre en un runner macOS — más lento y con cuota
-# de minutos más cara que los runners Linux, por eso no se dispara en
-# cada push de prueba, solo en push a `main` y manual.
+# de minutos más cara que los runners Linux. Solo se distribuye manualmente
+# desde main, con aprobación de publicación y autorización para esa revisión.
 #
 # Por qué firma Manual y no Automatic: se probó extensamente en local
 # contra Xcode real (Automatic con y sin CODE_SIGN_IDENTITY forzado, con
@@ -46,9 +46,21 @@ name: Deploy iOS test build
 #                                       PROVISIONING_PROFILE_SPECIFIER más
 #                                       abajo si cambia el nombre del perfil.
 on:
-  push:
-    branches: [main]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      approval_status:
+        description: Veredicto QA de publicación para esta revisión exacta
+        type: choice
+        required: true
+        default: PENDIENTE
+        options:
+          - PENDIENTE
+          - APROBADO PARA PUBLICACIÓN
+      human_authorized:
+        description: La persona autorizó distribuir esta revisión exacta
+        type: boolean
+        required: true
+        default: false
 
 env:
   GODOT_VERSION: "4.7.1"
@@ -61,6 +73,11 @@ permissions:
 jobs:
   deploy-ios:
     name: Exportar, firmar y subir a TestFlight
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main' &&
+      inputs.approval_status == 'APROBADO PARA PUBLICACIÓN' &&
+      inputs.human_authorized == true
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -72,21 +89,39 @@ jobs:
         # TestFlight rechaza subir el mismo build number dos veces para la
         # misma versión, y aunque no lo rechazara, no tiene sentido gastar
         # minutos de runner macOS re-empaquetando exactamente lo mismo que
-        # ya está en TestFlight. Este paso solo corre en push automático a
-        # `main` — un workflow_dispatch manual (para reintentar o depurar el
-        # pipeline en sí, como en esta misma sesión) lo saltea a propósito.
-        if: github.event_name == 'push'
+        # ya está en TestFlight. También se comprueba en cada despacho
+        # manual; un job omitido no equivale a una distribución.
         env:
           GH_TOKEN: ${{ github.token }}
+        # Se revisan hasta 100 runs completados. Si se agota esa ventana
+        # sin envío confirmado, se bloquea por historial incompleto.
         run: |
-          LAST_SHA=$(gh run list --workflow "Deploy iOS test build" --status success --branch main --limit 1 --json headSha --jq '.[0].headSha // empty')
+          set -euo pipefail
+          RUNS=$(gh run list --workflow "Deploy iOS test build" --status completed --branch main --limit 100 --json databaseId,headSha)
+          RUN_ROWS=$(printf '%s' "$RUNS" | python3 -c 'import json,sys; print("\n".join(str(run["databaseId"])+"\t"+run["headSha"] for run in json.load(sys.stdin)))')
+          LAST_SHA=""
+          while IFS=$'\t' read -r RUN_ID RUN_SHA; do
+            [ -n "$RUN_ID" ] || continue
+            JOBS=$(gh run view "$RUN_ID" --json jobs)
+            PUBLISHED=$(printf '%s' "$JOBS" | python3 -c 'import json,sys; print(any(job["name"] == "Exportar, firmar y subir a TestFlight" and job["conclusion"] != "skipped" and any(step["name"] == "Subir a TestFlight" and step["conclusion"] == "success" for step in job["steps"]) for job in json.load(sys.stdin)["jobs"]))')
+            if [ "$PUBLISHED" = "True" ]; then
+              LAST_SHA="$RUN_SHA"
+              break
+            fi
+          done <<< "$RUN_ROWS"
           if [ -z "$LAST_SHA" ]; then
+            RUN_COUNT=$(printf '%s' "$RUNS" | python3 -c 'import json,sys; print(len(json.load(sys.stdin)))')
+            if [ "$RUN_COUNT" -ge 100 ]; then
+              echo "::error::Historial de publicación incompleto: revisar envíos anteriores antes de distribuir."
+              exit 1
+            fi
             echo "No hay un deploy de iOS exitoso previo registrado; se permite este build."
             exit 0
           fi
-          CHANGED=$(git diff "$LAST_SHA" HEAD -- export_presets.cfg | grep -E '^[+-](application/version|application/short_version)=' || true)
+          VERSION_DIFF=$(git diff "$LAST_SHA" HEAD -- export_presets.cfg)
+          CHANGED=$(printf '%s\n' "$VERSION_DIFF" | grep -E '^[+-](application/version|application/short_version)=' || true)
           if [ -z "$CHANGED" ]; then
-            echo "::error::La versión de iOS (application/version / application/short_version en export_presets.cfg) no cambió desde el último deploy exitoso a TestFlight ($LAST_SHA). Subí la versión antes de mergear a main — ver docs/ARCHITECTURE.md §7."
+            echo "::error::La versión de iOS (application/version / application/short_version en export_presets.cfg) no cambió desde el último envío real a TestFlight ($LAST_SHA). Subí la versión antes de distribuir — ver docs/ARCHITECTURE.md §7."
             exit 1
           fi
           echo "Versión de iOS cambió desde $LAST_SHA, se permite el deploy:"

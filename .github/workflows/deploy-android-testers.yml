@@ -4,6 +4,8 @@ name: Deploy Android test build
 # keystore de release) y lo sube a Firebase App Distribution para que los
 # testers lo instalen en su celular. Ver godot-prompter:export-pipeline
 # (sección Android) para la referencia del preset usado.
+# Solo se distribuye manualmente desde main, con aprobación de publicación
+# y autorización explícita para esa revisión; integrar código no distribuye.
 #
 # Requiere estos secrets en el repo (Settings → Secrets and variables →
 # Actions) — mientras no existan, este workflow falla con un error claro
@@ -22,9 +24,21 @@ name: Deploy Android test build
 #                                    desde la consola de Firebase la primera
 #                                    vez).
 on:
-  push:
-    branches: [main]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      approval_status:
+        description: Veredicto QA de publicación para esta revisión exacta
+        type: choice
+        required: true
+        default: PENDIENTE
+        options:
+          - PENDIENTE
+          - APROBADO PARA PUBLICACIÓN
+      human_authorized:
+        description: La persona autorizó distribuir esta revisión exacta
+        type: boolean
+        required: true
+        default: false
 
 env:
   GODOT_VERSION: "4.7.1"
@@ -36,6 +50,11 @@ permissions:
 jobs:
   deploy-android:
     name: Exportar APK y subir a Firebase App Distribution
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main' &&
+      inputs.approval_status == 'APROBADO PARA PUBLICACIÓN' &&
+      inputs.human_authorized == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -47,21 +66,39 @@ jobs:
         # Firebase App Distribution no rechaza un versionCode repetido como
         # sí lo hace TestFlight, pero subir el mismo build una y otra vez
         # sin cambiar la versión no aporta nada y confunde a los testers
-        # sobre cuál build están probando. Este paso solo corre en push
-        # automático a `main` — un workflow_dispatch manual (para
-        # reintentar o depurar el pipeline en sí) lo saltea a propósito.
-        if: github.event_name == 'push'
+        # sobre cuál build están probando. También se comprueba en cada
+        # despacho manual; un job omitido no equivale a una distribución.
         env:
           GH_TOKEN: ${{ github.token }}
+        # Se revisan hasta 100 runs completados. Si se agota esa ventana
+        # sin envío confirmado, se bloquea por historial incompleto.
         run: |
-          LAST_SHA=$(gh run list --workflow "Deploy Android test build" --status success --branch main --limit 1 --json headSha --jq '.[0].headSha // empty')
+          set -euo pipefail
+          RUNS=$(gh run list --workflow "Deploy Android test build" --status completed --branch main --limit 100 --json databaseId,headSha)
+          RUN_ROWS=$(printf '%s' "$RUNS" | python3 -c 'import json,sys; print("\n".join(str(run["databaseId"])+"\t"+run["headSha"] for run in json.load(sys.stdin)))')
+          LAST_SHA=""
+          while IFS=$'\t' read -r RUN_ID RUN_SHA; do
+            [ -n "$RUN_ID" ] || continue
+            JOBS=$(gh run view "$RUN_ID" --json jobs)
+            PUBLISHED=$(printf '%s' "$JOBS" | python3 -c 'import json,sys; print(any(job["name"] == "Exportar APK y subir a Firebase App Distribution" and job["conclusion"] != "skipped" and any(step["name"] == "Subir a Firebase App Distribution" and step["conclusion"] == "success" for step in job["steps"]) for job in json.load(sys.stdin)["jobs"]))')
+            if [ "$PUBLISHED" = "True" ]; then
+              LAST_SHA="$RUN_SHA"
+              break
+            fi
+          done <<< "$RUN_ROWS"
           if [ -z "$LAST_SHA" ]; then
+            RUN_COUNT=$(printf '%s' "$RUNS" | python3 -c 'import json,sys; print(len(json.load(sys.stdin)))')
+            if [ "$RUN_COUNT" -ge 100 ]; then
+              echo "::error::Historial de publicación incompleto: revisar envíos anteriores antes de distribuir."
+              exit 1
+            fi
             echo "No hay un deploy de Android exitoso previo registrado; se permite este build."
             exit 0
           fi
-          CHANGED=$(git diff "$LAST_SHA" HEAD -- export_presets.cfg | grep -E '^[+-](version/code|version/name)=' || true)
+          VERSION_DIFF=$(git diff "$LAST_SHA" HEAD -- export_presets.cfg)
+          CHANGED=$(printf '%s\n' "$VERSION_DIFF" | grep -E '^[+-](version/code|version/name)=' || true)
           if [ -z "$CHANGED" ]; then
-            echo "::error::La versión de Android (version/code / version/name en export_presets.cfg) no cambió desde el último deploy exitoso a Firebase ($LAST_SHA). Subí la versión antes de mergear a main — ver docs/ARCHITECTURE.md §7."
+            echo "::error::La versión de Android (version/code / version/name en export_presets.cfg) no cambió desde el último envío real a Firebase ($LAST_SHA). Subí la versión antes de distribuir — ver docs/ARCHITECTURE.md §7."
             exit 1
           fi
           echo "Versión de Android cambió desde $LAST_SHA, se permite el deploy:"

@@ -35,6 +35,49 @@ checklist de especificación no equivalen a validación de una implementación.
 Las consultas y correcciones documentales puntuales mantienen su alcance;
 no disparan por sí solas la implementación de una feature, Issues o un PR.
 
+La matriz vigente sigue la constitución 4.0.0: Web solo en navegador de
+computador; Android/iOS como apps instaladas. No continuar pruebas Web en
+navegadores móviles, tampoco en emulador/simulador. Conservar las evidencias
+históricas sin convertirlas en pruebas de apps ni reabrir features anteriores.
+Las pruebas nativas emuladas acreditan solo ese entorno y no eximen requisitos
+de rendimiento físico.
+
+## Gate de integración y gate de publicación
+
+La constitución 4.0.0 distingue el código funcional integrado en `main` de un
+artefacto aprobado para distribuir. El orquestador declara qué gate se revisa.
+
+| Gate | Requisitos y resultado de QA |
+|---|---|
+| Integración | Alcance funcional, TDD cuando cambia comportamiento, GREEN y regresión pertinente, importación/compilación/exportación aplicables, entrada real/visual/smoke en entornos disponibles, documentación y CI correctos. QA emite `APROBADO PARA INTEGRACIÓN` con variantes y pendientes explícitos. |
+| Publicación | Además, artefacto exacto de destino, firma/instalación/versionado, renderer de producción, matriz de publicación y rendimiento físico constitucional/SC aplicables. QA emite `APROBADO PARA PUBLICACIÓN`; la persona autoriza el envío. |
+
+Un fallo real de fuente, build o funcionamiento del alcance impide integrar.
+Hardware no disponible o certificación incompleta del renderer/paquete final
+no bloquean por sí solos el primer gate: siguen pendientes en el segundo.
+Registrar y evaluar diferencias de rendimiento observadas, sin ocultar datos
+ni atribuir causalidad sin control. Compatibility/software en copias de QA no
+certifican Mobile, GPU/hardware, empaquetado final ni 60 FPS físicos.
+
+Publicar incluye testers externos, Firebase, TestFlight, itch.io y tiendas.
+No hay envío automático por push/merge a `main`; los workflows de distribución
+exigen aprobación de publicación y autorización explícita para la revisión
+exacta. Los artefactos de CI para revisión interna no autorizan distribución.
+No fabricar una prueba física, cerrar SC-007 ni completar una feature por haber
+integrado un incremento. Mantener IDs y pendientes de publicación identificados;
+si una tarea cubre ambos gates, una aprobación parcial no marca toda su casilla.
+
+### Transición autorizada 004-I2 + 005-I1
+
+Por petición expresa del 2026-10-19 se prepara una única entrega de integración
+desde `codex/005-i1-tablero`, que contiene 004-I2 y 005-I1, contra `main`
+(base `2dc532d`). Se revisa el
+diff conjunto y se justifica su tamaño frente a la guía habitual; no se entrega
+como exclusivamente 005 ni se reescribe historial. El PR sigue en borrador,
+con `Refs #18` y `Refs #22`, sin `Closes`, merge automático ni distribución.
+004-I3 y 005-I2–I5 continúan fuera de alcance. Los siguientes incrementos vuelven
+a ramas breves desde `main`, QA, PR y eliminación de ramas después de integrar.
+
 ## Responsabilidades y tipos de tarea
 
 | Trabajo | Agente responsable | Evidencia para QA |
@@ -174,7 +217,9 @@ errores de pruebas al tester y errores documentales a documentación. Ante
 consecutivo de una misma tarea, escala en lugar de seguir reintentando.
 
 En cada incremento, el tester confirma GREEN y la regresión pertinente, más las
-verificaciones manuales exigidas por su alcance y la constitución. Documentación
+verificaciones manuales exigidas por el gate solicitado y su alcance. Para
+integración aplica el primer gate de esta guía; publicar requiere además el
+segundo, sin dar por realizadas sus verificaciones pendientes. Documentación
 consolida ese resultado y QA revisa el estado que se entregará. Al cerrar la
 feature, confirma además la suite completa de GUT y todas sus verificaciones
 obligatorias. Reutiliza evidencia válida del mismo estado; no repitas pruebas
@@ -216,3 +261,5 @@ comprobar que sus comandos y plantillas siguen activos tras una actualización.
 | 2026-10-15 | Personalizaciones empaquetadas en un preset local y workflow independiente; mantenimiento fuera de los archivos core |
 | 2026-10-16 | Incrementos con PR pequeños, ciclos TDD/QA completos, descripciones y commits legibles, archivo duradero de evidencia y cierre final del Issue |
 | 2026-10-16 | Por decisión de la persona, futuros PR sin archivos nuevos de evidencias en Git ni archivo permanente obligatorio; resultados en el PR y comprobaciones reales para QA |
+| 2026-10-19 | Matriz vigente según constitución 3.0.0: Web solo en computador, Android/iOS como apps instaladas y conservación del historial y de los requisitos físicos nativos |
+| 2026-10-19 | Constitución 4.0.0: integración funcional separada de publicación, veredictos explícitos y transición conjunta 004-I2/005-I1; sin despliegue externo automático por merge |

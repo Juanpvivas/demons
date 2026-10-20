@@ -1,17 +1,30 @@
 # Tasks: Personajes y munición de Monte Calvo
 
-**Estado**: I1 inicial aprobado en `87a39c6`; corrección UX T031–T038 aprobada. I2/I3 pendientes.
+**Estado**: I1 y corrección UX T031–T038 aprobados e integrados en `main`. I2 y su documentación aprobados para integración conjunta con 005-I1 en el PR #24, en borrador y pendiente de integración humana. I3 y publicación T039 pendientes.
+**PR conjunto de integración**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; aprobación para integración, publicación pendiente.
 **Issue**: [#18](https://github.com/Juanpvivas/demons/issues/18).
-**Incremento de esta entrega**: corrección de legibilidad y encuadre de I1 en el [PR #20 en borrador](https://github.com/Juanpvivas/demons/pull/20), sin iniciar I2.
-**Execution Branch**: `codex/004-i1-soldado`, desde `main` en `990be90`.
-**Base del PR funcional**: `codex/004-preparacion`, [PR #19 en borrador](https://github.com/Juanpvivas/demons/pull/19);
-la rama de ejecución conserva su historial y no cambia durante el ciclo.
+**Incremento de esta entrega**: I2 / US2, enemigo, contacto y reutilización (T014–T022), sin iniciar I3.
+**Execution Branch**: `codex/005-i1-tablero` para transición conjunta autorizada 004-I2 + 005-I1, contra `main` en `2dc532d`; rama histórica 004 conservada hasta integrar.
+**Base del PR funcional**: `main`, con I1 del [PR #20](https://github.com/Juanpvivas/demons/pull/20)
+y la preparación del [PR #19](https://github.com/Juanpvivas/demons/pull/19) ya integrados;
+la transición reúne el código ya contenido con 005-I1. El historial y las
+aprobaciones de I1 conservan su alcance original.
 El Xiaomi 11T Pro físico `2107113SG` es la referencia provisional exclusiva
-de 004 por decisión de la persona, según la constitución 2.2.0. Las aprobaciones
+de 004 por decisión de la persona, según la enmienda 2.2.0 conservada en la
+constitución 3.0.0. Las aprobaciones
 de T001–T013 corresponden a `87a39c6` y conservan su evidencia histórica. La
 corrección solicitada por la persona requiere sus propios gates antes de actualizar
 la entrega; iOS sigue distinguiendo simulador y hardware. Los incrementos
 posteriores conservan sus verificaciones propias.
+
+**Matriz vigente desde el 2026-10-19**: Web solo en navegador de computador;
+Android/iOS como apps instaladas (APK/IPA o `.app` nativa de iOS Simulator).
+No continuar navegador móvil, tampoco en emulador/simulador. Android Emulator
+está autorizado para APK y ya no se solicitará reconectar el teléfono físico;
+SC-007 y sus mediciones físicas nativas siguen pendientes de publicación en T039
+según constitución 4.0.0; integración funcional tiene gate separado. T001–T013 y
+T031–T038 conservan literalmente sus descripciones, aprobaciones y entornos
+históricos, sin convertir navegador móvil en prueba nativa ni reabrirlos.
 **Input**: [spec](spec.md), [plan](plan.md), [research](research.md),
 [modelo](data-model.md), [contrato](contracts/visual-presentation.md) y
 [quickstart](quickstart.md).
@@ -87,7 +100,7 @@ iPad. La enmienda documental delimita las excepciones a cámara/huella visual.
 - [X] T037 docs-writer: consolidar únicamente la corrección aprobada en `docs/SPEC.md`, `docs/ARCHITECTURE.md` y procedencia/transformaciones de `SOURCES.md` cuando corresponda, conservando I2/I3 e interfaz pendientes. Entregar resumen para actualizar el PR #20, sin versionar registros nuevos; depende de T036 aprobado.
 - [X] T038 qa-validator: revisar documentación y diff final de la corrección y vigencia de sus verificaciones. Tras APROBADO, project-orchestrator marca sus tareas y actualiza el PR #20 en borrador con Refs al Issue #18, límites y trazabilidad de la corrección, sin promover ni fusionar; depende de T037.
 
-I2 permanece pendiente y comienza después del cierre T038 de esta revisión.
+I2 comienza tras el cierre aprobado de T038 y la integración de I1 en `main`.
 
 ## Fase 4: I2 / US2 — Enemigo, contacto y reutilización (P1)
 
@@ -96,15 +109,15 @@ contacto, daño y derrota sin alterar su combate; reutiliza el servicio de I1.
 **Prueba independiente**: cinco escenarios US2, diez ciclos y dos instancias;
 la caja puede continuar provisional. I2 depende de I1 aprobado.
 
-- [ ] T014 [US2] dev-godot: producir diseño/avance/contacto/derrota con la skill de imagen aplicable en `assets/sprites/enemies/monte_calvo/enemigo_atlas.png`, `enemigo_frames.tres` y `SOURCES.md`; respetar paleta, silueta, huella, importación y procedencia del contrato, sin RED de archivos/estética; depende de T013 y T038.
-- [ ] T015 [US2] godot-tester: escribir y ejecutar RED en `tests/unit/enemies/test_enemigo_visual.gd` y ampliar `tests/unit/systems/test_combat_visual_effects.gd`: desplazamiento real tras física frente a enemigo bloqueado por Soldado real, daño/contacto sin ataques ficticios, snapshot antes del release síncrono, diez reusos, dos instancias y callbacks stale tras reacquire. Conservar drop/baja/orden aun sin listener; depende de T003, T013 y T038, no de T017.
-- [ ] T016 [US2] qa-validator: revisar RED y cobertura de `tests/unit/enemies/test_enemigo_visual.gd` y `tests/unit/systems/test_combat_visual_effects.gd`; exigir fallo semántico y bloqueo físico real, no asumir que velocidad deseada implica avance. Aprobar solo pruebas RED; depende de T015.
-- [ ] T017 [US2] dev-godot: implementar en `scenes/enemies/EnemigoBase.tscn`, `enemigo.gd`, `enemigo_visual.gd` y `scenes/levels/wave_spawner.gd` el avance/contacto observado, impacto, snapshot previo y reset total por generación; registrar una vez cada instancia física creada con el servicio I1, sin cambiar `core/object_pool.gd` ni el orden jugable. Sin pruebas; depende de T014 y T016.
-- [ ] T018 [US2] godot-tester: confirmar GREEN de T015 y regresión I1/enemigo/spawner/oleadas en `tests/unit/enemies/`, `tests/unit/units/`, `tests/unit/levels/test_wave_spawner.gd` y `tests/unit/systems/test_combat_visual_effects.gd`; comprobar diez ciclos y aislamiento tras reutilización antes de terminar feedback; depende de T017.
-- [ ] T019 [US2] godot-tester: comparar enemigo integrado y `assets/sprites/enemies/monte_calvo/SOURCES.md`, combate/gestos reales y rendimiento base/candidato por entorno con `specs/004-personajes-municion-monte-calvo/quickstart.md`. Verificar legibilidad/resize y smoke terminal, Xiaomi provisional de 004/60 FPS, Web separado e iOS identificado; pendientes no se presentan aprobados; depende de T018.
-- [ ] T020 [US2] qa-validator: validar I2 en `scenes/enemies/`, `scenes/levels/wave_spawner.gd` y servicio visual contra US2, FR-002–003/005–007/009–012, arte, RED/GREEN y T019; comprobar que contacto/animación no gobiernan daño y que no hay residuos ni cambio de pool; depende de T019.
-- [ ] T021 [US2] docs-writer: actualizar `docs/SPEC.md` y los patrones aprobados que correspondan de `docs/ARCHITECTURE.md`, conservando la caja y el cierre como pendientes; entregar resumen del alcance I2 para PR sin evidencias nuevas en Git; depende de T020 aprobado.
-- [ ] T022 [US2] qa-validator: revisar documentación T021 y estado final de `docs/SPEC.md`, `docs/ARCHITECTURE.md` y archivos I2. Tras APROBADO y verificación de base/diff, project-orchestrator publica la rama del incremento y crea PR en borrador con `Refs` al mismo Issue; depende de T021, sin promoverlo ni fusionarlo.
+- [X] T014 [US2] dev-godot: producir diseño/avance/contacto/derrota con la skill de imagen aplicable en `assets/sprites/enemies/monte_calvo/enemigo_atlas.png`, `enemigo_frames.tres` y `SOURCES.md`; respetar paleta, silueta, huella, importación y procedencia del contrato, sin RED de archivos/estética; depende de T013 y T038.
+- [X] T015 [US2] godot-tester: escribir y ejecutar RED en `tests/unit/enemies/test_enemigo_visual.gd` y ampliar `tests/unit/systems/test_combat_visual_effects.gd`: desplazamiento real tras física frente a enemigo bloqueado por Soldado real, daño/contacto sin ataques ficticios, snapshot antes del release síncrono, diez reusos, dos instancias y callbacks stale tras reacquire. Conservar drop/baja/orden aun sin listener; depende de T003, T013 y T038, no de T017.
+- [X] T016 [US2] qa-validator: revisar RED y cobertura de `tests/unit/enemies/test_enemigo_visual.gd` y `tests/unit/systems/test_combat_visual_effects.gd`; exigir fallo semántico y bloqueo físico real, no asumir que velocidad deseada implica avance. Aprobar solo pruebas RED; depende de T015.
+- [X] T017 [US2] dev-godot: implementar en `scenes/enemies/EnemigoBase.tscn`, `enemigo.gd`, `enemigo_visual.gd` y `scenes/levels/wave_spawner.gd` el avance/contacto observado, impacto, snapshot previo y reset total por generación; registrar una vez cada instancia física creada con el servicio I1, sin cambiar `core/object_pool.gd` ni el orden jugable. Sin pruebas; depende de T014 y T016.
+- [X] T018 [US2] godot-tester: confirmar GREEN de T015 y regresión I1/enemigo/spawner/oleadas en `tests/unit/enemies/`, `tests/unit/units/`, `tests/unit/levels/test_wave_spawner.gd` y `tests/unit/systems/test_combat_visual_effects.gd`; comprobar diez ciclos y aislamiento tras reutilización antes de terminar feedback; depende de T017.
+- [X] T019 [US2] godot-tester: comparar enemigo integrado y `assets/sprites/enemies/monte_calvo/SOURCES.md`, combate/gestos reales y rendimiento base/candidato por entorno con `specs/004-personajes-municion-monte-calvo/quickstart.md`. Verificar legibilidad/resize y smoke terminal en Web de computador, APK instalado en horizontal en Android Emulator autorizado y app iOS instalada identificando hardware/simulador y renderer. El requisito físico nativo Xiaomi provisional de 004/60 FPS, SC-007 y certificación renderer/paquete final permanecen pendientes de publicación en T039, sin solicitar reconexión ni acreditarlo desde el emulador; no continuar navegador móvil ni presentar pendientes como aprobados; depende de T018.
+- [X] T020 [US2] qa-validator: validar I2 en `scenes/enemies/`, `scenes/levels/wave_spawner.gd` y servicio visual contra US2, FR-002–003/005–007/009–012, arte, RED/GREEN y T019; emitir APROBADO PARA INTEGRACIÓN con build/función/CI conformes, evaluar diferencias de rendimiento y conservar publicación pendiente en T039; comprobar que contacto/animación no gobiernan daño y que no hay residuos ni cambio de pool; depende de T019.
+- [X] T021 [US2] docs-writer: actualizar `docs/SPEC.md` y los patrones aprobados que correspondan de `docs/ARCHITECTURE.md`, conservando la caja y el cierre como pendientes; entregar resumen del alcance I2 para PR sin evidencias nuevas en Git; depende de T020 aprobado.
+- [X] T022 [US2] qa-validator: revisar documentación T021 y estado final de `docs/SPEC.md`, `docs/ARCHITECTURE.md` y archivos I2. Tras APROBADO PARA INTEGRACIÓN y verificación de base/diff, project-orchestrator consolida único PR conjunto 004-I2 + 005-I1 hacia main desde codex/005-i1-tablero, Refs #18 y Refs #22; depende de T021 y QA de transición 005/T070, sin Closes, promoción, merge ni distribución automática.
 
 ## Fase 5: I3 / US3 — Caja de munición e integración final (P2)
 
@@ -115,15 +128,19 @@ con clic/toque, conservando radio 20 y la precedencia recoger/desplegar.
 
 - [ ] T023 [US3] dev-godot: producir con la skill de imagen aplicable `assets/sprites/pickups/monte_calvo/caja_municion.png`, importación y `SOURCES.md`; integrar solo el sprite de `scenes/levels/AmmoPickup.tscn`, arte/motivo opaco dentro de 32×32 y radio 20 intacto. Sin lógica ni RED artificial; depende de T022.
 - [ ] T024 [US3] godot-tester: inspeccionar caja/procedencia y confirmar regresión existente en `tests/unit/levels/test_pickup_input_routing.gd`, `test_nivel_montecalvo.gd` y `tests/unit/systems/test_economy_manager.gd`; verificar picking real, cuatro gestos y cajas solapadas según `specs/004-personajes-municion-monte-calvo/quickstart.md`. No añadir tests que solo enumeren archivos/frames ni reconstruir RED histórico; depende de T023.
-- [ ] T025 [US3] godot-tester: completar comparación de las tres representaciones, armas sin depender del tinte, resize y medición final base/candidato según `specs/004-personajes-municion-monte-calvo/quickstart.md`: Web Chrome 1152×648/960×540 y Android horizontal, app Android en el Xiaomi provisional de 004 y app iOS distinguiendo hardware/simulador. Registrar 60 FPS estables, carga y memoria por entorno; ausencias siguen bloqueando su aceptación; depende de T024.
+- [ ] T025 [US3] godot-tester: completar comparación de las tres representaciones, armas sin depender del tinte, resize y medición final base/candidato según `specs/004-personajes-municion-monte-calvo/quickstart.md`: Web Chrome de computador 1152×648/960×540, APK Android instalado en horizontal en el emulador autorizado y app iOS instalada distinguiendo hardware/simulador y renderer; no continuar navegador móvil. Registrar carga y memoria por entorno y conservar pendientes los 60 FPS físicos nativos en el Xiaomi provisional de 004, sin acreditarlos desde emulador ni solicitar reconexión. Las ausencias de certificación de publicación quedan en T039 y no impiden por sí solas integración; fallos reales de fuente/build/función sí; depende de T024.
 - [ ] T026 [US3] godot-tester: ejecutar suite completa con `tools/ci/run_gut.py`; jugar `scenes/levels/Nivel_MonteCalvo.tscn` con oleadas de producción hasta terminal usando observador temporal de solo lectura del estado y corroboración de producción. Verificar victoria/derrota por separado y recarga por ruta existente; no sustituir la partida por recursos cortos ni inferir estado oculto por sprites; depende de T025.
-- [ ] T027 [US3] qa-validator: validar los tres elementos, diff y T024–T026 contra `specs/004-personajes-municion-monte-calvo/spec.md` completo, sus 12 FR y 8 SC. Exigir suite/partida, matriz, procedencia, pooling/reset, neutralidad jugable y rendimiento; pendientes de plataforma/referencia física de 004 o resultado terminal sin oráculo impiden aprobar cierre; depende de T026.
+- [ ] T027 [US3] qa-validator: validar los tres elementos, diff y T024–T026 contra `specs/004-personajes-municion-monte-calvo/spec.md` completo, sus 12 FR y 8 SC. Exigir suite/partida, matriz, procedencia, pooling/reset, neutralidad jugable y rendimiento; emitir APROBADO PARA INTEGRACIÓN del alcance funcional, conservando certificación de plataforma/físico y SC-007 en T039; un terminal sin oráculo o fallo real impide integración y publicación pendiente impide cierre completo; depende de T026.
 - [ ] T028 [US3] docs-writer: consolidar comportamiento aprobado y límites en `docs/SPEC.md`, `docs/ARCHITECTURE.md` y `README.md` cuando corresponda; resolver solo acabado de estos tres elementos, conservando HUD/controles y resto del MVP pendientes. Preparar resumen final para PR sin volcar mediciones o informes; depende de T027 aprobado.
-- [ ] T029 [US3] qa-validator: revisar documentación T028 y diff final de `docs/SPEC.md`, `docs/ARCHITECTURE.md`, `README.md` y archivos I3; confirmar vigencia de los resultados anteriores y aceptación completa de `specs/004-personajes-municion-monte-calvo/spec.md`. Cualquier cambio posterior vuelve a la verificación pertinente; depende de T028.
+- [ ] T029 [US3] qa-validator: revisar documentación T028 y diff final de `docs/SPEC.md`, `docs/ARCHITECTURE.md`, `README.md` y archivos I3; confirmar vigencia de los resultados anteriores y aceptación funcional de `specs/004-personajes-municion-monte-calvo/spec.md`, conservando aceptación de publicación en T039. Cualquier cambio posterior vuelve a la verificación pertinente; depende de T028.
 
 ## Fase final: Entrega del incremento aprobado
 
-- [ ] T030 project-orchestrator: revisar `specs/004-personajes-municion-monte-calvo/tasks.md`, aprobación T029, diff/base, tamaño y trazabilidad del Issue; comprobar política de versiones de `docs/ARCHITECTURE.md` antes de distribución. Publicar rama I3 y PR en borrador, con `Closes` solo si todos los SC están cumplidos; resumir resultados/comandos/límites/QA en el PR. Recomendar Squash and merge a la persona; no promover ni fusionar; depende de T029 aprobado.
+- [ ] T030 project-orchestrator: revisar `specs/004-personajes-municion-monte-calvo/tasks.md`, aprobación T029, diff/base, tamaño y trazabilidad del Issue; comprobar política de versiones de `docs/ARCHITECTURE.md` antes de distribución. Publicar rama I3 y PR en borrador, con `Refs #18` mientras publicación T039 esté pendiente y `Closes` sólo si todos los SC están cumplidos; resumir resultados/comandos/límites/QA en el PR. Recomendar Squash and merge a la persona; no promover ni fusionar; depende de T029 aprobado.
+
+## Gate de publicación separado
+
+- [ ] T039 godot-tester y qa-validator, secuenciales: verificar publicación de 004 por revisión/artefacto exactos con renderer y empaquetado final, firma/instalación/versionado, matriz y nuevas mediciones físicas SC-007/60 FPS en Xiaomi provisional exclusivo de 004. QA emite APROBADO PARA PUBLICACIÓN sólo con requisitos completos; sin hardware conservar pendiente sin pedir reconexión ni acreditar físico desde emulación. El orquestador exige además autorización humana antes de distribuir. Este gate no bloquea por sí solo integración funcional T020/T022 o I3, ni se marca cumplido por merge; 004 y su Issue siguen abiertos hasta completar todo su alcance.
 
 ## Dependencias y oportunidades de paralelismo
 
@@ -152,7 +169,7 @@ ejecución de pruebas e integración sobre archivos compartidos son secuenciales
 | FR-005–007; SC-002/003 | T006–T011, T015–T020 |
 | FR-008–010; SC-004/005 | T010/T019/T024–T025 |
 | FR-009/010; SC-006 | T010/T019/T026–T027 |
-| Constitución IV; SC-007 | T001–T002, T010/T019/T025 y QA respectivo |
+| Constitución IV; SC-007 | T039 publicación; T019/T025 aportan muestras disponibles sin acreditar físico |
 | FR-012; SC-008 y documentación | T011–T013, T020–T022, T027–T030 |
 
 MVP de este acabado: I1 completo, con soldado y pool visual mínimo validado.
@@ -166,4 +183,4 @@ El orquestador prepara una rama por incremento; si la base es otro PR pendiente,
 declara la dependencia y revalida diff/QA al integrarla. Intermedios usan `Refs`;
 solo el cierre completo usa `Closes`. La preparación de Spec Kit terminó con la revisión de tareas y análisis.
 La ejecución posterior se registra en las casillas y en el PR de cada
-incremento; esta entrega no inicia I2/I3.
+incremento; esta transición integra I2 ya desarrollado junto con 005-I1 y no inicia I3.

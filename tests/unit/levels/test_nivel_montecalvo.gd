@@ -1,39 +1,25 @@
 extends GutTest
+## 005/T011: fixtures adaptados a cinco plazas/+X y al inicial en pool.
+## Las referencias T0xx de 001 conservan la procedencia de cada invariante;
+## las expectativas ejecutables siguen el spec005 actual, sin modo vertical.
 ## Test de `scenes/levels/Nivel_MonteCalvo.tscn` (T027) — verifica que el
 ## nivel mínimo carga sin errores y que su geometría (posiciones de
 ## Soldado/Enemigo, tamaños/offsets de las `Area2D` de detección del
-## soldado) efectivamente hace que el enemigo, avanzando en +Y como está
-## diseñado (`scenes/enemies/enemigo.gd`, comentario de cabecera), entre en
-## rango de detección del soldado y termine siendo eliminado — sin ninguna
-## intervención adicional, tal como lo describe el "Independent Test" de
-## `spec.md` User Story 1.
-##
-## Recomendación de `qa-validator` (ronda anterior, grupo Enemigo): agregar
-## cobertura automatizada de este primer punto de contacto real entre
-## `Soldado` y `Enemigo`, más allá del smoke manual de T046.
-##
-## Nota de timing: usa los `.tres` de producción sin overrides y las
-## posiciones/tamaños reales de `Nivel_MonteCalvo.tscn`/`Soldado.tscn` —
-## el enemigo recorre ~162px a 40px/s (move_speed de producción) antes de
-## entrar en rango, por lo que este test espera varios cientos de physics
-## frames (más lento que el resto de la suite, pero es exactamente el
-## escenario que este nivel fue diseñado para producir).
+## soldado) permite que el enemigo, avanzando hacia −X, entre en rango
+## y sea eliminado sin intervención, preservando el Independent Test de 001.
+## El fixture usa stats de producción: el inicial recorre ~576px a 40px/s
+## hasta el borde del fusil (~14.4s); se esperan 870 physics frames.
 
 const LEVEL_SCENE_PATH := "res://scenes/levels/Nivel_MonteCalvo.tscn"
 
-# T043: para instanciar un Enemigo real adicional al colocado a mano en la
-# escena (T027), en un carril lateral separado.
+# T043: enemigo real adicional al inicial del pool, en una fila liberada.
 const ENEMY_SCENE_PATH := "res://scenes/enemies/EnemigoBase.tscn"
 
-# Geometría documentada en `Nivel_MonteCalvo.tscn` (T027) y `Soldado.tscn`:
-#   - Soldado en (576, 500); Enemigo en (576, 50) (mismo carril X).
-#   - "DeteccionRango": CollisionShape2D en offset local (0,-144) del
-#     soldado, tamaño 144x240 -> global x:[504,648] y:[236,476].
-# El enemigo (caja de colisión 48x48, sin offset) entra en solape con
-# "DeteccionRango" cuando su borde inferior alcanza el borde superior del
-# área: enemigo_y + 24 >= 236 -> enemigo_y >= 212. Arrancando en y=50 y
-# avanzando a `move_speed` (40px/s de producción) hacia +Y, son ~4.05s.
-const FRAMES_TO_ENTER_DETECTION_RANGE := 250
+# Geometría 005: soldado central (144,336), inicial (1008,336), misma fila y.
+# Fusil local x:[24,264], borde global derecho x=408. Cuerpo enemigo 48x48:
+# enemigo_x - 24 <= 408 -> enemigo_x <= 432. Desde x=1008 recorre 576px
+# hacia −X a 40px/s: ~14.4s/864 ticks; se espera un margen de seis ticks.
+const FRAMES_TO_ENTER_DETECTION_RANGE := 870
 
 # Frames adicionales para que, ya detectado, el soldado dispare las 3 balas
 # de daño de producción (15 salud / 5 daño por disparo) necesarias para
@@ -42,19 +28,64 @@ const FRAMES_TO_DEFEAT_AFTER_DETECTION := 100
 
 var _level: Node
 
-# Capturado por una conexión propia a un método (no un lambda: los closures
-# de GDScript capturan variables locales POR VALOR, no por referencia — un
-# lambda que asigne a una variable local del test nunca sería visible fuera
-# de sí mismo). Necesario además porque el enemigo real se libera
-# (`queue_free`) tras `enemy_defeated`, y para cuando se espera lo
-# suficiente como para comprobar la eliminación, el nodo ya está inválido:
-# GUT no puede leer el historial de señales de un `Object` liberado.
+# Captura por método de instancia: los closures capturan variables locales
+# por valor. La señal prueba la baja aunque la instancia siga en el pool.
 var _enemy_defeated_emitted: bool = false
+var _saved_state: int
+var _saved_ammo: int
+var _saved_waves: Dictionary
 
 
 func before_each() -> void:
+	_saved_state = GameStateManager._current_state
+	_saved_ammo = EconomyManager.collected_ammo
+	_saved_waves = {}
+	for key: String in ["waves", "current_wave_index", "_total_enemies_in_current_wave", "_defeated_in_current_wave"]:
+		_saved_waves[key] = WaveManager.get(key)
+	GameStateManager._current_state = GameStateManager.GameState.PLAYING
 	_level = null
 	_enemy_defeated_emitted = false
+
+
+func after_each() -> void:
+	GameStateManager._current_state = _saved_state
+	EconomyManager.collected_ammo = _saved_ammo
+	for key: String in _saved_waves:
+		WaveManager.set(key, _saved_waves[key])
+
+
+func _central_soldier(level: Node) -> Soldado:
+	return (level.get("_board_manager") as BoardManager).get_occupant(Vector2i(1, 3)) as Soldado
+
+
+func _initial_enemy(level: Node) -> Enemigo:
+	var spawner: WaveSpawner = level.get("_wave_spawner")
+	for node: Node in spawner._enemy_pool.get_children():
+		if node is Enemigo and node.is_targetable() and node.spawn_origin == Enemigo.SpawnOrigin.INITIAL:
+			return node
+	return null
+
+
+func _free_test_slot(level: Node) -> void:
+	var owner := (level.get("_board_manager") as BoardManager).get_occupant(FREE_TEST_CELL) as Soldado
+	if owner != null:
+		owner.take_damage(owner.stats.max_health)
+
+
+func _descendants(node: Node) -> Array[Node]:
+	var result: Array[Node] = []
+	for child: Node in node.get_children():
+		result.append(child)
+		result.append_array(_descendants(child))
+	return result
+
+
+func _unopposed_enemy(level: Node) -> Enemigo:
+	_free_test_slot(level)
+	var enemy: Enemigo = load(ENEMY_SCENE_PATH).instantiate()
+	level.add_child(enemy)
+	enemy.global_position = Vector2(144, 144)
+	return enemy
 
 
 func _on_enemy_defeated(_ammo_dropped: int, _position: Vector2) -> void:
@@ -64,6 +95,7 @@ func _on_enemy_defeated(_ammo_dropped: int, _position: Vector2) -> void:
 func _load_level() -> Node:
 	_level = load(LEVEL_SCENE_PATH).instantiate()
 	add_child_autofree(_level)
+	(_level.get("_wave_spawner") as WaveSpawner)._spawn_timer.stop()
 	return _level
 
 
@@ -74,7 +106,7 @@ func test_nivel_montecalvo_instantiates_without_errors_with_expected_structure()
 	var level := _load_level()
 
 	# Then: no hubo errores de carga/parseo, y la estructura mínima esperada
-	# (Tablero + Soldado + Enemigo, mismo carril X) está presente
+	# (Tablero + Soldado central + inicial, misma fila y) está presente
 	assert_true(is_instance_valid(level), "Nivel_MonteCalvo.tscn debe instanciar sin errores")
 	assert_not_null(level.get_node_or_null("Tablero"), "el nivel debe tener un TileMap 'Tablero'")
 	assert_true(
@@ -82,38 +114,38 @@ func test_nivel_montecalvo_instantiates_without_errors_with_expected_structure()
 		"'Tablero' debe ser un TileMap"
 	)
 
-	var soldado := level.get_node_or_null("Soldado")
-	var enemigo := level.get_node_or_null("Enemigo")
+	var soldado := _central_soldier(level)
+	var enemigo := _initial_enemy(level)
 	assert_not_null(soldado, "el nivel debe tener una instancia de Soldado.tscn")
 	assert_not_null(enemigo, "el nivel debe tener una instancia de EnemigoBase.tscn")
 
 	assert_eq(
-		soldado.global_position, Vector2(576, 500),
+		soldado.global_position, Vector2(144, 336),
 		"el soldado debe estar en la posición documentada del nivel mínimo"
 	)
 	assert_eq(
-		enemigo.global_position, Vector2(576, 50),
+		enemigo.global_position, Vector2(1008, 336),
 		"el enemigo debe aparecer en la posición documentada del nivel mínimo"
 	)
 	assert_eq(
-		soldado.global_position.x, enemigo.global_position.x,
-		"soldado y enemigo deben compartir el mismo carril X para que el avance en +Y del enemigo lo acerque al soldado"
+		soldado.global_position.y, enemigo.global_position.y,
+		"soldado y enemigo deben compartir la fila y para que el avance en −X acerque al enemigo"
 	)
 	assert_true(
-		enemigo.global_position.y < soldado.global_position.y,
-		"el enemigo debe aparecer por delante del soldado en el sentido de avance +Y"
+		enemigo.global_position.x > soldado.global_position.x,
+		"el enemigo debe aparecer a la derecha del soldado antes de avanzar hacia −X"
 	)
 
 
-## --- Geometría real: el avance en +Y del enemigo lo hace entrar en rango,
+## --- Geometría real: el avance en −X del enemigo lo hace entrar en rango,
 ## y el soldado lo elimina automáticamente sin intervención adicional ---
 ## (spec.md User Story 1, Independent Test / Acceptance Scenario 1)
 
-func test_enemigo_avanzando_en_mas_y_entra_en_rango_de_deteccion_y_es_eliminado_sin_intervencion() -> void:
+func test_enemigo_avanzando_en_menos_x_entra_en_rango_y_es_eliminado_sin_intervencion() -> void:
 	# Given: el nivel mínimo tal cual está diseñado, sin overrides de stats
 	var level := _load_level()
-	var soldado := level.get_node("Soldado")
-	var enemigo := level.get_node("Enemigo")
+	var soldado := _central_soldier(level)
+	var enemigo := _initial_enemy(level)
 	var deteccion_rango: Area2D = soldado.get_node("DeteccionRango")
 	enemigo.enemy_defeated.connect(_on_enemy_defeated)
 
@@ -125,7 +157,7 @@ func test_enemigo_avanzando_en_mas_y_entra_en_rango_de_deteccion_y_es_eliminado_
 	)
 
 	# When: transcurre el tiempo suficiente para que el enemigo, avanzando
-	# por su cuenta en +Y (sin intervención del jugador), recorra la
+	# por su cuenta en −X (sin intervención del jugador), recorra la
 	# distancia real hasta el borde de "DeteccionRango"
 	await wait_physics_frames(FRAMES_TO_ENTER_DETECTION_RANGE)
 
@@ -133,7 +165,7 @@ func test_enemigo_avanzando_en_mas_y_entra_en_rango_de_deteccion_y_es_eliminado_
 	# en el área de detección real del soldado
 	assert_has(
 		deteccion_rango.get_overlapping_bodies(), enemigo,
-		"tras avanzar en +Y la distancia diseñada, el enemigo debe solapar con DeteccionRango del soldado"
+		"tras avanzar en −X la distancia diseñada, el enemigo debe solapar con DeteccionRango del soldado"
 	)
 
 	# When: el soldado, ya con el enemigo detectado, dispara automáticamente
@@ -148,8 +180,8 @@ func test_enemigo_avanzando_en_mas_y_entra_en_rango_de_deteccion_y_es_eliminado_
 		"el soldado del nivel debe eliminar automáticamente al enemigo del nivel tras detectarlo (Independent Test de User Story 1)"
 	)
 	assert_false(
-		is_instance_valid(enemigo),
-		"el enemigo del nivel debe quedar liberado del árbol tras ser derrotado"
+		enemigo.is_targetable(),
+		"el inicial derrotado se retira de gameplay y vuelve al pool"
 	)
 
 
@@ -188,18 +220,17 @@ func test_enemigo_avanzando_en_mas_y_entra_en_rango_de_deteccion_y_es_eliminado_
 ## compartido entre archivos de test en el mismo proceso GUT), mismo patrón
 ## que `tests/unit/units/test_soldado.gd`.
 
-# Celda libre del tablero (world center (144,144) con tile_size 96x96),
-# distinta de la celda del Soldado inicial colocado a mano (T027).
+# Plaza 1 (centro144,144), liberada por baja real antes de probar despliegue.
 const FREE_TEST_CELL := Vector2i(1, 1)
 
-# Celda del Soldado inicial (T027): global_position (576,500) con
-# tile_size 96x96 -> local_to_map floor(576/96)=6, floor(500/96)=5.
-const OCCUPIED_TEST_CELL := Vector2i(6, 5)
+# Plaza central inicialmente ocupada: centro144,336 -> celda(1,3).
+const OCCUPIED_TEST_CELL := Vector2i(1, 3)
 
 
 func test_deploy_on_free_cell_with_enough_ammo_instantiates_soldado_spends_ammo_and_occupies_cell() -> void:
 	# Given: el nivel cargado y munición recolectada suficiente para el costo de despliegue
 	var level := _load_level()
+	_free_test_slot(level)
 	var deploy_cost: int = level.soldado_deploy_stats.deploy_ammo_cost
 	var original_collected_ammo: int = EconomyManager.collected_ammo
 	EconomyManager.add_ammo(deploy_cost + 999) # fondeo generoso, cubre el costo exacto y de sobra
@@ -259,6 +290,7 @@ func test_deploy_on_free_cell_with_enough_ammo_instantiates_soldado_spends_ammo_
 func test_deploy_on_free_cell_without_enough_ammo_does_not_deploy_and_signals_rejection() -> void:
 	# Given: el nivel cargado con el pool global sin fondos suficientes (Acceptance Scenario 4)
 	var level := _load_level()
+	_free_test_slot(level)
 	var original_collected_ammo: int = EconomyManager.collected_ammo
 	EconomyManager.collected_ammo = 0 # fondos insuficientes, sin importar el estado previo del pool
 	watch_signals(EconomyManager)
@@ -300,7 +332,7 @@ func test_deploy_on_free_cell_without_enough_ammo_does_not_deploy_and_signals_re
 ##
 ## `_on_posicion_defendida_body_entered()` es el handler real de
 ## `nivel_monte_calvo.gd`, ejercitado aquí vía física real (avance del
-## `Enemigo` en +Y, `body_entered` real de la `Area2D`), no vía
+## `Enemigo` en −X, `body_entered` real de la `Area2D`), no vía
 ## `Object.call()` directo — a diferencia de `_try_deploy_soldado()` arriba,
 ## esta lógica no depende de coordenadas de pantalla/viewport (la limitación
 ## de `--headless` documentada en `docs/ARCHITECTURE.md` §6 no aplica aquí),
@@ -320,18 +352,12 @@ func test_deploy_on_free_cell_without_enough_ammo_does_not_deploy_and_signals_re
 ## Se guarda/restaura `GameStateManager._current_state` alrededor de esta
 ## prueba por la misma razón.
 func test_enemigo_que_alcanza_posicion_defendida_fuera_del_carril_del_soldado_emite_la_senal() -> void:
-	# Given: el nivel real cargado, más un Enemigo adicional (no el colocado
-	# a mano en T027) en un carril lateral (x=200) deliberadamente fuera de
-	# "DeteccionRango"/"RangoMelee" del Soldado inicial (x=576 ± 72, ver
-	# geometría documentada arriba) — aísla el mecanismo de la Area2D
-	# "PosicionDefendida" (T043) del combate automático del soldado (ya
-	# cubierto por otros tests): este enemigo debe llegar VIVO a la posición
-	# defendida, sin haber sido siquiera detectado en el camino.
+	# Given: se libera la trinchera de la fila 1 y se coloca allí un enemigo
+	# real en x=144, fuera de la celda diagonal frontal de las otras filas.
+	# Debe llegar vivo a la defensa izquierda, aislando esa Area2D del combate.
 	var original_game_state: int = GameStateManager._current_state
 	var level := _load_level()
-	var enemigo: Enemigo = load(ENEMY_SCENE_PATH).instantiate()
-	add_child_autofree(enemigo)
-	enemigo.global_position = Vector2(200, 550)
+	var enemigo := _unopposed_enemy(level)
 	watch_signals(enemigo)
 
 	var posicion_defendida: Area2D = level.get_node("PosicionDefendida")
@@ -340,7 +366,7 @@ func test_enemigo_que_alcanza_posicion_defendida_fuera_del_carril_del_soldado_em
 		"precondición del test: el enemigo lateral no debe empezar ya dentro de PosicionDefendida"
 	)
 
-	# When: avanza en +Y por su cuenta (`enemigo.gd._physics_process`, sin
+	# When: avanza en −X por su cuenta (`enemigo.gd._physics_process`, sin
 	# intervención del jugador ni del soldado de otro carril) hasta alcanzar
 	# la posición defendida
 	await wait_physics_frames(170)
@@ -390,9 +416,7 @@ func test_enemigo_real_que_alcanza_posicion_defendida_termina_la_partida_en_derr
 	watch_signals(GameStateManager)
 
 	var level := _load_level()
-	var enemigo: Enemigo = load(ENEMY_SCENE_PATH).instantiate()
-	add_child_autofree(enemigo)
-	enemigo.global_position = Vector2(200, 550) # carril lateral, fuera de rango del Soldado (ver test anterior)
+	var enemigo := _unopposed_enemy(level) # carril lateral, fuera de rango del Soldado (ver test anterior)
 
 	# When: el Enemigo real avanza por su cuenta hasta alcanzar la Area2D real
 	# "PosicionDefendida" del nivel real, sin ninguna acción del jugador
@@ -453,7 +477,7 @@ func test_body_ajeno_a_enemy_group_que_entra_en_posicion_defendida_no_causa_erro
 	dummy_shape.shape = dummy_rect
 	dummy_body.add_child(dummy_shape)
 	add_child_autofree(dummy_body)
-	dummy_body.global_position = Vector2(200, 650) # dentro de PosicionDefendida, lejos del carril del soldado
+	dummy_body.global_position = Vector2(72, 144) # dentro de PosicionDefendida, lejos del carril del soldado
 
 	# When: el cuerpo ajeno se solapa físicamente con "PosicionDefendida"
 	await wait_physics_frames(20)
@@ -518,33 +542,22 @@ func test_body_ajeno_a_enemy_group_que_entra_en_posicion_defendida_no_causa_erro
 ## alcanza "PosicionDefendida" mientras el Soldado siga presente en el árbol
 ## de escena en su carril — queda bloqueado físicamente por la
 ## `CollisionShape2D` sólida del Soldado bastante antes de llegar al área.
-## Dado que en el alcance actual de esta feature `Soldado` no tiene ninguna
-## forma de ser derrotado (`soldier_defeated` está documentado en
-## `contracts/signals.md` pero no implementado en `soldado.gd` — confirmado
-## por búsqueda en el código fuente; ninguna llamada a `take_damage` recibe
-## nunca un `Soldado` como objetivo, solo `Enemigo`), este bloqueo es
-## PERMANENTE en la práctica dentro del alcance actual: mientras exista un
-## Soldado vivo en un carril, ningún enemigo de ESE carril puede activar la
-## condición de derrota de FR-013/`spec.md` Acceptance Scenario 3 de User
-## Story 3. Se documenta aquí como HALLAZGO CRÍTICO para que el orquestador
-## decida si bloquea la aprobación de T043 o se registra como riesgo
-## abierto para T044+ (agravado por el hecho de que `wave_spawn_position`,
-## T042, es un único punto fijo que coincide exactamente con el carril x del
-## Soldado colocado a mano en T027 — todas las oleadas de producción actual
-## de este nivel spawnean enemigos en ese mismo carril bloqueado).
+## La investigación histórica T043 registró el bloqueo sólido. En 005/I1
+## se conserva este control de colisión, aunque el soldado sí puede morir
+## por combate (ver los tests de derrota) y las cinco filas ya están activas.
 func test_enemigo_no_puede_alcanzar_fisicamente_posicion_defendida_mientras_el_soldado_de_su_carril_sigue_vivo() -> void:
 	# Given: el nivel real cargado con el Soldado inicial de producción
-	# (T027, carril x=576) forzado a 0 munición desde antes de su primer
+	# (005, fila y=336) forzado a 0 munición desde antes de su primer
 	# disparo (aísla la colisión física del combate automático), y el
-	# Enemigo colocado a mano (mismo carril) con move_speed acelerado (solo
+	# inicial del pool (misma fila) con move_speed acelerado (solo
 	# para que el test corra en tiempo razonable, no muta el .tres
 	# compartido de producción — se le asigna una instancia nueva de
 	# EnemyStats)
 	var level := _load_level()
-	var soldado: Soldado = level.get_node("Soldado")
+	var soldado: Soldado = _central_soldier(level)
 	soldado.set("_current_ammo", 0)
 
-	var enemigo: Enemigo = level.get_node("Enemigo")
+	var enemigo: Enemigo = _initial_enemy(level)
 	var fast_stats := EnemyStats.new()
 	fast_stats.max_health = enemigo.stats.max_health
 	fast_stats.move_speed = 600.0
@@ -556,8 +569,8 @@ func test_enemigo_no_puede_alcanzar_fisicamente_posicion_defendida_mientras_el_s
 
 	# When: transcurre tiempo muy por encima del necesario para que, sin
 	# obstáculos, el enemigo recorra la distancia real hasta
-	# "PosicionDefendida" ((576,50) -> (576,650) = 600px, a 600px/s tomaría
-	# ~1s/60 frames sin obstáculos; se esperan 90 para dejar margen de sobra)
+	# "PosicionDefendida" (borde izquierdo del enemigo desde x=984 hasta
+	# x=96: 888px; a 600px/s tomaría ~1.48s/89 frames sin obstáculos).
 	await wait_physics_frames(90)
 
 	# Then: el soldado nunca disparó ni hizo daño (0 munición forzada desde
@@ -581,8 +594,8 @@ func test_enemigo_no_puede_alcanzar_fisicamente_posicion_defendida_mientras_el_s
 		"HALLAZGO CRÍTICO (T043): un Enemigo real, en el mismo carril que un Soldado vivo (aunque sin munición), nunca alcanza físicamente 'PosicionDefendida' — queda bloqueado por la colisión sólida por defecto entre StaticBody2D y CharacterBody2D (mismo layer/mask=1 implícito, ver nota de cabecera de este test y contracts/signals.md)"
 	)
 	assert_true(
-		enemigo.global_position.y < soldado.global_position.y,
-		"HALLAZGO CRÍTICO (T043): el enemigo debe quedar detenido ANTES de alcanzar siquiera la posición Y del propio Soldado (576,500), confirmando bloqueo físico real, no una simple falta de tiempo de simulación"
+		enemigo.global_position.x > soldado.global_position.x,
+		"el enemigo debe quedar detenido a la derecha del soldado central (144,336), confirmando bloqueo físico real"
 	)
 
 
@@ -640,7 +653,7 @@ func test_soldado_inicial_colocado_a_mano_defeated_libera_su_celda_en_board_mana
 	# Given: el nivel real cargado, con el Soldado inicial (T027) ya
 	# registrado como ocupante de su celda desde _ready() (T054)
 	var level := _load_level()
-	var soldado: Soldado = level.get_node("Soldado")
+	var soldado: Soldado = _central_soldier(level)
 	var board: BoardManager = level.get("_board_manager")
 	assert_false(
 		board.is_cell_free(OCCUPIED_TEST_CELL),
@@ -667,6 +680,7 @@ func test_soldado_desplegado_defeated_libera_su_celda_en_board_manager() -> void
 	# Given: el nivel real cargado y un Soldado nuevo desplegado en una celda
 	# libre (T035)
 	var level := _load_level()
+	_free_test_slot(level)
 	var original_collected_ammo: int = EconomyManager.collected_ammo
 	var deploy_cost: int = level.soldado_deploy_stats.deploy_ammo_cost
 	EconomyManager.add_ammo(deploy_cost + 999)
@@ -705,9 +719,9 @@ func test_soldado_desplegado_defeated_libera_su_celda_en_board_manager() -> void
 ## instancias de producción sin overrides. ---
 
 func test_defeating_a_real_enemy_in_the_level_spawns_a_real_ammopickup_child_with_correct_amount_and_position() -> void:
-	# Given: el nivel real cargado, con el Enemigo colocado a mano (T027) vivo
+	# Given: el nivel real cargado, con el inicial del pool vivo
 	var level := _load_level()
-	var enemigo: Enemigo = level.get_node("Enemigo")
+	var enemigo: Enemigo = _initial_enemy(level)
 	var death_position: Vector2 = enemigo.global_position
 	var expected_amount: int = enemigo.stats.ammo_drop
 	watch_signals(EconomyManager)
@@ -718,17 +732,17 @@ func test_defeating_a_real_enemy_in_the_level_spawns_a_real_ammopickup_child_wit
 	# tests de este archivo)
 	enemigo.take_damage(enemigo.stats.max_health)
 
-	# Then: una AmmoPickup real quedó como hijo del nivel, en la posición de
+	# Then: una AmmoPickup real quedó como descendiente del nivel, en la posición de
 	# muerte del enemigo y con el amount correcto (FR-007) — Enemigo._die()
-	# la agrega de forma síncrona antes de queue_free(), así que ya debe
+	# la agrega de forma síncrona al contenedor del pool, así que ya debe
 	# existir sin esperar ningún frame adicional
 	var pickups: Array = []
-	for child in level.get_children():
+	for child in _descendants(level):
 		if child is AmmoPickup:
 			pickups.append(child)
 	assert_eq(
 		pickups.size(), 1,
-		"derrotar a un Enemigo real del nivel debe agregar exactamente una AmmoPickup real como hijo del nivel"
+		"derrotar a un Enemigo real del nivel debe agregar exactamente una AmmoPickup real como descendiente del nivel"
 	)
 	var pickup: AmmoPickup = pickups[0]
 	assert_eq(
@@ -768,12 +782,12 @@ func test_collecting_a_real_ammopickup_adds_its_amount_to_the_global_ammo_pool()
 	var level := _load_level()
 	var original_collected_ammo: int = EconomyManager.collected_ammo
 	EconomyManager.collected_ammo = 0
-	var enemigo: Enemigo = level.get_node("Enemigo")
+	var enemigo: Enemigo = _initial_enemy(level)
 	var expected_amount: int = enemigo.stats.ammo_drop
 	enemigo.take_damage(enemigo.stats.max_health)
 
 	var pickup: AmmoPickup = null
-	for child in level.get_children():
+	for child in _descendants(level):
 		if child is AmmoPickup:
 			pickup = child
 	assert_not_null(pickup, "precondición del test: debe existir una AmmoPickup real generada por la derrota")
@@ -847,10 +861,14 @@ func test_completing_all_configured_real_waves_transitions_the_real_gamestateman
 	await wait_seconds(0.3, "tiempo suficiente para el único spawn de 0.05s de la oleada de prueba")
 	var spawner: WaveSpawner = level.get("_wave_spawner")
 	assert_eq(
-		spawner._enemy_pool.in_use_count(), 1,
-		"precondición del test: debe haberse instanciado exactamente el único enemigo de la oleada de prueba"
+		spawner._enemy_pool.in_use_count(), 2,
+		"precondición: hay un WAVE de la oleada de prueba y el INITIAL independiente"
 	)
-	var enemy: Enemigo = spawner._enemy_pool._in_use[0]
+	var candidates := spawner._enemy_pool._in_use.filter(func(node: Node): return node is Enemigo and node.spawn_origin == Enemigo.SpawnOrigin.WAVE)
+	assert_eq(candidates.size(), 1, "Solo un WAVE además del inicial independiente")
+	if candidates.size() != 1:
+		return
+	var enemy: Enemigo = candidates[0]
 
 	# When: se derrota al único enemigo de la única oleada configurada —
 	# equivalente en efecto a "derrotar todos los enemigos de todas las
@@ -883,6 +901,7 @@ func test_celda_liberada_tras_derrota_puede_volver_a_desplegarse_un_nuevo_soldad
 	# solo se marca libre internamente, sino que vuelve a estar disponible
 	# para el jugador)
 	var level := _load_level()
+	_free_test_slot(level)
 	var original_collected_ammo: int = EconomyManager.collected_ammo
 	var deploy_cost: int = level.soldado_deploy_stats.deploy_ammo_cost
 	EconomyManager.add_ammo(2 * deploy_cost + 999)

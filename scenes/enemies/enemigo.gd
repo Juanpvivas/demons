@@ -18,26 +18,14 @@
 ## `Soldado` (`StaticBody2D`, estacionario), el enemigo sí se mueve con
 ## `move_and_slide()`.
 ##
-## **Eje de avance asumido para este MVP** (un solo carril recto, sin
-## soporte de diagonales propias del enemigo — eso lo resuelve la detección
-## del `Soldado`, no el movimiento del `Enemigo`): el enemigo avanza en línea
-## recta a lo largo del eje `+Y` (hacia abajo en coordenadas de Godot), que
-## es el mismo sentido en el que `Soldado.tscn` posiciona su
-## "DeteccionRango" por delante de sí (offset `Vector2(0, -144)`, es decir
-## por encima/antes en el carril) y su "RangoMelee" más cerca (offset
-## `Vector2(0, -32)`). La posición defendida queda más adelante en `+Y` que
-## el punto de aparición del enemigo. Si un nivel futuro necesita carriles
-## en otra orientación, este supuesto debe revisarse junto con la geometría
-## de `Nivel_MonteCalvo.tscn` (T027).
+## 005/I1: avanza hacia −X sin cambiar de fila. El origen INITIAL/WAVE y la
+## generación pertenecen a cada activación, no a los stats compartidos.
 ##
 ## **Integración con `ObjectPool` (T042, `scenes/levels/wave_spawner.gd`)**:
 ## esta clase admite ser reciclada por un `ObjectPool` en vez de
 ## instanciarse/destruirse por spawn (`constitution.md` Principio IV) — ver
-## `set_pool()`/`prepare_for_spawn()` y la nota dentro de `_die()`. El
-## `Enemigo` colocado a mano en `Nivel_MonteCalvo.tscn` para el Independent
-## Test de US1/US2 (T027) nunca pasa por un pool y conserva el
-## comportamiento original sin cambios (auto-destrucción con `queue_free()`
-## al morir).
+## `set_pool()`/`prepare_for_spawn()`. Monte Calvo usa el mismo pool para
+## INITIAL y WAVE; una instancia aislada sin pool se retira con queue_free().
 ##
 ## **Daño cuerpo a cuerpo contra `Soldado` (T053, rehecha — `spec.md` Edge
 ## Case: "un soldado en modo cuerpo a cuerpo es derrotado por los
@@ -61,6 +49,9 @@
 class_name Enemigo
 extends CharacterBody2D
 
+## Un inicial no contribuye al contador de bajas de las oleadas.
+enum SpawnOrigin { INITIAL, WAVE }
+
 ## Grupo que identifica a todo `Enemigo` ante los sistemas de detección de
 ## `Soldado` (`Soldado.ENEMY_GROUP`, mismo literal).
 const ENEMY_GROUP: String = "enemies"
@@ -78,7 +69,7 @@ const _AMMO_PICKUP_SCENE: PackedScene = preload("res://scenes/levels/AmmoPickup.
 ## del alcance de esta tarea) pueda generar una pickup en ese punto.
 signal enemy_defeated(ammo_dropped: int, position: Vector2)
 
-## Contrato observacional reservado; su emisión pertenece a I2.
+## Snapshot neutro anterior a cualquier retiro/reciclado síncrono.
 signal defeat_visual_requested(snapshot: Dictionary)
 
 ## T043 (`contracts/signals.md`, FR-013): este enemigo alcanzó la "posición
@@ -95,37 +86,44 @@ signal reached_defended_position
 ## en runtime (`docs/ARCHITECTURE.md` §4.3).
 @export var stats: EnemyStats
 
+## Estado de esta activación; nunca se escribe en EnemyStats.
+var lane_id: int = -1
+var spawn_origin: SpawnOrigin = SpawnOrigin.WAVE
+var activation_generation: int = 0
+var _activation_active: bool = true
+var _reached_defense_notified: bool = false
+var _last_defeat_origin: SpawnOrigin = SpawnOrigin.WAVE
+
 ## Salud actual, runtime. Inicializada desde `stats.max_health` en `_ready()`
 ## y reinicializada en cada reciclado vía `prepare_for_spawn()` (T042).
 var _current_health: int = 0
 
-## T042: `ObjectPool` al que pertenece esta instancia, o `null` si nunca
-## pasó por uno (ej. el `Enemigo` colocado a mano en `Nivel_MonteCalvo.tscn`
-## para el Independent Test de US1/US2, T027). Determina el destino de
-## `_die()` — ver `set_pool()` y el comentario dentro de `_die()` para el
-## conflicto real que resuelve entre el `queue_free()` original de esta
-## clase y el patrón de reciclado de `ObjectPool` (`WaveSpawner`, T042).
+## Pool propietario o null para un enemigo aislado. Monte Calvo comparte
+## el pool para el inicial y las oleadas sin cambiar la API genérica.
 var _pool: ObjectPool = null
 
-@onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var _sprite: EnemigoVisual = $AnimatedSprite2D
 
 
 func _ready() -> void:
 	assert(stats != null, "Enemigo requiere un EnemyStats asignado en 'stats'")
 	_current_health = stats.max_health
 	add_to_group(ENEMY_GROUP)
-	# T028: el propio enemigo escucha su señal de muerte para disparar el
-	# feedback visual placeholder — mismo patrón de auto-conexión en
-	# `_ready()` que `soldado.gd` usa con `ammo_depleted`
-	# (`docs/ARCHITECTURE.md` §4.2). `_die()` emite esta señal antes de
-	# llamar `queue_free()`, así que el destello se aplica mientras el nodo
-	# sigue siendo válido dentro del mismo frame.
-	enemy_defeated.connect(_on_enemy_defeated_visual)
+	_sprite.reset_visual()
 
 
 func _physics_process(_delta: float) -> void:
-	velocity = Vector2(0.0, stats.move_speed)
+	if not is_targetable() or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
+		velocity = Vector2.ZERO
+		return
+	var before := global_position
+	velocity = Vector2(-stats.move_speed, 0.0)
 	move_and_slide()
+	_sprite.observe_displacement(global_position - before)
+
+
+func is_targetable() -> bool:
+	return _activation_active and _current_health > 0 and not is_queued_for_deletion()
 
 
 ## Aplica `amount` de daño y retorna `true` únicamente si esta llamada dejó
@@ -134,16 +132,14 @@ func _physics_process(_delta: float) -> void:
 ## repetidas sobre un enemigo ya eliminado (su `queue_free()` es diferido,
 ## no inmediato).
 func take_damage(amount: int) -> bool:
-	if _current_health <= 0:
+	if not is_targetable():
 		return false
 	_current_health -= amount
 	if _current_health <= 0:
 		_die()
 		return true
-	# T028: destello de impacto no letal — llamada directa (no señal, no hay
-	# contrato de `contracts/signals.md` para "golpe recibido"), inocua para
-	# los tests existentes que solo observan `take_damage`/`enemy_defeated`.
-	_flash_hit()
+	if amount > 0:
+		_sprite.play_confirmed_hit()
 	return false
 
 
@@ -180,22 +176,49 @@ func set_pool(pool: ObjectPool) -> void:
 ## `_ready()` inicializa una sola vez (`_current_health`), reasigna `stats`
 ## (distintas oleadas pueden reciclar la misma instancia física con
 ## `EnemyStats` distintos) y reposiciona el enemigo en el punto de spawn.
-## También limpia cualquier tinte visual dejado por `_flash_hit()`/la
-## muerte anterior (`_on_enemy_defeated_visual()` tiñe a negro), para que
-## un enemigo reciclado no aparezca ya "golpeado" o "muerto".
-func prepare_for_spawn(new_stats: EnemyStats, spawn_position: Vector2) -> void:
+## Reinicia además toda la presentación antes del primer frame del nuevo uso.
+func prepare_for_spawn(new_stats: EnemyStats, spawn_position: Vector2,
+		new_lane_id: int = -1, new_origin: SpawnOrigin = SpawnOrigin.WAVE) -> void:
 	stats = new_stats
 	_current_health = stats.max_health
+	lane_id = new_lane_id
+	spawn_origin = new_origin
+	activation_generation += 1
+	_activation_active = true
+	_reached_defense_notified = false
+	velocity = Vector2.ZERO
 	global_position = spawn_position
-	_sprite.modulate = Color(1.0, 1.0, 1.0)
+	_set_body_disabled(false)
+	_sprite.reset_visual()
+
+
+## Puede ocurrir antes de `_ready()` al precalentar un pool fuera del árbol.
+## No necesita stats nuevos; el reset de aparición sigue en prepare_for_spawn.
+func on_pool_released() -> void:
+	_activation_active = false
+	velocity = Vector2.ZERO
+	_set_body_disabled(true)
+	var visual := get_node_or_null("AnimatedSprite2D") as EnemigoVisual
+	if visual != null:
+		visual.deactivate_visual()
+
+
+func _set_body_disabled(disabled: bool) -> void:
+	var body := get_node_or_null("CollisionShape2D") as CollisionShape2D
+	if body != null:
+		body.set_deferred("disabled", disabled)
 
 
 ## Mayor valor = más avanzado hacia la posición defendida (`spec.md`
 ## Assumptions), usado por `Soldado._advance_score()` para desempatar
-## prioridad de objetivo. Con el eje de avance `+Y` asumido arriba, la
-## posición global en `Y` es directamente esa métrica.
+## prioridad de objetivo. En el avance horizontal el menor X va primero.
 func get_advance_progress() -> float:
-	return global_position.y
+	return -global_position.x
+
+
+## Contexto capturado antes de listeners visuales o del reciclado síncrono.
+func get_defeat_origin() -> SpawnOrigin:
+	return _last_defeat_origin
 
 
 ## T043: notifica que este enemigo alcanzó la "posición defendida"
@@ -207,12 +230,26 @@ func get_advance_progress() -> float:
 ## en el nodo que detecta el evento (`Nivel_MonteCalvo.tscn`, `Area2D`
 ## "PosicionDefendida", ver `nivel_monte_calvo.gd`).
 func notify_reached_defended_position() -> void:
+	if not is_targetable() or _reached_defense_notified:
+		return
+	_reached_defense_notified = true
 	reached_defended_position.emit()
 
 
 func _die() -> void:
-	enemy_defeated.emit(stats.ammo_drop, global_position)
-	_spawn_ammo_pickup()
+	# El callback de baja puede liberar y reutilizar este mismo nodo antes
+	# de retornar. La recompensa conserva el contexto de la baja anterior.
+	var drop_amount := stats.ammo_drop
+	var drop_position := global_position
+	var drop_parent := get_parent()
+	var pool := _pool
+	_last_defeat_origin = spawn_origin
+	_activation_active = false
+	var snapshot := _sprite.capture_defeat_snapshot(global_position)
+	_sprite.deactivate_visual()
+	defeat_visual_requested.emit(snapshot)
+	enemy_defeated.emit(drop_amount, drop_position)
+	_spawn_ammo_pickup(drop_parent, drop_position, drop_amount)
 
 	# T042: conflicto real entre esta clase y `ObjectPool` — un
 	# `queue_free()` incondicional aquí destruiría cualquier instancia
@@ -220,19 +257,8 @@ func _die() -> void:
 	# para un futuro `acquire()` (el pool nunca reparenta ni pierde su
 	# referencia a las instancias que reparte). Se resuelve delegando el
 	# destino de la instancia a quien la posee:
-	if _pool == null:
-		# Sin pool (`set_pool()` nunca se llamó) — el `Enemigo` colocado a
-		# mano en `Nivel_MonteCalvo.tscn` para el Independent Test de
-		# US1/US2 (T027) cae en este caso. Conserva el comportamiento
-		# original: `queue_free()`, nunca `free()`
-		# (`docs/ARCHITECTURE.md` §4.5), evita use-after-free si algo más
-		# todavía tiene una referencia pendiente en el mismo frame (ej.
-		# `Soldado._rifle_candidates`/`_melee_candidates` antes de procesar
-		# `body_exited`). El feedback visual de muerte ya se aplicó de
-		# forma síncrona vía `_on_enemy_defeated_visual` (conectado en
-		# `_ready()`), antes de esta línea — el nodo sigue siendo válido
-		# durante el resto de este frame porque `queue_free()` difiere la
-		# liberación.
+	if pool == null:
+		# Enemigo aislado: el retiro no espera la caída visual.
 		queue_free()
 	# Con pool asignado, esta instancia NO se autodestruye: quien escucha
 	# `enemy_defeated` (`WaveSpawner._on_enemy_defeated()`) es responsable
@@ -269,32 +295,12 @@ func _die() -> void:
 ## `CanvasItem` se trata como de nivel superior para efectos de transform),
 ## mismo patrón ya documentado como válido en `core/object_pool.gd`
 ## ("Uso típico: `add_child(enemy_pool)`").
-func _spawn_ammo_pickup() -> void:
-	var parent := get_parent()
-	if parent == null:
+func _spawn_ammo_pickup(parent: Node, drop_position: Vector2, drop_amount: int) -> void:
+	if not is_instance_valid(parent):
 		return
 	var pickup: AmmoPickup = _AMMO_PICKUP_SCENE.instantiate()
-	pickup.amount = stats.ammo_drop
+	pickup.amount = drop_amount
 	parent.add_child(pickup)
-	pickup.global_position = global_position
+	pickup.global_position = drop_position
 	var pickup_id: int = pickup.get_instance_id()
-	EconomyManager.notify_pickup_spawned(pickup_id, global_position, stats.ammo_drop)
-
-
-# --- Feedback visual placeholder (T028) ------------------------------------
-
-## Destello breve al recibir un golpe que no elimina al enemigo — sin
-## sprites artísticos reales todavía (`Soldado`/`EnemigoBase` usan una
-## textura sólida generada vía `GradientTexture2D`), pero suficiente para que
-## un impacto sea perceptible (`constitution.md` Principio III).
-func _flash_hit() -> void:
-	var tween := create_tween()
-	tween.tween_property(_sprite, "modulate", Color(1.0, 0.3, 0.3), 0.05)
-	tween.tween_property(_sprite, "modulate", Color(1.0, 1.0, 1.0), 0.15)
-
-
-## Destello final antes de que el nodo se libere (mismo frame): tiñe el
-## sprite a negro para marcar visualmente la eliminación (FR-007,
-## `contracts/signals.md` fila `enemy_defeated`).
-func _on_enemy_defeated_visual(_ammo_dropped: int, _position: Vector2) -> void:
-	_sprite.modulate = Color(0.05, 0.05, 0.05)
+	EconomyManager.notify_pickup_spawned(pickup_id, drop_position, drop_amount)

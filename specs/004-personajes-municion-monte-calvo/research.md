@@ -96,13 +96,16 @@ Sin terminal verificable, smoke permanece pendiente.
 **Alternativas**: overlay QA permanente o llamada terminal como partida completa.
 Descartadas. Evidencias nuevas solo temporales/CI; resumen en PR.
 
-Matriz Web escritorio/móvil, Android/iOS nativos separada; antes/después de carga,
+Matriz vigente desde el 2026-10-19: Web solo en computador y apps Android/iOS
+instaladas, con resultados separados; antes/después de carga,
 frame times y memoria. Para 004, la decisión explícita del 2026-10-16 admite el
 Xiaomi 11T Pro físico `2107113SG` de 2021 como referencia provisional exclusiva
-(constitución 2.2.0), sin alterar la referencia nominal global ni los 60 FPS
-estables. Su acceso, nuevas mediciones y QA siguen siendo requisitos; simulador
-no acredita teléfono. Web y nativo se aceptan por separado también en el mismo
-Xiaomi. Sin herencia de resultados 002/003, certificación iOS o de equipos menos
+(enmienda 2.2.0 conservada en la constitución 3.0.0), sin alterar la referencia
+nominal global ni los 60 FPS estables. Ya no será posible obtener nuevas pruebas
+físicas; Android Emulator está autorizado para APK y no sustituye las mediciones
+físicas pendientes de SC-007. Web en computador y apps nativas se aceptan por
+separado; no se continúan pruebas de navegador móvil. Sin herencia de resultados
+002/003, certificación iOS o de equipos menos
 potentes, ni umbral de carga nuevo.
 Skills consultadas: using-godot-prompter, 2d-essentials, assets-pipeline,
 animation-system, scene-organization, gdscript-patterns, godot-code-review,
@@ -121,6 +124,9 @@ Usar una cámara local sin zoom: mundo x=576 centrado (error ≤1 unidad lógica
 y origen vertical efectivo y=0 después de resize. Conservar iPad 1152×864,
 equilibrar Xiaomi 1440×648 y Web aproximadamente 1684×648; ampliar únicamente
 cielo/panorama/suelo hacia la izquierda con sus texturas actuales.
+Estas dimensiones describen la corrección histórica de I1; desde el
+2026-10-19 las nuevas verificaciones móviles se hacen en apps instaladas y
+los viewports Web se prueban en computador.
 
 **Rationale**: el feedback identifica un soldado pequeño y confundido con suelo,
 y espacio desequilibrado en Xiaomi, mientras la composición de iPad resulta
@@ -135,3 +141,11 @@ La corrección pasó QA documental T032 y su ciclo RED T033 → desarrollo T034 
 GREEN/visual T035 → QA funcional T036. Su consolidación y entrega se siguen en
 las [tareas](tasks.md) y el PR, sin iniciar I2 ni rehacer evidencia histórica.
 La autoría documental no ejecuta motor o pruebas ni sustituye esos gates.
+
+## Separación de gates autorizada (2026-10-19)
+
+Constitución 4.0.0: muestras de entornos disponibles y QA funcional sustentan
+integración; certificación física/60 FPS, renderer y artefacto de destino
+sustentan publicación por separado. No hay herencia de SC-007 ni resultados
+favorables inferidos. Los datos peores también se conservan y QA evalúa el
+riesgo. El PR conjunto autorizado consolida 004-I2 y 005-I1 sin cerrar features.

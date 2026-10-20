@@ -15,9 +15,13 @@ y el PR delimitan la consolidación y entrega.
   y rama real. Conserva cambios locales y registra la revisión de la línea base.
 - Los roles consultan las skills de GodotPrompter aplicables. El tester identifica
   ejecutables, versiones, navegadores y dispositivos realmente accesibles.
-- Identificar y obtener acceso al Xiaomi 11T Pro físico `2107113SG` de 2021,
-  referencia provisional exclusiva de 004 autorizada el 2026-10-16 (constitución
-  2.2.0). No hereda aprobación de 002/003 ni certifica equipos menos potentes.
+- La referencia física de 004 sigue siendo el Xiaomi 11T Pro `2107113SG` de
+  2021, autorizado el 2026-10-16 (enmienda 2.2.0 conservada en la constitución
+  3.0.0). Desde el 2026-10-19 la persona indica que ya no será posible realizar
+  nuevas pruebas físicas y
+  autoriza continuar con Android Emulator. Aplicar la disponibilidad y los
+  límites de §4; no volver a condicionar la ejecución emulada a conectar ese
+  teléfono.
 - Conservar capturas comparables antes/después con igual encuadre, tamaño y
   estado. Las salidas de verificación van a temporales o CI, nunca a Git.
 - Registrar la línea base de reglas protegidas, importación y GUT, además de
@@ -80,14 +84,42 @@ Probar dos cajas solapadas sin cambiar su semántica ni sus formas físicas.
 | Entorno mínimo planificado | Tamaño/entrada y alcance |
 |---|---|
 | Web, Chrome escritorio | Canvas 1152×648 y 960×540; clic; resize entre ambos |
-| Web, Chrome Android físico | Horizontal; registrar viewport, densidad y versión; toque físico |
-| App Android nativa | Identificar build, renderer, teléfono y orientación; toque físico |
-| App iOS nativa | Identificar build, renderer y dispositivo o simulador; entrada realmente usada |
+| App Android en teléfono físico | Sin disponibilidad para nuevas pruebas desde el 2026-10-19; conservar el alcance aprobado de los resultados físicos históricos |
+| APK Android instalado en Android Emulator | Entorno adicional autorizado; identificar AVD, API/imagen Android, ABI, build del juego, renderer, tamaño/orientación y gesto de SO usado |
+| App iOS instalada | Identificar build, renderer y dispositivo o simulador; IPA en hardware o `.app` nativa del simulador; entrada realmente usada |
+
+**Alcance vigente desde el 2026-10-19.** Por decisión de la persona y
+constitución 3.0.0, Web solo se prueba en navegador de computador. Se detienen
+las nuevas verificaciones de navegador Android/iOS, también en emulador o
+simulador. Los resultados Web móviles anteriores conservan su alcance
+histórico y no se convierten en pruebas nativas ni en fallos nuevos.
+
+Las nuevas verificaciones Android continúan con el APK instalado en emulador
+y no se solicitará reconectar hardware físico. Cada resultado identifica la
+app y su build. Los gestos atraviesan la entrada del sistema emulado; no se
+sustituyen por llamadas a métodos del
+juego. El tester verifica acceso real antes de declarar disponible un AVD,
+simulador o navegador de computador.
+
+QA puede aprobar con ese alcance los casos de carga, presentación, entrada,
+economía, reutilización y smoke realmente completados. Las mediciones de carga,
+frame times, FPS y memoria en emulador describen únicamente ese entorno y su
+máquina anfitriona; no acreditan 60 FPS en el Xiaomi ni en otro teléfono. Los
+resultados físicos históricos se conservan sin ampliar su alcance. La falta
+definitiva de nuevas pruebas físicas mantiene pendiente SC-007 y la aceptación
+física de publicación exigida por la constitución 4.0.0; no los exime ni autoriza
+cerrar 004. Integración funcional tiene un gate separado: GREEN/regresión,
+compilación/exportación aplicables, entrada/smoke, documentación, CI y QA
+independiente sobre el alcance disponible. Fallos reales de fuente, build o
+función lo bloquean; falta de certificación física/renderer/paquete por sí sola
+no lo bloquea. QA evalúa también las diferencias de rendimiento observadas.
+Identificar el renderer real: una comprobación en Compatibility temporal no
+acredita el renderer Mobile de la app de producción.
 
 La ejecución nativa PC complementa desarrollo. No acredita Web. Un simulador
 iOS solo acredita su propia comprobación; no hardware iOS ni rendimiento físico.
-Cada entorno ausente queda pendiente, sin pasar por extrapolación. Registrar
-recortes existentes separadamente de errores nuevos. Solo T031 permite el
+Cada entorno ausente de la matriz vigente queda pendiente, sin pasar por
+extrapolación. Registrar recortes existentes separadamente de errores nuevos. Solo T031 permite el
 ajuste de cámara/cobertura delimitado en §7; input y reglas permanecen protegidos.
 Otras versiones/navegadores no heredan estos resultados.
 
@@ -98,6 +130,12 @@ pantalla de resultado, identificar victoria/derrota con un observador temporal
 de solo lectura del estado real; corroborar la ruta en producción. No anunciar
 un resultado oculto solo por apariencia o por una partida de recursos reducidos.
 Verificar además victoria y derrota por separado mediante las rutas existentes.
+
+El protocolo sostenido que sigue acredita publicación, incluido SC-007, cuando
+el hardware esté disponible. Para integración, las muestras comparativas
+base/candidato acotadas de los entornos disponibles se registran con sus
+condiciones reales y QA evalúa su suficiencia funcional y riesgo, sin presentarlas
+como ese protocolo sostenido ni repetirlas para buscar un resultado favorable.
 
 Antes de medir fijar estado/revisión, dispositivo, batería/temperatura, renderer,
 resolución, herramientas, acciones/oleadas y duración. Usar iguales condiciones
@@ -114,8 +152,8 @@ instrumento. Señalar perturbación del observador y carencias de medición.
 No inventar un límite de carga aún pendiente en la constitución. Los 60 FPS
 estables en el Xiaomi provisional autorizado para 004 se evalúan de forma
 independiente por QA con nuevas mediciones; la autorización no acredita resultados.
-Una media favorable no oculta caídas ni sustituye esa aceptación. Web y nativo
-tienen mediciones distintas incluso sobre el mismo teléfono.
+Una media favorable no oculta caídas ni sustituye esa aceptación. Web en
+computador y apps nativas tienen mediciones distintas; no se mide navegador móvil.
 
 ## 6. Entrega de cada incremento
 
@@ -123,10 +161,20 @@ El tester entrega comandos/pasos, resultados y límites al orquestador. QA
 revisa el estado final y documentación útil después de sus correcciones.
 El PR en borrador resume comprobaciones y veredicto, enlazando CI cuando exista;
 no añade capturas, logs, JSON o informes nuevos de evidencias a Git.
-Pendientes de hardware, visuales, GREEN o QA siguen pendientes, sin cerrar la
-feature ni extrapolar las aprobaciones históricas de 002/003.
+QA emite `APROBADO PARA INTEGRACIÓN` para el alcance funcional o `APROBADO PARA
+PUBLICACIÓN` cuando se cumplen además artefacto/renderer/hardware de destino,
+firma/versionado y SC-007. Distribución a testers/portales requiere autorización
+explícita; merge a main no dispara envíos. Hardware y certificaciones ausentes
+permanecen pendientes de publicación, sin cerrar la feature ni extrapolar
+aprobaciones históricas de 002/003. Fallos de fuente/build, visuales del alcance,
+GREEN o QA siguen bloqueando integración.
 
 ## 7. Corrección I1 — procedimiento de validación
+
+Este procedimiento conserva las dimensiones y los entornos de la corrección
+I1 aprobada. No ordena repetir navegador móvil: para nuevas verificaciones se
+aplica exclusivamente la matriz vigente de §4, preservando las referencias
+históricas de CSS 794×305 y Web aproximadamente 1684×648.
 
 1. QA T032 revisa la enmienda antes del RED T033. El tester comprueba resize:
    cámara sin zoom, mundo x=576 al 50 % del ancho lógico (error ≤1 unidad),

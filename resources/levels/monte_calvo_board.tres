@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="LaneBoardConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/schemas/lane_board_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+design_rect = Rect2(0, 0, 1152, 648)
+cell_size = Vector2i(96, 96)
+defended_rect = Rect2(48, 96, 48, 480)
+home_cells = Array[Vector2i]([Vector2i(1, 1), Vector2i(1, 2), Vector2i(1, 3), Vector2i(1, 4), Vector2i(1, 5)])
+spawn_positions = Array[Vector2]([Vector2(1008, 144), Vector2(1008, 240), Vector2(1008, 336), Vector2(1008, 432), Vector2(1008, 528)])

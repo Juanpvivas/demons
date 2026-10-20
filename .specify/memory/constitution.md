@@ -1,36 +1,31 @@
 <!--
 Sync Impact Report
-- Version change: 2.1.0 → 2.2.0 (MINOR).
-- Motivo: ante la consulta sobre el hardware de referencia para rendimiento
-  de 004, la persona respondió «Utiliza el xiaomi» (2026-10-16). Se admite el
-  Xiaomi 11T Pro físico 2107113SG de 2021 como referencia provisional exclusiva
-  de 004, por autorización propia; no por herencia de la excepción de 002.
-- Se conserva la integración 2.1.0 de las decisiones previas: Web para itch.io
-  y apps Android/iOS (2026-10-15, enmienda 2.0.0) y Xiaomi provisional exclusivo
-  de 002 (2026-10-16, enmienda 1.2.0 integrada en main con PR #16).
-- Se conservan I/III y las restricciones de 2.0.0: GDScript compartido,
-  Web + Android + iOS; PC nativo queda para desarrollo/pruebas. La excepción
-  previa C#/.NET no vuelve a habilitarse.
-- Se amplía IV con la excepción de 004 y se conserva intacta la de 002.
-  No se modifica el objetivo de 60 FPS estables ni la referencia nominal
-  global de gama media Android de los últimos ~3 años. La excepción no
-  acredita resultados de 004: exige nuevas mediciones y QA independiente.
-  No acredita 003/Web, iOS, otros teléfonos ni rendimiento emulado; medir
-  nativo y navegador por separado también al usar el mismo Xiaomi.
-- La aprobación nativa de 002 y sus límites se conservan en su matriz e informe
-  de rendimiento. La aceptación Web de 003 sigue limitada a su propia matriz;
-  ni la enmienda ni el merge certifican rendimiento sostenido Web.
-- Referencias de 004 alineadas: spec, plan, quickstart, research, contrato
-  visual y nota del checklist. El modelo de datos no requiere cambios.
-  El orquestador alinea las menciones de hardware en tasks.md. Los documentos
-  y evidencias de 001, 002 y 003 conservan sus versiones y resultados históricos;
-  esta enmienda no los revalida.
-- Sin cambios en los cuatro principios, TDD, QA independiente, separación
-  Spec Kit/agentes o ratificación inicial. Se mantienen las enmiendas previas
-  y se requiere revisar nuevas mediciones del estado de 004 antes de aceptar
-  su rendimiento. La autorización no certifica el dispositivo ni la entrega.
-- Templates y comandos de preparación leen la constitución en ejecución;
-  no requieren regeneración por esta integración documental.
+- Version change: 3.0.0 → 4.0.0 (MAJOR).
+- Motivo: decisión explícita de la persona del 2026-10-19 de separar
+  integración de código y publicación, y preparar un único PR 004-I2 + 005-I1.
+- MAJOR porque IV deja de exigir la medición física antes del merge y la
+  exige antes de publicar/distribuir; no se reduce el objetivo de 60 FPS.
+- Se añade el principio V: integración con TDD, GREEN/regresión, compilación,
+  QA funcional independiente, documentación y CI; publicación con aceptación
+  adicional del artefacto, plataforma, renderer y hardware de destino.
+- QA distingue APROBADO PARA INTEGRACIÓN de APROBADO PARA PUBLICACIÓN.
+  Ninguno se obtiene por esta enmienda. Fallos reales funcionales, de fuente
+  o compilación bloquean integración; hardware/certificación pendientes
+  bloquean publicación y no se dan por cumplidos desde emulación/software.
+- Se conservan III y la decisión 3.0.0: Web solo en computador, Android/iOS
+  como apps instaladas; no continuar pruebas en navegador móvil.
+- Se conservan las referencias físicas provisionales exclusivas de 002 y
+  004, sus aprobaciones históricas y límites. SC-007/60 FPS siguen pendientes
+  donde no hay nueva medición; 005 no hereda Xiaomi ni resultados anteriores.
+- Alinear AGENTS, workflow, roles QA/orquestador, arquitectura de distribución
+  y preparación activa de 004/005. Los checkboxes históricos no se alteran
+  por cambiar la política. Los despliegues externos requieren gate explícito;
+  integrar en main no publica builds ni autoriza su distribución.
+- Transición excepcional: un PR en borrador desde codex/005-i1-tablero contra
+  main reúne 004-I2 y 005-I1; Refs #18 y Refs #22, sin cerrar las features.
+  Se conserva historial y se justifica tamaño; no hay merge automático.
+- Sin cambios de gameplay, balance, TDD, pooling, renderer o export presets.
+  Las plantillas leen constitución/flujo en ejecución; no se regeneran.
 - TODO diferido sin cambios: PERFORMANCE_LOAD_TIME_TARGET, pendiente de medir
   en dispositivo Android de referencia.
 -->
@@ -50,8 +45,8 @@ sin romper la otra. Todo código nuevo DEBE seguir una guía de estilo consisten
 (GDScript style guide oficial de Godot). El código compartido del juego DEBE
 seguir siendo exportable a Web, Android e iOS, sin depender de C#/.NET ni de
 extensiones que excluyan alguno de esos destinos. Ninguna funcionalidad se integra a la rama principal
-sin una revisión propia (auto-revisión o revisión de otra persona) que confirme
-que sigue estas reglas.
+sin revisión independiente de QA que confirme estas reglas y el gate de
+integración del principio V.
 **Razón**: el proyecto ya pasó por varias iteraciones de diseño del sistema de
 economía; sin esta disciplina, cada cambio de balance obligaría a tocar código
 en vez de solo datos, y el riesgo de romper mecánicas ya validadas crece rápido.
@@ -81,7 +76,7 @@ pruebas, los cambios futuros pueden reintroducir bugs de balance ya resueltos.
 ### III. Consistencia de Experiencia de Usuario
 La interacción de colocación de unidades, lectura de recursos (munición, moral)
 y retroalimentación de combate DEBEN comportarse de forma consistente entre
-Web (navegador en computador y móvil), Android e iOS nativos, adaptando el
+Web (navegador solo en computador), Android e iOS nativos, adaptando el
 input (touch vs. mouse/teclado cuando corresponda) sin cambiar la
 lógica ni el significado de las acciones. Todo cambio de estado relevante para
 el jugador (soldado sin munición pasando a machete, enemigo recibiendo daño,
@@ -104,10 +99,15 @@ oleadas grandes. El tiempo de carga de un nivel NO DEBE exceder
 TODO(PERFORMANCE_LOAD_TIME_TARGET) — valor pendiente de definir tras medir en
 el dispositivo de referencia. Cualquier funcionalidad que arriesgue el
 framerate objetivo (partículas, cantidad simultánea de enemigos) DEBE probarse
-en el dispositivo de gama más baja soportada antes de mergear. Una ejecución
-en el editor o en un navegador de computador no sustituye esa medición.
+en el dispositivo de gama más baja soportada antes de publicar o distribuir
+el artefacto. Una ejecución en el editor, emulador/simulador o navegador de
+computador no sustituye esa medición física. Antes de integrar, se comparan
+carga y rendimiento en los entornos disponibles y QA evalúa las diferencias
+observadas y su riesgo; no se ocultan caídas ni se exige a un renderer software
+que certifique el objetivo del hardware. La falta de medición física deja
+pendiente publicación, sin eximir pruebas funcionales o compilación.
 Las features Web DEBEN registrar además carga y rendimiento en los navegadores
-y dispositivos de su matriz de aceptación; no se extrapolan los resultados
+y computadores de su matriz de aceptación; no se extrapolan los resultados
 del ejecutable nativo al navegador del mismo dispositivo.
 
 **Referencia provisional exclusiva de la feature 002 (2026-10-16):** por decisión
@@ -130,14 +130,46 @@ típico, nuevas mediciones de 004 y revisión independiente de QA sobre sus
 limitaciones. No aprueba resultados ni certifica teléfonos menos potentes.
 La referencia nominal global de gama media Android de los últimos ~3 años
 permanece vigente. La autorización no se extiende a otras features, otros
-teléfonos, iOS ni emuladores/simuladores. Las comprobaciones Web y nativas del
-mismo Xiaomi DEBEN medirse y aceptarse por separado; ni la autorización ni
-un resultado nativo certifican su navegador.
+teléfonos, iOS ni emuladores/simuladores. Las comprobaciones Web históricas del
+Xiaomi conservan su alcance separado de las nativas; desde el 2026-10-19 no
+se requieren ni se continúan pruebas de navegador móvil. Esta reducción del
+alcance Web no exime las mediciones físicas nativas pendientes.
 
 **Razón**: como es un juego 2D pensado para escalar a hordas de enemigos en
 pantalla, el rendimiento en el hardware más débil del público objetivo (móviles
 de gama media/baja) es lo que determina si el juego es jugable, no el
 rendimiento en la máquina de desarrollo.
+
+### V. Integración y Publicación Separadas
+
+**Integración** incorpora un incremento funcional a `main`, que es una rama de
+desarrollo y no una certificación de release. Exige alcance definido, RED →
+desarrollo → GREEN para cambios de comportamiento, regresión pertinente,
+compilación/exportación aplicable, entrada y smoke funcional en los entornos
+disponibles, documentación coherente, CI correcto y revisión independiente
+**APROBADO PARA INTEGRACIÓN**. Arte y documentación usan verificación
+proporcional. Un error real de fuente, build o funcionamiento del alcance
+integrado impide esa aprobación; la falta de hardware o de certificación del
+renderer/paquete final por sí sola no impide integrar. QA declara el alcance,
+variantes y pendientes; un requisito de publicación pendiente nunca se marca
+como probado ni una feature completa por haber integrado parte de su código.
+
+**Publicación** incluye distribuir builds a testers externos, Firebase App
+Distribution, TestFlight, itch.io o tiendas. Requiere además validar el artefacto
+exacto, su configuración y renderer de destino, instalación/firma/versionado,
+smoke completo, matriz de publicación y rendimiento físico exigido por IV/SC
+aplicables, con revisión independiente **APROBADO PARA PUBLICACIÓN** y
+autorización explícita de la persona para distribuir. Un APK de QA en
+Compatibility o una `.app` de simulador con renderizado software no certifican
+Mobile, GPU/hardware, el empaquetado final ni 60 FPS físicos. Los artefactos de
+CI para revisión interna tampoco constituyen una publicación del juego.
+
+Ningún merge o push a `main` DEBE disparar distribución externa automática.
+Los workflows de distribución DEBEN tener un gate explícito que verifique
+aprobación y revisión exacta antes de cualquier envío. Aprobar integración no
+aprueba publicación ni autoriza promover/fusionar un PR automáticamente. Se
+conservan abiertos los Issues y criterios restantes hasta cumplir su alcance
+completo, incluidos los requisitos de publicación.
 
 ## Restricciones Técnicas
 
@@ -146,9 +178,12 @@ rendimiento en la máquina de desarrollo.
 - Lenguaje del juego compartido: GDScript. No introducir C#/.NET como
   dependencia del juego exportado mientras impida el destino Web; una futura
   excepción requiere demostrar compatibilidad y enmendar esta constitución.
-- Plataformas objetivo: Web, Android e iOS. Web incluye navegador en computador
-  con ratón y en dispositivos móviles con toque; itch.io es el primer portal
-  previsto. No se publican instaladores Windows/macOS/Linux como producto.
+- Plataformas objetivo: Web solo en navegador de computador, y Android/iOS
+  como aplicaciones nativas instaladas (APK/IPA), con ratón o toque según
+  corresponda. No se prueban navegadores Android/iOS, tampoco en emuladores o
+  simuladores; en iOS Simulator se usa su app nativa `.app`, no un IPA de
+  dispositivo. itch.io es el primer portal Web previsto. No se publican
+  instaladores Windows/macOS/Linux como producto.
   El editor y la ejecución nativa local en PC siguen disponibles para desarrollo
   y pruebas. Toda decisión técnica nueva debe considerar los tres destinos.
 - Datos de balance (unidades, enemigos, oleadas) definidos como `Resource`
@@ -190,4 +225,4 @@ listo para implementar. Cualquier complejidad técnica que viole un principio
 DEBE justificarse explícitamente en el documento correspondiente (plan o spec)
 o rechazarse.
 
-**Version**: 2.2.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-16
+**Version**: 4.0.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-19

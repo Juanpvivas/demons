@@ -11,20 +11,42 @@ contexto histórico.
 ## Plataformas y publicación
 
 El objetivo es publicar primero una versión **Web jugable en itch.io**,
-desde el navegador de un computador o teléfono, conservando **Android e iOS
-como aplicaciones nativas**. Se admiten ratón y toque según el dispositivo.
+desde el navegador de un computador, conservando **Android e iOS como
+aplicaciones nativas instaladas (APK/IPA)**. Desde el 2026-10-19, por decisión
+de la persona, las pruebas Web se limitan a computador; en Android/iOS se
+prueban las apps instaladas, también en emulador/simulador cuando corresponda
+(APK Android o `.app` nativa de iOS Simulator).
+Se admiten ratón y toque según el destino.
 No se prevén instaladores propios para Windows, macOS o Linux; el editor y
 la ejecución nativa local en computador siguen siendo herramientas de desarrollo.
 
 La feature [`003-web-itchio`](specs/003-web-itchio/spec.md) ya dispone de un
 paquete Web revisado localmente, con entrega aceptada por QA en Chrome de
-escritorio y Xiaomi horizontal: generación, interacción y smoke observados,
-corroboración visual de producción móvil y regreso sin recarga observada. Rendimiento sostenido,
-carga fría, memoria exclusiva y los entornos no probados conservan pendientes.
+escritorio y Xiaomi horizontal bajo su alcance histórico: generación,
+interacción y smoke observados, corroboración visual de producción móvil y
+regreso sin recarga observada. Rendimiento sostenido,
+carga fría y memoria exclusiva conservan sus límites. Los entornos históricos
+no probados mantienen su registro; los navegadores móviles quedan fuera de
+las nuevas verificaciones.
 El juego no está publicado en el portal. Consulta la
 [guía de exportación y estado de validación](docs/WEB_EXPORT.md).
 
 ## Estado actual
+
+El incremento conjunto [004-I2](specs/004-personajes-municion-monte-calvo/tasks.md)
+y [005-I1](specs/005-cinco-carriles/tasks.md) incorpora el enemigo pictórico y
+un tablero funcional de cinco filas horizontales. Empieza con cinco soldados
+cargados en las plazas izquierdas, gratis y con reserva cero; disparan hacia
+la derecha y los enemigos avanzan hacia la izquierda. Un inicial en fila 3 y
+99 enemigos de oleadas comparten pool, con reparto 1→5 continuo para las oleadas.
+La recogida manual conserva su precedencia sobre desplegar/cobrar.
+
+Es una integración parcial: el soldado sigue inmóvil incluso con machete.
+Salida/contacto móvil, selección/recarga y regreso son 005-I2/I3; las bandas y
+plazas actuales son provisionales hasta las trincheras/poses laterales de I4.
+La caja amarilla sigue pendiente de 004-I3. Las features 004/005 y la publicación
+permanecen abiertas: esta integración no acredita 60 FPS físicos, renderer
+Mobile, hardware ni empaquetado final.
 
 La feature `001-soldado-defensor-oleadas` (`specs/001-soldado-defensor-oleadas/`)
 está completa: un soldado defensor automático que dispara con fusil mientras
@@ -103,20 +125,29 @@ reciben un mensaje de bienvenida en su primera contribución
   alcance y QA aceptó la entrega 003; la demo sigue en desarrollo, con las
   mediciones y los entornos no certificados identificados explícitamente.
   [Guía y matriz real](docs/WEB_EXPORT.md).
-- **Android**: cada push a `main` exporta un APK debug (verificado en
-  local: firma correctamente y pasa `apksigner verify`) y lo sube a
-  **Firebase App Distribution** (`.github/workflows/deploy-android-testers.yml`).
+
+La constitución [4.0.0](.specify/memory/constitution.md) separa integrar de
+publicar: QA funcional, pruebas/build y CI permiten integrar a `main`; compartir
+con testers o portales requiere además artefacto/renderer de destino,
+certificaciones físicas aplicables y `APROBADO PARA PUBLICACIÓN`. Los guards de
+versión se mantienen también en los despachos manuales, sin bypass.
+
+- **Android**: la distribución a **Firebase App Distribution**
+  (`.github/workflows/deploy-android-testers.yml`) requiere despacho manual
+  desde `main`, confirmación explícita de QA de publicación y autorización
+  humana para esa revisión. Un push/merge ya no la inicia. El APK debug se
+  verificó históricamente en local con `apksigner verify`; cada artefacto de
+  publicación requiere su propia verificación.
   Package: `com.juanpvivas.demons`. Los secrets `FIREBASE_ANDROID_APP_ID` y
   `FIREBASE_SERVICE_ACCOUNT` ya están configurados en el repo (Settings →
   Secrets and variables → Actions) — falta confirmar que un run real del
   workflow sube el APK a Firebase con éxito.
-- **iOS**: cada push a `main` exporta el proyecto Xcode (Godot;
-  verificado en local que genera limpio con Xcode 27 y Team ID
-  `XA43X2P8W2`), lo archiva/firma con `xcodebuild` y lo sube a
-  **TestFlight** (`.github/workflows/deploy-ios-testflight.yml`) —
-  verificado con un run real en CI. El pipeline en sí es 100% automático
-  (un push a `main` dispara todo solo), pero la **firma de código es
-  Manual, no Automatic**: usa un certificado y un provisioning profile de
+- **iOS**: el pipeline exporta el proyecto Xcode y archiva/firma para
+  **TestFlight** (`.github/workflows/deploy-ios-testflight.yml`), con generación
+  local y un run real históricos verificados. Su distribución requiere despacho
+  manual desde `main`, confirmación de QA de publicación y autorización humana
+  para esa revisión; un merge no la inicia. La **firma de código es Manual,
+  no Automatic**: usa un certificado y un provisioning profile de
   distribución ya creados de antemano (secrets `APPLE_DISTRIBUTION_CERT_P12`
   y `APPLE_DISTRIBUTION_PROVISIONING_PROFILE`), en vez de dejar que Xcode
   los gestione solo en cada corrida. Se eligió así porque la firma

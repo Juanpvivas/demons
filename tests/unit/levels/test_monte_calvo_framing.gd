@@ -1,5 +1,7 @@
 extends GutTest
-## T033: encuadre observado del nivel real; el fixture NO instala cámara,
+## T033 histórico + 005/T005: encuadre observado del nivel real. 005 cambia
+## el contrato vertical a centrar el rectángulo completo en ambos ejes.
+## El fixture NO instala cámara,
 ## transforma el canvas ni modifica presentación para resolver el requisito.
 ## push_input recorre nivel y physics picking; no equivale a toque físico.
 const LevelScene := preload("res://scenes/levels/Nivel_MonteCalvo.tscn")
@@ -38,55 +40,62 @@ func _fixture(size: Vector2i) -> void:
 	add_child_autofree(_viewport)
 	_level = LevelScene.instantiate()
 	_viewport.add_child(_level)
+	(_level.get("_wave_spawner") as Node).process_mode = Node.PROCESS_MODE_DISABLED
 	_viewport.notify_mouse_entered()
 	await wait_physics_frames(3)
 
 
 func _assert_framing(label: String) -> void:
 	var transform := _viewport.canvas_transform
-	var axis := transform * Vector2(576, 500)
+	var axis := transform * Vector2(576, 324)
 	assert_almost_eq(axis.x, _viewport.size.x / 2.0, 1.0, label + ": eje 576 centrado")
-	assert_almost_eq(transform.origin.y, 0.0, 0.01, label + ": origen vertical efectivo, no posición de cámara")
+	assert_almost_eq(axis.y, _viewport.size.y / 2.0, 1.0, label + ": centro vertical 324 del diseño, no posición de cámara")
 	assert_almost_eq(transform.x, Vector2.RIGHT, Vector2(0.001, 0.001), label + ": sin zoom/rotación X")
 	assert_almost_eq(transform.y, Vector2.DOWN, Vector2(0.001, 0.001), label + ": sin zoom/rotación Y")
 	print("T033_FRAMING ", label, " viewport=", _viewport.size, " canvas=", transform, " axis=", axis)
 
 
-func test_design_aspect_control_keeps_axis_and_vertical_origin() -> void:
+func test_design_aspect_control_centers_complete_design_rectangle() -> void:
 	await _fixture(Vector2i(1152, 648))
 	_assert_framing("16:9")
 
 
-func test_ipad_control_preserves_existing_distribution() -> void:
+func test_taller_logical_view_centers_design_in_both_axes() -> void:
 	await _fixture(Vector2i(1152, 864))
 	_assert_framing("iPad")
 
 
-func test_xiaomi_wide_view_centers_combat_without_vertical_drift() -> void:
+func test_wide_logical_view_centers_design_without_zoom() -> void:
 	await _fixture(Vector2i(1440, 648))
-	_assert_framing("Xiaomi")
+	_assert_framing("lógico ancho")
 
 
-func test_browser_wide_view_centers_combat_without_vertical_drift() -> void:
+func test_computer_browser_wide_logical_view_centers_design() -> void:
 	await _fixture(Vector2i(1684, 648))
-	_assert_framing("Web móvil")
+	_assert_framing("Web computador")
 
 
 func test_resize_wide_and_back_to_ipad_does_not_accumulate_offset_or_move_gameplay() -> void:
 	await _fixture(Vector2i(1152, 648))
-	var soldier: Node2D = _level.get_node("Soldado")
 	var board: Node2D = _level.get_node("Tablero")
 	var defended: Node2D = _level.get_node("PosicionDefendida")
 	var trenches: Node2D = _level.get_node("MonteCalvoVisual/Trincheras")
+	var fixed: Dictionary = {}
+	for child: Node in _level.get_children():
+		if child is Soldado:
+			fixed[child] = child.global_position
+	var board_transform := board.global_transform
+	var defended_position := defended.global_position
+	var trenches_transform := trenches.global_transform
 	for size: Vector2i in [Vector2i(1440, 648), Vector2i(1684, 648), Vector2i(1152, 864), Vector2i(1440, 648), Vector2i(1152, 648)]:
 		_viewport.size = size
 		await wait_physics_frames(3)
 		_assert_framing("resize " + str(size))
-		assert_eq(soldier.global_position, Vector2(576, 500))
-		assert_eq(board.global_transform, Transform2D.IDENTITY)
-		assert_eq(defended.global_position, Vector2(576, 650))
-		assert_eq(trenches.global_transform, Transform2D.IDENTITY)
-		assert_eq(_level.wave_spawn_position, Vector2(576, 50))
+		for soldier: Node2D in fixed:
+			assert_eq(soldier.global_position, fixed[soldier], "Resize no mueve defensores")
+		assert_eq(board.global_transform, board_transform)
+		assert_eq(defended.global_position, defended_position)
+		assert_eq(trenches.global_transform, trenches_transform)
 
 
 func _source_texture(texture: Texture2D) -> Texture2D:
@@ -164,9 +173,15 @@ func _assert_four_economy_results(device: int, resize: bool) -> void:
 		_viewport.size = Vector2i(1684, 648)
 		await wait_physics_frames(3)
 	_assert_framing("economía device=" + str(device))
-	var world := Vector2(240, 240)
-	var cell := Vector2i(2, 2)
+	var world := Vector2(144, 240)
+	var cell := Vector2i(1, 2)
 	var board: BoardManager = _level._board_manager
+	# 005 empieza con las cinco plazas ocupadas: liberar una mediante muerte
+	# real para comprobar el reemplazo; no alterar BoardManager desde el fixture.
+	var previous := board.get_occupant(cell) as Soldado
+	if previous != null:
+		previous.take_damage(9999)
+		await wait_physics_frames(2)
 	assert_true(board.is_cell_free(cell))
 	var initial_count := _soldier_count()
 	watch_signals(EconomyManager)
@@ -192,7 +207,7 @@ func _assert_four_economy_results(device: int, resize: bool) -> void:
 	var deployed := board.get_occupant(cell) as Soldado
 	assert_not_null(deployed)
 	if deployed != null:
-		assert_eq(deployed.global_position, Vector2(240, 240))
+		assert_eq(deployed.global_position, world)
 	EconomyManager.add_ammo(10)
 	await _press_world(world, device)
 	assert_eq(EconomyManager.collected_ammo, 15, "Ocupada con fondos no gasta")
@@ -206,3 +221,82 @@ func test_four_mouse_economy_results_stay_aligned_under_wide_framing() -> void:
 
 func test_four_emulated_mouse_economy_results_stay_aligned_after_resize() -> void:
 	await _assert_four_economy_results(InputEvent.DEVICE_ID_EMULATION, true)
+
+
+func test_all_five_home_centers_round_trip_and_remain_visible_after_tall_resize() -> void:
+	await _fixture(Vector2i(1440, 648))
+	var config: Resource = load("res://resources/levels/monte_calvo_board.tres")
+	for size: Vector2i in [Vector2i(1152, 864), Vector2i(1440, 648), Vector2i(1152, 648)]:
+		_viewport.size = size
+		await wait_physics_frames(3)
+		_assert_framing("cinco plazas " + str(size))
+		for cell: Vector2i in config.home_cells:
+			var world := Vector2(cell) * 96.0 + Vector2(48, 48)
+			var screen := _viewport.canvas_transform * world
+			assert_true(Rect2(Vector2.ZERO, Vector2(size)).has_point(screen), "Plaza extrema visible")
+			assert_almost_eq(_level._screen_to_world(screen), world, Vector2(0.01, 0.01))
+			assert_eq(_level._world_to_cell(_level._screen_to_world(screen)), cell)
+
+
+func test_pickup_and_replacement_after_tall_resize_use_real_canvas_inverse() -> void:
+	await _fixture(Vector2i(1440, 648))
+	_viewport.size = Vector2i(1152, 864)
+	await wait_physics_frames(3)
+	_assert_framing("recogida/reemplazo vista alta")
+	var cell := Vector2i(1, 5)
+	var world := Vector2(144, 528)
+	var board: BoardManager = _level._board_manager
+	var previous := board.get_occupant(cell) as Soldado
+	if previous != null:
+		previous.take_damage(9999)
+		await wait_physics_frames(2)
+	EconomyManager.collected_ammo = 12
+	var count_before := _soldier_count()
+	var pickup := PickupScene.instantiate() as AmmoPickup
+	pickup.amount = 3
+	pickup.position = world
+	_level.add_child(pickup)
+	await wait_physics_frames(3)
+	await _press_world(world, InputEvent.DEVICE_ID_EMULATION)
+	assert_false(is_instance_valid(pickup), "Picking real después del resize recoge la caja")
+	assert_eq(EconomyManager.collected_ammo, 15)
+	assert_eq(_soldier_count(), count_before, "Recoger no despliega")
+	assert_true(board.is_cell_free(cell))
+	await _press_world(world, InputEvent.DEVICE_ID_EMULATION)
+	assert_eq(EconomyManager.collected_ammo, 5, "Reemplazo explícito cobra una vez")
+	var deployed := board.get_occupant(cell) as Soldado
+	assert_not_null(deployed)
+	if deployed != null:
+		assert_eq(deployed.global_position, world)
+
+
+func _assert_terminal_picking_is_inert(terminal: int) -> void:
+	await _fixture(Vector2i(1152, 864))
+	var cell := Vector2i(1, 1)
+	var world := Vector2(144, 144)
+	var board: BoardManager = _level._board_manager
+	var previous := board.get_occupant(cell) as Soldado
+	if previous != null:
+		previous.take_damage(9999)
+		await wait_physics_frames(2)
+	EconomyManager.collected_ammo = 12
+	var before_count := _soldier_count()
+	var pickup := PickupScene.instantiate() as AmmoPickup
+	pickup.amount = 3
+	pickup.position = world
+	_level.add_child(pickup)
+	await wait_physics_frames(3)
+	GameStateManager._current_state = terminal
+	await _press_world(world, InputEvent.DEVICE_ID_EMULATION)
+	assert_true(is_instance_valid(pickup), "Terminal no recoge cajas tardías")
+	assert_eq(EconomyManager.collected_ammo, 12)
+	assert_eq(_soldier_count(), before_count)
+	assert_true(board.is_cell_free(cell))
+
+
+func test_won_rejects_late_pickup_through_real_viewport_dispatch() -> void:
+	await _assert_terminal_picking_is_inert(GameStateManager.GameState.WON)
+
+
+func test_lost_rejects_late_pickup_through_real_viewport_dispatch() -> void:
+	await _assert_terminal_picking_is_inert(GameStateManager.GameState.LOST)

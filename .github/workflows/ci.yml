@@ -50,7 +50,8 @@ jobs:
 
       # Esta comprobacion de importacion se conserva junto a la suite GUT.
       # Los exports por destino tienen workflows separados: Web genera un
-      # artefacto descargable; Android/iOS mantienen su distribucion existente.
+      # artefacto interno descargable; Android/iOS solo distribuyen manualmente
+      # con aprobación de publicación y autorización para la revisión exacta.
       # Ver docs/ARCHITECTURE.md §7 y export-web.yml.
       - name: Importar el proyecto (headless)
         run: godot --headless --path . --editor --import

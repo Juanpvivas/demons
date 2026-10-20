@@ -5,15 +5,22 @@ const Visual := preload("res://scenes/units/soldado_visual.gd")
 const EnemyDouble := preload("res://tests/unit/units/enemigo_double.gd")
 var _ammo_before: int
 var _shared_frames: SpriteFrames
+var _game_state_before: int
+var _world: Node2D
 
 func before_each() -> void:
 	_ammo_before = EconomyManager.collected_ammo
+	_game_state_before = GameStateManager.get("_current_state")
+	GameStateManager.set("_current_state", GameStateManager.GameState.PLAYING)
+	_world = Node2D.new()
+	add_child_autofree(_world)
 	_shared_frames = Fixtures.frames()
 
 func after_each() -> void:
 	EconomyManager.collected_ammo = _ammo_before
+	GameStateManager.set("_current_state", _game_state_before)
 
-func _soldier(ammo := 3, position := Vector2.ZERO) -> Soldado:
+func _soldier(ammo := 3, position := Vector2(144, 336)) -> Soldado:
 	var soldier: Soldado = load("res://scenes/units/Soldado.tscn").instantiate()
 	soldier.stats = load("res://resources/units/soldado_base_stats.tres").duplicate()
 	soldier.stats.max_ammo = ammo
@@ -27,13 +34,16 @@ func _soldier(ammo := 3, position := Vector2.ZERO) -> Soldado:
 	sprite.flip_h = false
 	sprite.flip_v = false
 	soldier.position = position
-	return add_child_autofree(soldier)
+	soldier.set_grid_cell(Vector2i(floori(position.x / 96), floori(position.y / 96)))
+	_world.add_child(soldier)
+	return soldier
 
-func _enemy(soldier: Soldado, health := 100, offset := Vector2(0, -150)) -> EnemyDouble:
+func _enemy(soldier: Soldado, health := 100, offset := Vector2(150, 0)) -> EnemyDouble:
 	var enemy := EnemyDouble.new()
 	enemy.health = health
 	enemy.position = soldier.position + offset
-	return add_child_autofree(enemy)
+	_world.add_child(enemy)
+	return enemy
 
 func _presenter() -> SoldadoVisual:
 	var visual := Visual.new()
@@ -74,7 +84,7 @@ func test_real_melee_hit_has_its_own_reaction_without_extra_damage() -> void:
 	var soldier := _soldier(1)
 	_enemy(soldier, 5)
 	await wait_until(func(): return soldier._mode == Soldado.SoldierMode.MELEE, 0.50)
-	var enemy := _enemy(soldier, 100, Vector2(0, -40))
+	var enemy := _enemy(soldier, 100, Vector2(40, 0))
 	await wait_until(func(): return not enemy.damage_received.is_empty(), 0.50)
 	assert_eq(soldier.get_node("AnimatedSprite2D").animation, &"melee_attack")
 	await wait_seconds(0.28)
@@ -144,7 +154,7 @@ func test_deactivation_wins_over_hit_morale_and_pending_attack_callbacks() -> vo
 
 func test_two_real_soldiers_keep_independent_mode_animation_and_progress() -> void:
 	var first := _soldier(1)
-	var second := _soldier(3, Vector2(1000, 0))
+	var second := _soldier(3, Vector2(144, 528))
 	_enemy(first, 5)
 	await wait_until(func(): return first._mode == Soldado.SoldierMode.MELEE, 0.50)
 	assert_eq(first.get_node("AnimatedSprite2D").animation, &"melee_idle")

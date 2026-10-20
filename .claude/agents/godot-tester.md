@@ -82,6 +82,17 @@ con regresión pertinente y QA, aunque la feature continúe en otros PR.
 - **No modifiques código de implementación para que un test pase.** Si un test falla porque el código no cumple el spec, eso es un bug — repórtalo con el escenario exacto que falló, el resultado esperado vs. el obtenido, y los archivos involucrados. Corregirlo es trabajo de `dev-godot`, no tuyo.
 - Antes de reportar un fallo como bug, descarta que el error esté en tu propio test (aserción mal escrita, setup incompleto) — si tienes dudas genuinas sobre cuál de los dos falla, repórtalo como ambiguo en vez de asumir automáticamente que el código de implementación está mal.
 
+## Alcance de integración y publicación
+
+Identifica el gate asignado por el orquestador (constitución 4.0.0). Para
+integración verifica GREEN/regresión, build/exportación aplicables y recorridos
+funcionales en entornos disponibles; declara variantes, errores y muestras de
+rendimiento, incluidas las peores. Hardware no disponible queda pendiente de
+publicación, sin aprobar SC-007. Para publicación se exige además artefacto y
+renderer de destino, firma/instalación/versionado, matriz y rendimiento físico
+aplicables. No extrapoles Compatibility/software de QA a Mobile, GPU/hardware,
+empaquetado final o 60 FPS físicos. No distribuyas builds por integrar código.
+
 ## Al terminar
 
 Commitea únicamente tus archivos de prueba, por resultado y con referencia a

@@ -21,6 +21,9 @@ No fijar position.y=0 ni limit_left=0: el encuadre ancho necesita mundo x<0.
 Intervalos horizontales previstos: [0,1152] en iPad 1152×864, [-144,1296] en
 Xiaomi 1440×648 y aproximadamente [-266,1418] en Web 1684×648. Conservar la
 distribución del iPad y cubrir esos márgenes sin vacío o corte decorativo nuevo.
+Las dimensiones de Web móvil describen la corrección histórica de I1. Las
+nuevas verificaciones Web se limitan a computador desde el 2026-10-19; en
+Android/iOS se usa la app instalada, según la constitución 3.0.0.
 Notificar hechos ya confirmados sin esperar. Daño, munición, moral y cooldowns
 conservan valores/orden. Ningún clip/callback llama take_damage, reload, add_ammo,
 free_cell, notify_enemy_defeated o métodos terminales.
@@ -123,17 +126,27 @@ FR-008–010 y SC-004/005: caja/input/redimensionamiento.
 FR-009/010 y SC-006: partida terminal y regresión real de victoria/derrota.
 SC-007: baseline/candidato con carga/frame times/memoria por entorno,
 Xiaomi 11T Pro físico `2107113SG` de 2021 como referencia provisional exclusiva
-de 004 (autorización del 2026-10-16, constitución 2.2.0) y 60 FPS estables sin
+de 004 (autorización del 2026-10-16, enmienda 2.2.0 conservada en la
+constitución 3.0.0) y 60 FPS estables sin
 relajar por promedios. Exigir nuevas mediciones y QA; sin heredar resultados de
-002/003 ni certificar equipos menos potentes o iOS. Web y nativo se miden y
-aceptan por separado también sobre el mismo Xiaomi.
+002/003 ni certificar equipos menos potentes o iOS. Web en computador y apps
+nativas se miden y aceptan por separado. Android Emulator autorizado para APK
+no exime las mediciones físicas pendientes de SC-007; Compatibility temporal
+no acredita Mobile.
 FR-012/SC-008: diff acotado y QA/resumen en PR, sin nuevas evidencias Git.
 
-Quickstart define matriz y pasos: Web 1152×648/960×540 y móvil horizontal,
-apps Android/iOS separadas. No probado queda pendiente y bloquea su cierre.
+Quickstart define matriz y pasos: Web en computador 1152×648/960×540 y apps
+Android/iOS instaladas por separado. No se continúan pruebas de navegador
+móvil. Lo no probado de la matriz vigente queda pendiente y bloquea su cierre;
+los resultados y pendientes históricos conservan su alcance original.
 GUT verifica semántica/ciclo, no píxeles/tipo de textura. Arte se revisa
 visualmente. Simulador/editor no acreditan navegador/hardware físico.
 La corrección T031 añadió resize/encuadre y material neutro/reset al RED previo
 al cambio y verificó después tamaño opaco, contraste/grises, cobertura, gestos
 reales y regresión por entorno. QA T032 aprobó la enmienda y T036 su
 comportamiento; la consolidación y entrega se siguen en las tareas y el PR.
+
+Constitución 4.0.0 separa integración funcional de publicación. SC-007 y las
+certificaciones físicas/renderer/paquete pendientes corresponden a publicación;
+no se dan por aprobadas ni se alteran las aprobaciones históricas. QA evalúa
+integración por separado con GREEN, build, función, documentación y CI.

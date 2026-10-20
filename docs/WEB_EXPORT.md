@@ -1,5 +1,12 @@
 # Exportación Web para itch.io
 
+**Alcance vigente desde el 2026-10-19:** por decisión de la persona y
+constitución 3.0.0, Web se publica y prueba solo en navegador de computador.
+En Android/iOS se prueban apps nativas instaladas, incluido APK en Android
+Emulator o `.app` en iOS Simulator cuando corresponda. No se continúan pruebas
+de navegador móvil. Los resultados y pendientes de 003 descritos abajo son
+históricos, conservan su alcance original y no acreditan una app nativa.
+
 **Estado al 2026-10-16: paquete revisado localmente y entrega 003 aceptada por
 QA en Chrome de escritorio y Xiaomi/Chrome horizontal.** Incluye interacción,
 corroboración visual de producción y partidas manuales observadas hasta LOST.
@@ -69,8 +76,9 @@ python3 -m http.server 8060 --directory build/web --bind 127.0.0.1
 Abrir `http://127.0.0.1:8060/`; no abrir `index.html` como archivo ni servir la
 raíz del repositorio. Este servidor es para desarrollo local. Para probar el
 ZIP, extraerlo en una carpeta nueva y servir esa carpeta con el mismo método.
-Las instrucciones de toque físico, iframe y casos controlados están en
-[quickstart](../specs/003-web-itchio/quickstart.md).
+Las instrucciones de iframe y casos controlados están en el
+[quickstart histórico de 003](../specs/003-web-itchio/quickstart.md); sus pasos
+de navegador móvil no forman parte de las nuevas verificaciones.
 
 ## Qué está comprobado
 
@@ -232,9 +240,10 @@ manual posterior, conservando los límites de rendimiento y soporte declarados:
 1. En la página del juego elegir **HTML Game** y cargar `demons-web.zip`.
 2. Marcar que se ejecuta en navegador; comenzar con **Click to play**, iframe
    **1152×648** y botón de pantalla completa.
-3. Activar **Mobile Friendly** únicamente tras comprobar la versión Web móvil.
-4. Previsualizar la página y comprobar clic, toque y carga antes de decidir su
-   visibilidad. Cuenta, textos comerciales y donaciones se gestionan aparte.
+3. Mantener **Mobile Friendly** desactivado conforme al alcance Web en computador.
+4. Previsualizar la página en computador y comprobar clic, resize y carga antes
+   de decidir su visibilidad. Cuenta, textos comerciales y donaciones se
+   gestionan aparte.
 
 [Guía oficial de itch.io](https://itch.io/docs/creators/html5). Esta feature
 no inicia sesión, sube archivos ni publica la página.

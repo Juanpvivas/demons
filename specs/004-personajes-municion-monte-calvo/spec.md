@@ -24,6 +24,13 @@ el suelo y márgenes equilibrados en Xiaomi, conservando la composición de iPad
 La corrección tiene aprobación funcional T036; los criterios siguientes
 conservan su alcance y las aprobaciones históricas de T001–T013.
 
+**Alcance de plataformas desde el 2026-10-19**: por decisión de la persona y
+constitución 3.0.0, Web solo se prueba en navegador de computador. Android/iOS
+se prueban como apps instaladas: APK Android, IPA en dispositivo iOS o `.app`
+en iOS Simulator. No se continúan pruebas de navegador móvil. Las medidas y
+aprobaciones anteriores de Web móvil permanecen como referencias históricas;
+no acreditan una app instalada ni sustituyen los requisitos nativos físicos.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Reconocer al soldado y su modo de combate (Priority: P1)
@@ -191,8 +198,8 @@ repetir con reserva suficiente y una celda libre bajo la caja.
   También conserva la precedencia de recoger sobre desplegar y las condiciones
   de victoria/derrota. La imagen visual no desplaza las posiciones jugables.
 - **FR-010**: La presentación DEBE conservar legibilidad y correspondencia con
-  la interacción en los tamaños de la matriz de aceptación, en Web de escritorio
-  y móvil, Android e iOS nativos. El soldado DEBE ser reconocible sobre el suelo
+  la interacción en los tamaños de la matriz de aceptación, en Web de computador
+  y apps Android/iOS instaladas. El soldado DEBE ser reconocible sobre el suelo
   sin overlays y también en grises, con luz/contorno mate discreto. El encuadre
   DEBE centrar horizontalmente el combate en pantallas anchas, conservar el origen
   vertical efectivo y la composición de iPad, sin mover las posiciones jugables.
@@ -247,31 +254,39 @@ repetir con reserva suficiente y una celda libre bajo la caja.
   recoger una sola vez sin desplegar, desplegar en libre con costo real,
   rechazar celda ocupada y rechazar fondos insuficientes. La regresión pertinente
   confirma cero cambios de datos de balance y de las invariantes de FR-009.
-- **SC-005**: En al menos dos tamaños de escritorio y un tamaño móvil
-  horizontal de la matriz se distinguen soldado, enemigo, sus armas y la caja;
+- **SC-005**: En al menos dos tamaños Web de computador y un tamaño móvil
+  horizontal de app instalada de la matriz se distinguen soldado, enemigo, sus
+  armas y la caja;
   al cambiar de tamaño conservan su alineación jugable. Para la corrección I1,
   el soldado neutro tiene altura opaca objetivo aproximada de 72 unidades,
-  anclaje en raíz+y24 y pivote estable con error ≤1 unidad; en CSS 794×305 su
-  silueta neutra mide al menos 32 CSS px de alto, sin contar transparencia,
-  contorno o pulsos. Se reconoce sobre el suelo sin overlay y también en grises.
+  anclaje en raíz+y24 y pivote estable con error ≤1 unidad. La referencia
+  histórica de CSS 794×305 y al menos 32 CSS px de silueta neutra se conserva
+  para la corrección I1, sin exigir una nueva prueba en navegador móvil.
+  La medida de silueta excluye transparencia, contorno o pulsos. Se reconoce
+  sobre el suelo sin overlay y también en grises.
   El eje mundo x=576 se proyecta al 50 % del ancho del viewport lógico con error
   ≤1 unidad y el origen vertical efectivo del canvas permanece en y=0, sin zoom.
   Se conserva la distribución iPad 1152×864 y se equilibran márgenes en Xiaomi
-  1440×648 y Web aproximadamente 1684×648, sin vacíos decorativos a la izquierda.
+  nativo 1440×648, sin vacíos decorativos a la izquierda. El encuadre Web móvil
+  histórico de aproximadamente 1684×648 se conserva como referencia de I1.
   Web y apps nativas tienen resultados separados, incluidos pendientes y límites.
 - **SC-006**: Una partida manual completa hasta un resultado terminal no
   presenta errores críticos, actores ausentes por reciclado, bloqueos por
   animación ni cambios de reglas. Victoria y derrota se verifican además por
   separado con las rutas de comprobación existentes.
-- **SC-007**: Se mantiene el objetivo constitucional de 60 FPS estables en
+- **SC-007**: Antes de publicación se mantiene el objetivo constitucional de
+  60 FPS estables en
   gameplay típico sobre el Xiaomi 11T Pro físico `2107113SG` de 2021, referencia
   provisional exclusiva de 004 autorizada el 2026-10-16 y recogida en la
-  constitución 2.2.0. Se requieren nuevas mediciones y QA; la autorización no
-  aprueba rendimiento ni certifica equipos menos potentes. Se mide carga y
-  rendimiento por separado en los navegadores/dispositivos de aceptación Web
-  y en nativo, incluso en el mismo Xiaomi; no se heredan resultados de 002/003.
+  enmienda 2.2.0, conservada en la constitución 3.0.0. Se requieren nuevas
+  mediciones y QA; la autorización no aprueba rendimiento ni certifica equipos
+  menos potentes. Se mide carga y
+  rendimiento por separado en los navegadores de computador de aceptación Web
+  y en las apps nativas; no se heredan resultados de 002/003.
   La autorización no acredita iOS. La carga se registra sin inventar el límite
-  aún pendiente de la constitución.
+  aún pendiente de la constitución. Constituye un gate de publicación separado
+  de integración funcional según la enmienda 4.0.0; permanece pendiente donde
+  no hay medición física y no se da por cumplido con un merge.
 - **SC-008**: El 100 % de los recursos artísticos nuevos tiene procedencia y
   permisos documentados. Cada escenario exigido queda identificado como
   aprobado, fallido o pendiente en la revisión de entrega; los resultados y
@@ -300,12 +315,17 @@ repetir con reserva suficiente y una celda libre bajo la caja.
 - Los efectos breves de daño/derrota que se necesiten para comunicar los hechos
   forman parte de los estados básicos; no abren un sistema de efectos de combate
   completo ni cambian el ciclo de vida de los actores.
-- Antes de ejecutar las verificaciones de rendimiento se identificará y
-  obtendrá acceso al Xiaomi 11T Pro físico `2107113SG` de 2021 autorizado como
-  referencia provisional exclusiva de 004. Su ausencia mantiene pendiente esa
-  aceptación. La decisión explícita del 2026-10-16 no amplía la referencia
-  nominal global ni hereda la aprobación de 002/003. El plan fija la matriz y
-  el protocolo de medición, sin usar datos históricos como resultados nuevos.
+- La referencia física provisional exclusiva de 004 sigue siendo el Xiaomi
+  11T Pro `2107113SG` de 2021, autorizado el 2026-10-16 por la constitución
+  2.2.0, conservada en la constitución 3.0.0. Desde el 2026-10-19 la persona
+  informa que ya no será posible realizar nuevas pruebas físicas y autoriza
+  continuar con Android Emulator conforme a
+  la matriz de [quickstart](quickstart.md#4-verificación-visual-y-gestos-reales),
+  únicamente con el APK instalado. iOS usa la app nativa, sin navegador.
+  La ejecución emulada acredita solo su entorno; no sustituye las nuevas
+  mediciones físicas de SC-007, cuya aceptación permanece pendiente. Se
+  conservan las aprobaciones históricas y sus límites, sin heredar resultados
+  de 002/003 ni certificar hardware desde el emulador.
 - La producción de arte y su revisión visual tienen verificación proporcional.
   Cualquier comportamiento visual nuevo verificable automáticamente sigue
   tester RED → desarrollo → tester GREEN → QA, con regresión jugable pertinente.
@@ -314,3 +334,12 @@ repetir con reserva suficiente y una celda libre bajo la caja.
 - La corrección I1 reutiliza el atlas existente; no exige regenerar el PNG.
   Aumenta solo la representación visual y su contraste, sin cambiar cuerpos
   48×48, grid 96×96, detectores, radio de picking 20 o invariantes de FR-009.
+
+## Enmienda de integración y publicación (2026-10-19)
+
+La persona autorizó la constitución 4.0.0 y el PR conjunto 004-I2 + 005-I1.
+La integración funcional requiere TDD/GREEN, regresión, compilación/exportación
+aplicables, documentación, CI y QA independiente en entornos disponibles. No
+aprueba SC-007, renderer/paquete de producción ni hardware. Esos requisitos
+siguen pendientes de publicación y no se eximen por falta de dispositivo.
+No se inicia 004-I3, no se cierra el Issue y no se distribuye automáticamente.

@@ -31,6 +31,8 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 
 
 func _collect() -> void:
+	if GameStateManager._current_state != GameStateManager.GameState.PLAYING or is_queued_for_deletion():
+		return
 	EconomyManager.add_ammo(amount)
 	# `queue_free()`, nunca `free()` (`docs/ARCHITECTURE.md` §4.5): evita
 	# use-after-free si algo más en este mismo frame todavía referencia esta

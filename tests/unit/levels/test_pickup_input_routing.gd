@@ -10,8 +10,8 @@ extends GutTest
 
 const PICKUP_SCENE := preload("res://scenes/levels/AmmoPickup.tscn")
 const LEVEL_SCENE := preload("res://scenes/levels/Nivel_MonteCalvo.tscn")
-const PICKUP_POSITION := Vector2(240, 240)
-const PICKUP_CELL := Vector2i(2, 2)
+const PICKUP_POSITION := Vector2(144, 240)
+const PICKUP_CELL := Vector2i(1, 2)
 
 var _viewport: SubViewport
 var _host: Node2D
@@ -26,6 +26,7 @@ var _saved_wave_state: Dictionary
 func before_each() -> void:
 	_saved_ammo = EconomyManager.collected_ammo
 	_saved_game_state = GameStateManager.get("_current_state")
+	GameStateManager._current_state = GameStateManager.GameState.PLAYING
 	_saved_wave_state = {}
 	for property: String in ["waves", "current_wave_index", "_total_enemies_in_current_wave", "_defeated_in_current_wave"]:
 		_saved_wave_state[property] = WaveManager.get(property)
@@ -52,6 +53,12 @@ func _fixture(with_level: bool) -> void:
 	add_child_autofree(_viewport)
 	_host = LEVEL_SCENE.instantiate() if with_level else Node2D.new()
 	_viewport.add_child(_host)
+	if with_level:
+		var board: BoardManager = _host.get("_board_manager")
+		var owner := board.get_occupant(PICKUP_CELL) as Soldado
+		if owner != null:
+			owner.take_damage(owner.stats.max_health)
+			await wait_physics_frames(2)
 	_pickup = PICKUP_SCENE.instantiate()
 	_pickup.amount = 3
 	_pickup.position = PICKUP_POSITION
@@ -59,6 +66,7 @@ func _fixture(with_level: bool) -> void:
 	_host.add_child(_pickup)
 	EconomyManager.collected_ammo = 12
 	await wait_physics_frames(3)
+	_pool_changes.clear() # Excluir la notificación de inicio; el gesto aún no ocurrió.
 
 
 func _press_and_release(device: int) -> void:
