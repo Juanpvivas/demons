@@ -378,3 +378,112 @@ func test_game_over_screen_shows_derrota_on_game_lost() -> void:
 		_hud._game_over_label.text, "DERROTA",
 		"la pantalla de fin de partida debe mostrar el mensaje de derrota"
 	)
+
+
+## 005/T035: panel observador, intención con identidad y controles visibles.
+func _reload_button() -> Button:
+	for node: Node in _hud.find_children("*", "Button", true, false):
+		if "Recargar" in (node as Button).text:
+			return node as Button
+	return null
+
+
+func _individual_labels() -> String:
+	# El panel de selección se identifica por su función, sin imponer un nombre exacto.
+	for panel: Node in _hud.find_children("*", "Control", true, false):
+		var title := str(panel.name).to_lower()
+		if not ("selection" in title or "selected" in title or "seleccion" in title):
+			continue
+		var text := ""
+		for node: Node in panel.find_children("*", "Label", true, false):
+			if node.is_visible_in_tree():
+				text += (node as Label).text + "\n"
+		return text
+	return ""
+
+
+func _assert_panel_value(text: String, pattern: String, message: String) -> void:
+	var regex := RegEx.new()
+	regex.compile(pattern)
+	assert_not_null(regex.search(text), message + ": " + text)
+
+
+func test_i3_selected_panel_observes_individual_ammo_morale_and_reload_eligibility() -> void:
+	var saved_state: int = GameStateManager._current_state
+	var saved_ammo: int = EconomyManager.collected_ammo
+	GameStateManager._current_state = GameStateManager.GameState.PLAYING
+	EconomyManager.collected_ammo = 0
+	var soldier := preload("res://scenes/units/Soldado.tscn").instantiate() as Soldado
+	soldier.set_grid_cell(Vector2i(1, 5))
+	add_child_autofree(soldier)
+	soldier.set("_current_ammo", 0)
+	soldier.set("_current_morale", 7.0)
+	_spawn_hud()
+	_hud.set_selected_soldier(soldier)
+	assert_same(_hud.get_selected_soldier(), soldier)
+	var panel := _individual_labels()
+	_assert_panel_value(panel, "(?i)fila[^0-9]*5(?:[^0-9]|$)", "Fila individual 5")
+	_assert_panel_value(panel, "(?i)(munici.n|carga)[^0-9]*0[ ]*/[ ]*10(?:[^0-9]|$)", "Carga/capacidad individual 0/10")
+	_assert_panel_value(panel, "(?i)moral[^0-9]*7(?:[^0-9]|$)", "Moral individual 7")
+	var button := _reload_button()
+	assert_not_null(button, "Existe botón visible Recargar, sin depender de un nombre de nodo")
+	if button != null:
+		assert_true(button.is_visible_in_tree())
+		assert_true(button.disabled, "Sin fondos se deshabilita")
+		EconomyManager.add_ammo(soldier.stats.deploy_ammo_cost)
+		assert_false(button.disabled, "La señal económica actualiza elegibilidad sin nueva selección")
+
+		watch_signals(_hud)
+		_hud.request_selected_reload()
+		assert_signal_emitted_with_parameters(_hud, "reload_requested", [soldier.get_instance_id()])
+		assert_eq(EconomyManager.collected_ammo, soldier.stats.deploy_ammo_cost, "HUD solo emite intención, no cobra")
+		assert_eq(soldier.get_reload_state().ammo, 0)
+		assert_true(soldier.request_reload())
+		assert_true(button.disabled, "Aceptación deshabilita botón inmediatamente")
+	GameStateManager._current_state = saved_state
+	EconomyManager.collected_ammo = saved_ammo
+
+
+func test_i3_empty_selection_and_dead_owner_do_not_emit_reload_intent() -> void:
+	_spawn_hud()
+	watch_signals(_hud)
+	_hud.request_selected_reload()
+	assert_signal_not_emitted(_hud, "reload_requested")
+	var soldier := preload("res://scenes/units/Soldado.tscn").instantiate() as Soldado
+	add_child_autofree(soldier)
+	_hud.set_selected_soldier(soldier)
+	soldier.take_damage(9999)
+	_hud.request_selected_reload()
+	assert_null(_hud.get_selected_soldier())
+	assert_signal_not_emitted(_hud, "reload_requested")
+	var button := _reload_button()
+	assert_not_null(button)
+	if button != null:
+		assert_true(button.disabled)
+
+
+func test_i3_ineligible_selected_owner_disables_control_and_rejects_direct_intent(
+		scenario = use_parameters(["partial", "full", "returning", "terminal"])) -> void:
+	var saved_state: int = GameStateManager._current_state
+	var saved_ammo: int = EconomyManager.collected_ammo
+	GameStateManager._current_state = GameStateManager.GameState.PLAYING
+	EconomyManager.collected_ammo = 100
+	var soldier := preload("res://scenes/units/Soldado.tscn").instantiate() as Soldado
+	add_child_autofree(soldier)
+	soldier.set("_current_ammo", 1 if scenario == "partial" else 10)
+	if scenario == "returning":
+		soldier.set("_movement_state", Soldado.MovementState.RETURNING)
+	if scenario == "terminal":
+		GameStateManager.report_reached_defended_position()
+	_spawn_hud()
+	_hud.set_selected_soldier(soldier)
+	watch_signals(_hud)
+	var button := _reload_button()
+	assert_not_null(button)
+	if button != null:
+		assert_true(button.disabled)
+	_hud.request_selected_reload()
+	assert_signal_not_emitted(_hud, "reload_requested", "La invocación directa también revalida")
+	assert_eq(EconomyManager.collected_ammo, 100)
+	GameStateManager._current_state = saved_state
+	EconomyManager.collected_ammo = saved_ammo
