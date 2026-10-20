@@ -133,6 +133,45 @@ func test_first_real_machete_hit_stops_advance_before_body_collision() -> void:
 	assert_eq(_soldier.get_movement_state(), Soldado.MovementState.MELEE_CONTACT)
 
 
+func test_externally_freed_contact_target_causes_wait_then_new_front_resumes(
+		retirement = use_parameters(["damage", "queue_free"])) -> void:
+	_defender()
+	await _empty_rifle()
+	var home := _soldier.global_position
+	var enemy := _enemy(home + Vector2(240, 0))
+	for step in 150:
+		await wait_physics_frames(1)
+		if enemy.get("_current_health") < 500:
+			break
+	assert_lt(enemy.get("_current_health"), 500, "El blanco recibió un golpe real antes del retiro externo")
+	assert_gt(_soldier.global_position.x, home.x + 20.0, "El contacto ocurrió fuera de la trinchera")
+	# La retirada ocurre en idle, como el control externo Web, no durante
+	# physics_frame cuando el soldado aún podría limpiar el foco ese tick.
+	await get_tree().process_frame
+	assert_eq(_soldier.get_movement_state(), Soldado.MovementState.MELEE_CONTACT)
+	assert_same(_soldier.get("_current_melee_target"), enemy,
+		"Precondición: la consulta física adquirió este blanco real, sin inyectarlo")
+	var stopped := _soldier.global_position
+	var health: int = _soldier.get("_current_health")
+	if retirement == "damage":
+		assert_true(enemy.take_damage(9999), "La baja externa usa el contrato real sin pool")
+	else:
+		enemy.queue_free()
+	await wait_physics_frames(3)
+	assert_false(is_instance_valid(enemy), "Se ejercita un nodo realmente liberado, no sólo inactivo")
+	await wait_physics_frames(12)
+	assert_eq(_soldier.global_position, stopped, "Sin blanco frontal espera donde combatía")
+	assert_eq(_soldier.get_movement_state(), Soldado.MovementState.WAITING)
+	assert_eq(_soldier.get("_current_health"), health, "No recibe daño de la referencia liberada")
+	assert_eq(_soldier.get("_current_morale"), UnitData.moral_per_kill)
+	var next := _enemy(stopped + Vector2(240, 0))
+	await wait_physics_frames(24)
+	assert_gt(_soldier.global_position.x, stopped.x + 10.0, "Un frontal nuevo reanuda el avance real")
+	assert_almost_eq(_soldier.global_position.y, home.y, 0.01)
+	assert_eq(_soldier.get_movement_state(), Soldado.MovementState.ADVANCING)
+	assert_eq(next.get("_current_health"), 500, "No arrastra el ataque anterior fuera de alcance")
+
+
 func test_enemy_contact_really_kills_the_defender_after_departure_and_reports_home_once() -> void:
 	_defender(2, 10)
 	await _empty_rifle()
