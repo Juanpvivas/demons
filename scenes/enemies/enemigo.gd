@@ -61,6 +61,9 @@
 class_name Enemigo
 extends CharacterBody2D
 
+## Contrato de activación reservado para el tablero horizontal.
+enum SpawnOrigin { INITIAL, WAVE }
+
 ## Grupo que identifica a todo `Enemigo` ante los sistemas de detección de
 ## `Soldado` (`Soldado.ENEMY_GROUP`, mismo literal).
 const ENEMY_GROUP: String = "enemies"
@@ -94,6 +97,11 @@ signal reached_defended_position
 ## Molde de datos base/máximos de este enemigo — solo lectura, nunca mutado
 ## en runtime (`docs/ARCHITECTURE.md` §4.3).
 @export var stats: EnemyStats
+
+## Interfaces de activación todavía sin integrar al comportamiento del enemigo.
+var lane_id: int = -1
+var spawn_origin: SpawnOrigin = SpawnOrigin.WAVE
+var activation_generation: int = 0
 
 ## Salud actual, runtime. Inicializada desde `stats.max_health` en `_ready()`
 ## y reinicializada en cada reciclado vía `prepare_for_spawn()` (T042).
@@ -175,7 +183,9 @@ func set_pool(pool: ObjectPool) -> void:
 ## (distintas oleadas pueden reciclar la misma instancia física con
 ## `EnemyStats` distintos) y reposiciona el enemigo en el punto de spawn.
 ## Reinicia además toda la presentación antes del primer frame del nuevo uso.
-func prepare_for_spawn(new_stats: EnemyStats, spawn_position: Vector2) -> void:
+func prepare_for_spawn(new_stats: EnemyStats, spawn_position: Vector2,
+		_new_lane_id: int = -1, _new_origin: SpawnOrigin = SpawnOrigin.WAVE) -> void:
+	# Los argumentos horizontales son invocables, pero aún no se aplican.
 	stats = new_stats
 	_current_health = stats.max_health
 	global_position = spawn_position

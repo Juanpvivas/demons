@@ -111,7 +111,8 @@ func _ready() -> void:
 ## llamara después, el primer `wave_started` no encontraría `_enemy_pool`
 ## listo.
 func setup(enemy_scene: PackedScene, initial_pool_size: int, spawn_position: Vector2,
-		combat_visual_effects: CombatVisualEffects = null) -> void:
+		combat_visual_effects: CombatVisualEffects = null,
+		_board_config: LaneBoardConfig = null) -> void:
 	_spawn_position = spawn_position
 	_combat_visual_effects = combat_visual_effects
 	_enemy_pool = ObjectPool.new()
@@ -120,6 +121,11 @@ func setup(enemy_scene: PackedScene, initial_pool_size: int, spawn_position: Vec
 	# `_enemy_pool` arriba.
 	_enemy_pool.instance_created.connect(_on_enemy_pool_instance_created)
 	_enemy_pool.setup(enemy_scene, initial_pool_size)
+
+
+## Interfaz reservada: la activación inicial en el pool sigue pendiente de RED.
+func spawn_initial_enemy(_stats: EnemyStats) -> Enemigo:
+	return null
 
 
 ## Encolado de la nueva oleada activa (aplana `spawn_entries`) y arranque
