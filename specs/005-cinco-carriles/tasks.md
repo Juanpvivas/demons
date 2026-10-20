@@ -2,7 +2,7 @@
 
 **Feature**: `005-cinco-carriles` · **Issue**: [#22](https://github.com/Juanpvivas/demons/issues/22) · **Rama de preparación**: `codex/005-cinco-carriles-preparacion`.
 **Input**: [spec](spec.md), [plan aprobado documentalmente](plan.md), [modelo](data-model.md), [contrato](contracts/horizontal-combat.md), [quickstart](quickstart.md) y [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
-**Estado**: preparación aprobada por QA y análisis de consistencia completo; 65 tareas de ejecución pendientes. Ninguna tarea, incluida T001, se ha ejecutado por preparar estos documentos.
+**Estado**: I1 en ejecución en `codex/005-i1-tablero`, desde `7925454` (preparación integrada en I2). T001–T004 aprobadas por QA; pruebas RED T005–T007 en preparación. El comportamiento horizontal sigue pendiente.
 
 I2/004 sigue conservado en `codex/004-i2-enemigo`, base `f90e888`, sin cierre ni
 modificación de sus tareas/aprobaciones. Las ramas de incremento dependen de esa
@@ -45,15 +45,15 @@ cambios heredados como exclusivos de 005. Un Issue para la feature; PR intermedi
 
 **Objetivo**: base preservada, incremento delimitado y harness operativo, sin confundir esta preparación con su ejecución.
 
-- [ ] T001 project-orchestrator: verificar `specs/005-cinco-carriles/checklists/requirements.md`, spec/plan/tasks y Issue #22; preparar `codex/005-i1-tablero` con base I2 explícita, revisión de tamaño/IDs y conservación de 004 en `specs/004-personajes-municion-monte-calvo/tasks.md`; sin dependencias.
-- [ ] T002 godot-tester: comprobar importación y baseline GUT con `tools/ci/run_gut.py` sobre T001, identificar cobertura existente en `tests/unit/` y harness de cuerpos reales; reportar fallos de entorno separados de RED; depende de T001.
+- [X] T001 project-orchestrator: verificar `specs/005-cinco-carriles/checklists/requirements.md`, spec/plan/tasks y Issue #22; preparar `codex/005-i1-tablero` con base I2 explícita, revisión de tamaño/IDs y conservación de 004 en `specs/004-personajes-municion-monte-calvo/tasks.md`; sin dependencias.
+- [X] T002 godot-tester: comprobar importación y baseline GUT con `tools/ci/run_gut.py` sobre T001, identificar cobertura existente en `tests/unit/` y harness de cuerpos reales; reportar fallos de entorno separados de RED; depende de T001.
 
 ## Fase 2 — Contratos mínimos para RED
 
 **Objetivo**: pruebas invocables sin implementar el comportamiento futuro.
 
-- [ ] T003 dev-godot: preparar solo interfaces/datos mínimos invocables de `resources/schemas/lane_board_config.gd`, `resources/levels/monte_calvo_board.tres`, `scenes/enemies/enemigo.gd` y `scenes/levels/wave_spawner.gd` conforme al contrato; sin activar cinco filas, movimiento, cursor o conteo nuevos y sin pruebas; depende de T002.
-- [ ] T004 qa-validator: revisar setup T003 contra `specs/005-cinco-carriles/contracts/horizontal-combat.md` y baseline T002, confirmando interfaz/harness utilizables y ausencia de conducta implementada antes de RED; depende de T003.
+- [X] T003 dev-godot: preparar solo interfaces/datos mínimos invocables de `resources/schemas/lane_board_config.gd`, `resources/levels/monte_calvo_board.tres`, `scenes/enemies/enemigo.gd` y `scenes/levels/wave_spawner.gd` conforme al contrato; sin activar cinco filas, movimiento, cursor o conteo nuevos y sin pruebas; depende de T002.
+- [X] T004 qa-validator: revisar setup T003 contra `specs/005-cinco-carriles/contracts/horizontal-combat.md` y baseline T002, confirmando interfaz/harness utilizables y ausencia de conducta implementada antes de RED; depende de T003.
 
 ## Fase 3 — US1: Defender cinco filas desde las trincheras (P1) · I1
 
