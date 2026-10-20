@@ -194,6 +194,17 @@ Reglas complementarias:
   ni, con más razón, para nodos externos (eso ya lo cubre la regla anterior
   contra `get_node("../../...")`).
 
+**Intenciones de UI y autoridad de gameplay (005-I3/T037–T042):** los widgets
+emiten intención con la identidad del actor observado; el nivel revalida esa
+identidad, dueño vivo y ocupación antes de delegar. El actor conserva la
+validación y el gasto: un botón deshabilitado no sustituye sus precondiciones.
+Cuando una operación puede reentrar desde señales síncronas, instala su guard
+antes de cualquier notificación, y revalida vida/partida después de callbacks
+antes de aplicar efectos tardíos. El HUD observa señales y estado inicial,
+sin polling que decida economía ni copia mutable del saldo. Este patrón
+extiende las conexiones y la presentación observadora existentes; no añade un
+framework ni otro autoload.
+
 **Hallazgo histórico sobre overlaps almacenados de `Area2D`:** la detectora
 se situó en el lado estático de la interacción, en lugar del cuerpo que se
 movía con `move_and_slide()`. Hallazgo de motor confirmado de
@@ -292,8 +303,8 @@ el nivel aplica whitelist y reserva de gasto antes de crear un dueño.
 
 `UnitStats.advance_speed` y `return_speed` son velocidades propias del soldado,
 ambas 40 en `soldado_base_stats.tres`, independientes de `EnemyStats.move_speed`.
-I2 usa `advance_speed`; `return_speed` queda preparado para I3, sin retorno
-implementado. Hogar, fila, estado de movimiento y blancos siguen siendo estado
+I2 usa `advance_speed`; I3 activa `return_speed` para el regreso físico al
+hogar. Hogar, fila, estado de movimiento y blancos siguen siendo estado
 por actor, no datos mutables del Resource.
 
 ### 4.4 Modo fusil / modo machete como estado simple
@@ -308,7 +319,10 @@ enum SoldierMode { RIFLE, MELEE }
 
 005-I2 conserva ese enum de arma y añade otro de desplazamiento:
 `HOME`, `ADVANCING`, `MELEE_CONTACT`, `WAITING`, `RETURNING` y `DEAD`.
-`RETURNING` es una interfaz reservada para I3, todavía sin ruta activa.
+I3 activa `RETURNING`: `move_and_slide()` recorre la misma fila hacia el
+hogar, limita el último paso a la distancia restante y sólo pasa a `HOME`
+al llegar físicamente (tolerancia ≤0,01). Durante ese estado conserva daño
+entrante, cancela blancos y no ejecuta la rama ofensiva de ningún arma.
 El fusil sólo opera en la posición del hogar; el machete avanza hacia un frontal
 de su fila, se detiene al entrar en alcance o espera si no hay frontal.
 Movimiento, arma y presentación mantienen responsabilidades separadas, sin
@@ -483,7 +497,8 @@ delimita los tiempos y la frontera jugable.
   a defensa. La detección/daño mutuo de contacto se resuelve desde el soldado
   mediante consultas físicas, aunque ambos cuerpos puedan moverse.
 - **`Nivel_MonteCalvo.tscn`**: raíz `Node2D`, `Tablero` (`TileMap` 96×96),
-  `PosicionDefendida`, `MonteCalvoVisual`, `HorizontalBoardVisual` y `Camera2D`.
+  `PosicionDefendida`, `MonteCalvoVisual`, `HorizontalBoardVisual`, `Camera2D`
+  y `HUD` (`CanvasLayer`).
   Al iniciar una partida el nivel reinicia GameStateManager y la reserva global,
   crea gratuitamente cinco soldados cargados y prepara el servicio visual y
   spawner; los actores iniciales ya no están colocados a mano en el `.tscn`.
@@ -515,12 +530,24 @@ delimita los tiempos y la frontera jugable.
   para golpear; sin frontal espera en su posición, sin perseguir detrás o en
   otra fila. La colisión real conserva separación y cada actor puede morir.
   Terminal y muerte cancelan blancos e intención de movimiento.
-- **Recarga heredada durante I2:** `reload()` requiere actor vivo, PLAYING,
-  fondos y distancia al hogar ≤0,01 unidades. No exige el enum `HOME` ni carga
-  cero; fuera rechaza sin gasto. Conserva vida/moral y repone el fusil en el
-  hogar. Selección, botón, elegibilidad estricta, transacción de una orden y
-  regreso vulnerable son I3; las poses laterales son I4. El nivel aún no
-  instancia HUD o pantallas terminales.
+- **Selección y recarga de I3:** el nivel resuelve `home_cell` contra el dueño
+  vivo actual de `BoardManager`, aunque esté lejos. Conserva referencia y
+  hogar seleccionados; antes de ordenar revalida ocupante e identidad recibida
+  de `HUD.reload_requested(instance_id)`. La baja limpia la selección, de modo
+  que una intención antigua no actúa sobre un reemplazo. `HUD.tscn` está
+  instanciado en el nivel y muestra fila, carga/capacidad, moral y retorno;
+  observa `reload_state_changed`, economía y estado de partida. Sus controles
+  consumen entrada; la decoración la deja pasar y la pickup conserva prioridad.
+- **Autoridad del actor:** `can_reload()`/`request_reload()` exigen vivo,
+  PLAYING, carga cero, fondos y ausencia de aceptación/retorno activo. El guard
+  se instala antes de emitir señales o gastar, pues sus callbacks son síncronos.
+  Cobra `stats.deploy_ammo_cost` una vez y repone `stats.max_ammo`, conservando
+  salud/moral; `reload()` delega a la misma operación. Tras el gasto vuelve a
+  comprobar vida/partida, evitando reanimar o iniciar un retorno tardío si un
+  callback mató al actor o terminó el juego. Desde fuera entra en `RETURNING`;
+  desde el hogar pasa a `HOME`/fusil sin viaje. Muerte y terminal detienen
+  ofensiva/movimiento y nuevas órdenes; la muerte libera el hogar de inmediato.
+  Poses laterales y acabado de interfaz siguen pendientes de I4.
 
 ### 5.1 Entorno decorativo separado del nivel
 
@@ -793,3 +820,4 @@ sección, sin exigir navegador móvil ni convertirlo en prueba de app instalada.
 | 2026-10-19 | Constitución 4.0.0: main de integración separado de publicación; distribución manual sólo main con confirmación explícita QA/humana y guard de versiones sin bypass |
 | 2026-10-19 | 005/T015 y 004/T021: geometría de nivel en Resource, cinco actores creados por partida, orientación horizontal y cursor/origen del pool; presentación enemiga observadora con reset por activación, cámara centrada en ambos ejes y arte/controles/publicación delimitados |
 | 2026-10-20 | 005/T029 tras QA T028: evolución a dos cuerpos móviles, consultas físicas por tick y hogar estable; estados/velocidades propios y recarga heredada delimitados frente a I3. Se gradúa validar referencias antes de operaciones tipadas y después elegibilidad/activación, conservando el hallazgo histórico de overlaps. |
+| 2026-10-20 | 005/T043 tras QA T042: RETURNING físico separado del arma y HUD observador; se gradúan intención con identidad, revalidación de autoridad y guard antes de callbacks síncronos, sin framework nuevo. |

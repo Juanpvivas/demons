@@ -3,7 +3,7 @@
 **Feature ID**: `005-cinco-carriles`
 **Planned Branch**: `codex/005-cinco-carriles-preparacion`
 **Created**: 2026-10-19
-**Status**: Preparación aprobada. I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 integrado en `main` mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 (T032–T045) en curso en `codex/005-i3-recarga`, desde ese `main`, sin implementación aprobada. I4–I5 y publicación T071 pendientes.
+**Status**: Preparación aprobada. I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 integrado en `main` mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 implementado en `codex/005-i3-recarga` y aprobado funcionalmente para integración en T042; documentación T043/T044 y PR en borrador T045 en consolidación, todavía fuera de `main`. I4–I5 y publicación T071 pendientes.
 
 **Input**: Cinco filas horizontales, con cinco trincheras a la izquierda,
 soldados colombianos disparando hacia la derecha desde ellas y enemigos de
@@ -21,12 +21,11 @@ en su propia rama.
 Este spec abarca también comportamientos posteriores aún no implementados;
 las tareas y QA distinguen el alcance de cada entrega.
 
-El alcance funcional aprobado de I2 es salida/espera/contacto de machete y
-liberación de origen al morir. Durante este incremento, la recarga heredada
-sólo opera para un soldado vivo, PLAYING y en su posición de hogar (≤0,01
-unidades), con fondos; fuera rechaza sin gasto. No incorpora todavía los
-requisitos de carga cero, transacción, selección, botón o regreso de I3.
-`return_speed=40` es un dato preparado sin ruta activa.
+I2 integrado aporta salida/espera/contacto de machete y liberación de origen
+al morir. I3 añade selección por dueño vivo, HUD mínimo, recarga con carga cero
+y cobro único, y regreso físico vulnerable a `return_speed=40`, sin ofensiva
+hasta llegar a HOME. T042 aprueba su integración funcional en la rama;
+consolidación documental y PR siguen pendientes, sin aprobar publicación.
 
 ## Clarifications
 

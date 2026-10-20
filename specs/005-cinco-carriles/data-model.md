@@ -2,8 +2,9 @@
 
 Modelo de la feature: I1 y movimiento/contacto I2 integrados en `main`
 mediante los PR #24 y [#25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`).
-I3 está en curso en `codex/005-i3-recarga`, sin implementación aprobada.
-Selección, transacción de recarga y `RETURNING` siguen siendo requisitos de I3;
+I3 está implementado y aprobado funcionalmente para integración en T042,
+en `codex/005-i3-recarga`, pendiente de consolidación documental y PR.
+Selección, transacción de recarga y `RETURNING` corresponden a I3;
 la presentación lateral es I4. Filas internas 0…4; UI 1…5 de arriba abajo.
 [Contrato de conducta](contracts/horizontal-combat.md).
 
@@ -19,7 +20,7 @@ la presentación lateral es I4. Filas internas 0…4; UI 1…5 de arriba abajo.
 | Bandas de fila | y∈`[96+96r,192+96r)` para r 0…4 |
 | Zona defendida | `Rect2(48,96,48,480)`, Area vertical sin bloqueo; detecta entrada real de cuerpo enemigo |
 | Márgenes | Superior y 0…96, inferior y 576…648; sin plazas nuevas |
-| `UnitStats.advance_speed/return_speed` | Dos campos `@export_range` propios, `.tres` 40/40; independientes del enemigo. I2 usa avance; regreso aún sin ruta activa |
+| `UnitStats.advance_speed/return_speed` | Dos campos `@export_range` propios, `.tres` 40/40; independientes del enemigo. I2 usa avance; I3 activa regreso físico |
 | Resources existentes | Stats/oleadas compartidos e inmutables; demás valores conservados de research |
 
 Solo `home_cells` son plazas de despliegue; resto del campo sirve para rutas
@@ -53,7 +54,7 @@ arma `RIFLE/MELEE`, estado de movimiento y blancos con identidad/activación.
 Cooldowns y presentación pertenecen al actor, nunca al Resource compartido.
 I2 implementa cuerpo móvil, `HOME/ADVANCING/MELEE_CONTACT/WAITING/DEAD` y
 consultas físicas por tick; `home_cell` corresponde a `_grid_cell` y no cambia
-durante la salida. La tabla conserva además el regreso previsto para I3.
+durante la salida y el regreso. I3 activa `RETURNING` según la tabla.
 
 | Movimiento | Conducta | Transiciones |
 |---|---|---|
@@ -70,15 +71,17 @@ retorno. Bloqueo no autoriza atravesar, cambiar de fila o teletransportarse.
 Último tick de regreso limita movimiento a distancia restante; tolerancia
 numérica de llegada ≤0,01 unidades, sin salto o oscilación.
 
-**Transacción prevista para I3:** recarga aceptada bloquea reentrada antes de
+**Transacción de I3 aprobada para integración:** recarga aceptada bloquea reentrada antes de
 callbacks de reserva: valida vivo/carga 0/PLAYING/no retorno/fondos, cobra costo 10 una vez y repone carga 10
 sin cambiar vida/moral. Rechazo no cambia saldo/carga/posición; cualquier
 guard transitorio se revierte. Muerte en retorno no reembolsa ni resucita,
 y libera plaza sin esperar la caída.
 
-Durante I2 sólo se conserva la recarga heredada: vivo, PLAYING, fondos y
-distancia al hogar ≤0,01; no exige el enum `HOME` ni carga cero. Fuera se
-rechaza sin gasto. No ejecuta `RETURNING`, selección o la transacción futura.
+`reload()` delega a `request_reload()` y comparte todas sus precondiciones.
+El guard precede cualquier señal; tras el gasto se revalidan vida/partida antes
+de reponer carga o iniciar regreso. `get_reload_state()` expone identidad,
+hogar/fila, carga/capacidad, moral, vida, arma/movimiento, costo y elegibilidad;
+`reload_state_changed` permite al HUD observar cambios sin decidir el gasto.
 
 ## Enemigo por activación
 
