@@ -476,9 +476,10 @@ func test_soldier_does_not_split_fire_when_a_second_enemy_enters_detection_range
 
 func test_reload_transitions_soldier_from_melee_back_to_rifle_mode() -> void:
 	# Given: un soldado que agotó su única bala sin eliminar a nadie y ya
-	# transicionó a modo MELEE
+	# transicionó a modo MELEE. La diagonal vacía el fusil sin habilitar
+	# salida por su fila: esta regresión conserva recarga HOME; retorno es I3.
 	_spawn_soldado({"max_ammo": 1})
-	_spawn_enemy(RIFLE_ONLY_OFFSET, 1000) # sobrevive al único disparo, agota la munición
+	_spawn_enemy(RIFLE_ONLY_OFFSET_B, 1000) # sobrevive; machete no persigue otra fila
 	await wait_physics_frames(FRAMES_TO_DETECT)
 
 	# Y el jugador tiene munición recolectada suficiente para recargar
