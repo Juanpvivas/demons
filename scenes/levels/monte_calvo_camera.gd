@@ -1,7 +1,7 @@
-## Centra el avance horizontal sin desplazar el origen vertical del nivel.
+## Centra el rectángulo completo sin mover actores, grid o geometría del nivel.
 extends Camera2D
 
-const _COMBAT_AXIS_X: float = 576.0
+@export var board_config: LaneBoardConfig = preload("res://resources/levels/monte_calvo_board.tres")
 
 
 func _ready() -> void:
@@ -10,5 +10,5 @@ func _ready() -> void:
 
 
 func _update_framing() -> void:
-	position = Vector2(_COMBAT_AXIS_X, get_viewport_rect().size.y * 0.5)
+	position = board_config.design_rect.get_center()
 	force_update_scroll()

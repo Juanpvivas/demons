@@ -5,8 +5,7 @@
 ## `docs/ARCHITECTURE.md` §4.1 — "autoload orquestador no instancia ni
 ## temporiza"): este nodo solo reacciona a `WaveManager.wave_started`,
 ## consume `WaveManager.get_current_wave().spawn_entries`, y avisa con
-## `WaveManager.notify_enemy_defeated()` una vez por cada enemigo derrotado
-## que él mismo instanció.
+## `WaveManager.notify_enemy_defeated()` una vez por cada baja WAVE.
 ##
 ## **Por qué vive en `scenes/levels/` y no en `core/`**: a diferencia de
 ## `ObjectPool`/`BoardManager` (utilidades genéricas reutilizables entre
@@ -20,25 +19,11 @@
 ## en vez de vivir hardcodeado como nodo en el `.tscn`, mismo patrón ya
 ## usado ahí para `BoardManager`.
 ##
-## **Punto de spawn único**: recibe una sola posición de mundo en `setup()`
-## y la reutiliza para todos los spawns de todas las oleadas — decisión de
-## menor complejidad válida para el MVP de un solo carril recto, mismo
-## supuesto ya documentado en la cabecera de `scenes/enemies/enemigo.gd`
-## (eje de avance `+Y`, sin diagonales propias del enemigo). Si un nivel
-## futuro necesita múltiples carriles, este método puede evolucionar a
-## recibir un `Array[Vector2]` sin cambiar el resto del contrato.
+## 005/I1: la configuración opcional aporta cinco entradas y un cursor
+## continuo entre oleadas. Sin configuración se conserva el spawn recibido.
 ##
-## **Conflicto `ObjectPool.release()` vs `Enemigo._die()` — resuelto**:
-## `Enemigo._die()` originalmente llamaba `queue_free()` de forma
-## incondicional al morir, lo cual destruiría cualquier instancia pooleada
-## que este nodo creyera todavía disponible para un futuro `acquire()`. Se
-## resolvió agregando `Enemigo.set_pool()`/`_pool` (ver cabecera de
-## `enemigo.gd`): cuando una instancia pertenece a un pool, `_die()` ya NO
-## se autodestruye — este `WaveSpawner` es quien, al recibir la señal
-## `enemy_defeated` de esa instancia, llama `_enemy_pool.release()` en su
-## lugar. El `Enemigo` colocado a mano en `Nivel_MonteCalvo.tscn` para el
-## Independent Test de US1/US2 (T027) nunca pasa por `set_pool()`, así que
-## conserva el `queue_free()` original sin cambios de comportamiento.
+## INITIAL y WAVE se retiran mediante este mismo pool. Solo WAVE notifica
+## una baja a WaveManager; el enemigo conserva la recompensa de ambos orígenes.
 ##
 ## **Por qué `enemy_defeated` se conecta una sola vez por instancia física,
 ## no en cada spawn**: `docs/ARCHITECTURE.md` §4.2 exige que toda conexión
@@ -79,9 +64,10 @@ class _PendingSpawn:
 ## nunca recibirían `set_pool()`/la conexión de `enemy_defeated`.
 var _enemy_pool: ObjectPool
 
-## Punto de mundo donde aparecen todos los enemigos de este nivel (ver
-## cabecera — un solo carril recto para el MVP).
+## Spawn recibido por los consumidores sin configuración por carriles.
 var _spawn_position: Vector2
+var _board_config: LaneBoardConfig
+var _next_lane: int = 0
 
 ## Servicio local opcional: registro por creación física, nunca por acquire.
 var _combat_visual_effects: CombatVisualEffects
@@ -104,16 +90,17 @@ func _ready() -> void:
 	WaveManager.wave_started.connect(_on_wave_started)
 
 
-## Crea y configura el `ObjectPool` de enemigos de este spawner, y fija el
-## punto de spawn único a usar para toda oleada futura. Debe llamarse una
+## Crea el pool y conserva la configuración compartida de geometría. Debe llamarse una
 ## vez desde el nivel dueño (`nivel_monte_calvo.gd`) antes de que
 ## `WaveManager.start_waves()` dispare el primer `wave_started` — si se
 ## llamara después, el primer `wave_started` no encontraría `_enemy_pool`
 ## listo.
 func setup(enemy_scene: PackedScene, initial_pool_size: int, spawn_position: Vector2,
 		combat_visual_effects: CombatVisualEffects = null,
-		_board_config: LaneBoardConfig = null) -> void:
+		board_config: LaneBoardConfig = null) -> void:
 	_spawn_position = spawn_position
+	_board_config = board_config
+	_next_lane = 0
 	_combat_visual_effects = combat_visual_effects
 	_enemy_pool = ObjectPool.new()
 	add_child(_enemy_pool)
@@ -123,9 +110,19 @@ func setup(enemy_scene: PackedScene, initial_pool_size: int, spawn_position: Vec
 	_enemy_pool.setup(enemy_scene, initial_pool_size)
 
 
-## Interfaz reservada: la activación inicial en el pool sigue pendiente de RED.
-func spawn_initial_enemy(_stats: EnemyStats) -> Enemigo:
-	return null
+## Activación inmediata independiente: fila central, sin consumir el cursor.
+func spawn_initial_enemy(stats: EnemyStats) -> Enemigo:
+	if GameStateManager._current_state != GameStateManager.GameState.PLAYING:
+		return null
+	var lane := 2 if _board_config != null else -1
+	return _activate_enemy(stats, lane, Enemigo.SpawnOrigin.INITIAL)
+
+
+func _activate_enemy(stats: EnemyStats, lane: int, origin: Enemigo.SpawnOrigin) -> Enemigo:
+	var enemy := _enemy_pool.acquire() as Enemigo
+	var spawn_at := _spawn_position if lane < 0 else _board_config.spawn_positions[lane]
+	enemy.prepare_for_spawn(stats, spawn_at, lane, origin)
+	return enemy
 
 
 ## Encolado de la nueva oleada activa (aplana `spawn_entries`) y arranque
@@ -152,28 +149,13 @@ func _on_wave_started(_wave_number: int) -> void:
 		_spawn_timer.start(_pending_spawns[0].interval_after)
 
 
-## Único punto donde se saca un elemento de la cola y se spawnea — **todo**
-## spawn, incluido el primero de la oleada, pasa por el `Timer` (nunca se
-## spawnea de forma síncrona/inmediata desde `_on_wave_started()`). Esto no
-## es solo una elección de ritmo: como este `WaveSpawner` reutiliza un único
-## `wave_spawn_position` (`nivel_monte_calvo.gd`) que coincide a propósito
-## con la posición del `Enemigo` colocado a mano para el Independent Test de
-## US1/US2 (T027), un primer spawn SIN retraso aparecería en el mismo punto
-## y el mismo frame que ese enemigo de prueba — un empate exacto de
-## posición/tiempo que haría no determinista a qué enemigo bloquea el
-## soldado como objetivo (`Soldado._pick_priority_target()` usa `>` estricto
-## entre candidatos, así que un empate se resuelve por el orden en que la
-## física reporta `body_entered`, no especificado por Godot). Esperar
-## siempre al menos un `spawn_interval` antes de cualquier spawn le da al
-## enemigo de T027 una ventaja de avance que rompe el empate de forma
-## determinista, preservando el comportamiento ya testeado de ese
-## Independent Test sin acoplar este spawner a su existencia.
+## Todo WAVE, incluido el primero, espera el intervalo autorado. El inicial
+## es independiente y no reinicia ni consume el cursor de las oleadas.
 func _on_spawn_timer_timeout() -> void:
-	if _pending_spawns.is_empty():
+	if _pending_spawns.is_empty() or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
 		return
 
 	var next: _PendingSpawn = _pending_spawns.pop_front()
-	var enemy: Enemigo = _enemy_pool.acquire()
 	# `ObjectPool.acquire()` no admite argumentos (`docs/ARCHITECTURE.md`
 	# §4.5): la instancia devuelta puede conservar el `stats`/salud de un
 	# uso anterior (o el default embebido en `EnemigoBase.tscn` en su
@@ -183,7 +165,10 @@ func _on_spawn_timer_timeout() -> void:
 	# asignar el `stats` correcto — ver orden interno de
 	# `ObjectPool.acquire()`), se reasigna todo explícitamente aquí vía
 	# `prepare_for_spawn()`, después de `acquire()`.
-	enemy.prepare_for_spawn(next.enemy_stats, _spawn_position)
+	var lane := _next_lane if _board_config != null else -1
+	_activate_enemy(next.enemy_stats, lane, Enemigo.SpawnOrigin.WAVE)
+	if _board_config != null:
+		_next_lane = (_next_lane + 1) % _board_config.home_cells.size()
 
 	if not _pending_spawns.is_empty():
 		_spawn_timer.start(next.interval_after)
@@ -208,5 +193,7 @@ func _on_enemy_pool_instance_created(instance: Node) -> void:
 ## dejar que se autodestruya — ver conflicto documentado en la cabecera de
 ## esta clase y en `enemigo.gd`.
 func _on_enemy_defeated(_ammo_dropped: int, _position: Vector2, enemy: Enemigo) -> void:
-	WaveManager.notify_enemy_defeated()
+	var origin := enemy.get_defeat_origin()
+	if origin == Enemigo.SpawnOrigin.WAVE:
+		WaveManager.notify_enemy_defeated()
 	_enemy_pool.release(enemy)

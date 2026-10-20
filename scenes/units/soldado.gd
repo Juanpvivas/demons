@@ -86,6 +86,7 @@ enum SoldierMode { RIFLE, MELEE }
 ## Molde de datos base/máximos de este soldado — solo lectura, nunca
 ## mutado en runtime (`docs/ARCHITECTURE.md` §4.3).
 @export var stats: UnitStats
+@export var board_config: LaneBoardConfig = preload("res://resources/levels/monte_calvo_board.tres")
 
 ## Munición actual, runtime. Inicializada desde `stats.max_ammo` en `_ready()`.
 var _current_ammo: int = 0
@@ -110,10 +111,12 @@ var _grid_cell: Vector2i
 
 ## Objetivo activo de fusil — nunca más de uno a la vez (FR-002).
 var _current_target: Node2D = null
+var _current_target_generation: int = -1
 
 ## Objetivo activo de machete — misma regla de "sin dividir fuego",
 ## aplicada también en modo cuerpo a cuerpo.
 var _current_melee_target: Node2D = null
+var _current_melee_generation: int = -1
 
 ## Candidatos actualmente dentro de "DeteccionRango" (no se re-escanea la
 ## escena en `_process()` — `research.md` §1).
@@ -144,6 +147,8 @@ var _incoming_melee_cooldown: float = 0.0
 @onready var _deteccion_rango: Area2D = $DeteccionRango
 @onready var _rango_melee: Area2D = $RangoMelee
 @onready var _sprite: SoldadoVisual = $AnimatedSprite2D
+@onready var _rifle_shape: CollisionShape2D = $DeteccionRango/CollisionShape2D
+@onready var _melee_shape: CollisionShape2D = $RangoMelee/CollisionShape2D
 
 ## T053 (rehecha): cadencia del ataque entrante de cada `Enemigo` dentro de
 ## "RangoMelee" contra este soldado — **supuesto de implementación**, igual
@@ -177,6 +182,10 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if _current_health <= 0 or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
+		_current_target = null
+		_current_melee_target = null
+		return
 	match _mode:
 		SoldierMode.RIFLE:
 			_process_rifle(delta)
@@ -190,6 +199,8 @@ func _physics_process(delta: float) -> void:
 # --- Modo fusil (T021, T022) --------------------------------------------
 
 func _process_rifle(delta: float) -> void:
+	if not _is_rifle_eligible(_current_target) or _generation_of(_current_target) != _current_target_generation:
+		_recompute_rifle_target()
 	if _current_target == null or _current_ammo <= 0:
 		return
 	_rifle_cooldown -= delta
@@ -224,14 +235,8 @@ func _on_deteccion_rango_body_entered(body: Node2D) -> void:
 	if not body.is_in_group(ENEMY_GROUP) or _rifle_candidates.has(body):
 		return
 	_rifle_candidates.append(body)
-	# Solo se elige un objetivo nuevo si no hay uno activo — `spec.md`
-	# Acceptance Scenario 3 (FR-002): un enemigo nuevo que entra NO le quita
-	# el foco al objetivo actual, aunque el recién llegado esté más
-	# avanzado. "Recalcular al entrar un enemigo nuevo" (`research.md` §1)
-	# es la oportunidad de elegir objetivo cuando no había ninguno, no una
-	# reevaluación que pueda robarle el foco a un objetivo ya en curso.
-	if _current_target == null:
-		_recompute_rifle_target()
+	# Se elige durante el tick físico: incluye todos los cuerpos que entraron
+	# juntos y nunca reemplaza un blanco que continúa siendo elegible.
 
 
 func _on_deteccion_rango_body_exited(body: Node2D) -> void:
@@ -247,16 +252,22 @@ func _remove_rifle_candidate(body: Node2D) -> void:
 		_recompute_rifle_target()
 
 
-## Recalcula el objetivo prioritario solo en los 3 momentos que exige
-## `research.md` §1 (entra un candidato nuevo, sale el targeteado, muere el
-## targeteado) — nunca en `_process()`.
+## También pierde elegibilidad al salir de la celda diagonal, aunque siga
+## dentro del broadphase. Un cuerpo reciclado pertenece a otra generación.
 func _recompute_rifle_target() -> void:
-	_current_target = _pick_priority_target(_rifle_candidates)
+	var eligible: Array[Node2D] = []
+	for candidate: Node2D in _rifle_candidates:
+		if _is_rifle_eligible(candidate):
+			eligible.append(candidate)
+	_current_target = _pick_priority_target(eligible)
+	_current_target_generation = _generation_of(_current_target)
 
 
 # --- Modo machete (T023) -------------------------------------------------
 
 func _process_melee(delta: float) -> void:
+	if not _is_melee_eligible(_current_melee_target) or _generation_of(_current_melee_target) != _current_melee_generation:
+		_recompute_melee_target()
 	if _current_melee_target == null:
 		return
 	_melee_cooldown -= delta
@@ -291,10 +302,7 @@ func _on_rango_melee_body_entered(body: Node2D) -> void:
 	if not body.is_in_group(ENEMY_GROUP) or _melee_candidates.has(body):
 		return
 	_melee_candidates.append(body)
-	# Misma regla de "sin dividir fuego" que en modo fusil — ver comentario
-	# de `_on_deteccion_rango_body_entered`.
-	if _current_melee_target == null:
-		_recompute_melee_target()
+	# La selección se difiere al tick físico, como en fusil.
 
 
 func _on_rango_melee_body_exited(body: Node2D) -> void:
@@ -311,7 +319,12 @@ func _remove_melee_candidate(body: Node2D) -> void:
 
 
 func _recompute_melee_target() -> void:
-	_current_melee_target = _pick_priority_target(_melee_candidates)
+	var eligible: Array[Node2D] = []
+	for candidate: Node2D in _melee_candidates:
+		if _is_melee_eligible(candidate):
+			eligible.append(candidate)
+	_current_melee_target = _pick_priority_target(eligible)
+	_current_melee_generation = _generation_of(_current_melee_target)
 
 
 ## T053 (rehecha): daño mutuo dentro de "RangoMelee" (`spec.md` Edge Case,
@@ -331,7 +344,7 @@ func _process_incoming_melee_damage(delta: float) -> void:
 	if _incoming_melee_cooldown > 0.0:
 		return
 	for enemy in _melee_candidates:
-		if not is_instance_valid(enemy) or not enemy.has_method("get_melee_damage"):
+		if not _is_melee_eligible(enemy) or not enemy.has_method("get_melee_damage"):
 			continue
 		# `take_damage()` es defensivo ante llamadas repetidas una vez que
 		# `_current_health` llega a 0 (ver cabecera de esa función) — seguro
@@ -339,6 +352,57 @@ func _process_incoming_melee_damage(delta: float) -> void:
 		# derrotado a este soldado en esta misma pasada.
 		take_damage(enemy.call("get_melee_damage"))
 	_incoming_melee_cooldown = _INCOMING_MELEE_ATTACK_INTERVAL
+
+
+func _is_live_candidate(body: Node2D) -> bool:
+	if not is_instance_valid(body) or body.is_queued_for_deletion() or not body.is_in_group(ENEMY_GROUP):
+		return false
+	if body is Enemigo:
+		return (body as Enemigo).is_targetable()
+	return true
+
+
+func _generation_of(body: Node2D) -> int:
+	return (body as Enemigo).activation_generation if is_instance_valid(body) and body is Enemigo else -1
+
+
+func _candidate_cell(body: Node2D) -> Vector2i:
+	return Vector2i(floori(body.global_position.x / board_config.cell_size.x),
+		floori(body.global_position.y / board_config.cell_size.y))
+
+
+func _is_rifle_eligible(body: Node2D) -> bool:
+	if not _is_live_candidate(body) or body.global_position.x <= global_position.x:
+		return false
+	var cell := _candidate_cell(body)
+	var lane := board_config.home_cells.find(_grid_cell)
+	if lane < 0 or cell.y < board_config.home_cells[0].y or cell.y > board_config.home_cells[-1].y:
+		return false
+	var same_row := cell.y == _grid_cell.y
+	var direct_diagonal := cell.x == _grid_cell.x + 1 and absi(cell.y - _grid_cell.y) == 1
+	return (same_row or direct_diagonal) and _body_overlaps_range(body, _rifle_shape)
+
+
+func _is_melee_eligible(body: Node2D) -> bool:
+	return _is_live_candidate(body) and body.global_position.x > global_position.x \
+		and _candidate_cell(body).y == _grid_cell.y and _body_overlaps_range(body, _melee_shape)
+
+
+## Solape de las formas reales, sin convertir el extremo del área en una
+## distancia al centro del enemigo ni asumir que todos los cuerpos miden igual.
+func _body_overlaps_range(body: Node2D, range_shape: CollisionShape2D) -> bool:
+	var collider := body as CollisionObject2D
+	if collider == null:
+		return false
+	for owner_id: int in collider.get_shape_owners():
+		if collider.is_shape_owner_disabled(owner_id):
+			continue
+		var body_transform := collider.global_transform * collider.shape_owner_get_transform(owner_id)
+		for shape_id in collider.shape_owner_get_shape_count(owner_id):
+			var shape := collider.shape_owner_get_shape(owner_id, shape_id)
+			if range_shape.shape.collide(range_shape.global_transform, shape, body_transform):
+				return true
+	return false
 
 
 func _on_ammo_depleted() -> void:
@@ -357,6 +421,8 @@ func _on_ammo_depleted() -> void:
 ## `EconomyManager` ya emitió `deploy_or_reload_rejected` (FR-011) y este
 ## soldado permanece en su modo actual sin más efecto.
 func reload() -> void:
+	if _current_health <= 0 or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
+		return
 	if not EconomyManager.try_spend_ammo(stats.deploy_ammo_cost):
 		return
 	_current_ammo = stats.max_ammo

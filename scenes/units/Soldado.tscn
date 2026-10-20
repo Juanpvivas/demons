@@ -10,7 +10,7 @@
 size = Vector2(48, 48)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_deteccion"]
-size = Vector2(144, 240)
+size = Vector2(240, 192)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_melee"]
 size = Vector2(64, 64)
@@ -36,12 +36,12 @@ shape = SubResource("RectangleShape2D_body")
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DeteccionRango"]
-position = Vector2(0, -144)
+position = Vector2(144, 0)
 shape = SubResource("RectangleShape2D_deteccion")
 
 [node name="RangoMelee" type="Area2D" parent="."]
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RangoMelee"]
-position = Vector2(0, -32)
+position = Vector2(32, 0)
 shape = SubResource("RectangleShape2D_melee")

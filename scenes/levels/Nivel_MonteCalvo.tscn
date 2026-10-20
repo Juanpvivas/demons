@@ -1,38 +1,38 @@
 [gd_scene load_steps=8 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/units/Soldado.tscn" id="1_soldado"]
-[ext_resource type="PackedScene" path="res://scenes/enemies/EnemigoBase.tscn" id="2_enemigo"]
 [ext_resource type="Script" path="res://scenes/levels/nivel_monte_calvo.gd" id="3_nivel_monte_calvo"]
 [ext_resource type="PackedScene" path="res://scenes/levels/MonteCalvoVisual.tscn" id="4_monte_calvo_visual"]
 [ext_resource type="Script" path="res://scenes/levels/monte_calvo_camera.gd" id="5_camera"]
+[ext_resource type="Resource" path="res://resources/levels/monte_calvo_board.tres" id="6_board"]
+[ext_resource type="Script" path="res://scenes/levels/horizontal_board_visual.gd" id="7_board_visual"]
 
 [sub_resource type="TileSet" id="TileSet_tablero"]
 tile_size = Vector2i(96, 96)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_posicion_defendida"]
-size = Vector2(960, 64)
+size = Vector2(48, 480)
 
 [node name="Nivel_MonteCalvo" type="Node2D"]
 script = ExtResource("3_nivel_monte_calvo")
+board_config = ExtResource("6_board")
 
 [node name="Tablero" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_tablero")
 format = 2
 
-[node name="Soldado" parent="." instance=ExtResource("1_soldado")]
-position = Vector2(576, 500)
-
-[node name="Enemigo" parent="." instance=ExtResource("2_enemigo")]
-position = Vector2(576, 50)
-
 [node name="PosicionDefendida" type="Area2D" parent="."]
-position = Vector2(576, 650)
+position = Vector2(72, 336)
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PosicionDefendida"]
 shape = SubResource("RectangleShape2D_posicion_defendida")
 
 [node name="MonteCalvoVisual" parent="." instance=ExtResource("4_monte_calvo_visual")]
+
+[node name="HorizontalBoardVisual" type="Node2D" parent="."]
+z_index = -5
+script = ExtResource("7_board_visual")
+board_config = ExtResource("6_board")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(576, 324)

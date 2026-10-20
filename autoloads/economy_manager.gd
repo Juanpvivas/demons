@@ -33,6 +33,13 @@ signal ammo_pickup_spawned(pickup_id, position: Vector2, amount: int)
 ## jugador, T036).
 signal deploy_or_reload_rejected(reason: String)
 
+
+## Dotación de partida nueva: reinicia la reserva, sin cobrar despliegues.
+func reset_ammo_pool() -> void:
+	collected_ammo = 0
+	ammo_pool_changed.emit(collected_ammo)
+
+
 ## Intenta gastar `amount` del pool global. Si hay fondos suficientes,
 ## descuenta y emite `ammo_pool_changed`, retornando `true`. Si no,
 ## `collected_ammo` queda sin modificar, se emite
