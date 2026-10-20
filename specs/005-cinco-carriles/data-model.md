@@ -1,7 +1,8 @@
 # Data Model: Cinco carriles horizontales
 
-Modelo de la feature: I1 integrado en `main` y movimiento/contacto I2 aprobado
-funcionalmente para integración en `codex/005-i2-machete`, aún fuera de `main`.
+Modelo de la feature: I1 y movimiento/contacto I2 integrados en `main`
+mediante los PR #24 y [#25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`).
+I3 está en curso en `codex/005-i3-recarga`, sin implementación aprobada.
 Selección, transacción de recarga y `RETURNING` siguen siendo requisitos de I3;
 la presentación lateral es I4. Filas internas 0…4; UI 1…5 de arriba abajo.
 [Contrato de conducta](contracts/horizontal-combat.md).

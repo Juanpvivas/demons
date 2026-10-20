@@ -3,7 +3,7 @@
 **Feature ID**: `005-cinco-carriles`
 **Planned Branch**: `codex/005-cinco-carriles-preparacion`
 **Created**: 2026-10-19
-**Status**: Preparación aprobada. I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 aprobado funcionalmente para integración en `codex/005-i2-machete`, pendiente de consolidación y PR en borrador; todavía fuera de `main`. I3–I5 y publicación T071 pendientes.
+**Status**: Preparación aprobada. I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 integrado en `main` mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 (T032–T045) en curso en `codex/005-i3-recarga`, desde ese `main`, sin implementación aprobada. I4–I5 y publicación T071 pendientes.
 
 **Input**: Cinco filas horizontales, con cinco trincheras a la izquierda,
 soldados colombianos disparando hacia la derecha desde ellas y enemigos de
@@ -16,7 +16,8 @@ I2/004 conservado en `f90e888`, sin aprobar entonces su cierre. La transición
 autorizada integró 004-I2 y 005-I1 mediante el
 [PR #24](https://github.com/Juanpvivas/demons/pull/24), conservando pendientes
 y sus IDs. Las ramas superadas se eliminaron tras comprobar su integración;
-I2 de 005 parte de `main` actualizado en una rama propia.
+I2 de 005 se integró mediante el PR #25; I3 parte de ese `main` actualizado
+en su propia rama.
 Este spec abarca también comportamientos posteriores aún no implementados;
 las tareas y QA distinguen el alcance de cada entrega.
 

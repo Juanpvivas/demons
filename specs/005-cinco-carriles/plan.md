@@ -2,7 +2,7 @@
 
 **Feature ID**: `005-cinco-carriles` | **Planned Branch**: `codex/005-cinco-carriles-preparacion` | **Date**: 2026-10-19 | **Spec**: [spec.md](spec.md)
 
-**Estado**: preparación aprobada; I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 aprobado funcionalmente para integración en `codex/005-i2-machete`, pendiente de consolidación y PR en borrador; aún no integrado. I3–I5 y publicación T071 pendientes.
+**Estado**: preparación aprobada; I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 integrado mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 (T032–T045) en curso en `codex/005-i3-recarga`, desde ese `main`, sin implementación aprobada. I4–I5 y publicación T071 pendientes.
 
 ## Summary
 
@@ -114,8 +114,10 @@ conservan. La transición conjunta 004-I2/005-I1 se integró desde
 autorización humana. QA revisó el conjunto y su tamaño excepcional, sin
 fragmentar TDD ni reescribir historial. El PR usó `Refs #18` y `Refs #22` y no
 cerró las features ni distribuyó builds. Las dos ramas superadas se eliminaron
-tras verificar su integración. I2 retoma una rama breve desde ese `main`;
-los siguientes incrementos conservan ese flujo tras integrar el PR anterior.
+tras verificar su integración. I2 se integró mediante el
+[PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`); I3 continúa
+en su propia rama desde ese `main`. Los siguientes incrementos conservan ese
+flujo tras integrar el PR anterior.
 
 | Incremento | Resultado y rama propuesta | TDD y gate de destinos propio, antes de QA/docs |
 |---|---|---|
@@ -175,10 +177,9 @@ tests/unit/{systems,levels,units,enemies,ui}/
 | SC-007 | Mediciones separadas; hardware pendiente sin excepción implícita |
 
 [Research](research.md), modelo, contrato y [quickstart](quickstart.md) resuelven
-el diseño sin volcar registros. C4–C6 resueltos. I1 ya está integrado; I2 cuenta
-con aprobación funcional T028 para integración en su rama. Su consolidación
-documental T029 y revisión final T030 preceden al PR en borrador T031.
-I3–I5 conservan sus gates propios y T071 permanece abierto para publicación.
+el diseño sin volcar registros. C4–C6 resueltos. I1 e I2 están integrados
+mediante los PR #24 y #25. I3 está en curso y conserva sus gates propios,
+al igual que I4–I5; T071 permanece abierto para publicación.
 
 ## Complexity Tracking
 

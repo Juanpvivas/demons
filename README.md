@@ -42,15 +42,17 @@ la derecha y los enemigos avanzan hacia la izquierda. Un inicial en fila 3 y
 99 enemigos de oleadas comparten pool, con reparto 1→5 continuo para las oleadas.
 La recogida manual conserva su precedencia sobre desplegar/cobrar.
 
-005-I2 añade salida física con machete en `codex/005-i2-machete`, con aprobación
-funcional para integración y su PR en borrador por preparar; aún no está en
-`main`. Al agotar las balas, el mismo soldado avanza a 40 unidades/s hacia un
+005-I2 está integrado en `main` mediante el
+[PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`) y añade salida física con machete. Al agotar las balas, el mismo
+soldado avanza a 40 unidades/s hacia un
 enemigo frontal de su fila, se detiene para combatir y espera donde está si
 no queda ninguno delante. Ambos cuerpos pueden recibir daño y morir; su plaza
 sigue reservada mientras viva y queda libre al morir, aunque esté fuera.
 
-Selección, recarga desde la trinchera y regreso físico siguen pendientes de
-005-I3. La operación de recarga heredada sólo se permite desde la posición del
+Selección, recarga desde la trinchera y regreso físico están en curso en
+005-I3 (T032–T045), en `codex/005-i3-recarga` desde `main` actualizado; todavía
+no están implementados ni aprobados. La operación de recarga heredada sólo se
+permite desde la posición del
 hogar; fuera se rechaza sin gasto. Las bandas y plazas actuales son
 provisionales hasta las trincheras/poses laterales de I4.
 La caja amarilla sigue pendiente de 004-I3. Las features 004/005 y la publicación

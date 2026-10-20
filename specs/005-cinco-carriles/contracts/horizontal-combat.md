@@ -1,9 +1,11 @@
 # Contrato: Tablero, combate e interacción horizontal
 
 Contrato de la feature para agentes/tester; sin API remota nueva. I1 está
-integrado en `main`; salida/espera/contacto I2 tiene aprobación funcional para
-integración en `codex/005-i2-machete`, aún sin integrar. Recarga/selección/regreso
-siguen pendientes de I3 y la presentación lateral de I4. Las firmas concretas
+integrado en `main`; salida/espera/contacto I2 está integrado mediante
+[PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`).
+Recarga, selección y regreso están en curso en I3 (`codex/005-i3-recarga`),
+sin implementación aprobada; la presentación lateral sigue pendiente de I4.
+Las firmas concretas
 se definen mediante setup/RED sin cambiar estas invariantes.
 [Spec](../spec.md) · [Modelo](../data-model.md).
 
