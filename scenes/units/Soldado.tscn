@@ -15,7 +15,8 @@ size = Vector2(240, 192)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_melee"]
 size = Vector2(64, 64)
 
-[node name="Soldado" type="StaticBody2D"]
+[node name="Soldado" type="CharacterBody2D"]
+motion_mode = 1
 script = ExtResource("1_soldado")
 stats = ExtResource("2_stats")
 
@@ -33,6 +34,7 @@ animation = &"rifle_idle"
 shape = SubResource("RectangleShape2D_body")
 
 [node name="DeteccionRango" type="Area2D" parent="."]
+monitoring = false
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DeteccionRango"]
@@ -40,6 +42,7 @@ position = Vector2(144, 0)
 shape = SubResource("RectangleShape2D_deteccion")
 
 [node name="RangoMelee" type="Area2D" parent="."]
+monitoring = false
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RangoMelee"]
