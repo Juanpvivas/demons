@@ -35,10 +35,10 @@ func after_each() -> void:
 		WaveManager.set(key, _saved_waves[key])
 
 
-func _defender(row := 2, health := 500) -> Soldado:
+func _defender(row := 2, health := 500, ammo := 1) -> Soldado:
 	_soldier = SoldierScene.instantiate() as Soldado
 	_soldier.stats = UnitData.duplicate() as UnitStats
-	_soldier.stats.max_ammo = 1
+	_soldier.stats.max_ammo = ammo
 	_soldier.stats.max_health = health
 	_soldier.position = Vector2(144, 144 + 96 * row)
 	_soldier.set_grid_cell(Vector2i(1, row + 1))
@@ -170,6 +170,41 @@ func test_externally_freed_contact_target_causes_wait_then_new_front_resumes(
 	assert_almost_eq(_soldier.global_position.y, home.y, 0.01)
 	assert_eq(_soldier.get_movement_state(), Soldado.MovementState.ADVANCING)
 	assert_eq(next.get("_current_health"), 500, "No arrastra el ataque anterior fuera de alcance")
+
+
+func test_externally_freed_rifle_target_keeps_home_then_acquires_new_real_target(
+		retirement = use_parameters(["damage", "queue_free"])) -> void:
+	_defender(2, 500, 5)
+	var home := _soldier.global_position
+	var enemy := _enemy(home + Vector2(200, 0), 2, 500, 0.0)
+	await wait_physics_frames(8)
+	assert_lt(enemy.get("_current_health"), 500, "La consulta física produjo un disparo real")
+	assert_gt(_soldier.get("_current_ammo"), 0, "Conserva carga para permanecer en modo fusil")
+	await get_tree().process_frame
+	assert_eq(_soldier.get("_mode"), Soldado.SoldierMode.RIFLE)
+	assert_same(_soldier.get("_current_target"), enemy,
+		"Precondición: este blanco fue adquirido realmente antes de liberarlo en idle")
+	var remaining: int = _soldier.get("_current_ammo")
+	if retirement == "damage":
+		assert_true(enemy.take_damage(9999), "Retiro externo real, sin adjudicar una baja al fusil")
+	else:
+		enemy.queue_free()
+	await wait_physics_frames(3)
+	assert_false(is_instance_valid(enemy))
+	await wait_physics_frames(12)
+	assert_eq(_soldier.global_position, home)
+	assert_eq(_soldier.get_movement_state(), Soldado.MovementState.HOME)
+	assert_eq(_soldier.get("_mode"), Soldado.SoldierMode.RIFLE)
+	assert_eq(_soldier.get("_current_ammo"), remaining, "No dispara al blanco liberado")
+	assert_eq(_soldier.get("_current_health"), 500)
+	assert_eq(_soldier.get("_current_morale"), 0.0, "La retirada externa no concede moral")
+	var next := _enemy(home + Vector2(200, 0), 2, 500, 0.0)
+	await wait_physics_frames(48)
+	assert_lt(next.get("_current_health"), 500, "Un blanco real nuevo vuelve a recibir disparos")
+	assert_same(_soldier.get("_current_target"), next)
+	assert_lt(_soldier.get("_current_ammo"), remaining)
+	assert_eq(_soldier.global_position, home)
+	assert_eq(_soldier.get("_mode"), Soldado.SoldierMode.RIFLE)
 
 
 func test_enemy_contact_really_kills_the_defender_after_departure_and_reports_home_once() -> void:
