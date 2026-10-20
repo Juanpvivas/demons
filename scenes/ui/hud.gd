@@ -100,7 +100,7 @@ func _refresh_selection() -> void:
 	var returning: bool = state.movement_state == Soldado.MovementState.RETURNING
 	_selection_label.text = "Fila %d%s" % [state.lane_id + 1, " · Regresando" if returning else ""]
 	_individual_ammo_label.text = "Carga: %d/%d" % [state.ammo, state.max_ammo]
-	_morale_label.text = "Moral: %g" % state.morale
+	_morale_label.text = "Moral: %s" % str(state.morale)
 
 
 func _on_game_state_changed(_state: int) -> void:
