@@ -528,11 +528,12 @@ delimita los tiempos y la frontera jugable.
   victoria. El contexto de origen se lee antes del release síncrono.
 - **`AmmoPickup.tscn` (004-I3):** conserva raíz, posición, script y círculo de
   recolección de radio 20. Su sprite de un fotograma usa la caja oliva con
-  cartuchos, textura importada 256×256, escala visual 0,15625 y offset local
-  `(0; −5,818182)`, con arte dentro de 40×40. La corrección añade un `AnimationPlayer`
-  de escena que pulsa sólo el brillo del sprite, con alfa de modulación 1;
+  cartuchos, textura importada 256×256, escala visual 0,234375 y offset local
+  `(0; −5,818182)`, con arte dentro de 60×60 desde T047. La corrección T040 añadió
+  un `AnimationPlayer` de escena que pulsa sólo el brillo del sprite, con alfa de modulación 1;
   el [contrato](../specs/004-personajes-municion-monte-calvo/contracts/visual-presentation.md#5-arte-huella-y-procedencia)
-  delimita el ciclo. Los cambios visuales no alteran
+  delimita el ciclo. La parte visible fuera del círculo radio 20 no recoge.
+  Los cambios visuales no alteran
   valor, picking ni precedencia sobre selección/despliegue. La
   [procedencia](../assets/sprites/pickups/monte_calvo/SOURCES.md) recoge original,
   importación y condiciones de uso.
@@ -801,7 +802,7 @@ publicación pendientes; las variantes temporales de QA no modifican los presets
 de producción. [Alcance funcional y límites](SPEC.md#8-arte-y-estilo-visual).
 
 004-I3 y su corrección de brillo tienen aprobación funcional para integración
-en T027/T043, con caja, gestos y
+en T027/T043/T049, con caja, gestos y
 terminales verificados en sus destinos disponibles. La neutralidad del sprite
 no certifica renderer Mobile, GPU, hardware o paquete final; T039 de 004 y
 T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
@@ -877,3 +878,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-21 | 005/T063 tras QA T062: I4 integrado por PR #27 y consolidación funcional I5; distinción entre población/victoria de fixture, evidencia reutilizada y certificaciones pendientes de publicación, sin nuevos patrones. |
 | 2026-10-21 | 004/T028 tras QA T027: encaje de la caja pictórica en el pickup existente, sin cambios de lógica/picking; vigencia de la evolución 005 y publicación T039/T071 pendiente, sin patrones nuevos. |
 | 2026-10-21 | 004/T044 tras QA T043: escala visual 0,15625 y brillo por recurso de escena, conservando raíz/radio/input y sin patrones nuevos; publicación pendiente. |
+| 2026-10-21 | 004/T050 tras QA T049: escala visual 0,234375 y envolvente 60×60, sin ampliar el círculo de recogida ni cambiar animación/recursos; publicación pendiente. |

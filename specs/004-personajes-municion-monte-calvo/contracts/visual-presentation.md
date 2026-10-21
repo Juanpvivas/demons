@@ -7,6 +7,8 @@ funcionalmente para integración T027; las [tareas](../tasks.md) mantienen
 el estado de entrega y publicación T039 pendiente.
 La corrección de huella visual y brillo preparada en T040 tiene aprobación
 funcional T043; `e025722` conserva su aprobación en el alcance anterior.
+El aumento posterior T047 tiene aprobación funcional T049; `28203d6`
+conserva el alcance anterior de 40×40.
 
 La base actual incorpora [005](../../005-cinco-carriles/contracts/horizontal-combat.md)
 mediante PR #24–#28. Los detectores orientados al avance central y el encuadre
@@ -113,8 +115,10 @@ compartido inmutable; sin anillos, barras, halo de selección o HUD.
 El enemigo conserva el encaje de producción ya integrado. En canvas 960×540,
 arma principal visible aproximadamente ≥ 8 px de largo/2 px de espesor; revisión
 manual sigue exigiendo reconocer fusil/machete sin tinte.
-Caja opaca/motivo dentro de 32×32 en el alcance anterior; T040 sustituye ese
-límite visual por 40×40 centrados, con escala 0,15625 y radio 20 intacto.
+Caja opaca/motivo dentro de 32×32 en el alcance inicial y 40×40 desde T040.
+T047 establece el límite vigente de 60×60 centrados, con escala 0,234375
+(+50 % sobre 0,15625) y radio 20 intacto. Los extremos visibles fuera del
+círculo no garantizan recogida; se conserva el gesto sobre su centro.
 Sin aureola/etiqueta que prometa área interactiva extra. Bandos distintos por silueta/uniforme;
 caja por forma/cartuchos/contraste sobre suelo y junto a trincheras.
 

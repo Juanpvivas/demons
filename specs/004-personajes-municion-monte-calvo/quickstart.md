@@ -15,6 +15,8 @@ pantallas terminales. §7 conserva el procedimiento histórico de la corrección
 I1; no ordena restaurar su encuadre al verificar I3.
 La corrección T040 de tamaño/brillo tiene aprobación funcional para integración
 T043 con el alcance disponible de §8; `e025722` conserva su aprobación anterior.
+La ampliación posterior T047 está aprobada funcionalmente en T049; se mantienen
+el pulso y las reglas verificadas en T043, con nueva comprobación de tamaño/picking.
 
 ## 1. Antes de implementar
 
@@ -214,14 +216,16 @@ históricas de CSS 794×305 y Web aproximadamente 1684×648.
    como historia sobre `87a39c6`; resultados nuevos al PR, temporales o CI,
    sin archivos de evidencias nuevos en Git ni inicio de I2/I3.
 
-## 8. Corrección T040 — Procedimiento de comprobación
+## 8. Corrección T040 y ampliación T047 — Procedimiento de comprobación
 
-T043 aprueba el alcance funcional disponible de este procedimiento: Web en los
-dos tamaños indicados, APK horizontal e iPad Simulator en su vista disponible.
+T043 aprobó el tamaño anterior y el pulso; T049 aprueba el tamaño vigente y su
+recogida, reutilizando los ciclos y reglas intactos. El alcance distingue Web
+en dos tamaños, APK horizontal e iPad Simulator en su vista disponible.
 Los resultados se resumen en el PR; el coste del pulso no se ha cuantificado.
 
-1. Inspeccionar la escena: escala visual 0,15625 (+25 %), arte opaco dentro de
-   40×40 centrados, misma raíz/drop, PNG/importación y círculo radio 20.
+1. Inspeccionar la escena: escala visual 0,234375 (+50 % sobre 0,15625), arte
+   opaco dentro de 60×60 centrados, misma raíz/drop, PNG/importación y círculo
+   radio 20.
    `AnimationPlayer` automático con loop 1,4 s, sólo color del sprite:
    blanco a 0 s, RGB 1,35 a 0,7 s y blanco a 1,4 s; alfa de modulación siempre
    1, conservando la transparencia original.
@@ -231,14 +235,15 @@ Los resultados se resumen en el PR; el coste del pulso no se ha cuantificado.
    mayores y reconocibles en ambos extremos del brillo, sin ocultación o saltos,
    sobre suelo, junto al parapeto, bajo actor y con cajas solapadas. Identificar
    renderer/entorno y conservar límites de disponibilidad; no navegador móvil.
-3. Repetir los cuatro resultados económicos de §4 y la recolección de cajas
-   solapadas con entrada real. Corroborar retiro único, saldo, ocupación y
-   precedencia; el tamaño mayor no amplía el radio. Observar que una caja recién
+3. Conservar evidencia vigente de los cuatro resultados económicos de §4 y
+   comprobar recolección central/solapadas con entrada real tras el aumento.
+   Corroborar retiro único, saldo, ocupación y precedencia; probar que un gesto
+   fuera del radio 20 no recoge, aunque haya imagen visible. Observar que una caja recién
    aparecida inicia su pulso opaco sin heredar el estado de otra instancia.
 4. Confirmar importación y regresión pertinente, sin pruebas artificiales de
    archivos/píxeles ni cambios de reglas. Reutilizar las muestras de `e025722`
    sólo para la base y el alcance intacto: no acreditan el coste del pulso nuevo.
    Realizar un smoke acotado con varias cajas animadas y declarar sus límites,
-   sin repetir benchmarks por rutina. La aprobación funcional T043 conserva
+   sin repetir benchmarks por rutina. Las aprobaciones T043/T049 conservan
    esos límites; documentación y estado de entrega se siguen en las tareas y PR.
    T039/SC-007 y publicación siguen pendientes.

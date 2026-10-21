@@ -24,7 +24,7 @@ Las duraciones de clips son tiempos cosméticos, nunca cadencias de combate.
 |---|---|---|
 | `Soldado`, móvil desde 005-I2 | Soldado colombiano oliva, casco y fusil/machete | Cuerpo 48×48 y geometría/estado de 005 intactos |
 | `Enemigo`, móvil/reciclado | Infantería gris/marrón, avance/contacto | Raíz, movimiento real, cuerpo 48×48 y pool actual intactos |
-| `AmmoPickup` | Caja oliva con motivo de cartuchos | Envolvente visual 40×40 desde T040; área circular de picking radio 20 intacta |
+| `AmmoPickup` | Caja oliva con motivo de cartuchos | Envolvente visual 60×60 desde T047; área circular de picking radio 20 intacta |
 
 El tamaño de los cuerpos no impone el tamaño del lienzo del arte. Su encaje
 visual se ajusta por separado, conservando el punto de apoyo y la correspondencia

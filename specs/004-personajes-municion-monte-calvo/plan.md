@@ -12,6 +12,7 @@ mantienen el seguimiento de entrega; publicación T039 y cierre de 004 pendiente
 La transición histórica no inició I3 ni declaró completa 004.
 La corrección de tamaño/brillo preparada en T040 está implementada y tiene
 aprobación funcional para integración T043.
+T047 aumenta otro 50 % el tamaño de esa versión, con aprobación funcional T049.
 
 ## Summary
 
@@ -56,8 +57,8 @@ El emulador autorizado no sustituye las mediciones físicas pendientes; QA
 evalúa las muestras disponibles y sus diferencias para integración funcional.
 
 **Constraints**: cuerpos de actores 48×48, grid 96×96, detectores y caja
-32×32 en el alcance aprobado anterior a T040, ampliado visualmente a un máximo
-de 40×40 por esa corrección; collider radio 20 intacto. El soldado cambia solo en su hijo visual:
+32×32 en el alcance anterior a T040 y 40×40 en esa corrección; el máximo visual
+vigente desde T047 es 60×60, con collider radio 20 intacto. El soldado cambia solo en su hijo visual:
 altura opaca neutra objetivo aproximada de 72 unidades, pie raíz+y24 y pivote
 estable ≤1 unidad; al menos 32 CSS px opacos en CSS 794×305, reconocible sin
 overlay y en grises con luz/contorno mate discreto, sin anillos o HUD.
@@ -181,7 +182,7 @@ sin sustituirlos por la aprobación histórica de I1. El estado de consolidació
 y entrega se conserva en las tareas y el PR. I3 completa el acabado funcional
 de los tres elementos sin nuevas mecánicas; publicación T039 sigue pendiente.
 
-## Corrección T040 — Plan acotado
+## Corrección T040 — Plan acotado (alcance anterior a T047)
 
 Conservar el PNG/importación de la caja y modificar sólo su escena:
 escala visual uniforme de 0,125 a 0,15625 (+25 %), con encaje centrado en el
@@ -198,3 +199,9 @@ la lectura en los tamaños vigentes y la regresión de picking/economía. No fab
 RED por píxeles o archivos ni reutilizar QA de `e025722` como aprobación de este
 cambio. T043 aprueba el nuevo alcance funcional con smoke de varias cajas;
 el coste del pulso no se ha cuantificado. T039 permanece separado y pendiente.
+
+La ampliación T047, solicitada después y aprobada en T049, cambia sólo la
+escala de 0,15625 a 0,234375 (+50 %), con envolvente visual máxima 60×60.
+Conserva el resto de este plan, incluido pulso y radio 20. La cobertura de
+píxeles mayor no amplía picking ni tiene su coste cuantificado; muestras
+anteriores sólo aportan contexto del alcance intacto. Publicación pendiente.

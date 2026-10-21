@@ -24,20 +24,24 @@ estimados, sin afirmar VRAM medida. El consumidor usa filtro lineal y sin
 repetición local, sin cambiar ajustes globales del proyecto.
 
 `AmmoPickup.tscn` conserva el AnimatedSprite2D de un solo fotograma. La
-corrección T040–T043 eleva su escala visual de **0,125 a 0,15625**
-(+25 %), manteniendo offset **(0; −5,818182)**. La geometría medida en la misma
-textura y escalada por 1,25 ocupa **34,84375×26,40625** unidades con alfa>0 y
-**34,21875×22,03125** con alfa>0,5, centrada en la raíz y dentro de **40×40**.
+ampliación T047–T049 eleva su escala visual de **0,15625 a 0,234375**
+(+50 % respecto a `28203d6`), manteniendo offset **(0; −5,818182)**.
+La primera corrección T040–T043 había fijado escala 0,15625 y envolvente 40×40.
+La geometría medida en la misma textura y escalada otro 1,5 ocupa
+**52,265625×39,609375** unidades con alfa>0 y **51,328125×33,046875** con
+alfa>0,5, centrada en la raíz y dentro de **60×60**.
 El lienzo transparente no se utiliza como medida de la caja visible. La raíz,
 posición, CircleShape2D de radio **20**, valor e interacción permanecen intactos.
+Los píxeles visibles fuera de ese círculo no amplían el área de recogida;
+el gesto sigue dirigido al centro de la caja.
 El pulso suave de brillo se reproduce con recursos de escena y conserva alfa
 de modulación 1 y la transparencia original, sin cambiar PNG/importación ni
 añadir GDScript, shader o halo. Su ciclo está en el
 [contrato visual](../../../../specs/004-personajes-municion-monte-calvo/contracts/visual-presentation.md#5-arte-huella-y-procedencia).
 La importación/carga, lectura sobre terreno y gestos tienen aprobación funcional
-para integración T027 y, para la nueva presentación, T043 en Web de computador
+para integración T027/T043 y, para el tamaño actual, T049 en Web de computador
 y apps Android Emulator/iPad Simulator. El smoke con varias cajas no cuantifica
-el coste del pulso; las métricas anteriores no lo certifican.
+el coste del pulso o de la mayor cobertura; las métricas anteriores no los certifican.
 Las [tareas de 004](../../../../specs/004-personajes-municion-monte-calvo/tasks.md)
 mantienen entrega y publicación T039 pendiente, sin certificar hardware o Mobile.
 

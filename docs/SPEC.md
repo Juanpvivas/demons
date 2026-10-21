@@ -230,12 +230,14 @@ La [procedencia del soldado](../assets/sprites/units/monte_calvo/SOURCES.md)
 y [del entorno](../assets/sprites/levels/monte_calvo/SOURCES.md) documentan los
 nuevos atlas y conservan los anteriores. 004-I3, aprobado funcionalmente para
 integración en T027, reemplaza la caja amarilla por una caja oliva mate con
-cartuchos de latón. La corrección T040–T043 aumenta sólo el sprite un 25 % y
-añade un pulso lento de brillo de 1,4 s, sin desaparición ni cambio de alfa
+cartuchos de latón. T040–T043 aumenta el sprite un 25 % y añade brillo;
+la ampliación T047–T049 lo aumenta otro 50 % respecto a esa versión.
+Conserva el pulso lento de 1,4 s, sin desaparición ni cambio de alfa
 de modulación. La textura importada sigue siendo 256×256 y el arte permanece
-dentro de la envolvente visual de 40×40; conserva radio de recolección 20,
+dentro de la envolvente visual de 60×60; conserva radio de recolección 20,
 posición del drop, valor y recogida explícita con precedencia. Puede quedar
-parcialmente oculta bajo actores o parapetos sin ampliar su área interactiva. La
+parcialmente oculta bajo actores o parapetos. Los extremos visibles fuera del
+círculo de radio 20 no amplían su área interactiva; se recoge desde el centro. La
 [procedencia de la caja](../assets/sprites/pickups/monte_calvo/SOURCES.md)
 documenta el original y su encaje.
 
@@ -316,7 +318,8 @@ llegó a LOST; la victoria y los casos difíciles de economía/recarga se verifi
 por separado. T039 de 004 y T071 de 005 siguen pendientes de publicación.
 La corrección de brillo tiene aprobación funcional T043 con smoke de varias
 cajas animadas; añade trabajo por instancia cuyo coste no se ha cuantificado.
-Las muestras anteriores conservan su alcance y no certifican ese coste.
+Las muestras anteriores conservan su alcance y no certifican ese coste ni el
+de la cobertura visual mayor aprobada en T049.
 
 ## 9. Alcance del MVP (primera versión jugable)
 
@@ -342,7 +345,7 @@ Las muestras anteriores conservan su alcance y no certifican ese coste.
 
 - ✅ Selección por dueño de trinchera, recarga única sólo con carga cero y regreso físico vulnerable sin ofensiva: 005-I3/T037–T042, integrado mediante PR #26 (`8c4cab4`). La publicación T071 sigue pendiente.
 - ✅ Composición lateral y estados observadores de marcha/espera, regreso con fusil bajo y caída orientada: 005-I4/T050–T057, integrado mediante PR #27 (`cffb2ec`). El estado de entrega y PR se mantiene en las tareas de 005. No cambia reglas, geometría ni concede cobertura.
-- ✅ Caja oliva pictórica con cartuchos: 004-I3/T023–T027 y corrección de visibilidad T040–T043, aprobados para integración. La envolvente visual actual es 40×40 y tiene pulso suave; radio 20, lógica, valor y precedencia intactos. Completa el acabado funcional de soldado/enemigo/munición; T039 conserva la publicación pendiente.
+- ✅ Caja oliva pictórica con cartuchos: 004-I3/T023–T027, corrección T040–T043 y ampliación T047–T049, aprobados para integración. La envolvente visual actual es 60×60 y tiene pulso suave; radio 20, lógica, valor y precedencia intactos. Completa el acabado funcional de soldado/enemigo/munición; T039 conserva la publicación pendiente.
 
 - ✅ Tablero horizontal de cinco filas/plazas y fusil hacia +X, enemigos hacia −X, cinco cargas gratuitas/reserva cero y reparto continuo de oleadas sin alterar los 100 enemigos: 005-I1, integrado con 004-I2 mediante PR #24 (`658dd7e`).
 - ✅ Salida/espera/contacto real de machete en la misma fila, velocidad propia 40, hogar reservado y liberación al morir fuera: 005-I2/T023–T028, integrado en `main` mediante PR #25 (`c1f43d2`). §6.3 describe además la recarga y el regreso de I3 integrados por PR #26; publicación sigue pendiente.
@@ -392,3 +395,4 @@ Las muestras anteriores conservan su alcance y no certifican ese coste.
 | 2026-10-21 | 005/T063 tras QA T062: consolidación funcional de I1–I4 integrados, con límites de producción/fixtures y rendimiento software explícitos; publicación T071, 004-I3 y acabado del MVP pendientes. |
 | 2026-10-21 | 004/T028 tras QA T027: caja oliva y cartuchos con huella/picking/economía conservados; tres representaciones aprobadas funcionalmente y evolución 005 vigente, con publicación T039/T071 pendiente. |
 | 2026-10-21 | 004/T044 tras QA T043: caja un 25 % mayor y pulso de brillo suave, con radio/valor/input conservados; coste del pulso sin cuantificar y publicación T039/T071 pendiente. |
+| 2026-10-21 | 004/T050 tras QA T049: otro 50 % de tamaño sobre la versión con brillo, envolvente visual 60×60 y recogida radio 20 conservada; publicación pendiente. |

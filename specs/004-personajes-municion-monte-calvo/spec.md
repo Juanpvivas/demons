@@ -12,6 +12,8 @@ I3 aprobado para integración funcional en T027. Las [tareas](tasks.md)
 mantienen el estado de entrega y PR; SC-007/publicación T039 y el Issue siguen abiertos.
 La corrección T040 de tamaño/brillo tiene aprobación funcional para integración
 T043; la aprobación anterior conserva su alcance original.
+La ampliación adicional solicitada en T047 tiene aprobación funcional T049;
+sus valores vigentes sustituyen sólo el tamaño visual anterior.
 
 **Input**: «Entonces preparemos con Spec Kit la siguiente feature de personajes
 y munición de Monte Calvo, siguiendo el flujo que ya tengo definido».
@@ -43,7 +45,7 @@ I3 conserva la geometría, orientación y controles de 005. Las exclusiones de
 FR-012 prohíben añadirlos en este incremento, sin retirar los ya integrados.
 El alcance de I3 aprobado antes de T040 limita la imagen de la caja a 32×32,
 con radio 20 y sin cambiar código, economía, picking o reglas. La corrección
-T040 sustituye sólo ese límite visual por 40×40 según la enmienda final.
+T040 lo amplió a 40×40; T047 sustituye ahora sólo ese límite visual por 60×60.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -360,7 +362,7 @@ aprueba SC-007, renderer/paquete de producción ni hardware. Esos requisitos
 siguen pendientes de publicación y no se eximen por falta de dispositivo.
 No se cierra el Issue ni se distribuye automáticamente.
 
-## Corrección T040 — Tamaño y brillo de la munición
+## Corrección T040 — Tamaño y brillo de la munición (alcance anterior a T047)
 
 La persona pidió que la munición fuera «un poco más grande y tal vez parpadee»
 para identificarla sobre el suelo. Esta corrección conserva la aprobación de
@@ -383,3 +385,12 @@ también con cajas solapadas, bajo actores y junto al parapeto, además de verif
 los gestos vigentes en los destinos disponibles. La corrección cuenta con
 aprobación funcional T043 para ese alcance. El coste del pulso no está
 cuantificado; T039/SC-007 y la publicación permanecen pendientes.
+
+## Ampliación T047 — Otro 50 % sobre la versión con brillo
+
+La persona aprobó el brillo y pidió aumentar aún más el tamaño, un 50 %.
+T047–T049 aplica ese aumento sobre `28203d6`: escala visual 0,234375 y
+envolvente máxima 60×60, con aprobación funcional T049. Conserva el pulso,
+offset, PNG/importación y las reglas de la corrección anterior. El radio de
+recogida sigue siendo 20; los extremos visibles exteriores no recogen y el
+gesto se dirige al centro. T039/SC-007 y publicación permanecen pendientes.
