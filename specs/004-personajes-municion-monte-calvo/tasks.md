@@ -1,6 +1,6 @@
 # Tasks: Personajes y munición de Monte Calvo
 
-**Estado**: I1 y corrección UX T031–T038 aprobados e integrados en `main`. I2 y su documentación integrados junto con 005-I1 mediante el PR #24 (`658dd7e`). I3 tiene T023–T030 aprobadas para integración y documentación consolidada en el PR #29 en borrador. La corrección de legibilidad solicitada después (T040–T046) tiene T040–T045 aprobadas y documentación consolidada; actualización final T046 pendiente; revisión humana y merge continúan pendientes. Publicación T039 permanece pendiente.
+**Estado**: I1 y corrección UX T031–T038 aprobados e integrados en `main`. I2 y su documentación integrados junto con 005-I1 mediante el PR #24 (`658dd7e`). I3 tiene T023–T030 aprobadas para integración y documentación consolidada en el PR #29 en borrador. La corrección de legibilidad T040–T046 está aprobada para integración en el mismo PR, con documentación y entrega actualizadas; revisión humana y merge continúan pendientes. Publicación T039 permanece pendiente.
 **PR conjunto integrado**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; publicación pendiente.
 **Issue**: [#18](https://github.com/Juanpvivas/demons/issues/18).
 **PR I3 en borrador**: [#29](https://github.com/Juanpvivas/demons/pull/29), `Refs #18`; sin cierre del Issue, promoción, merge ni distribución automática.
@@ -153,7 +153,7 @@ siempre opaco; radio 20, posición, valor e interacción permanecen intactos.
 - [X] T043 qa-validator: validar independientemente T041–T042, nueva huella y legibilidad, animación puramente visual y neutralidad de recogida/economía. Emitir APROBADO PARA INTEGRACIÓN con límites de plataforma/rendimiento y T039 pendiente; depende de T042.
 - [X] T044 docs-writer: consolidar el ajuste aprobado en documentación vigente y procedencia, conservando historia y publicación T039/T071 pendiente, sin volcar registros ni añadir patrones; depende de T043 aprobado.
 - [X] T045 qa-validator: revisar documentación T044 y diff final, confirmar vigencia de regresión y verificaciones del alcance intacto; depende de T044.
-- [ ] T046 project-orchestrator: publicar commits de la corrección y actualizar el mismo PR #29 en borrador con alcance, resultados, límites y aprobación. Comprobar CI/export de revisión exacta; conservar Refs #18, sin promoción, merge, cierre de Issue ni distribución; depende de T045 aprobado.
+- [X] T046 project-orchestrator: publicar commits de la corrección y actualizar el mismo PR #29 en borrador con alcance, resultados, límites y aprobación. Comprobar CI/export de revisión exacta; conservar Refs #18, sin promoción, merge, cierre de Issue ni distribución; depende de T045 aprobado.
 
 ## Gate de publicación separado
 
