@@ -46,6 +46,12 @@ func observe_mode(mode: int) -> void:
 	_show_idle()
 
 
+## Interfaz I4: recibe el estado y desplazamiento físico real del último tick.
+## Setup para RED; todavía no cambia poses ni está conectada al actor.
+func observe_motion(_movement_state: int, _displacement: Vector2) -> void:
+	pass
+
+
 func play_confirmed_attack(mode: int) -> void:
 	if not _alive or mode != _mode:
 		return
