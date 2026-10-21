@@ -1,14 +1,18 @@
 # Implementation Plan: Personajes y munición de Monte Calvo
 
 **Feature ID**: `004-personajes-municion-monte-calvo`  
-**Execution Branch**: `codex/005-i1-tablero` para la transición conjunta autorizada 004-I2 + 005-I1; las ramas históricas conservan su trazabilidad.
+**Execution Branch**: `codex/004-i3-municion`; la transición conjunta 004-I2 + 005-I1 conserva su trazabilidad en PR #24.
 **Date**: 2026-10-16 | **Spec**: [spec.md](spec.md)
 
 La preparación inicial se ejecutó en I1, aprobado sobre `87a39c6`. La corrección
 de legibilidad/encuadre delimitada en T031 está aprobada funcionalmente en T036.
-I2/I3 y el seguimiento de consolidación/entrega figuran en las [tareas](tasks.md).
-La enmienda 4.0.0 separa integración y publicación; la transición reúne I2 y
-005-I1 en un único PR hacia `main`, sin iniciar I3 ni declarar completa 004.
+I2 está integrado mediante [PR #24](https://github.com/Juanpvivas/demons/pull/24)
+e I3 tiene aprobación funcional para integración T027. Las [tareas](tasks.md)
+mantienen el seguimiento de entrega; publicación T039 y cierre de 004 pendientes.
+La transición histórica no inició I3 ni declaró completa 004.
+La corrección de tamaño/brillo preparada en T040 está implementada y tiene
+aprobación funcional para integración T043.
+T047 aumenta otro 50 % el tamaño de esa versión, con aprobación funcional T049.
 
 ## Summary
 
@@ -17,6 +21,10 @@ enemiga y caja pictóricos. Presentación en los AnimatedSprite2D existentes,
 con poses y acciones que observan el combate real. Retirada jugable inmediata;
 derrota visible mediante snapshot y efecto independiente adquirido de un pool
 del nivel. La animación nunca aplica daño ni decide recursos o resultados.
+I3 conserva la evolución [005](../005-cinco-carriles/plan.md) integrada por
+PR #24–#28: tablero horizontal, actores móviles, poses laterales y HUD/terminales.
+El avance central y las restricciones de cámara de I1 descritos abajo son
+antecedentes; no ordenan revertir la geometría o los controles actuales.
 
 ## Technical Context
 
@@ -49,7 +57,8 @@ El emulador autorizado no sustituye las mediciones físicas pendientes; QA
 evalúa las muestras disponibles y sus diferencias para integración funcional.
 
 **Constraints**: cuerpos de actores 48×48, grid 96×96, detectores y caja
-32×32/collider radio 20 intactos. El soldado cambia solo en su hijo visual:
+32×32 en el alcance anterior a T040 y 40×40 en esa corrección; el máximo visual
+vigente desde T047 es 60×60, con collider radio 20 intacto. El soldado cambia solo en su hijo visual:
 altura opaca neutra objetivo aproximada de 72 unidades, pie raíz+y24 y pivote
 estable ≤1 unidad; al menos 32 CSS px opacos en CSS 794×305, reconocible sin
 overlay y en grises con luz/contorno mate discreto, sin anillos o HUD.
@@ -69,8 +78,9 @@ soldado conserva 1774×887; su importación limita la textura a 1024×512 y los
 recortes usan esas coordenadas. Compartir frames de derrota con el efecto.
 
 **Scale/Scope**: un diseño por bando, dos modos del soldado, una caja, dos
-presentadores y un pool visual mínimo; sin HUD, audio, proyectiles o rediseño
-del terreno. T031 autoriza solo el ajuste de cámara y cobertura descritos arriba.
+presentadores y un pool visual mínimo; sin añadir HUD, audio, proyectiles o
+rediseño del terreno. I3 conserva el HUD/controles de 005. T031 autorizó solo
+el ajuste histórico de cámara y cobertura descrito arriba.
 
 ## Constitution Check
 
@@ -104,8 +114,9 @@ Documentación preparada: spec, plan, research, data-model, quickstart, contrato
 [tasks](tasks.md) en esta carpeta. No crear archivos nuevos de evidencias;
 resultados de ejecución al PR.
 
-Rutas del diseño; las del soldado y servicio están integradas en I1, mientras
-las del enemigo y la caja corresponden a los incrementos pendientes:
+Rutas del diseño: soldado y servicio integrados en I1, enemigo en I2 y caja
+aprobada funcionalmente en I3. Los atlas laterales actuales proceden de 005;
+sus catálogos conservan los originales de 004.
 
 ```text
 assets/sprites/units/monte_calvo/      # soldado_atlas.png/.import, soldado_frames.tres, SOURCES.md
@@ -148,11 +159,10 @@ Cada comportamiento conserva tester RED → dev → tester GREEN → QA → docs
 Arte tiene inspección visual/carga proporcional y regresión, sin RED artificial.
 I3 no pospone QA/regresión pertinentes de I1/I2. Un Issue por feature, rama
 por incremento del orquestador, PR en borrador; Refs intermedios y Closes final.
-Excepción de transición autorizada: I2 ya está contenido en
-`codex/005-i1-tablero`; un único PR contra `main` (`2dc532d` como base de revisión)
-se revisa como 004-I2 + 005-I1, con `Refs #18` y `Refs #22`, sin `Closes`.
-Su tamaño acumulado requiere justificación y QA conjunta; se conserva el
-historial y no se fusiona automáticamente. Después se retoman ramas breves.
+La transición histórica se integró mediante PR #24 desde `codex/005-i1-tablero`
+contra `main` (`2dc532d` como base de revisión), como 004-I2 + 005-I1, con
+`Refs #18` y `Refs #22`, sin cerrar las features. I3 retoma la rama breve desde
+`main` con la consolidación 005-I5 del PR #28 integrada.
 La aprobación de integración no completa las features ni SC-007.
 
 Orientación 400 líneas manuales/20 archivos por diff, declarando binarios y
@@ -169,5 +179,29 @@ al nuevo feedback sin ampliar gameplay: QA documental T032 → RED T033 → desa
 T034 → GREEN/visual T035 → QA funcional T036 → documentación T037 → QA final T038.
 La corrección completó los gates hasta QA funcional T036 con validación propia,
 sin sustituirlos por la aprobación histórica de I1. El estado de consolidación
-y entrega se conserva en las tareas y el PR. Esta transición integra I2 ya
-desarrollado junto con 005-I1; no inicia I3 ni nuevas mecánicas.
+y entrega se conserva en las tareas y el PR. I3 completa el acabado funcional
+de los tres elementos sin nuevas mecánicas; publicación T039 sigue pendiente.
+
+## Corrección T040 — Plan acotado (alcance anterior a T047)
+
+Conservar el PNG/importación de la caja y modificar sólo su escena:
+escala visual uniforme de 0,125 a 0,15625 (+25 %), con encaje centrado en el
+drop y silueta dentro de 40×40. No escalar la raíz ni el círculo radio 20.
+Un `AnimationPlayer` con recursos `Animation`/`AnimationLibrary` de la escena
+reproduce automáticamente un loop de 1,4 s sobre el color del sprite:
+RGB 1 a t=0, RGB 1,35 a t=0,7 y RGB 1 a t=1,4; alfa 1 en todo el recorrido.
+Interpolación continua y estado neutro blanco/opaco, sin pistas de métodos,
+señales, visibilidad, física o propiedades jugables. No añadir GDScript,
+shader, halo, sonidos ni regenerar el arte.
+
+La verificación proporcional inspecciona el recurso y su reproducción temporal,
+la lectura en los tamaños vigentes y la regresión de picking/economía. No fabricar
+RED por píxeles o archivos ni reutilizar QA de `e025722` como aprobación de este
+cambio. T043 aprueba el nuevo alcance funcional con smoke de varias cajas;
+el coste del pulso no se ha cuantificado. T039 permanece separado y pendiente.
+
+La ampliación T047, solicitada después y aprobada en T049, cambia sólo la
+escala de 0,15625 a 0,234375 (+50 %), con envolvente visual máxima 60×60.
+Conserva el resto de este plan, incluido pulso y radio 20. La cobertura de
+píxeles mayor no amplía picking ni tiene su coste cuantificado; muestras
+anteriores sólo aportan contexto del alcance intacto. Publicación pendiente.

@@ -4,6 +4,10 @@ Decisiones locales de preparación inicial, 2026-10-16. I1 conserva su aprobaci�
 histórica sobre `87a39c6`; la corrección delimitada en T031 (§8) está aprobada
 funcionalmente en T036. Las descripciones
 de la línea base de las secciones 1–7 pertenecen a la preparación inicial.
+La evolución [005](../005-cinco-carriles/spec.md), integrada por PR #24–#28,
+reemplaza aquella base central/estacionaria y añade HUD/recarga y terminales.
+I3 conserva ese estado actual; las decisiones históricas siguientes no exigen
+retirar controles ni restaurar geometría. Entrega y publicación en las [tareas](tasks.md).
 
 ## 1. Integración en escenas existentes
 

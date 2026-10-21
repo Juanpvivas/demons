@@ -1,28 +1,59 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scenes/levels/ammo_pickup.gd" id="1_ammo_pickup"]
+[ext_resource type="Texture2D" path="res://assets/sprites/pickups/monte_calvo/caja_municion.png" id="2_ammo_texture"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pickup"]
 radius = 20.0
-
-[sub_resource type="Gradient" id="Gradient_pickup_sprite"]
-colors = PackedColorArray(1, 0.85, 0.1, 1, 1, 0.85, 0.1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_pickup_sprite"]
-gradient = SubResource("Gradient_pickup_sprite")
-width = 32
-height = 32
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_pickup"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("GradientTexture2D_pickup_sprite")
+"texture": ExtResource("2_ammo_texture")
 }],
 "loop": true,
 "name": &"default",
 "speed": 5.0
 }]
+
+[sub_resource type="Animation" id="Animation_reset"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_brillo"]
+resource_name = "brillo"
+length = 1.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.7, 1.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1.35, 1.35, 1.35, 1), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_pickup"]
+_data = {
+&"RESET": SubResource("Animation_reset"),
+&"brillo": SubResource("Animation_brillo")
+}
 
 [node name="AmmoPickup" type="Area2D"]
 input_pickable = true
@@ -31,9 +62,19 @@ monitorable = false
 script = ExtResource("1_ammo_pickup")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 2
+texture_repeat = 1
+scale = Vector2(0.234375, 0.234375)
 sprite_frames = SubResource("SpriteFrames_pickup")
 animation = &"default"
 autoplay = "default"
+offset = Vector2(0, -5.818182)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_pickup")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_pickup")
+}
+autoplay = "brillo"

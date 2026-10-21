@@ -2,13 +2,18 @@
 
 **Feature ID**: `004-personajes-municion-monte-calvo`
 
-**Execution Branch**: `codex/004-i1-soldado`; una rama por incremento.
+**Execution Branch**: `codex/004-i3-municion`; una rama por incremento.
 
 **Created**: 2026-10-16
 
-**Status**: I1 inicial aprobado sobre `87a39c6`; corrección de legibilidad y
-encuadre aprobada funcionalmente en T036. I2/I3 siguen pendientes; las
-[tareas](tasks.md) y el PR delimitan la consolidación y entrega.
+**Status**: I1 y su corrección aprobados e integrados; I2 integrado junto con
+005-I1 mediante [PR #24](https://github.com/Juanpvivas/demons/pull/24).
+I3 aprobado para integración funcional en T027. Las [tareas](tasks.md)
+mantienen el estado de entrega y PR; SC-007/publicación T039 y el Issue siguen abiertos.
+La corrección T040 de tamaño/brillo tiene aprobación funcional para integración
+T043; la aprobación anterior conserva su alcance original.
+La ampliación adicional solicitada en T047 tiene aprobación funcional T049;
+sus valores vigentes sustituyen sólo el tamaño visual anterior.
 
 **Input**: «Entonces preparemos con Spec Kit la siguiente feature de personajes
 y munición de Monte Calvo, siguiendo el flujo que ya tengo definido».
@@ -30,6 +35,17 @@ se prueban como apps instaladas: APK Android, IPA en dispositivo iOS o `.app`
 en iOS Simulator. No se continúan pruebas de navegador móvil. Las medidas y
 aprobaciones anteriores de Web móvil permanecen como referencias históricas;
 no acreditan una app instalada ni sustituyen los requisitos nativos físicos.
+
+**Aplicación vigente de I3:** la evolución [005](../005-cinco-carriles/spec.md),
+integrada mediante PR #24–#28, establece hoy cinco filas horizontales, actores
+móviles, poses laterales, selección/recarga mediante HUD y pantallas terminales.
+Las referencias al avance central (FR-003), al encuadre original de I1
+(FR-010/SC-005) y a la ausencia de controles describen la base histórica de 004;
+I3 conserva la geometría, orientación y controles de 005. Las exclusiones de
+FR-012 prohíben añadirlos en este incremento, sin retirar los ya integrados.
+El alcance de I3 aprobado antes de T040 limita la imagen de la caja a 32×32,
+con radio 20 y sin cambiar código, economía, picking o reglas. La corrección
+T040 lo amplió a 40×40; T047 sustituye ahora sólo ese límite visual por 60×60.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -60,7 +76,7 @@ recarga mediante la ruta de verificación existente y la derrota del soldado.
    cuerpo a cuerpo real tiene una respuesta visual distinguible del disparo.
 4. **Given** un soldado en modo machete, **When** se ejecuta una recarga válida
    por la ruta existente, **Then** recupera la presentación de fusil y conserva
-   la moral real; esta feature no incorpora un botón para recargarlo.
+   la moral real; el botón actual procede de 005 y esta feature no añade otro.
 5. **Given** un soldado vivo, **When** recibe daño o es derrotado,
    **Then** el daño tiene una respuesta visual breve y la derrota es reconocible;
    la liberación de su celda y la desaparición de su presencia jugable conservan
@@ -306,9 +322,9 @@ repetir con reserva suficiente y una celda libre bajo la caja.
 - Un diseño por bando y una caja son suficientes para este incremento de
   acabado. No se pide fidelidad documental exacta de uniformes/armas, múltiples
   direcciones, esqueletos complejos o cadáveres persistentes.
-- El nivel todavía carece de HUD y controles de recarga integrados. La recarga
-  se verifica por la ruta existente, sin presentarla como interacción disponible
-  para el jugador ni convertir su acceso en requisito de esta feature.
+- La base original de 004 carecía de HUD y controles de recarga. I3 conserva
+  los controles y pantallas terminales integrados por 005 y verifica la recarga
+  por esa ruta actual; no añade interfaz nueva.
 - Las animaciones nuevas requieren adaptación visual a hechos existentes;
   no se presume que ya haya señales de disparo/ataque, animaciones de muerte o
   una espera antes de reciclar. El plan delimitará esa adaptación y sus pruebas.
@@ -337,9 +353,44 @@ repetir con reserva suficiente y una celda libre bajo la caja.
 
 ## Enmienda de integración y publicación (2026-10-19)
 
-La persona autorizó la constitución 4.0.0 y el PR conjunto 004-I2 + 005-I1.
+La persona autorizó la constitución 4.0.0 y el PR conjunto 004-I2 + 005-I1,
+integrado mediante PR #24. Esa transición no inició I3; su autorización y
+entrega posteriores se siguen en las tareas.
 La integración funcional requiere TDD/GREEN, regresión, compilación/exportación
 aplicables, documentación, CI y QA independiente en entornos disponibles. No
 aprueba SC-007, renderer/paquete de producción ni hardware. Esos requisitos
 siguen pendientes de publicación y no se eximen por falta de dispositivo.
-No se inicia 004-I3, no se cierra el Issue y no se distribuye automáticamente.
+No se cierra el Issue ni se distribuye automáticamente.
+
+## Corrección T040 — Tamaño y brillo de la munición (alcance anterior a T047)
+
+La persona pidió que la munición fuera «un poco más grande y tal vez parpadee»
+para identificarla sobre el suelo. Esta corrección conserva la aprobación de
+`e025722` en su alcance anterior; T043 aprueba la presentación nueva.
+
+- Aumentar el tamaño visual un 25 %, con envolvente máxima de 40×40 centrada
+  en el mismo drop. El PNG, su importación y el motivo de cartuchos se conservan.
+- Mientras la caja esté disponible, repetir un pulso lento y continuo de brillo:
+  blanco → RGB 1,35 → blanco en un ciclo completo de 1,4 s. Alfa de modulación
+  siempre 1, conservando la transparencia del PNG; sin desaparecer, alternar
+  visibilidad, añadir halo o crear un shader.
+- Conservar raíz, posición, radio de recolección 20, valor y precedencia de
+  recoger sobre seleccionar/desplegar. La imagen mayor no promete más alcance.
+- Resolver el pulso sólo con recursos de animación de escena, sin GDScript
+  nuevo, callbacks jugables ni cambios de economía/input. Recoger sigue retirando
+  la caja una sola vez; la animación no concede munición ni decide su retiro.
+
+La aceptación exige comparar tamaño/lectura y el ciclo completo sobre el suelo,
+también con cajas solapadas, bajo actores y junto al parapeto, además de verificar
+los gestos vigentes en los destinos disponibles. La corrección cuenta con
+aprobación funcional T043 para ese alcance. El coste del pulso no está
+cuantificado; T039/SC-007 y la publicación permanecen pendientes.
+
+## Ampliación T047 — Otro 50 % sobre la versión con brillo
+
+La persona aprobó el brillo y pidió aumentar aún más el tamaño, un 50 %.
+T047–T049 aplica ese aumento sobre `28203d6`: escala visual 0,234375 y
+envolvente máxima 60×60, con aprobación funcional T049. Conserva el pulso,
+offset, PNG/importación y las reglas de la corrección anterior. El radio de
+recogida sigue siendo 20; los extremos visibles exteriores no recogen y el
+gesto se dirige al centro. T039/SC-007 y publicación permanecen pendientes.

@@ -2,8 +2,18 @@
 
 Contrato de diseño. I1 conserva su aprobación sobre `87a39c6`; la corrección de
 tamaño, contraste, material y encuadre delimitada en T031 está aprobada
-funcionalmente en T036. El contrato también delimita I2/I3, aún pendientes;
-las [tareas](../tasks.md) y el PR conservan el estado de consolidación y entrega.
+funcionalmente en T036. I2 está integrado mediante PR #24 e I3 aprobado
+funcionalmente para integración T027; las [tareas](../tasks.md) mantienen
+el estado de entrega y publicación T039 pendiente.
+La corrección de huella visual y brillo preparada en T040 tiene aprobación
+funcional T043; `e025722` conserva su aprobación en el alcance anterior.
+El aumento posterior T047 tiene aprobación funcional T049; `28203d6`
+conserva el alcance anterior de 40×40.
+
+La base actual incorpora [005](../../005-cinco-carriles/contracts/horizontal-combat.md)
+mediante PR #24–#28. Los detectores orientados al avance central y el encuadre
+de I1 que siguen son históricos: I3 conserva cuerpos móviles, geometría
+horizontal, cámara, HUD/recarga y terminales de 005, sin restaurar aquel diseño.
 
 ## 1. Frontera protegida
 
@@ -47,7 +57,7 @@ uno capturado. Derrota cancela daño/moral/ataque vivos. Dos instancias no compa
 frame/tween/estado mutable. Tiempos visuales no modifican fire_rate/daño enemigo.
 Avance significa desplazamiento real mayor de 0.01 unidades de mundo por paso
 tras move_and_slide; contacto si es menor/igual. Test con cuerpo real bloqueado
-por Soldado real; velocidad deseada +Y no acredita desplazamiento.
+por Soldado real; velocidad deseada por sí sola no acredita desplazamiento.
 
 ## 3. Snapshot y evento de derrota
 
@@ -102,12 +112,26 @@ regenerar el PNG. En CSS 794×305, altura opaca neutra ≥32 CSS px sin pulsos
 de moral/daño. Reconocer figura y arma sobre el suelo, sin overlays y también
 en grises. Usar luz/contorno mate discreto mediante material de estilo
 compartido inmutable; sin anillos, barras, halo de selección o HUD.
-El enemigo mantiene su encaje previsto hasta I2. En canvas 960×540,
+El enemigo conserva el encaje de producción ya integrado. En canvas 960×540,
 arma principal visible aproximadamente ≥ 8 px de largo/2 px de espesor; revisión
 manual sigue exigiendo reconocer fusil/machete sin tinte.
-Caja opaca/motivo dentro de 32×32 centrados, radio 20 intacto; sin aureola/etiqueta
-que prometa área interactiva extra. Bandos distintos por silueta/uniforme;
+Caja opaca/motivo dentro de 32×32 en el alcance inicial y 40×40 desde T040.
+T047 establece el límite vigente de 60×60 centrados, con escala 0,234375
+(+50 % sobre 0,15625) y radio 20 intacto. Los extremos visibles fuera del
+círculo no garantizan recogida; se conserva el gesto sobre su centro.
+Sin aureola/etiqueta que prometa área interactiva extra. Bandos distintos por silueta/uniforme;
 caja por forma/cartuchos/contraste sobre suelo y junto a trincheras.
+
+**Pulso T040, aprobado funcionalmente en T043:** sólo el color del sprite interpola
+continuamente de `Color(1.0, 1.0, 1.0, 1.0)` a `Color(1.35, 1.35, 1.35, 1.0)`
+a los 0,7 s y vuelve al blanco opaco a los 1,4 s, repitiéndose mientras exista
+la caja disponible.
+El alfa de modulación permanece en 1 y conserva la transparencia del PNG;
+no se anima visibilidad ni escala.
+`AnimationPlayer`/recursos de escena exclusivamente, sin GDScript nuevo,
+pistas de métodos o callbacks que recojan, cobren o alteren el área interactiva.
+No modifica PNG/importación, raíz, posición del drop, radio 20, valor, input,
+precedencia o reglas de solapamiento. Sin shader nuevo, halo ni desaparición.
 
 Textura importada de ejecución: atlas actor ≤ 1024² por bando, caja ≤ 256²;
 alfa y regiones sin vecinos/halos. El límite corresponde a la textura importada,
