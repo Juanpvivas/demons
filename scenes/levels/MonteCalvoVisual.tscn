@@ -1,8 +1,19 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/levels/monte_calvo/terreno.png" id="1_terreno"]
 [ext_resource type="Texture2D" path="res://assets/sprites/levels/monte_calvo/montanas.png" id="2_montanas"]
 [ext_resource type="Texture2D" path="res://assets/sprites/levels/monte_calvo/trincheras_atlas.png" id="3_trincheras"]
+[ext_resource type="Texture2D" path="res://assets/sprites/levels/monte_calvo/trinchera_lateral_atlas.png" id="4_lateral"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lateral_posterior"]
+atlas = ExtResource("4_lateral")
+region = Rect2(6, 6, 820, 410)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lateral_parapeto"]
+atlas = ExtResource("4_lateral")
+region = Rect2(13, 416, 1000, 247)
+filter_clip = true
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_frente"]
 atlas = ExtResource("3_trincheras")
@@ -209,3 +220,85 @@ position = Vector2(946, 553)
 scale = Vector2(0.23, 0.235)
 texture = SubResource("AtlasTexture_esquina")
 centered = false
+
+[node name="TrincherasLaterales" type="Node2D" parent="."]
+
+[node name="Posterior1" type="Sprite2D" parent="TrincherasLaterales"]
+texture_filter = 2
+texture_repeat = 1
+z_index = 6
+position = Vector2(144, 148)
+scale = Vector2(0.1561, 0.1561)
+texture = SubResource("AtlasTexture_lateral_posterior")
+
+[node name="Parapeto1" type="Sprite2D" parent="TrincherasLaterales"]
+texture_filter = 2
+texture_repeat = 1
+z_index = 11
+position = Vector2(144, 165)
+scale = Vector2(0.12, 0.12)
+texture = SubResource("AtlasTexture_lateral_parapeto")
+
+[node name="Posterior2" type="Sprite2D" parent="TrincherasLaterales"]
+texture_filter = 2
+texture_repeat = 1
+z_index = 6
+position = Vector2(144, 244)
+scale = Vector2(0.1561, 0.1561)
+texture = SubResource("AtlasTexture_lateral_posterior")
+
+[node name="Parapeto2" type="Sprite2D" parent="TrincherasLaterales"]
+texture_filter = 2
+texture_repeat = 1
+z_index = 11
+position = Vector2(144, 261)
+scale = Vector2(0.12, 0.12)
+texture = SubResource("AtlasTexture_lateral_parapeto")
+
+[node name="Posterior3" type="Sprite2D" parent="TrincherasLaterales"]
+texture_filter = 2
+texture_repeat = 1
+z_index = 6
+position = Vector2(144, 340)
+scale = Vector2(0.1561, 0.1561)
+texture = SubResource("AtlasTexture_lateral_posterior")
+
+[node name="Parapeto3" type="Sprite2D" parent="TrincherasLaterales"]
+texture_filter = 2
+texture_repeat = 1
+z_index = 11
+position = Vector2(144, 357)
+scale = Vector2(0.12, 0.12)
+texture = SubResource("AtlasTexture_lateral_parapeto")
+
+[node name="Posterior4" type="Sprite2D" parent="TrincherasLaterales"]
+texture_filter = 2
+texture_repeat = 1
+z_index = 6
+position = Vector2(144, 436)
+scale = Vector2(0.1561, 0.1561)
+texture = SubResource("AtlasTexture_lateral_posterior")
+
+[node name="Parapeto4" type="Sprite2D" parent="TrincherasLaterales"]
+texture_filter = 2
+texture_repeat = 1
+z_index = 11
+position = Vector2(144, 453)
+scale = Vector2(0.12, 0.12)
+texture = SubResource("AtlasTexture_lateral_parapeto")
+
+[node name="Posterior5" type="Sprite2D" parent="TrincherasLaterales"]
+texture_filter = 2
+texture_repeat = 1
+z_index = 6
+position = Vector2(144, 532)
+scale = Vector2(0.1561, 0.1561)
+texture = SubResource("AtlasTexture_lateral_posterior")
+
+[node name="Parapeto5" type="Sprite2D" parent="TrincherasLaterales"]
+texture_filter = 2
+texture_repeat = 1
+z_index = 11
+position = Vector2(144, 549)
+scale = Vector2(0.12, 0.12)
+texture = SubResource("AtlasTexture_lateral_parapeto")

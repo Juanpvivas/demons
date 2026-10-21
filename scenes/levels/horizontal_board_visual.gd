@@ -1,4 +1,5 @@
-## Guía provisional de carriles/plazas. Solo representa datos del tablero;
+## Guía discreta de carriles; las piezas de trinchera representan las plazas.
+## Solo representa datos del tablero;
 ## no posee input, física, ocupación, economía ni reglas de combate.
 class_name LaneBoardVisual
 extends Node2D
@@ -20,8 +21,6 @@ func _draw() -> void:
 		var shade := Color(0.85, 0.77, 0.52, 0.10 if lane % 2 == 0 else 0.035)
 		draw_rect(band, shade)
 		draw_rect(band, Color(0.85, 0.79, 0.57, 0.35), false, 1.0)
-		draw_rect(home.grow(-3.0), Color(0.12, 0.14, 0.09, 0.65))
-		draw_rect(home.grow(-3.0), Color(0.92, 0.78, 0.42, 0.85), false, 2.0)
 		var label_position := home.position + Vector2(-28, cell_size.y * 0.5 + 7)
 		draw_string(ThemeDB.fallback_font, label_position, str(lane + 1),
 			HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color(0.95, 0.87, 0.66))

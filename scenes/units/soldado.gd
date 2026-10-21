@@ -184,7 +184,9 @@ func _physics_process(delta: float) -> void:
 	velocity = Vector2.ZERO
 	if not _can_process_combat():
 		_clear_combat_targets()
+		_sprite.observe_motion(_movement_state, Vector2.ZERO)
 		return
+	var previous_position := global_position
 	_refresh_physics_candidates()
 	var previous_movement := _movement_state
 	if _movement_state == MovementState.RETURNING:
@@ -201,7 +203,9 @@ func _physics_process(delta: float) -> void:
 	if not _can_process_combat():
 		velocity = Vector2.ZERO
 		_clear_combat_targets()
+		_sprite.observe_motion(_movement_state, Vector2.ZERO)
 		return
+	_sprite.observe_motion(_movement_state, global_position - previous_position)
 	_process_incoming_melee_damage(delta)
 
 
@@ -586,6 +590,7 @@ func request_reload() -> bool:
 			_set_mode(SoldierMode.RIFLE)
 		else:
 			_movement_state = MovementState.RETURNING
+		_sprite.observe_motion(_movement_state, Vector2.ZERO)
 	_reload_in_progress = false
 	reload_state_changed.emit()
 	return true
