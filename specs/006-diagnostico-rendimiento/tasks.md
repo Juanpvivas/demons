@@ -1,7 +1,7 @@
 # Tasks: Diagnóstico y estabilización del rendimiento
 
 **Feature**: `006-diagnostico-rendimiento` · **Issue**: [#30](https://github.com/Juanpvivas/demons/issues/30) · **I1**: `codex/006-i1-rendimiento`, base `5d50cb0`.
-**Estado**: preparación y coordinación T001 aprobadas por QA; I1 en ejecución. Publicación pendiente. Input: [spec](spec.md), [plan](plan.md), [protocolo](contracts/profiling-protocol.md), [quickstart](quickstart.md) y [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
+**Estado**: instrumento T001–T007 y dictamen limitado T009 aprobados para integración por QA; I1 entrega instrumento y diagnóstico sin parche. Documentación y entrega en ejecución. T008/base nativa y T010–T012/US2 pendientes; publicación pendiente. Input: [spec](spec.md), [plan](plan.md), [protocolo](contracts/profiling-protocol.md), [quickstart](quickstart.md) y [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
 
 Spec Kit sólo prepara. Orquestador registra `[X]` tras QA; dev no escribe/ejecuta tests, QA sólo revisa. Nuevos resultados de validación quedan en temporales/CI y en el resumen del PR, no en Git. No fabricar RED de presentación equivalente ni de fuente histórica. I1 incluye US1 y la primera corrección US2 autorizada; el Issue conserva seguimiento posterior y usa `Refs`, sin publicación.
 
@@ -20,7 +20,7 @@ Spec Kit sólo prepara. Orquestador registra `[X]` tras QA; dev no escribe/ejecu
 - [X] T006 [US1] godot-tester: verificar GREEN de `tests/unit/systems/test_performance_probe.gd`, regresión pertinente y neutralidad de la lectura con nodos reales; informar modificaciones propias de test sin debilitar contrato; depende de T005.
 - [X] T007 [US1] qa-validator: validar instrumento y RED/GREEN frente al `contracts/profiling-protocol.md`, incluidos invalidación/compatibilidad y límites del observador; habilitar su uso sin aprobar aún diagnóstico o parche; depende de T006.
 - [ ] T008 [US1] godot-tester: ejecutar nueva base `5d50cb0` y diagnóstico del `contracts/profiling-protocol.md` en Web de computador/APK/app iPad disponibles, con tres repeticiones por condición y oráculos independientes. Perfilar o aislar un factor para confirmar/descartar coste del shader; separar render fijo, producción y pacing/foco iOS, sin atribuir GPU/Self desde TIME_PROCESS. Collectors/ablaciones/resultados sólo temporales; depende de T007.
-- [ ] T009 [US1] qa-validator: revisar muestras/cohortes/contexto y atribución de T008 contra `contracts/profiling-protocol.md`; emitir dictamen causal y alcance exacto del primer parche autorizado, o mantener US2 pendiente si no hay señal válida; depende de T008.
+- [X] T009 [US1] qa-validator: revisar muestras/cohortes/contexto y atribución de T008 contra `contracts/profiling-protocol.md`; emitir dictamen causal y alcance exacto del primer parche autorizado, o mantener US2 pendiente si no hay señal válida; depende de T008.
 
 ## Fase 3: US2 — Primera estabilización verificada (P2)
 
@@ -32,12 +32,12 @@ Spec Kit sólo prepara. Orquestador registra `[X]` tras QA; dev no escribe/ejecu
 
 ## Fase final: Documentación y entrega
 
-- [ ] T013 docs-writer: consolidar alcance aprobado y guía útil en `docs/SPEC.md`, `docs/ARCHITECTURE.md`, `README.md` cuando corresponda y documentos006, sin volcar registros; reportar metadatos postmerge004 desactualizados al orquestador; depende de T012 aprobado.
+- [ ] T013 docs-writer: consolidar alcance aprobado y guía útil en `docs/SPEC.md`, `docs/ARCHITECTURE.md`, `README.md` cuando corresponda y documentos006, sin volcar registros; reportar metadatos postmerge004 desactualizados al orquestador; depende de T012 aprobado si se entrega corrección, o de T009 con dictamen explícito sin parche para entregar sólo instrumento y diagnóstico limitado.
 - [ ] T014 qa-validator: revisar documentación T013 y vigencia de fuente/verificaciones en `specs/006-diagnostico-rendimiento/`, sin exigir repetir evidencia no invalidada; depende de T013.
 - [ ] T015 project-orchestrator: registrar aprobaciones en `specs/006-diagnostico-rendimiento/tasks.md`, alinear sólo encabezados postmerge del seguimiento004, comprobar diff/base/tamaño/CI/exportación, publicar rama y crear PR en borrador `Refs #30`. Conservar Issue #30 abierto, T039/T071 pendientes, sin promover/fusionar/distribuir; depende de T014 aprobado.
 
 ## Dependencias y estrategia
 
-Cadena: T001→T002→T003→T004→T005→T006→T007→T008→T009→T010→T011→T012→T013→T014→T015. RED no depende de implementación. No hay `[P]`: instrumento, motor y checkout compartidos; investigación de sólo lectura puede avanzar en paralelo.
+Cadena con corrección: T001→T002→T003→T004→T005→T006→T007→T008→T009→T010→T011→T012→T013→T014→T015. Si T009 no autoriza un parche, la entrega limitada sigue T009→T013→T014→T015; conserva pendientes las bases no acreditadas de T008 y T010–T012, sin presentar US1/US2 ni SC-001 nativos como completos. RED no depende de implementación. No hay `[P]`: instrumento, motor y checkout compartidos; investigación de sólo lectura puede avanzar en paralelo.
 
-Entregar un resultado I1 completo (US1+primer parche US2) con QA y documentación. Si T009 no autoriza un parche, informar diagnóstico y conservar US2 pendiente: no inventar una optimización ni marcarla entregada. Otros cuellos de botella y publicación quedan fuera de I1; los requisitos de 004/T039 y 005/T071 conservan sus propios artefactos/hardware y aprobación humana. La orientación de 400 líneas/20 archivos se revisa al delimitar el diff, sin fragmentar RED/GREEN.
+Entregar un incremento coherente con QA y documentación. El resultado previsto es US1+primer parche US2; si T009 no autoriza un parche, entregar sólo instrumento y diagnóstico en el alcance aprobado, con las bases no acreditadas y US2 pendientes: no inventar una optimización ni marcarla entregada. Otros cuellos de botella y publicación quedan fuera de I1; los requisitos de 004/T039 y 005/T071 conservan sus propios artefactos/hardware y aprobación humana. La orientación de 400 líneas/20 archivos se revisa al delimitar el diff, sin fragmentar RED/GREEN.
