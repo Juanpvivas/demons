@@ -280,6 +280,20 @@ func test_compare_revalidates_observations_instead_of_trusting_valid_or_expected
 		_invalid(_probe.compare_runs(base, candidate), key)
 
 
+func test_compare_rejects_missing_or_tampered_frame_summary_despite_unchanged_raw_intervals() -> void:
+	var base := _report()
+	_valid(base)
+	for field: String in ["missing", "mean", "p50", "p95", "p99", "max"]:
+		var candidate := _report("run-c", START + 100000, 1000)
+		_valid(candidate)
+		if field == "missing":
+			candidate.erase("frame_ms")
+		else:
+			candidate["frame_ms"][field] = 999.0
+		assert_eq(candidate["frame_intervals_usec"], [4000, 1000, 3000, 2000], "la serie original no fue adulterada")
+		_invalid(_probe.compare_runs(base, candidate), "frame_ms")
+
+
 func test_compare_rejects_internally_valid_runs_with_different_logical_roles_or_states() -> void:
 	var base := _report()
 	_valid(base)
