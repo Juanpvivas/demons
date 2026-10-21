@@ -697,6 +697,20 @@ entrada, visuales y recorridos de una entrega exige comprobar que la fuente
 y los recursos relevantes siguen siendo equivalentes; no convierte esa
 evidencia en una ejecución nueva ni amplía sus destinos o renderers.
 
+006-I1 añade [`tools/performance/probe.gd`](../tools/performance/probe.gd),
+un `Node` optativo sin autoload ni referencias desde las escenas normales.
+Calcula intervalos monotónicos y percentiles, lee inventario recursivo por
+valor y valida condiciones/cohortes; no monta escenarios, escribe resultados
+ni gobierna la partida. Los collectors y experimentos permanecen temporales.
+Su [contrato](../specs/006-diagnostico-rendimiento/contracts/profiling-protocol.md)
+separa producción variable de render constante y exige procedencia real.
+`valid=true` acredita comprobaciones mecánicas del informe: el collector y QA
+deben verificar además que cada API observa el dato efectivo. En el motor
+usado, los getters nativos de foco y vsync GLES pueden devolver valores fijos;
+esa limitación impide acreditar comparabilidad causal nativa. `TIME_PROCESS`
+no se interpreta como Self de scripts ni como tiempo GPU. T009 aprueba sólo
+el instrumento y diagnóstico limitado, sin parche ni cierre de bases nativas.
+
 ## 7. Consideraciones multiplataforma
 
 - **Destinos del producto:** Web solo en navegador de computador y aplicaciones
@@ -879,3 +893,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-21 | 004/T028 tras QA T027: encaje de la caja pictórica en el pickup existente, sin cambios de lógica/picking; vigencia de la evolución 005 y publicación T039/T071 pendiente, sin patrones nuevos. |
 | 2026-10-21 | 004/T044 tras QA T043: escala visual 0,15625 y brillo por recurso de escena, conservando raíz/radio/input y sin patrones nuevos; publicación pendiente. |
 | 2026-10-21 | 004/T050 tras QA T049: escala visual 0,234375 y envolvente 60×60, sin ampliar el círculo de recogida ni cambiar animación/recursos; publicación pendiente. |
+| 2026-10-21 | 006/T013 tras QA T009: herramienta optativa de diagnóstico en §6, separada del producto; validez mecánica y observabilidad efectiva diferenciadas, sin nuevos patrones de gameplay ni parche de rendimiento. |

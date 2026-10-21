@@ -321,6 +321,24 @@ cajas animadas; añade trabajo por instancia cuyo coste no se ha cuantificado.
 Las muestras anteriores conservan su alcance y no certifican ese coste ni el
 de la cobertura visual mayor aprobada en T049.
 
+El diagnóstico limitado de [006-I1](../specs/006-diagnostico-rendimiento/spec.md),
+aprobado para integración en T009, añade un instrumento optativo sin cambiar
+el juego. En Chrome/macOS, las comparaciones del fixture constante con
+observador mínimo y sin material del soldado no distinguen una ganancia de
+la dispersión y la cadencia observadas. En Android Emulator/Compatibility,
+la deriva entre repeticiones y las lecturas de foco/vsync que devuelven
+valores fijos impiden una conclusión causal; producción rondó 49,3–49,5 FPS,
+sólo como descripción. Tras resolver el bloqueo inicial del Mac, tres ventanas
+descriptivas de iPad Simulator con Apple Software Renderer registraron medias
+de 150,12–150,92 ms por frame (unos 6,6 FPS). El collector conserva intervalos
+independientes; el probe permanece inválido intencionalmente, con condiciones
+esperadas vacías al no acreditar foco/vsync efectivos. Estas lecturas no completan una base
+comparable ni atribuyen el coste a GPU, shader o entorno.
+No se autoriza un parche del shader ni se dan por resueltas las caídas
+históricas. Las bases nativas de T008/SC-001, US2 y T039/T071 siguen pendientes;
+el [protocolo](../specs/006-diagnostico-rendimiento/contracts/profiling-protocol.md)
+delimita las próximas mediciones, sin acreditar hardware o paquete final.
+
 ## 9. Alcance del MVP (primera versión jugable)
 
 - [ ] 1 nivel (ej. defensa de Monte Calvo)
@@ -396,3 +414,5 @@ de la cobertura visual mayor aprobada en T049.
 | 2026-10-21 | 004/T028 tras QA T027: caja oliva y cartuchos con huella/picking/economía conservados; tres representaciones aprobadas funcionalmente y evolución 005 vigente, con publicación T039/T071 pendiente. |
 | 2026-10-21 | 004/T044 tras QA T043: caja un 25 % mayor y pulso de brillo suave, con radio/valor/input conservados; coste del pulso sin cuantificar y publicación T039/T071 pendiente. |
 | 2026-10-21 | 004/T050 tras QA T049: otro 50 % de tamaño sobre la versión con brillo, envolvente visual 60×60 y recogida radio 20 conservada; publicación pendiente. |
+| 2026-10-21 | 006/T013 tras QA T009: instrumento optativo y diagnóstico limitado aprobados para integración, sin mejora causal ni parche; bases nativas, estabilización y publicación pendientes. |
+| 2026-10-21 | 006/T013: ampliación del diagnóstico con tres ventanas descriptivas de iPad Simulator/software, conservando límites de observación y bases nativas pendientes. |
