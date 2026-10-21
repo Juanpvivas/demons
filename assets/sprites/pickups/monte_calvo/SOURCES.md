@@ -29,8 +29,10 @@ ocupa aproximadamente **27,4×17,6** unidades, centrada en la raíz; la opacidad
 completa permanece dentro de **32×32**, incluidos los cartuchos. El lienzo
 transparente no se utiliza como medida de la caja visible. La raíz, posición,
 CircleShape2D de radio **20**, valor e interacción permanecen intactos.
-La importación/carga, lectura sobre terreno y gestos requieren verificación
-del tester y QA; esta procedencia no los da por aprobados.
+La importación/carga, lectura sobre terreno y gestos tienen aprobación funcional
+para integración T027 en Web de computador y apps Android Emulator/iPad Simulator.
+Las [tareas de 004](../../../../specs/004-personajes-municion-monte-calvo/tasks.md)
+mantienen entrega y publicación T039 pendiente, sin certificar hardware o Mobile.
 
 ## Condiciones de uso
 

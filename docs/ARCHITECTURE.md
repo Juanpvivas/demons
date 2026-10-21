@@ -488,7 +488,8 @@ que una baja durante el retorno caiga en esa dirección; escala, offset y
 material mantienen sus valores autorados neutros. Reset restaura también
 rotación y velocidad de reproducción, limpia frame/progreso e invalida
 callbacks anteriores. Los atlas/frames laterales sustituyen los de producción
-y conservan los originales históricos. La caja de 004-I3 sigue pendiente.
+y conservan los originales históricos. 004-I3 completa la caja pictórica sin
+añadir un presentador o comportamiento nuevo.
 El [contrato de 004](../specs/004-personajes-municion-monte-calvo/contracts/visual-presentation.md)
 delimita los tiempos y la frontera jugable.
 
@@ -525,6 +526,13 @@ delimita los tiempos y la frontera jugable.
   ni contador de bajas WAVE; los de oleadas usan 1→5 continuamente entre oleadas
   con sus intervalos originales. Sólo sus bajas notifican `WaveManager` para
   victoria. El contexto de origen se lee antes del release síncrono.
+- **`AmmoPickup.tscn` (004-I3):** conserva raíz, posición, script y círculo de
+  recolección de radio 20. Su sprite de un fotograma usa la caja oliva con
+  cartuchos, textura importada 256×256, escala visual 0,125 y offset local
+  `(0; −5,818182)`, con arte dentro de 32×32. Los cambios visuales no alteran
+  valor, picking ni precedencia sobre selección/despliegue. La
+  [procedencia](../assets/sprites/pickups/monte_calvo/SOURCES.md) recoge original,
+  importación y condiciones de uso.
 - **Cámara y entrada:** `monte_calvo_camera.gd` centra el rectángulo de diseño
   1152×648 en `(576,324)` en ambos ejes al iniciar y redimensionar, manteniendo
   `canvas_items/expand`, sin zoom ni mover actores/grid. El nivel convierte
@@ -775,7 +783,7 @@ físico provisional; se mantiene el objetivo de 60 FPS. Web y app Android tienen
 aceptaciones propias, sin extrapolar por compartir teléfono. La comprobación
 iOS corresponde solo a simulador con renderer software, sin acreditar hardware
 iOS o Mobile. La aceptación de I1 no certifica estabilidad sostenida fuera de
-las muestras revisadas ni sustituye las verificaciones pendientes de I2/I3.
+las muestras revisadas ni sustituye las verificaciones propias de I2/I3.
 La constitución 3.0.0 conserva la referencia física nativa y esas aprobaciones
 históricas; las nuevas verificaciones siguen los destinos vigentes de esta
 sección, sin exigir navegador móvil ni convertirlo en prueba de app instalada.
@@ -788,6 +796,11 @@ de ambos entornos no certifican Mobile, GPU, 60 FPS físicos ni el paquete final
 T071 mantiene esos requisitos, firma/instalación/versionado y matriz de
 publicación pendientes; las variantes temporales de QA no modifican los presets
 de producción. [Alcance funcional y límites](SPEC.md#8-arte-y-estilo-visual).
+
+004-I3 tiene aprobación funcional para integración en T027 con caja, gestos y
+terminales verificados en sus destinos disponibles. La neutralidad del sprite
+no certifica renderer Mobile, GPU, hardware o paquete final; T039 de 004 y
+T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 
 - **Política de versionado para releases de prueba**: ambos workflows de
   deploy comparan `version/code`/`version/name` (Android) o
@@ -858,3 +871,4 @@ de producción. [Alcance funcional y límites](SPEC.md#8-arte-y-estilo-visual).
 | 2026-10-20 | 005/T043 tras QA T042: RETURNING físico separado del arma y HUD observador; se gradúan intención con identidad, revalidación de autoridad y guard antes de callbacks síncronos, sin framework nuevo. |
 | 2026-10-20 | 005/T056 tras QA T055: extensión del patrón observador con movimiento real, retorno y flips actuales de caída; reset de reproducción y composición estática de cinco trincheras por capas. I4 aprobado en rama, publicación pendiente. |
 | 2026-10-21 | 005/T063 tras QA T062: I4 integrado por PR #27 y consolidación funcional I5; distinción entre población/victoria de fixture, evidencia reutilizada y certificaciones pendientes de publicación, sin nuevos patrones. |
+| 2026-10-21 | 004/T028 tras QA T027: encaje de la caja pictórica en el pickup existente, sin cambios de lógica/picking; vigencia de la evolución 005 y publicación T039/T071 pendiente, sin patrones nuevos. |

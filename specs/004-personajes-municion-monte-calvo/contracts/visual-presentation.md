@@ -2,8 +2,14 @@
 
 Contrato de diseño. I1 conserva su aprobación sobre `87a39c6`; la corrección de
 tamaño, contraste, material y encuadre delimitada en T031 está aprobada
-funcionalmente en T036. El contrato también delimita I2/I3, aún pendientes;
-las [tareas](../tasks.md) y el PR conservan el estado de consolidación y entrega.
+funcionalmente en T036. I2 está integrado mediante PR #24 e I3 aprobado
+funcionalmente para integración T027; las [tareas](../tasks.md) mantienen
+el estado de entrega y publicación T039 pendiente.
+
+La base actual incorpora [005](../../005-cinco-carriles/contracts/horizontal-combat.md)
+mediante PR #24–#28. Los detectores orientados al avance central y el encuadre
+de I1 que siguen son históricos: I3 conserva cuerpos móviles, geometría
+horizontal, cámara, HUD/recarga y terminales de 005, sin restaurar aquel diseño.
 
 ## 1. Frontera protegida
 
@@ -47,7 +53,7 @@ uno capturado. Derrota cancela daño/moral/ataque vivos. Dos instancias no compa
 frame/tween/estado mutable. Tiempos visuales no modifican fire_rate/daño enemigo.
 Avance significa desplazamiento real mayor de 0.01 unidades de mundo por paso
 tras move_and_slide; contacto si es menor/igual. Test con cuerpo real bloqueado
-por Soldado real; velocidad deseada +Y no acredita desplazamiento.
+por Soldado real; velocidad deseada por sí sola no acredita desplazamiento.
 
 ## 3. Snapshot y evento de derrota
 
@@ -102,7 +108,7 @@ regenerar el PNG. En CSS 794×305, altura opaca neutra ≥32 CSS px sin pulsos
 de moral/daño. Reconocer figura y arma sobre el suelo, sin overlays y también
 en grises. Usar luz/contorno mate discreto mediante material de estilo
 compartido inmutable; sin anillos, barras, halo de selección o HUD.
-El enemigo mantiene su encaje previsto hasta I2. En canvas 960×540,
+El enemigo conserva el encaje de producción ya integrado. En canvas 960×540,
 arma principal visible aproximadamente ≥ 8 px de largo/2 px de espesor; revisión
 manual sigue exigiendo reconocer fusil/machete sin tinte.
 Caja opaca/motivo dentro de 32×32 centrados, radio 20 intacto; sin aureola/etiqueta

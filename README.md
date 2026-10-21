@@ -62,11 +62,16 @@ vulnerable y sin atacar hasta llegar. El HUD muestra el regreso y bloquea
 Añade cinco trincheras con parapetos y personajes laterales: fusil dentro,
 marcha/espera con machete, golpe, regreso con fusil bajo y caída orientada.
 Las poses observan acciones reales y conservan la geometría y las reglas.
-La consolidación I5 verifica el alcance funcional integrado, con aprobación
-independiente para integración; el estado de entrega y PR se mantiene en las
+La consolidación I5 está integrada mediante el
+[PR #28](https://github.com/Juanpvivas/demons/pull/28); el estado de entrega se mantiene en las
 [tareas de 005](specs/005-cinco-carriles/tasks.md).
-La caja amarilla sigue pendiente de 004-I3. Las features 004/005 y la publicación
-permanecen abiertas: esta integración no acredita 60 FPS físicos, renderer
+
+004-I3 sustituye el bloque amarillo por una caja oliva con cartuchos, aprobada
+funcionalmente para integración en T027. Conserva huella de 32×32, radio de
+recolección 20, valor y precedencia del gesto; su
+[seguimiento](specs/004-personajes-municion-monte-calvo/tasks.md) concentra entrega y PR.
+Las features 004/005 y la publicación permanecen abiertas en T039/T071:
+esta integración no acredita 60 FPS físicos, renderer
 Mobile, hardware ni empaquetado final. Android software mostró una regresión;
 iOS software conserva rendimiento muy limitado.
 [Alcance y límites](docs/SPEC.md#8-arte-y-estilo-visual).

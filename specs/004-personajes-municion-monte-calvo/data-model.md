@@ -6,8 +6,12 @@ siguientes son conceptuales, no nuevas APIs públicas.
 
 I1 conserva su aprobación histórica sobre `87a39c6`; la corrección de tamaño,
 contraste, material y encuadre está aprobada funcionalmente en T036. El modelo
-del enemigo y la caja sigue previsto para I2/I3. Las [tareas](tasks.md) delimitan
-la consolidación y entrega, sin acreditar esos incrementos pendientes.
+del enemigo se integró en I2 mediante PR #24 y la caja tiene aprobación funcional
+I3/T027. Las [tareas](tasks.md) delimitan entrega y publicación T039 pendiente.
+La evolución [005](../005-cinco-carriles/data-model.md), integrada mediante
+PR #24–#28, es la base actual de geometría, movimiento, poses y controles.
+Las referencias originales al soldado estacionario, detectores y encuadre de
+I1 conservan su alcance histórico; I3 no los restaura ni modifica los actuales.
 
 ## Límite con los datos jugables
 
@@ -18,7 +22,7 @@ Las duraciones de clips son tiempos cosméticos, nunca cadencias de combate.
 
 | Elemento existente | Presentación prevista | Invariante |
 |---|---|---|
-| `Soldado`, estacionario | Soldado colombiano oliva, casco y fusil/machete | Raíz, posición, cuerpo 48×48 y detectores actuales intactos |
+| `Soldado`, móvil desde 005-I2 | Soldado colombiano oliva, casco y fusil/machete | Cuerpo 48×48 y geometría/estado de 005 intactos |
 | `Enemigo`, móvil/reciclado | Infantería gris/marrón, avance/contacto | Raíz, movimiento real, cuerpo 48×48 y pool actual intactos |
 | `AmmoPickup` | Caja oliva con motivo de cartuchos | Sprite base 32×32; área circular de picking radio 20 intacta |
 
@@ -119,7 +123,7 @@ El presentador restaura el material de estilo autorado; el efecto limpia la
 referencia anterior antes de configurar el nuevo snapshot, incluso si es null.
 La caída conserva ese estilo sin capturar pulsos/tintes de impacto o moral.
 
-## 5. Encuadre local y cobertura decorativa
+## 5. Encuadre local y cobertura decorativa — antecedente de I1
 
 La cámara sin zoom adapta solo la proyección: mundo x=576 al 50 % del viewport
 lógico con error ≤1 unidad y origen vertical efectivo del canvas y=0. El mundo
@@ -130,6 +134,8 @@ existentes; trincheras y grid conservan geometría y posición.
 Las dimensiones Web citadas describen el encuadre histórico de I1. Desde el
 2026-10-19, Web se verifica solo en computador y Android/iOS como apps nativas
 instaladas, según la constitución 3.0.0 y la matriz de [quickstart](quickstart.md).
+005 centra después el rectángulo completo en ambos ejes. I3 conserva esa
+proyección vigente y la conversión de entrada, sin imponer el origen y=0 de I1.
 
 No se añaden campos de gameplay, guardado, servicios externos o autoloads.
 Las formas exactas de comunicación se fijan en el contrato; todo comportamiento

@@ -228,11 +228,19 @@ protección ni alteran combate, economía o velocidades.
 
 La [procedencia del soldado](../assets/sprites/units/monte_calvo/SOURCES.md)
 y [del entorno](../assets/sprites/levels/monte_calvo/SOURCES.md) documentan los
-nuevos atlas y conservan los anteriores. La caja amarilla sigue provisional,
-pendiente de 004-I3. I3 incorpora HUD mínimo de selección/recarga, avisos y
-pantalla terminal; I4 conserva sus controles y adaptación. El acabado visual
-de interfaz y audio sigue pendiente. I5 consolida el alcance funcional
-integrado con aprobación independiente para integración; las
+nuevos atlas y conservan los anteriores. 004-I3, aprobado funcionalmente para
+integración en T027, reemplaza la caja amarilla por una caja oliva mate con
+cartuchos de latón. La textura importada es de 256×256 y el arte permanece
+dentro de la huella de 32×32; conserva radio de recolección 20, posición del
+drop, valor y recogida explícita con precedencia. Puede quedar parcialmente
+oculta bajo actores o parapetos sin ampliar su área interactiva. La
+[procedencia de la caja](../assets/sprites/pickups/monte_calvo/SOURCES.md)
+documenta el original y su encaje.
+
+005-I3 incorpora HUD mínimo de selección/recarga, avisos y pantalla terminal;
+I4 conserva sus controles y adaptación. El acabado adicional de interfaz y
+audio sigue pendiente. I5 consolida el alcance funcional integrado mediante
+[PR #28](https://github.com/Juanpvivas/demons/pull/28); las
 [tareas de 005](../specs/005-cinco-carriles/tasks.md) mantienen el estado de
 entrega y PR. La publicación, las features 004/005 y el MVP siguen abiertos.
 
@@ -296,6 +304,15 @@ cobertura automatizada; el recorrido de producción hasta LOST y la victoria
 determinista separada conservan el alcance aprobado de I4. Esto no acredita
 una victoria manual con los 100 enemigos ni una revisión visual nueva.
 
+La aceptación funcional de 004-I3 distingue Web en computador y apps instaladas
+en Android Emulator/iPad Simulator, con variantes Compatibility de QA. Conserva
+la regresión Android observada en I4: muestras posteriores a otra resolución
+no la descartan. iOS mantiene rendimiento software muy limitado y picos,
+con stdout parcial y sólo la vista disponible. Las comparaciones no prueban
+causalidad ni carga fría, memoria exclusiva o rendimiento físico. Producción
+llegó a LOST; la victoria y los casos difíciles de economía/recarga se verifican
+por separado. T039 de 004 y T071 de 005 siguen pendientes de publicación.
+
 ## 9. Alcance del MVP (primera versión jugable)
 
 - [ ] 1 nivel (ej. defensa de Monte Calvo)
@@ -309,7 +326,7 @@ una victoria manual con los 100 enemigos ni una revisión visual nueva.
 ## 10. Preguntas abiertas / decisiones pendientes
 
 - Publicación de [005](../specs/005-cinco-carriles/tasks.md), T071/SC-007: rendimiento físico, renderer y artefacto final, firma/instalación/versionado y matriz de destino. I1–I4 están integrados en `main` mediante los PR #24–#27 e I5 consolida el alcance funcional aprobado; las tareas mantienen el estado de entrega. No deducir balance de la imagen.
-- Caja de munición de 004-I3, interfaz y demás acabado, siguiendo la dirección aprobada en §8; SC-007 y certificaciones de publicación siguen pendientes.
+- Acabado adicional de interfaz, audio y demás alcance del MVP, siguiendo la dirección aprobada en §8; el HUD, la recarga y las pantallas terminales actuales están integrados por 005. SC-007 y certificaciones de publicación siguen pendientes.
 - ¿Habrá progresión entre niveles (más batallas históricas) o es un solo escenario?
 - ¿Narrativa/contexto histórico se presenta dentro del juego (cutscenes, texto) o queda solo como inspiración temática?
 - Balance de costos exactos de cada unidad (se define con playtesting).
@@ -320,11 +337,12 @@ una victoria manual con los 100 enemigos ni una revisión visual nueva.
 
 - ✅ Selección por dueño de trinchera, recarga única sólo con carga cero y regreso físico vulnerable sin ofensiva: 005-I3/T037–T042, integrado mediante PR #26 (`8c4cab4`). La publicación T071 sigue pendiente.
 - ✅ Composición lateral y estados observadores de marcha/espera, regreso con fusil bajo y caída orientada: 005-I4/T050–T057, integrado mediante PR #27 (`cffb2ec`). El estado de entrega y PR se mantiene en las tareas de 005. No cambia reglas, geometría ni concede cobertura.
+- ✅ Caja oliva pictórica con cartuchos, dentro de 32×32 y radio de recogida 20: 004-I3/T023–T027, aprobado para integración sin cambios de lógica, valor o precedencia. Completa el acabado funcional de soldado/enemigo/munición; T039 conserva la publicación pendiente.
 
 - ✅ Tablero horizontal de cinco filas/plazas y fusil hacia +X, enemigos hacia −X, cinco cargas gratuitas/reserva cero y reparto continuo de oleadas sin alterar los 100 enemigos: 005-I1, integrado con 004-I2 mediante PR #24 (`658dd7e`).
 - ✅ Salida/espera/contacto real de machete en la misma fila, velocidad propia 40, hogar reservado y liberación al morir fuera: 005-I2/T023–T028, integrado en `main` mediante PR #25 (`c1f43d2`). §6.3 describe además la recarga y el regreso de I3 integrados por PR #26; publicación sigue pendiente.
 - ✅ Presentación observadora del enemigo, contacto basado en movimiento real, snapshot anterior al reciclado y reset por activación: 004-I2, extendiendo el patrón común sin dar autoridad jugable a la animación.
-- ✅ Dirección visual de la primera iteración del terreno y las trincheras de Monte Calvo: entorno pictórico ocre/oliva, montañas azul grisáceo y decoración estática de tierra, madera y sacos, conservando actores provisionales y reglas actuales en aquella entrega. Aprobada en T016 de `002-monte-calvo-terreno-trincheras`; §8 y sus enlaces delimitan el alcance y la evidencia. I1 de 004 avanza después el soldado; enemigo, caja e interfaz continúan pendientes.
+- ✅ Dirección visual de la primera iteración del terreno y las trincheras de Monte Calvo: entorno pictórico ocre/oliva, montañas azul grisáceo y decoración estática de tierra, madera y sacos, conservando actores provisionales y reglas de aquella entrega. Aprobada en T016 de `002-monte-calvo-terreno-trincheras`; §8 recoge la evolución posterior de actores, caja e interfaz mediante 004/005.
 - ✅ Soldado pictórico y presentación de sus estados reales, sin alterar el combate ni esperar a la caída para retirarlo: I1 de `004-personajes-municion-monte-calvo`, aprobado en T011. §8 describe su alcance parcial; el patrón compartido de presentación y efecto independiente se gradúa a `ARCHITECTURE.md` §4.7. No resuelve el acabado del enemigo, la caja o la interfaz.
 - ✅ Legibilidad del soldado y encuadre horizontal de Monte Calvo: corrección de I1 de 004 aprobada funcionalmente en T036. §8 recoge el mayor tamaño visual, contraste mate y encuadre que conserva la composición iPad; física, posiciones y reglas permanecen intactas. No amplía el alcance a I2/I3 o interfaz.
 - ✅ Moral tras recarga: se conserva, no decae con el tiempo, se pierde solo si el soldado es derrotado. (spec `001-soldado-defensor-oleadas`)
@@ -367,3 +385,4 @@ una victoria manual con los 100 enemigos ni una revisión visual nueva.
 | 2026-10-20 | 005/T043 tras QA T042: selección del dueño por trinchera, recarga única con carga cero y regreso físico vulnerable sin ofensiva; HUD mínimo y precedencia de entrada. I3 aprobado para integración en su rama; arte lateral, consolidación y publicación pendientes. |
 | 2026-10-20 | 005/T056 tras QA T055: composición lateral de cinco trincheras, marcha/espera y regreso observados, caída con orientación real y procedencia. I3 integrado por PR #26; I4 aprobado en su rama, I5 y publicación pendientes. |
 | 2026-10-21 | 005/T063 tras QA T062: consolidación funcional de I1–I4 integrados, con límites de producción/fixtures y rendimiento software explícitos; publicación T071, 004-I3 y acabado del MVP pendientes. |
+| 2026-10-21 | 004/T028 tras QA T027: caja oliva y cartuchos con huella/picking/economía conservados; tres representaciones aprobadas funcionalmente y evolución 005 vigente, con publicación T039/T071 pendiente. |

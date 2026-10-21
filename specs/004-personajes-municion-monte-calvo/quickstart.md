@@ -6,8 +6,13 @@ Aplicar [spec](spec.md), [plan](plan.md), [modelo](data-model.md),
 
 La corrección de legibilidad y encuadre (§7), delimitada en T031, está aprobada
 funcionalmente en T036 por sus propias verificaciones. I1 sobre `87a39c6`
-conserva su alcance histórico; I2/I3 siguen pendientes. Las [tareas](tasks.md)
-y el PR delimitan la consolidación y entrega.
+conserva su alcance histórico; I2 está integrado mediante PR #24 e I3 cuenta
+con aprobación funcional para integración T027. Las [tareas](tasks.md)
+delimitan entrega y publicación T039 pendiente.
+La base vigente es [005](../005-cinco-carriles/quickstart.md), integrada por
+PR #24–#28: cinco filas, actores móviles, poses laterales, HUD/recarga y
+pantallas terminales. §7 conserva el procedimiento histórico de la corrección
+I1; no ordena restaurar su encuadre al verificar I3.
 
 ## 1. Antes de implementar
 
@@ -76,7 +81,8 @@ confundir un destello aislado con feedback de derrota completo.
 
 Realizar por entorno los cuatro resultados de economía: recoger una vez sin
 desplegar sobre celda libre con fondos; desplegar en libre y cobrar el costo
-real; rechazar ocupada; rechazar fondos insuficientes. Clic/toque deben llegar
+real; rechazar otro despliegue en ocupada y seleccionar a su dueño sin cobrar;
+rechazar fondos insuficientes. Clic/toque deben llegar
 por la entrada real del entorno, no por llamadas directas a métodos del juego.
 El saldo y la ocupación se corroboran con observación temporal de solo lectura.
 Probar dos cajas solapadas sin cambiar su semántica ni sus formas físicas.
@@ -119,15 +125,16 @@ acredita el renderer Mobile de la app de producción.
 La ejecución nativa PC complementa desarrollo. No acredita Web. Un simulador
 iOS solo acredita su propia comprobación; no hardware iOS ni rendimiento físico.
 Cada entorno ausente de la matriz vigente queda pendiente, sin pasar por
-extrapolación. Registrar recortes existentes separadamente de errores nuevos. Solo T031 permite el
-ajuste de cámara/cobertura delimitado en §7; input y reglas permanecen protegidos.
+extrapolación. Registrar recortes existentes separadamente de errores nuevos.
+T031 delimitó la corrección histórica de §7; I3 conserva cámara/cobertura e
+input actuales de 005, sin ajustes nuevos.
 Otras versiones/navegadores no heredan estos resultados.
 
 ## 5. Partida y rendimiento antes/después
 
-Jugar una partida manual con oleadas de producción hasta terminal. Como no hay
-pantalla de resultado, identificar victoria/derrota con un observador temporal
-de solo lectura del estado real; corroborar la ruta en producción. No anunciar
+Jugar una partida manual con oleadas de producción hasta terminal. Verificar la
+pantalla de resultado actual y corroborar victoria/derrota con un observador
+temporal de solo lectura del estado real y la ruta de producción. No anunciar
 un resultado oculto solo por apariencia o por una partida de recursos reducidos.
 Verificar además victoria y derrota por separado mediante las rutas existentes.
 
