@@ -1,5 +1,17 @@
 # Soldado de Monte Calvo — procedencia y uso
 
+## 005-I4 — Arte lateral (2026-10-20)
+
+`soldado_lateral_atlas.png` fue generado con la herramienta nativa OpenAI `image_gen`, usando el concepto horizontal aprobado como referencia de estilo. 16 poses nuevas laterales hacia +X; el regreso usa sus cuatro pasos de fusil bajo reflejados hacia −X en runtime. Se conserva el atlas anterior como arte histórico. Original RGBA 1411×1115; importación limitada a1024 (textura prevista1024×809,≈3,16MiB RGBA8). Lienzo lógico384×288, apoyo(192,264), escala visual0,3936942 y offset(0,−59,038979): altura neutra≈72 y apoyo en raíz+y24. Son ajustes del hijo visual; el cuerpo48×48 conserva su tamaño. Regiones medidas por silueta, sin asumir una grilla regular. Clips: rifle_idle/shot, melee_idle/attack, melee_march4 pasos/0,60s, returning4 pasos/0,60s, returning_idle1 pose y defeat4/0,40s.
+
+El PNG conserva los píxeles y el alfa originales de la salida seleccionada; no hubo recorte, repintado o empaquetado por scripts. Importación lossless, fix_alpha_border y sin mipmaps; filtro lineal/sin repetición locales. Las cifras de memoria son estimaciones, no mediciones. Recursos de frames compartidos de solo lectura; no contienen daño, economía, callbacks o geometría jugable. Procedencia y condiciones de uso propias del arte generado descritas abajo se conservan.
+
+Prompt final (generación):
+
+> Use case: historical-scene. Production transparent sprite atlas for the 2D game Demonios de las Trincheras. Input image is approved style/composition reference ONLY. Create NEW isolated Colombian infantryman sprites, exactly 4 columns by 4 rows, 16 complete figures, evenly spaced with ample transparent gutters. Same character/proportions/height throughout. Olive fatigues, worn steel helmet, brown boots and small pack, wooden-stock rifle, broad utilitarian machete. Side view with a slight elevated three-quarter perspective, ALL figures face RIGHT (+X), head and gun profile clearly facing right. Matte hand-painted textured 2D illustration, restrained military palette and diffuse daylight, crisp readable silhouette at 72 pixels tall; not glossy 3D, not pixel art. Row1 left to right: rifle ready standing and aiming horizontally right; confirmed rifle shot slight shoulder recoil no muzzle flash; machete idle rifle stowed; machete clear forward chopping strike rifle stowed. Row2: four consecutive walking steps toward right WITH MACHETE in hand and rifle stowed, alternating legs. Row3: four consecutive walking steps toward right WITH RIFLE LOWERED nonoffensive, machete stowed, barrel pointed down; these poses will be mirrored at runtime for return journey. Row4: four consecutive calm non-graphic defeat poses facing right: knees buckle, kneeling slump, collapse onto right side, fully lying still; rifle stays with character. Stable standing ground baseline within each grid cell; complete head-to-boots figures and entire weapons visible, no overlap between cells. Genuine transparent alpha in ALL empty space, no ground shadow. No scenery, trench, UI, text, labels, gridlines, blood, insignia, flags, fire, projectiles, particles, checkerboard or watermark. Do not copy HUD or characters from reference; match painterly material finish and readable side-on composition.
+
+
+
 Creado el 2026-10-16 para T004 de `004-personajes-municion-monte-calvo`
 mediante la herramienta nativa `image_gen` de Codex. La referencia de estilo es
 `specs/002-monte-calvo-terreno-trincheras/references/monte-calvo-concept.png`,

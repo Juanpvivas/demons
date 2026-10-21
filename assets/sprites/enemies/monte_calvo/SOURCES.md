@@ -1,5 +1,17 @@
 # Enemigo de Monte Calvo — procedencia y uso
 
+## 005-I4 — Arte lateral (2026-10-20)
+
+`enemigo_lateral_atlas.png` fue generado con la herramienta nativa OpenAI `image_gen`, usando el concepto horizontal aprobado como referencia de estilo. El atlas lateral colombiano propio también orientó el acabado; no es un objetivo de edición. 8 poses nuevas laterales hacia −X: cuatro pasos, contacto y tres de caída. Original RGBA1774×887, límite1024, textura prevista1024×512 (2MiB RGBA8). Lienzo lógico384×288 y apoyo(192,264), escala0,32231105/offset(0,−45,537768): altura≈72 y pies raíz+y24. Regiones medidas y recortes nativos AtlasTexture; avance4/0,60s, contacto1, caída3/0,40s. Se conserva el atlas frontal anterior.
+
+El PNG conserva los píxeles y el alfa originales de la salida seleccionada; no hubo recorte, repintado o empaquetado por scripts. Importación lossless, fix_alpha_border y sin mipmaps; filtro lineal/sin repetición locales. Las cifras de memoria son estimaciones, no mediciones. Recursos de frames compartidos de solo lectura; no contienen daño, economía, callbacks o geometría jugable. Procedencia y condiciones de uso propias del arte generado descritas abajo se conservan.
+
+Prompt final (generación):
+
+> Use case: historical-scene. Asset: production transparent sprite atlas for 2D Godot game Demonios de las Trincheras. Reference1 approved Monte Calvo concept for palette/composition only; reference2 new Colombian sprite atlas for EXACT matching painterly finish, scale and elevated side view only. Create NEW enemy infantry character with cool gray-brown padded jacket, charcoal trousers, brown boots and pouches, soft short-brim gray field cap instead of helmet, wooden-stock rifle. Clearly distinct from olive helmeted Colombian. All figures face LEFT (-X), including rifle pointed down-left/across chest. Eight isolated complete poses exactly4columns2rows, ample transparent gutters. Row1 four consecutive walking steps left alternating feet; row2 contact braced standing rifle across chest no strike, defeated knees buckling, lowered to one knee, collapsed and lying completely still on side. Stable standing height/ground baseline within each cell and full weapons visible, no overlaps. Calm respectful human depiction. Matte hand-painted detailed but readable silhouette at72pixels tall, muted fabric/wood/metal, diffuse daylight, matching reference2 crisp edges. Genuine transparent alpha all empty space. No insignia, flags, blood, muzzle flash, projectiles, shadows, terrain, UI, text, labels, gridlines, checkerboard or watermark. Entire figures fully visible, including final lying pose.
+
+
+
 Creado el 2026-10-17 para T014 de `004-personajes-municion-monte-calvo`
 mediante la herramienta nativa `image_gen` de Codex. La referencia conceptual
 del proyecto, `specs/002-monte-calvo-terreno-trincheras/references/monte-calvo-concept.png`,

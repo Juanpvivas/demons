@@ -1,5 +1,19 @@
 # Monte Calvo — procedencia del arte
 
+## 005-I4 — Arte lateral (2026-10-20)
+
+`trinchera_lateral_atlas.png` fue generado con la herramienta nativa OpenAI `image_gen`, usando el concepto horizontal aprobado como referencia de estilo. Dos piezas nuevas de trinchera abiertas hacia +X: posterior/interior y parapeto delantero. Original RGBA1536×1024, límite1024, textura prevista1024×682/683 (≈2,67MiB RGBA8). La escena usa regiones AtlasTexture y cinco pares de Sprite2D: posterior debajo del actor y parapeto encima para que sus piernas se lean dentro. Sin física, input o cobertura. No se sustituyen el terreno/panorama ni las piezas antiguas.
+
+El PNG conserva los píxeles y el alfa originales de la salida seleccionada; no hubo recorte, repintado o empaquetado por scripts. Importación lossless, fix_alpha_border y sin mipmaps; filtro lineal/sin repetición locales. Las cifras de memoria son estimaciones, no mediciones. Recursos de frames compartidos de solo lectura; no contienen daño, economía, callbacks o geometría jugable. Procedencia y condiciones de uso propias del arte generado descritas abajo se conservan.
+
+Prompt final (generación y edición dirigida de transparencia):
+
+> Use case: historical-scene. Production TRANSPARENT modular environmental sprite atlas for 2D Godot game Demonios de las Trincheras. Reference approved concept for exact earth/wood/sandbag material palette and slightly elevated side view. TWO aligned pieces arranged vertically in two separate equal-width rows with ample transparent gutter: TOP row rear half of ONE compact U-shaped dug-in infantry trench open to RIGHT, three-quarter side view, dark excavated earthen interior, rough timber back wall on LEFT, low muted ochre sandbags on rear/top rim, floor cavity visible, NO near/front wall; BOTTOM row the detached NEAR/FRONT parapet of that SAME trench: a low horizontal lip of two courses of olive-ochre sandbags with earth and vertical wooden planks beneath, matching width and perspective, left end slightly curves up. Pieces will be layered with a soldier BETWEEN rear and front so lower legs are occluded by front lip and chest/rifle remain visible. Rear piece with empty transparent front edge, detached foreground strip is only the low wall, no complete second trench. 2D matte hand-painted game illustration, restrained ocre/olive dirt, worn wood and sandbags, diffuse light. Production clear silhouettes at about100pixels wide. Genuine transparent alpha all empty space, isolated pieces, entire components visible, no shadows outside. No people, weapons, flags, barbed wire, scenery, sky, mountains, ground plane beyond trench, crates, UI, text, labels, grid, checkerboard or watermark. Upper/rear piece should have dark interior well but no painted rectangular background.
+
+> Edit target is the attached two-piece trench atlas. Change ONLY background transparency: REMOVE ALL brown haze, gradients, glow, cast shadows and low-opacity paint outside the actual solid trench silhouettes. Output clean production cutouts with genuine transparent alpha around precisely the earth/wood/sandbag shapes. Preserve both components EXACTLY as drawn, their layout, size, colors, texture, positions and perspective. Keep solid dirt within upper interior cavity and solid earth attached to base, only eliminate atmospheric diffuse background surrounding pieces and between them. No new elements, no checkerboard.
+
+
+
 Producción T005, 2026-10-15, herramienta nativa `image_gen` de Codex. Referencia
 de estilo: `specs/002-monte-calvo-terreno-trincheras/references/monte-calvo-concept.png`.
 No se extrajeron personajes o interfaz del concepto. No hubo edición de píxeles

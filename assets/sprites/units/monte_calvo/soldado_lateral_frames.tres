@@ -1,0 +1,151 @@
+[gd_resource type="SpriteFrames" load_steps=18 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/units/monte_calvo/soldado_lateral_atlas.png" id="1_atlas"]
+
+[sub_resource type="AtlasTexture" id="Pose_0"]
+atlas = ExtResource("1_atlas")
+region = Rect2(35, 23, 221, 188)
+margin = Rect2(120.318214, 78.716513, 163, 100)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Pose_1"]
+atlas = ExtResource("1_atlas")
+region = Rect2(301, 24, 202, 187)
+margin = Rect2(119.976612, 79.716513, 182, 101)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Pose_2"]
+atlas = ExtResource("1_atlas")
+region = Rect2(543, 19, 175, 193)
+margin = Rect2(117.406804, 73.265060, 209, 95)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Pose_3"]
+atlas = ExtResource("1_atlas")
+region = Rect2(775, 37, 235, 177)
+margin = Rect2(125.883062, 89.813607, 149, 111)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Pose_4"]
+atlas = ExtResource("1_atlas")
+region = Rect2(39, 228, 162, 191)
+margin = Rect2(120.689582, 75.433026, 222, 97)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Pose_5"]
+atlas = ExtResource("1_atlas")
+region = Rect2(304, 228, 164, 190)
+margin = Rect2(132.411056, 76.884479, 220, 98)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Pose_6"]
+atlas = ExtResource("1_atlas")
+region = Rect2(543, 228, 177, 194)
+margin = Rect2(111.600992, 72.530120, 207, 94)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Pose_7"]
+atlas = ExtResource("1_atlas")
+region = Rect2(802, 226, 178, 194)
+margin = Rect2(123.128278, 72.707300, 206, 94)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Pose_8"]
+atlas = ExtResource("1_atlas")
+region = Rect2(25, 429, 181, 194)
+margin = Rect2(106.689582, 72.503898, 203, 94)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Pose_9"]
+atlas = ExtResource("1_atlas")
+region = Rect2(302, 434, 166, 188)
+margin = Rect2(126.782424, 78.229624, 218, 100)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Pose_10"]
+atlas = ExtResource("1_atlas")
+region = Rect2(545, 431, 181, 195)
+margin = Rect2(116.503898, 71.600992, 203, 93)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Pose_11"]
+atlas = ExtResource("1_atlas")
+region = Rect2(806, 431, 182, 194)
+margin = Rect2(134.385542, 72.326719, 202, 94)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Pose_12"]
+atlas = ExtResource("1_atlas")
+region = Rect2(30, 632, 158, 156)
+margin = Rect2(116.769667, 110.038271, 226, 132)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Pose_13"]
+atlas = ExtResource("1_atlas")
+region = Rect2(277, 672, 195, 116)
+margin = Rect2(98.879518, 150.763997, 189, 172)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Pose_14"]
+atlas = ExtResource("1_atlas")
+region = Rect2(500, 700, 220, 88)
+margin = Rect2(89.647059, 178.763997, 164, 200)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Pose_15"]
+atlas = ExtResource("1_atlas")
+region = Rect2(746, 715, 267, 70)
+margin = Rect2(59.871013, 196.666903, 117, 218)
+filter_clip = true
+
+[resource]
+animations = [
+{
+"frames": [{"duration": 1.0, "texture": SubResource("Pose_0")}],
+"loop": true,
+"name": &"rifle_idle",
+"speed": 1.0
+},
+{
+"frames": [{"duration": 1.0, "texture": SubResource("Pose_1")}],
+"loop": false,
+"name": &"rifle_shot",
+"speed": 1.0
+},
+{
+"frames": [{"duration": 1.0, "texture": SubResource("Pose_2")}],
+"loop": true,
+"name": &"melee_idle",
+"speed": 1.0
+},
+{
+"frames": [{"duration": 1.0, "texture": SubResource("Pose_3")}],
+"loop": false,
+"name": &"melee_attack",
+"speed": 1.0
+},
+{
+"frames": [{"duration": 1.0, "texture": SubResource("Pose_4")}, {"duration": 1.0, "texture": SubResource("Pose_5")}, {"duration": 1.0, "texture": SubResource("Pose_6")}, {"duration": 1.0, "texture": SubResource("Pose_7")}],
+"loop": true,
+"name": &"melee_march",
+"speed": 6.666667
+},
+{
+"frames": [{"duration": 1.0, "texture": SubResource("Pose_8")}, {"duration": 1.0, "texture": SubResource("Pose_9")}, {"duration": 1.0, "texture": SubResource("Pose_10")}, {"duration": 1.0, "texture": SubResource("Pose_11")}],
+"loop": true,
+"name": &"returning",
+"speed": 6.666667
+},
+{
+"frames": [{"duration": 1.0, "texture": SubResource("Pose_8")}],
+"loop": true,
+"name": &"returning_idle",
+"speed": 1.0
+},
+{
+"frames": [{"duration": 1.0, "texture": SubResource("Pose_12")}, {"duration": 1.0, "texture": SubResource("Pose_13")}, {"duration": 1.0, "texture": SubResource("Pose_14")}, {"duration": 1.0, "texture": SubResource("Pose_15")}],
+"loop": false,
+"name": &"defeat",
+"speed": 10.0
+}
+]
