@@ -2,16 +2,17 @@
 
 **Feature**: `005-cinco-carriles` · **Issue**: [#22](https://github.com/Juanpvivas/demons/issues/22) · **Rama de preparación**: `codex/005-cinco-carriles-preparacion`.
 **Input**: [spec](spec.md), [plan aprobado documentalmente](plan.md), [modelo](data-model.md), [contrato](contracts/horizontal-combat.md), [quickstart](quickstart.md) y [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
-**Estado**: I1 y 004-I2 integrados en `main` mediante Squash and merge del PR #24 (`658dd7e`). I2 integrado en `main` mediante Squash and merge del PR [#25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 aprobado para integración en `codex/005-i3-recarga`, creada desde ese main; T032–T045 aprobadas y entrega en el PR [#26](https://github.com/Juanpvivas/demons/pull/26) en borrador hacia `main`, todavía sin integrar. I4–I5 y publicación T071 permanecen pendientes.
+**Estado**: I1 y 004-I2 integrados en `main` mediante Squash and merge del PR #24 (`658dd7e`). I2 integrado en `main` mediante Squash and merge del PR [#25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 integrado en `main` mediante Squash and merge del PR [#26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`), con T032–T045 aprobadas. I4 en curso en `codex/005-i4-presentacion` desde ese main: T046/T047 aprobadas, pruebas T048 en preparación. I5 y publicación T071 permanecen pendientes.
 **PR conjunto integrado**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; integración realizada el 2026-10-20, publicación pendiente.
 
 Transición completada: el PR #24 reunió 004-I2 y 005-I1 desde
 `codex/005-i1-tablero` hacia `main` (`2dc532d` como base de revisión).
 La persona autorizó el squash y la eliminación de las dos ramas superadas,
 realizados tras comprobar que todo el contenido aprobado quedó integrado.
-Las features siguen abiertas y la publicación pendiente. I2 se integró mediante el PR #25 el 2026-10-20. I3 continúa en una rama
-breve desde `main` actualizado con alcance T032–T045: selección, recarga
-atómica y regreso vulnerable. Presentación lateral I4 queda pendiente.
+Las features siguen abiertas y la publicación pendiente. I2 se integró mediante el PR #25 el 2026-10-20. I3 se integró mediante el
+PR #26 el mismo día: selección, recarga atómica y regreso vulnerable. I4 parte
+de `8c4cab4` con alcance T046–T058: presentación lateral y adaptación visual,
+sin cambiar geometría, balance o mecánicas. I5 y publicación siguen pendientes.
 Durante I2, la API de recarga existente se conserva dentro del hogar; fuera
 de él rechaza la orden sin gasto hasta incorporar el regreso de I3. El fusil
 sigue limitado a HOME y esa adaptación requiere RED antes de implementarse.
@@ -119,8 +120,8 @@ sigue limitado a HOME y esa adaptación requiere RED antes de implementarse.
 **Objetivo**: trincheras y poses laterales de referencia, estados legibles y cinco filas utilizables en las vistas afectadas.
 **Criterio independiente**: filas1/3/5 distinguen fusil dentro, salida/espera/golpe, regreso/daño y derrota; resize no cambia plazas ni mapping de gestos.
 
-- [ ] T046 project-orchestrator: tras integración humana del PR I3 T045, preparar rama breve `codex/005-i4-presentacion` desde main actualizado, conservando alcance/IDs y publicación pendiente en T071; depende de T045 integrado y su QA funcional vigente.
-- [ ] T047 dev-godot: preparar solo interfaz observadora mínima de desplazamiento/retorno en `scenes/units/soldado_visual.gd` y `scenes/enemies/enemigo_visual.gd` para RED invocable, sin nuevas poses/transiciones o autoridad jugable; depende de T046.
+- [X] T046 project-orchestrator: tras integración humana del PR I3 T045, preparar rama breve `codex/005-i4-presentacion` desde main actualizado, conservando alcance/IDs y publicación pendiente en T071; depende de T045 integrado y su QA funcional vigente.
+- [X] T047 dev-godot: preparar solo interfaz observadora mínima de desplazamiento/retorno en `scenes/units/soldado_visual.gd` y `scenes/enemies/enemigo_visual.gd` para RED invocable, sin nuevas poses/transiciones o autoridad jugable; depende de T046.
 - [ ] T048 godot-tester: ampliar `tests/unit/units/test_soldado_visual.gd`, `tests/unit/enemies/test_enemigo_visual.gd` y `tests/unit/ui/test_hud.gd` con RED solo de conducta adicional nueva de I4 (presentación de estados/última bala/retorno, snapshot/reset y adaptación de HUD); ejecutar como regresión GREEN el centrado/resize/mapping de I1 en `tests/unit/levels/test_monte_calvo_framing.gd`/`tests/unit/levels/test_horizontal_board.gd`, sin reconstruir o fabricar RED histórico; sin assertions de píxeles ni RED artificial de arte; depende de T047.
 - [ ] T049 qa-validator: validar RED T048 y criterios visuales de `specs/005-cinco-carriles/references/visual-reference.md` contra contrato, separando cobertura existente y arte sin lógica; depende de T048.
 - [ ] T050 dev-godot: preparar piezas/poses horizontales de trincheras, fusil/machete/marcha/retorno/caída en `assets/sprites/levels/monte_calvo/`, `assets/sprites/units/monte_calvo/` y `assets/sprites/enemies/monte_calvo/`, con importación/procedencia `SOURCES.md`; no incrustar actores/HUD en fondo ni añadir cobertura; depende de T049 aprobada.
