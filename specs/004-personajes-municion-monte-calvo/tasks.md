@@ -1,6 +1,6 @@
 # Tasks: Personajes y munición de Monte Calvo
 
-**Estado**: I1 y corrección UX T031–T038 aprobados e integrados en `main`. I2 y su documentación integrados junto con 005-I1 mediante el PR #24 (`658dd7e`). I3 tiene T023–T030 aprobadas para integración y documentación consolidada en el PR #29 en borrador. La corrección de legibilidad T040–T046 está aprobada para integración en el mismo PR, con documentación y entrega actualizadas; revisión humana y merge continúan pendientes. Publicación T039 permanece pendiente.
+**Estado**: I1 y corrección UX T031–T038 aprobados e integrados en `main`. I2 y su documentación integrados junto con 005-I1 mediante el PR #24 (`658dd7e`). I3 tiene T023–T030 aprobadas para integración y documentación consolidada en el PR #29 en borrador. La corrección de legibilidad T040–T046 está aprobada para integración en el mismo PR, con documentación y entrega actualizadas; revisión humana y merge continúan pendientes. La ampliación adicional T047–T050 está aprobada para integración y documentada; la actualización de entrega T051 está en curso. Publicación T039 permanece pendiente.
 **PR conjunto integrado**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; publicación pendiente.
 **Issue**: [#18](https://github.com/Juanpvivas/demons/issues/18).
 **PR I3 en borrador**: [#29](https://github.com/Juanpvivas/demons/pull/29), `Refs #18`; sin cierre del Issue, promoción, merge ni distribución automática.
@@ -154,6 +154,20 @@ siempre opaco; radio 20, posición, valor e interacción permanecen intactos.
 - [X] T044 docs-writer: consolidar el ajuste aprobado en documentación vigente y procedencia, conservando historia y publicación T039/T071 pendiente, sin volcar registros ni añadir patrones; depende de T043 aprobado.
 - [X] T045 qa-validator: revisar documentación T044 y diff final, confirmar vigencia de regresión y verificaciones del alcance intacto; depende de T044.
 - [X] T046 project-orchestrator: publicar commits de la corrección y actualizar el mismo PR #29 en borrador con alcance, resultados, límites y aprobación. Comprobar CI/export de revisión exacta; conservar Refs #18, sin promoción, merge, cierre de Issue ni distribución; depende de T045 aprobado.
+
+## Ampliación adicional de la munición
+
+Tras revisar `28203d6`, la persona aprobó el brillo y pidió otro 50 % de
+ampliación respecto al tamaño actual: escala visual 0,15625 → 0,234375 y
+envolvente máxima 60×60. El brillo y el círculo de recogida de radio 20 se
+conservan; la imagen mayor no amplía el área interactiva. Se actualiza el
+mismo PR #29, conservando las aprobaciones anteriores en su alcance.
+
+- [X] T047 dev-godot: aumentar únicamente la escala del sprite en `AmmoPickup.tscn` a 0,234375 (+50 % sobre T041), sin cambiar offset, imagen/importación, animación, raíz, radio 20, scripts o reglas. Revisión estática, sin pruebas ni RED artificial; depende de T046 y de esta petición explícita.
+- [X] T048 godot-tester: verificar importación/regresión pertinente y lectura/oclusiones del nuevo tamaño con brillo conservado en Web de computador 1152×648/960×540, APK e iPad Simulator; corroborar recogida en centro/interior del radio 20 y cajas solapadas con oráculo independiente. Reutilizar los ciclos, gestos completos, terminales, recarga y contexto de rendimiento no invalidados de T042; sin pruebas artificiales ni benchmark rutinario. Restaurar única app normal iOS y preservar datos; depende de T047.
+- [X] T049 qa-validator: revisar escala y neutralidad de fuente, T048 y alcance visual fuera del círculo 20, con límites de entorno explícitos. Emitir APROBADO PARA INTEGRACIÓN sin aprobar publicación T039/T071; depende de T048.
+- [X] T050 docs-writer y qa-validator, secuenciales: actualizar de forma mínima los valores vigentes y procedencia a escala 0,234375/envolvente 60×60, distinguir los tamaños históricos y mantener brillo/área de recogida y pendientes. Revisar coherencia documental y vigencia de verificaciones, sin nuevos patrones ni registros versionados; depende de T049 aprobado.
+- [ ] T051 project-orchestrator: publicar la ampliación y documentación aprobadas, actualizar el mismo PR #29 en borrador y comprobar CI/exportación de revisión exacta, con Refs #18 y publicación pendiente. Sin promoción, merge ni cierre de Issues; depende de T050 aprobado.
 
 ## Gate de publicación separado
 
