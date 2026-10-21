@@ -79,7 +79,7 @@ func _invalid(report: Dictionary, reason: String) -> void:
 	assert_true(not report.has("frame_ms") or report["frame_ms"].is_empty(), "un run inválido no publica tiempos cero ficticios")
 
 
-func _report(id := "run-b", start := START, offset := 0, changes := {}) -> Dictionary:
+func _report(id := "run-b", start := START, offset := 0, changes := {}, cohort_changes := {}) -> Dictionary:
 	var config := _config(id)
 	var initial := _snapshot(id, "initial", start, offset)
 	var final := _snapshot(id, "final", start + 10000, offset)
@@ -87,6 +87,9 @@ func _report(id := "run-b", start := START, offset := 0, changes := {}) -> Dicti
 		config["conditions"][key] = changes[key]
 		initial["observation"]["conditions"][key]["value"] = changes[key]
 		final["observation"]["conditions"][key]["value"] = changes[key]
+	for key: String in cohort_changes:
+		initial["entities"][0][key] = cohort_changes[key]
+		final["entities"][0][key] = cohort_changes[key]
 	assert_true(_probe.start(config, initial, start), "precondición: el run debe aceptar sus observaciones verificadas")
 	_record_four(start)
 	return _probe.finish(final)
@@ -277,7 +280,16 @@ func test_compare_revalidates_observations_instead_of_trusting_valid_or_expected
 		_invalid(_probe.compare_runs(base, candidate), key)
 
 
-func test_compare_rejects_a_different_logical_cohort_and_an_invalid_run() -> void:
+func test_compare_rejects_internally_valid_runs_with_different_logical_roles_or_states() -> void:
+	var base := _report()
+	_valid(base)
+	for change: Dictionary in [{"key": "another owner"}, {"morale": 8.0}]:
+		var candidate := _report("run-c", START + 100000, 1000, {}, change)
+		_valid(candidate) # Ambos snapshots coinciden dentro de este run.
+		_invalid(_probe.compare_runs(base, candidate), "cohort")
+
+
+func test_compare_rejects_a_corrupted_final_cohort_and_an_explicit_invalid_run() -> void:
 	var base := _report()
 	var candidate := _report("run-c", START + 100000, 1000)
 	var final := _snapshot("run-c", "final", START + 110000, 1000)
@@ -299,9 +311,13 @@ func _entity_by_id(snapshot: Dictionary, id: int) -> Dictionary:
 func test_recursive_inventory_counts_hidden_active_nested_inactive_and_queued_without_mutation() -> void:
 	var root := Node2D.new()
 	root.process_mode = Node.PROCESS_MODE_DISABLED
+	root.position = Vector2(100, 50)
+	root.scale = Vector2(2, 2)
 	add_child_autofree(root)
 	var pool := Node2D.new()
 	pool.name = "NestedPool"
+	pool.position = Vector2(10, 20)
+	pool.scale = Vector2(0.5, 1.5)
 	root.add_child(pool)
 	var soldier := SoldierScene.instantiate() as Soldado
 	root.add_child(soldier)
@@ -322,17 +338,21 @@ func test_recursive_inventory_counts_hidden_active_nested_inactive_and_queued_wi
 	pool.add_child(queued)
 	queued.queue_free()
 	var before := [soldier.get_reload_state().duplicate(true), active.get("_current_health"), active.activation_generation,
-		active.position, active.visible, inactive.is_targetable(), pickup.amount, pickup.position, EconomyManager.collected_ammo]
+		active.position, active.visible, inactive.is_targetable(), pickup.amount, pickup.position, EconomyManager.collected_ammo,
+		root.transform, pool.transform, active.global_position, pickup.global_position]
 	var snapshot: Dictionary = _probe.snapshot_recursive(root)
 	assert_eq(snapshot.get("counts", {}), {"soldiers": 1, "enemies_active": 1, "enemies_inactive": 1, "pickups": 1, "queued": 1})
 	var supply := _entity_by_id(snapshot, pickup.get_instance_id())
 	assert_eq(supply.get("type", ""), "pickup")
 	assert_eq(supply.get("amount", -1), 3)
+	assert_eq(supply.get("position", []), [504.0, 522.0], "el drop anidado usa coordenadas globales, no sus locales384/144")
 	assert_false(str(supply.get("key", "")).is_empty(), "el drop anidado tiene identidad lógica")
 	var enemy := _entity_by_id(snapshot, active.get_instance_id())
 	assert_eq(enemy.get("activation", -1), active.activation_generation, "un actor oculto sigue activo")
+	assert_eq(enemy.get("position", []), [500.0, 144.0], "prepare_for_spawn fija posición global aunque los padres estén transformados")
 	var after := [soldier.get_reload_state().duplicate(true), active.get("_current_health"), active.activation_generation,
-		active.position, active.visible, inactive.is_targetable(), pickup.amount, pickup.position, EconomyManager.collected_ammo]
+		active.position, active.visible, inactive.is_targetable(), pickup.amount, pickup.position, EconomyManager.collected_ammo,
+		root.transform, pool.transform, active.global_position, pickup.global_position]
 	assert_eq(after, before, "leer el inventario no mueve, revive, cobra ni cambia stats o visibilidad")
 	supply["amount"] = 999
 	assert_eq(pickup.amount, 3, "los valores devueltos no son autoridad viva del pickup")
