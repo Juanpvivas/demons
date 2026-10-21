@@ -6,7 +6,8 @@ integrado en `main`; salida/espera/contacto I2 está integrado mediante
 Recarga, selección y regreso de I3 están integrados mediante
 [PR #26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`). La
 presentación lateral I4 tiene aprobación funcional para integración T055 en
-`codex/005-i4-presentacion`; revisión documental final y PR siguen pendientes.
+`codex/005-i4-presentacion`, con documentación revisada y todavía fuera de
+`main`. Las [tareas](../tasks.md) mantienen el estado de entrega y PR.
 Las firmas concretas
 se definen mediante setup/RED sin cambiar estas invariantes.
 [Spec](../spec.md) · [Modelo](../data-model.md).

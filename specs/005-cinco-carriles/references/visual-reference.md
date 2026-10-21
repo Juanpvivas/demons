@@ -31,6 +31,7 @@ separadas del terreno, con aprobación funcional para integración T055 en su
 rama. La procedencia y el encaje están en los catálogos de
 [soldado](../../../assets/sprites/units/monte_calvo/SOURCES.md),
 [enemigo](../../../assets/sprites/enemies/monte_calvo/SOURCES.md) y
-[entorno](../../../assets/sprites/levels/monte_calvo/SOURCES.md). La revisión
-documental final y el PR siguen pendientes; no supone integración en `main`,
-aprobación de publicación ni un HUD final.
+[entorno](../../../assets/sprites/levels/monte_calvo/SOURCES.md). La
+documentación está revisada y el estado de entrega y PR se mantiene en las
+[tareas](../tasks.md). I4 sigue fuera de `main`; publicación y HUD final
+conservan su alcance pendiente.

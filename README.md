@@ -58,7 +58,8 @@ vulnerable y sin atacar hasta llegar. El HUD muestra el regreso y bloquea
 órdenes duplicadas.
 
 005-I4 cuenta con aprobación funcional para integración en
-`codex/005-i4-presentacion`; su revisión documental final y PR siguen en preparación.
+`codex/005-i4-presentacion`, con documentación revisada. El estado de entrega
+y PR se mantiene en las [tareas de 005](specs/005-cinco-carriles/tasks.md).
 Añade cinco trincheras con parapetos y personajes laterales: fusil dentro,
 marcha/espera con machete, golpe, regreso con fusil bajo y caída orientada.
 Las poses observan acciones reales y conservan la geometría y las reglas.

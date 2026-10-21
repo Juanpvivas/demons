@@ -3,7 +3,7 @@
 **Feature ID**: `005-cinco-carriles`
 **Planned Branch**: `codex/005-cinco-carriles-preparacion`
 **Created**: 2026-10-19
-**Status**: Preparación aprobada. I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 integrado en `main` mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 integrado en `main` mediante [PR #26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`). I4 implementado en `codex/005-i4-presentacion` y aprobado funcionalmente para integración en T055; revisión documental final y PR en preparación, todavía fuera de `main`. I5 y publicación T071 pendientes.
+**Status**: Preparación aprobada. I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 integrado en `main` mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 integrado en `main` mediante [PR #26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`). I4 aprobado para integración en `codex/005-i4-presentacion`, con documentación revisada y todavía fuera de `main`; consultar [tareas](tasks.md) para el estado de entrega y PR. I5 y publicación T071 pendientes.
 
 **Input**: Cinco filas horizontales, con cinco trincheras a la izquierda,
 soldados colombianos disparando hacia la derecha desde ellas y enemigos de
@@ -25,8 +25,9 @@ I2 integrado aporta salida/espera/contacto de machete y liberación de origen
 al morir. I3 añade selección por dueño vivo, HUD mínimo, recarga con carga cero
 y cobro único, y regreso físico vulnerable a `return_speed=40`, sin ofensiva
 hasta llegar a HOME. I4 añade composición y poses laterales observadoras,
-con aprobación funcional T055 en su rama; su revisión documental final y PR
-siguen pendientes, sin aprobar publicación.
+con aprobación para integración y documentación revisada en su rama, todavía
+fuera de `main`. Las [tareas](tasks.md) mantienen el estado de entrega y PR;
+publicación sigue pendiente.
 
 ## Clarifications
 

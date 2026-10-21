@@ -2,7 +2,7 @@
 
 **Feature ID**: `005-cinco-carriles` | **Planned Branch**: `codex/005-cinco-carriles-preparacion` | **Date**: 2026-10-19 | **Spec**: [spec.md](spec.md)
 
-**Estado**: preparación aprobada; I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 integrado mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 integrado en `main` mediante [PR #26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`). I4 implementado en `codex/005-i4-presentacion` y aprobado funcionalmente para integración en T055; revisión documental final y PR en preparación, todavía fuera de `main`. I5 y publicación T071 pendientes.
+**Estado**: preparación aprobada; I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 integrado mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 integrado en `main` mediante [PR #26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`). I4 aprobado para integración en `codex/005-i4-presentacion`, con documentación revisada y todavía fuera de `main`; consultar [tareas](tasks.md) para el estado de entrega y PR. I5 y publicación T071 pendientes.
 
 ## Summary
 
@@ -106,8 +106,9 @@ la operación `request_reload()`. Estos comportamientos cuentan con aprobación
 funcional T042 e integración mediante PR #26. I4 amplía el presentador con
 movimiento físico observado, retorno con fusil bajo y orientación actual de
 caída; sus cinco pares de trincheras son decoración por capas. T055 aprueba
-el alcance funcional disponible en su rama; revisión final, I5 y publicación
-conservan sus gates.
+el alcance funcional disponible en su rama y T057 su documentación. I4 sigue
+fuera de `main`; las [tareas](tasks.md) mantienen el estado de entrega y PR.
+I5 y publicación conservan sus gates.
 
 ## Incrementos previstos
 
@@ -184,8 +185,9 @@ tests/unit/{systems,levels,units,enemies,ui}/
 [Research](research.md), modelo, contrato y [quickstart](quickstart.md) resuelven
 el diseño sin volcar registros. C4–C6 resueltos. I1 e I2 están integrados
 mediante los PR #24 y #25; I3 mediante PR #26. I4 tiene aprobación funcional
-para integración T055 en su rama, con revisión documental final T057 y PR
-en borrador T058 pendientes. I5 y T071 permanecen pendientes.
+para integración en su rama y documentación revisada en T057, todavía fuera
+de `main`. Consultar las [tareas](tasks.md) para el estado de entrega y PR.
+I5 y T071 permanecen pendientes.
 
 ## Complexity Tracking
 

@@ -292,7 +292,7 @@ publicación, sin certificar el paquete final ni SC-007.
 
 ## 10. Preguntas abiertas / decisiones pendientes
 
-- Completar la revisión documental final y PR de [005-I4](../specs/005-cinco-carriles/tasks.md), aprobado funcionalmente en su rama, y después la consolidación I5. I1–I3 están integrados en `main` mediante los PR #24–#26. No deducir balance de la imagen.
+- Consolidación I5 de [005](../specs/005-cinco-carriles/tasks.md). I1–I3 están integrados en `main` mediante los PR #24–#26; I4 está aprobado para integración en su rama, con documentación revisada y todavía fuera de `main`. Consultar las tareas para el estado de entrega y PR. No deducir balance de la imagen.
 - Caja de munición de 004-I3, interfaz y demás acabado, siguiendo la dirección aprobada en §8; SC-007 y certificaciones de publicación siguen pendientes.
 - ¿Habrá progresión entre niveles (más batallas históricas) o es un solo escenario?
 - ¿Narrativa/contexto histórico se presenta dentro del juego (cutscenes, texto) o queda solo como inspiración temática?
@@ -303,7 +303,7 @@ publicación, sin certificar el paquete final ni SC-007.
 ### Resueltas (graduadas desde specs de feature)
 
 - ✅ Selección por dueño de trinchera, recarga única sólo con carga cero y regreso físico vulnerable sin ofensiva: 005-I3/T037–T042, integrado mediante PR #26 (`8c4cab4`). No completa I5 ni publicación T071.
-- ✅ Composición lateral y estados observadores de marcha/espera, regreso con fusil bajo y caída orientada: 005-I4/T050–T055, aprobado funcionalmente para integración en su rama, con revisión final y PR pendientes. No cambia reglas, geometría ni concede cobertura.
+- ✅ Composición lateral y estados observadores de marcha/espera, regreso con fusil bajo y caída orientada: 005-I4/T050–T057, aprobado para integración en su rama y con documentación revisada, todavía fuera de `main`. El estado de entrega y PR se mantiene en las tareas de 005. No cambia reglas, geometría ni concede cobertura.
 
 - ✅ Tablero horizontal de cinco filas/plazas y fusil hacia +X, enemigos hacia −X, cinco cargas gratuitas/reserva cero y reparto continuo de oleadas sin alterar los 100 enemigos: 005-I1, integrado con 004-I2 mediante PR #24 (`658dd7e`).
 - ✅ Salida/espera/contacto real de machete en la misma fila, velocidad propia 40, hogar reservado y liberación al morir fuera: 005-I2/T023–T028, integrado en `main` mediante PR #25 (`c1f43d2`). §6.3 describe además la recarga y el regreso de I3 integrados por PR #26; publicación sigue pendiente.
