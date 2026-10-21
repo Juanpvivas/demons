@@ -5,7 +5,7 @@
 
 ## Summary
 
-El alcance previsto de I1 es medición reproducible y la primera corrección de presentación cuyo coste se confirme. T009 aprueba para integración sólo el instrumento y el diagnóstico limitado: Web no distingue ganancia; Android tiene deriva y observabilidad insuficiente de foco/vsync; iOS no tuvo nuevas ejecuciones por bloqueo del Mac. La hipótesis del shader no queda confirmada y no se aplica un parche. Bases nativas T008/SC-001 y US2 siguen pendientes, sin declarar US1 completa. El [protocolo](contracts/profiling-protocol.md) es la fuente única de condiciones, API y aceptación.
+El alcance previsto de I1 es medición reproducible y la primera corrección de presentación cuyo coste se confirme. T009 aprueba para integración sólo el instrumento y el diagnóstico limitado: Web no distingue ganancia; Android tiene deriva y observabilidad insuficiente de foco/vsync; tres ventanas posteriores de iPad Simulator/software rondan 150–151 ms por frame y siguen siendo descriptivas por la misma limitación de observación efectiva. La hipótesis del shader no queda confirmada y no se aplica un parche. Bases nativas T008/SC-001 y US2 siguen pendientes, sin declarar US1 completa. El [protocolo](contracts/profiling-protocol.md) es la fuente única de condiciones, API y aceptación.
 
 ## Technical Context
 

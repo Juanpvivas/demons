@@ -84,7 +84,8 @@ iOS software conserva rendimiento muy limitado.
 optativo de diagnóstico, aprobado para integración y sin activación en el
 juego normal. Las mediciones nuevas no justifican modificar el shader:
 Web no distingue una ganancia y Android conserva deriva y límites de
-observación; iOS no tuvo nuevas ejecuciones por bloqueo del Mac. Las bases
+observación. Tres ventanas descriptivas de iPad Simulator con renderizado
+software mantienen unos 150–151 ms por frame, sin causa confirmada. Las bases
 nativas y la estabilización siguen pendientes en el
 [seguimiento de 006](specs/006-diagnostico-rendimiento/tasks.md).
 
