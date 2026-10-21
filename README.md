@@ -67,8 +67,9 @@ independiente para integración; el estado de entrega y PR se mantiene en las
 [tareas de 005](specs/005-cinco-carriles/tasks.md).
 La caja amarilla sigue pendiente de 004-I3. Las features 004/005 y la publicación
 permanecen abiertas: esta integración no acredita 60 FPS físicos, renderer
-Mobile, hardware ni empaquetado final. Android/iOS software presentan caídas
-de rendimiento; [alcance y límites](docs/SPEC.md#8-arte-y-estilo-visual).
+Mobile, hardware ni empaquetado final. Android software mostró una regresión;
+iOS software conserva rendimiento muy limitado.
+[Alcance y límites](docs/SPEC.md#8-arte-y-estilo-visual).
 
 La feature `001-soldado-defensor-oleadas` (`specs/001-soldado-defensor-oleadas/`)
 está completa: un soldado defensor automático que dispara con fusil mientras

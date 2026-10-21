@@ -22,8 +22,10 @@ su precedencia sobre el hogar y bajo actores. Terreno, panorama y piezas
 anteriores se conservan; las trincheras inferiores antiguas permanecen ocultas
 en la instancia del nivel de cinco filas.
 
-Los atlas laterales de 005-I4 cuentan con aprobación funcional para integración
-T055 en `codex/005-i4-presentacion`; aún no están integrados en `main`.
+Los atlas laterales de 005-I4, aprobados funcionalmente en T055, están
+integrados en `main` mediante [PR #27](https://github.com/Juanpvivas/demons/pull/27).
+La publicación sigue pendiente; las [tareas de 005](../../../../specs/005-cinco-carriles/tasks.md)
+mantienen el estado de entrega y PR.
 Los PNG conservan los píxeles y el alfa de la salida seleccionada, sin recorte,
 repintado o empaquetado por scripts. Importación lossless, límite de lado 1024,
 corrección de borde alfa y sin mipmaps; filtro lineal y sin repetición locales.
