@@ -64,7 +64,7 @@ script = ExtResource("1_ammo_pickup")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 2
 texture_repeat = 1
-scale = Vector2(0.15625, 0.15625)
+scale = Vector2(0.234375, 0.234375)
 sprite_frames = SubResource("SpriteFrames_pickup")
 animation = &"default"
 autoplay = "default"
