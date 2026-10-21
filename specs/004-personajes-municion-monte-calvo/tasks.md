@@ -1,6 +1,6 @@
 # Tasks: Personajes y munición de Monte Calvo
 
-**Estado**: I1 y corrección UX T031–T038 aprobados e integrados en `main`. I2 y su documentación integrados junto con 005-I1 mediante el PR #24 (`658dd7e`). I3 tiene T023–T030 aprobadas para integración y documentación consolidada; el PR #29 está en borrador, con revisión humana y merge pendientes. Publicación T039 permanece pendiente.
+**Estado**: I1 y corrección UX T031–T038 aprobados e integrados en `main`. I2 y su documentación integrados junto con 005-I1 mediante el PR #24 (`658dd7e`). I3 tiene T023–T030 aprobadas para integración y documentación consolidada en el PR #29 en borrador. La corrección de legibilidad solicitada después (T040–T046) tiene T040–T045 aprobadas y documentación consolidada; actualización final T046 pendiente; revisión humana y merge continúan pendientes. Publicación T039 permanece pendiente.
 **PR conjunto integrado**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; publicación pendiente.
 **Issue**: [#18](https://github.com/Juanpvivas/demons/issues/18).
 **PR I3 en borrador**: [#29](https://github.com/Juanpvivas/demons/pull/29), `Refs #18`; sin cierre del Issue, promoción, merge ni distribución automática.
@@ -138,6 +138,22 @@ con clic/toque, conservando radio 20 y la precedencia recoger/desplegar.
 ## Fase final: Entrega del incremento aprobado
 
 - [X] T030 project-orchestrator: revisar `specs/004-personajes-municion-monte-calvo/tasks.md`, aprobación T029, diff/base, tamaño y trazabilidad del Issue; comprobar política de versiones de `docs/ARCHITECTURE.md` antes de distribución. Publicar rama I3 y PR en borrador, con `Refs #18` mientras publicación T039 esté pendiente y `Closes` sólo si todos los SC están cumplidos; resumir resultados/comandos/límites/QA en el PR. Recomendar Squash and merge a la persona; no promover ni fusionar; depende de T029 aprobado.
+
+## Corrección de legibilidad de I3
+
+Solicitud de la persona tras revisar `e025722`: caja un poco mayor y parpadeo
+para reconocerla sobre el suelo. Se continúa el mismo PR #29 y su rama,
+conservando las aprobaciones anteriores en su alcance original. El ajuste
+visual previsto es +25 %, envolvente máxima 40×40 y pulso de brillo lento
+siempre opaco; radio 20, posición, valor e interacción permanecen intactos.
+
+- [X] T040 docs-writer y qa-validator, secuenciales: preparar y validar la corrección visual en spec, plan, contrato y quickstart de 004; sustituir explícitamente el límite visual 32×32 por 40×40 para este ajuste solicitado, con pulso de brillo 1→1,35→1, alfa 1 y ciclo 1,4 s. No modifica las aprobaciones históricas ni T039; depende de T030.
+- [X] T041 dev-godot: ajustar únicamente la escala visual de `AmmoPickup.tscn` a 0,15625 y añadir pulso lento mediante recursos de animación de escena, sin lógica GDScript, shader nuevo ni cambios de PNG, raíz, radio 20, valor o input. Sin tests ni RED artificial; depende de T040 aprobado.
+- [X] T042 godot-tester: verificar importación, pulso visible continuo, permanencia del alfa y lectura/recogida durante sus fases, también junto a actor/parapeto y con solapadas, en Web de computador 1152×648/960×540, APK Android Emulator y app iPad Simulator. Ejecutar regresión pertinente y reutilizar resultados anteriores que el diff no invalide, sin tests artificiales ni repetir métricas por rutina. Dejar única app normal iOS y datos preservados; depende de T041.
+- [X] T043 qa-validator: validar independientemente T041–T042, nueva huella y legibilidad, animación puramente visual y neutralidad de recogida/economía. Emitir APROBADO PARA INTEGRACIÓN con límites de plataforma/rendimiento y T039 pendiente; depende de T042.
+- [X] T044 docs-writer: consolidar el ajuste aprobado en documentación vigente y procedencia, conservando historia y publicación T039/T071 pendiente, sin volcar registros ni añadir patrones; depende de T043 aprobado.
+- [X] T045 qa-validator: revisar documentación T044 y diff final, confirmar vigencia de regresión y verificaciones del alcance intacto; depende de T044.
+- [ ] T046 project-orchestrator: publicar commits de la corrección y actualizar el mismo PR #29 en borrador con alcance, resultados, límites y aprobación. Comprobar CI/export de revisión exacta; conservar Refs #18, sin promoción, merge, cierre de Issue ni distribución; depende de T045 aprobado.
 
 ## Gate de publicación separado
 
