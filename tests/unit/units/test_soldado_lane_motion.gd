@@ -197,11 +197,11 @@ func test_terminal_cancels_advance_and_late_combat() -> void:
 	assert_eq(_soldier.get("_current_ammo"), 0)
 
 
-func test_legacy_reload_outside_home_rejects_without_spend_or_rifle_until_i3() -> void:
+func test_legacy_reload_outside_home_accepts_once_without_rifle_until_arrival() -> void:
 	_defender()
 	await _empty_rifle()
 	# Fixture espacial explícito: la salida real tiene sus pruebas anteriores.
-	# Aísla esta protección incluso mientras la locomoción aún está en RED.
+	# I3 reemplaza el rechazo exterior de I2 por aceptación y retorno vulnerable.
 	_soldier.global_position += Vector2(192, 0)
 	_soldier.take_damage(7)
 	EconomyManager.collected_ammo = 100
@@ -209,8 +209,11 @@ func test_legacy_reload_outside_home_rejects_without_spend_or_rifle_until_i3() -
 	var health: int = _soldier.get("_current_health")
 	var morale: float = _soldier.get("_current_morale")
 	_soldier.reload()
-	assert_eq(EconomyManager.collected_ammo, 100, "Recarga exterior requiere el retorno futuro de I3")
-	assert_eq(_soldier.get("_current_ammo"), 0)
+	assert_eq(EconomyManager.collected_ammo, 100 - UnitData.deploy_ammo_cost)
+	assert_eq(_soldier.get("_current_ammo"), 1)
+	assert_eq(_soldier.get_movement_state(), Soldado.MovementState.RETURNING)
+	_soldier.reload()
+	assert_eq(EconomyManager.collected_ammo, 100 - UnitData.deploy_ammo_cost, "Una orden por retorno")
 	assert_eq(_soldier.get("_mode"), Soldado.SoldierMode.MELEE, "No dispara fusil fuera de HOME")
 	assert_eq(_soldier.get("_current_health"), health)
 	assert_eq(_soldier.get("_current_morale"), morale)

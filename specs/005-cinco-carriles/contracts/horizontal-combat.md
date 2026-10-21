@@ -1,9 +1,12 @@
 # Contrato: Tablero, combate e interacción horizontal
 
 Contrato de la feature para agentes/tester; sin API remota nueva. I1 está
-integrado en `main`; salida/espera/contacto I2 tiene aprobación funcional para
-integración en `codex/005-i2-machete`, aún sin integrar. Recarga/selección/regreso
-siguen pendientes de I3 y la presentación lateral de I4. Las firmas concretas
+integrado en `main`; salida/espera/contacto I2 está integrado mediante
+[PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`).
+Recarga, selección y regreso de I3 (`codex/005-i3-recarga`) están implementados
+y aprobados funcionalmente para integración en T042; documentación final y PR
+siguen en preparación. La presentación lateral sigue pendiente de I4.
+Las firmas concretas
 se definen mediante setup/RED sin cambiar estas invariantes.
 [Spec](../spec.md) · [Modelo](../data-model.md).
 
@@ -58,11 +61,10 @@ se definen mediante setup/RED sin cambiar estas invariantes.
 
 ## Recarga, selección e input
 
-Las reglas de selección/transacción/regreso siguientes pertenecen a I3.
-Durante I2, `reload()` sólo conserva su operación heredada para actor vivo,
-PLAYING, fondos y posición de hogar (distancia ≤0,01), sin exigir enum `HOME`
-ni carga cero; fuera rechaza sin gasto. `return_speed=40` queda preparado sin
-ruta activa. La precedencia de picking vigente se conserva.
+Las reglas de selección/transacción/regreso siguientes están implementadas
+en I3 y aprobadas funcionalmente para integración en T042. `reload()` delega
+a `request_reload()` con las mismas restricciones. La precedencia de picking
+vigente se conserva.
 
 1. Resolver selección contra dueño vivo actual y PLAYING. Habilitar solo
    carga 0, sin orden aceptada/RETURNING, con fondos≥costo. Panel muestra fila,

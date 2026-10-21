@@ -69,6 +69,9 @@ signal soldier_defeated(grid_cell: Vector2i)
 ## Snapshot visual anterior al retiro; ningún listener es necesario para morir.
 signal defeat_visual_requested(snapshot: Dictionary)
 
+## Cambió el estado individual observado por el panel, sin autoridad de UI.
+signal reload_state_changed
+
 ## Modo de combate activo (`docs/ARCHITECTURE.md` §4.4).
 enum SoldierMode { RIFLE, MELEE }
 
@@ -82,6 +85,7 @@ enum MovementState { HOME, ADVANCING, MELEE_CONTACT, WAITING, RETURNING, DEAD }
 
 ## Munición actual, runtime. Inicializada desde `stats.max_ammo` en `_ready()`.
 var _current_ammo: int = 0
+var _reload_in_progress: bool = false
 
 ## Moral acumulada por eliminación (FR-006). Persiste entre recargas;
 ## solo se pierde si el soldado es derrotado (fuera del alcance de estas
@@ -182,17 +186,34 @@ func _physics_process(delta: float) -> void:
 		_clear_combat_targets()
 		return
 	_refresh_physics_candidates()
-	match _mode:
-		SoldierMode.RIFLE:
-			_process_rifle(delta)
-		SoldierMode.MELEE:
-			_process_melee(delta)
+	var previous_movement := _movement_state
+	if _movement_state == MovementState.RETURNING:
+		_process_return(delta)
+	else:
+		match _mode:
+			SoldierMode.RIFLE:
+				_process_rifle(delta)
+			SoldierMode.MELEE:
+				_process_melee(delta)
+	if _movement_state != previous_movement:
+		reload_state_changed.emit()
 	# Una baja puede cambiar a WON de forma síncrona durante el ataque.
 	if not _can_process_combat():
 		velocity = Vector2.ZERO
 		_clear_combat_targets()
 		return
 	_process_incoming_melee_damage(delta)
+
+
+func _process_return(delta: float) -> void:
+	var remaining := _home_position.x - global_position.x
+	velocity = Vector2(signf(remaining) * minf(stats.return_speed, absf(remaining) / delta), 0.0)
+	move_and_slide()
+	_refresh_physics_candidates()
+	if _is_at_home():
+		velocity = Vector2.ZERO
+		_movement_state = MovementState.HOME
+		_set_mode(SoldierMode.RIFLE)
 
 
 func _can_process_combat() -> bool:
@@ -227,6 +248,10 @@ func _refresh_physics_candidates() -> void:
 		height = board_config.cell_size.y
 	_search_shape.size = Vector2(width, height)
 	_search_query.transform = Transform2D(0.0, global_position + Vector2(width * 0.5, 0.0))
+	if _movement_state == MovementState.RETURNING:
+		# Mismo alcance de contacto delante y detrás durante el retorno.
+		_search_shape.size = Vector2(2.0 * (_melee_shape.position.x + _melee_shape.shape.get_rect().end.x), _melee_shape.shape.get_rect().size.y)
+		_search_query.transform = Transform2D(0.0, global_position)
 	_search_query.collision_mask = collision_mask
 	# Crecer hasta obtener el conjunto completo: el orden interno de física
 	# no puede ocultar candidatos válidos por un límite fijo de resultados.
@@ -245,7 +270,7 @@ func _refresh_physics_candidates() -> void:
 			_rifle_candidates.append(body)
 		if _is_front_eligible(body):
 			_front_candidates.append(body)
-		if _is_melee_eligible(body):
+		if _is_incoming_eligible(body):
 			_melee_candidates.append(body)
 
 
@@ -288,6 +313,7 @@ func _fire_at_current_target() -> void:
 	if _current_ammo <= 0:
 		_current_ammo = 0
 		ammo_depleted.emit()
+	reload_state_changed.emit()
 
 
 func _remove_rifle_candidate(body: Node2D) -> void:
@@ -397,7 +423,7 @@ func _process_incoming_melee_damage(delta: float) -> void:
 	for enemy: Node2D in _melee_candidates.duplicate():
 		if not _can_process_combat():
 			break
-		if not _is_melee_eligible(enemy) or not enemy.has_method("get_melee_damage"):
+		if not _is_incoming_eligible(enemy) or not enemy.has_method("get_melee_damage"):
 			continue
 		take_damage(enemy.call("get_melee_damage"))
 	_incoming_melee_cooldown = _INCOMING_MELEE_ATTACK_INTERVAL
@@ -439,6 +465,17 @@ func _is_melee_eligible(body: Node2D) -> bool:
 	return _is_front_eligible(body) and _body_overlaps_range(body, _melee_shape)
 
 
+func _is_incoming_eligible(body: Node2D) -> bool:
+	if _movement_state != MovementState.RETURNING:
+		return _is_melee_eligible(body)
+	if not _is_live_candidate(body) or _candidate_cell(body).y != _grid_cell.y:
+		return false
+	var contact_transform := _melee_shape.global_transform
+	if body.global_position.x < global_position.x:
+		contact_transform.origin = global_position - _melee_shape.position
+	return _body_overlaps_range(body, _melee_shape, contact_transform)
+
+
 func _is_front_eligible(body: Node2D) -> bool:
 	return _is_live_candidate(body) and body.global_position.x > global_position.x \
 		and _candidate_cell(body).y == _grid_cell.y
@@ -450,7 +487,10 @@ func _is_at_home() -> bool:
 
 ## Solape de las formas reales, sin convertir el extremo del área en una
 ## distancia al centro del enemigo ni asumir que todos los cuerpos miden igual.
-func _body_overlaps_range(body: Node2D, range_shape: CollisionShape2D) -> bool:
+func _body_overlaps_range(body: Node2D, range_shape: CollisionShape2D,
+		range_transform: Transform2D = Transform2D.IDENTITY) -> bool:
+	if range_transform == Transform2D.IDENTITY:
+		range_transform = range_shape.global_transform
 	var collider := body as CollisionObject2D
 	if collider == null:
 		return false
@@ -460,7 +500,7 @@ func _body_overlaps_range(body: Node2D, range_shape: CollisionShape2D) -> bool:
 		var body_transform := collider.global_transform * collider.shape_owner_get_transform(owner_id)
 		for shape_id in collider.shape_owner_get_shape_count(owner_id):
 			var shape := collider.shape_owner_get_shape(owner_id, shape_id)
-			if range_shape.shape.collide(range_shape.global_transform, shape, body_transform):
+			if range_shape.shape.collide(range_transform, shape, body_transform):
 				return true
 	return false
 
@@ -469,29 +509,9 @@ func _on_ammo_depleted() -> void:
 	_set_mode(SoldierMode.MELEE)
 
 
-## Recarga pública (T034, FR-009): gasta munición recolectada vía
-## `EconomyManager.try_spend_ammo()` con el costo de una recarga completa
-## (`stats.deploy_ammo_cost`, `spec.md` Assumptions: "una recarga completa"
-## y `data-model.md`: costo de despliegue = costo de recarga, no hay campo
-## separado). Si hay fondos suficientes, repone `_current_ammo` a
-## `stats.max_ammo` y vuelve a modo `RIFLE` (`data-model.md`: "MELEE →
-## RIFLE: al recargar"). `_current_morale` NUNCA se toca aquí — persiste
-## entre recargas (`spec.md` Assumptions, `data-model.md` fila
-## `_current_morale`). Si `try_spend_ammo()` falla (fondos insuficientes),
-## `EconomyManager` ya emitió `deploy_or_reload_rejected` (FR-011) y este
-## soldado permanece en su modo actual sin más efecto.
+## Compatibilidad: toda ruta de recarga usa la misma transacción validada.
 func reload() -> void:
-	if _current_health <= 0 or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
-		return
-	# I2 conserva la operación heredada dentro del hogar. La recarga fuera
-	# requiere el retorno físico y la transacción de I3; no cobrarla aquí.
-	if not _is_at_home():
-		return
-	if not EconomyManager.try_spend_ammo(stats.deploy_ammo_cost):
-		return
-	_current_ammo = stats.max_ammo
-	_movement_state = MovementState.HOME
-	_set_mode(SoldierMode.RIFLE)
+	request_reload()
 
 
 func _set_mode(new_mode: SoldierMode) -> void:
@@ -522,6 +542,55 @@ func get_lane_id() -> int:
 	return board_config.home_cells.find(_grid_cell)
 
 
+## Snapshot de lectura para selección/HUD; no autoriza una orden económica.
+func get_reload_state() -> Dictionary:
+	return {
+		"instance_id": get_instance_id(),
+		"home_cell": _grid_cell,
+		"lane_id": get_lane_id(),
+		"ammo": _current_ammo,
+		"max_ammo": stats.max_ammo,
+		"morale": _current_morale,
+		"health": _current_health,
+		"alive": _current_health > 0 and not is_queued_for_deletion(),
+		"mode": _mode,
+		"movement_state": _movement_state,
+		"reload_cost": stats.deploy_ammo_cost,
+		"can_reload": can_reload(),
+	}
+
+
+func can_reload() -> bool:
+	return _can_process_combat() and not is_queued_for_deletion() \
+		and _current_ammo == 0 and not _reload_in_progress \
+		and _movement_state != MovementState.RETURNING \
+		and EconomyManager.collected_ammo >= stats.deploy_ammo_cost
+
+
+func request_reload() -> bool:
+	if not can_reload():
+		return false
+	# Bloquear antes de cualquier señal: los listeners del gasto son síncronos.
+	_reload_in_progress = true
+	reload_state_changed.emit()
+	if not EconomyManager.try_spend_ammo(stats.deploy_ammo_cost):
+		_reload_in_progress = false
+		reload_state_changed.emit()
+		return false
+	# Un callback puede terminar la partida o matar al actor; nunca resucitarlo.
+	if _can_process_combat() and not is_queued_for_deletion():
+		_current_ammo = stats.max_ammo
+		_clear_combat_targets()
+		if _is_at_home():
+			_movement_state = MovementState.HOME
+			_set_mode(SoldierMode.RIFLE)
+		else:
+			_movement_state = MovementState.RETURNING
+	_reload_in_progress = false
+	reload_state_changed.emit()
+	return true
+
+
 ## Aplica `amount` de daño y retorna `true` únicamente si esta llamada dejó
 ## la salud en 0 o menos (mismo contrato que `Enemigo.take_damage()`, ver
 ## cabecera de este archivo y de `enemigo.gd`). Al llegar a 0, el soldado
@@ -532,6 +601,7 @@ func take_damage(amount: int) -> bool:
 	if _current_health <= 0:
 		return false
 	_current_health -= amount
+	reload_state_changed.emit()
 	if _current_health <= 0:
 		_die()
 		return true
@@ -548,6 +618,8 @@ func _die() -> void:
 	_sprite.deactivate_visual()
 	defeat_visual_requested.emit(snapshot)
 	_current_morale = 0.0
+	_reload_in_progress = false
+	reload_state_changed.emit()
 	soldier_defeated.emit(_grid_cell)
 	queue_free()
 
@@ -561,6 +633,7 @@ func _die() -> void:
 func _register_kill() -> void:
 	_current_morale += stats.moral_per_kill
 	moral_changed.emit(_current_morale)
+	reload_state_changed.emit()
 
 
 # --- Prioridad de objetivo (T021) -----------------------------------------

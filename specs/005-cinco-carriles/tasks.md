@@ -2,16 +2,16 @@
 
 **Feature**: `005-cinco-carriles` · **Issue**: [#22](https://github.com/Juanpvivas/demons/issues/22) · **Rama de preparación**: `codex/005-cinco-carriles-preparacion`.
 **Input**: [spec](spec.md), [plan aprobado documentalmente](plan.md), [modelo](data-model.md), [contrato](contracts/horizontal-combat.md), [quickstart](quickstart.md) y [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
-**Estado**: I1 y 004-I2 integrados en `main` mediante Squash and merge del PR #24 (`658dd7e`). I2 implementado y aprobado para integración en `codex/005-i2-machete`, creada desde ese main; PR [#25](https://github.com/Juanpvivas/demons/pull/25) en borrador hacia `main`. Publicación T071 e I3–I5 permanecen pendientes.
+**Estado**: I1 y 004-I2 integrados en `main` mediante Squash and merge del PR #24 (`658dd7e`). I2 integrado en `main` mediante Squash and merge del PR [#25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 aprobado para integración en `codex/005-i3-recarga`, creada desde ese main; T032–T045 aprobadas y entrega en el PR [#26](https://github.com/Juanpvivas/demons/pull/26) en borrador hacia `main`, todavía sin integrar. I4–I5 y publicación T071 permanecen pendientes.
 **PR conjunto integrado**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; integración realizada el 2026-10-20, publicación pendiente.
 
 Transición completada: el PR #24 reunió 004-I2 y 005-I1 desde
 `codex/005-i1-tablero` hacia `main` (`2dc532d` como base de revisión).
 La persona autorizó el squash y la eliminación de las dos ramas superadas,
 realizados tras comprobar que todo el contenido aprobado quedó integrado.
-Las features siguen abiertas y la publicación pendiente. I2 retoma una rama
-breve desde `main` actualizado con alcance T018–T031; recarga/regreso I3 y
-presentación lateral I4 no se implementan en este incremento.
+Las features siguen abiertas y la publicación pendiente. I2 se integró mediante el PR #25 el 2026-10-20. I3 continúa en una rama
+breve desde `main` actualizado con alcance T032–T045: selección, recarga
+atómica y regreso vulnerable. Presentación lateral I4 queda pendiente.
 Durante I2, la API de recarga existente se conserva dentro del hogar; fuera
 de él rechaza la orden sin gasto hasta incorporar el regreso de I3. El fusil
 sigue limitado a HOME y esa adaptación requiere RED antes de implementarse.
@@ -99,20 +99,20 @@ sigue limitado a HOME y esa adaptación requiere RED antes de implementarse.
 **Objetivo**: seleccionar dueño de trinchera, recargar una sola vez y retornar sin romper economía/picking.
 **Criterio independiente**: solo vivo/vacío/fondos acepta; cobra una vez, conserva vida/moral y regresa vulnerable sin ofensiva; gesto de caja no dispara otra acción.
 
-- [ ] T032 [US3] project-orchestrator: tras integración humana del PR I2 T031, preparar rama breve `codex/005-i3-recarga` desde main actualizado, conservando alcance/IDs y publicación pendiente en T071; depende de T031 integrado y su QA funcional vigente.
-- [ ] T033 [US3] dev-godot: preparar interfaces mínimas invocables de estado/elegibilidad/intención en `scenes/units/soldado.gd`, `scenes/ui/HUD.tscn`/`hud.gd` y `scenes/levels/nivel_monte_calvo.gd`; sin aceptar/cobrar recarga ni implementar UI/ruta nueva antes de RED; depende de T032.
-- [ ] T034 [P] [US3] godot-tester RED: escribir `tests/unit/units/test_soldado_reload_return.gd` para vivo/carga0/fondos/PLAYING, rechazo parcial/llena/muerto, bloqueo antes de callbacks de gasto y un cobro por retorno; vida/moral conservadas,40/s, sin ofensiva/vulnerable, muerte cancela/libera y fusil solo al llegar; depende de T033.
-- [ ] T035 [P] [US3] godot-tester RED: escribir `tests/unit/levels/test_trench_selection_input.gd` y ampliar `tests/unit/ui/test_hud.gd` para selección dueño fuera/panel/botón, acción capturada→muerte→reemplazo sin cobrar nuevo, pickup sobre libre/ocupada/actor y solapadas, mouse emulado/toque sin doble orden y terminal; depende de T033.
-- [ ] T036 [US3] qa-validator: validar T034/T035 contra `specs/005-cinco-carriles/contracts/horizontal-combat.md`; comprobar RED semántico y no solo botón deshabilitado como protección económica; depende de T034 y T035.
-- [ ] T037 [US3] dev-godot: implementar transacción de recarga/guard de reentrada y retorno físico en `scenes/units/soldado.gd`, con carga completa al aceptar, salud/moral iguales, sin fusil/machete antes de HOME y daño entrante vigente; depende de T036 aprobada.
-- [ ] T038 [US3] dev-godot: integrar selección por origen/identidad actual y HUD mínimo en `scenes/levels/nivel_monte_calvo.gd`/`scenes/levels/Nivel_MonteCalvo.tscn` y `scenes/ui/HUD.tscn`/`hud.gd`, usando señales/contenedores, consumo GUI y precedencia de picking vigente; depende de T037.
-- [ ] T039 [US3] godot-tester GREEN: confirmar T034/T035 y regresión pertinente de `tests/unit/{units,levels,ui,systems,enemies}/`, incluidas economía/solapadas, daño en retorno, selección obsoleta, input y terminales; depende de T038.
-- [ ] T040 [US3] qa-validator: revisión funcional parcial de T037–T039 frente a `specs/005-cinco-carriles/spec.md`, suficiente para continuar pero con gates de entrega pendientes, sin APROBADO de implementación; depende de T039.
-- [ ] T041 [US3] godot-tester: gate funcional I3 de `specs/005-cinco-carriles/quickstart.md` en Web/APK/.app disponibles con ratón/toque de SO, panel/recarga/retorno/daño y saldo, resize/partida; comparar base/candidato y declarar diferencias/riesgos. Medición física/renderer/paquete final queda en T071; depende de T039.
-- [ ] T042 [US3] qa-validator: APROBADO PARA INTEGRACIÓN de I3 con verificaciones funcionales T041 y contrato satisfechos; evaluar diferencias/riesgos y declarar certificaciones pendientes en T071, sin inferir otro renderer; fallos reales de fuente/build/función bloquean; depende de T040, T041 completas y T028 aprobada.
-- [ ] T043 [US3] docs-writer: documentar interacción/recarga aprobadas y límites en `docs/SPEC.md`/`docs/ARCHITECTURE.md`, sin resultados simulados o registros de validación; depende de T042 aprobada.
-- [ ] T044 [US3] qa-validator: revisar documentación y diff final I3 de `docs/SPEC.md`/`docs/ARCHITECTURE.md` con fuentes T037/T038 y estado probado vigente; depende de T043.
-- [ ] T045 [US3] project-orchestrator: registrar aprobaciones en `specs/005-cinco-carriles/tasks.md` y preparar PR I3 en borrador `Refs #22`, con base/tamaño/TDD/QA y sin entrega si falta gate obligatorio; depende de T044 aprobada.
+- [X] T032 [US3] project-orchestrator: tras integración humana del PR I2 T031, preparar rama breve `codex/005-i3-recarga` desde main actualizado, conservando alcance/IDs y publicación pendiente en T071; depende de T031 integrado y su QA funcional vigente.
+- [X] T033 [US3] dev-godot: preparar interfaces mínimas invocables de estado/elegibilidad/intención en `scenes/units/soldado.gd`, `scenes/ui/HUD.tscn`/`hud.gd` y `scenes/levels/nivel_monte_calvo.gd`; sin aceptar/cobrar recarga ni implementar UI/ruta nueva antes de RED; depende de T032.
+- [X] T034 [P] [US3] godot-tester RED: escribir `tests/unit/units/test_soldado_reload_return.gd` para vivo/carga0/fondos/PLAYING, rechazo parcial/llena/muerto, bloqueo antes de callbacks de gasto y un cobro por retorno; vida/moral conservadas,40/s, sin ofensiva/vulnerable, muerte cancela/libera y fusil solo al llegar; depende de T033.
+- [X] T035 [P] [US3] godot-tester RED: escribir `tests/unit/levels/test_trench_selection_input.gd` y ampliar `tests/unit/ui/test_hud.gd` para selección dueño fuera/panel/botón, acción capturada→muerte→reemplazo sin cobrar nuevo, pickup sobre libre/ocupada/actor y solapadas, mouse emulado/toque sin doble orden y terminal; depende de T033.
+- [X] T036 [US3] qa-validator: validar T034/T035 contra `specs/005-cinco-carriles/contracts/horizontal-combat.md`; comprobar RED semántico y no solo botón deshabilitado como protección económica; depende de T034 y T035.
+- [X] T037 [US3] dev-godot: implementar transacción de recarga/guard de reentrada y retorno físico en `scenes/units/soldado.gd`, con carga completa al aceptar, salud/moral iguales, sin fusil/machete antes de HOME y daño entrante vigente; depende de T036 aprobada.
+- [X] T038 [US3] dev-godot: integrar selección por origen/identidad actual y HUD mínimo en `scenes/levels/nivel_monte_calvo.gd`/`scenes/levels/Nivel_MonteCalvo.tscn` y `scenes/ui/HUD.tscn`/`hud.gd`, usando señales/contenedores, consumo GUI y precedencia de picking vigente; depende de T037.
+- [X] T039 [US3] godot-tester GREEN: confirmar T034/T035 y regresión pertinente de `tests/unit/{units,levels,ui,systems,enemies}/`, incluidas economía/solapadas, daño en retorno, selección obsoleta, input y terminales; depende de T038.
+- [X] T040 [US3] qa-validator: revisión funcional parcial de T037–T039 frente a `specs/005-cinco-carriles/spec.md`, suficiente para continuar pero con gates de entrega pendientes, sin APROBADO de implementación; depende de T039.
+- [X] T041 [US3] godot-tester: gate funcional I3 de `specs/005-cinco-carriles/quickstart.md` en Web/APK/.app disponibles con ratón/toque de SO, panel/recarga/retorno/daño y saldo, resize/partida; comparar base/candidato y declarar diferencias/riesgos. Medición física/renderer/paquete final queda en T071; depende de T039.
+- [X] T042 [US3] qa-validator: APROBADO PARA INTEGRACIÓN de I3 con verificaciones funcionales T041 y contrato satisfechos; evaluar diferencias/riesgos y declarar certificaciones pendientes en T071, sin inferir otro renderer; fallos reales de fuente/build/función bloquean; depende de T040, T041 completas y T028 aprobada.
+- [X] T043 [US3] docs-writer: documentar interacción/recarga aprobadas y límites en `docs/SPEC.md`/`docs/ARCHITECTURE.md`, sin resultados simulados o registros de validación; depende de T042 aprobada.
+- [X] T044 [US3] qa-validator: revisar documentación y diff final I3 de `docs/SPEC.md`/`docs/ARCHITECTURE.md` con fuentes T037/T038 y estado probado vigente; depende de T043.
+- [X] T045 [US3] project-orchestrator: registrar aprobaciones en `specs/005-cinco-carriles/tasks.md` y preparar PR I3 en borrador `Refs #22`, con base/tamaño/TDD/QA y sin entrega si falta gate obligatorio; depende de T044 aprobada.
 
 ## Fase 6 — Composición/presentación transversal · I4
 

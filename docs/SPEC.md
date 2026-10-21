@@ -105,7 +105,7 @@ laterales definitivas pertenecen a 005-I4. Ninguna decoración concede cobertura
 - **Modo machete** (automático al quedarse sin munición): combate cuerpo a cuerpo, rango de 1 casilla frontal, daño escalado según la moral acumulada en modo fusil.
 - Los stats vigentes viven en `UnitStats`/`soldado_base_stats.tres`; el cambio de orientación no altera daño, carga, moral, costo o cadencia.
 
-**005-I2, aprobado funcionalmente para integración en su rama:** al agotar
+**005-I2, integrado en `main` mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25):** al agotar
 la munición, el mismo soldado pasa a machete y sale hacia un enemigo delante
 en su fila, sin cambiar de carril. Avanza a 40 unidades de mundo/s, con velocidad
 propia ajustable en `UnitStats`/`.tres`, independiente de los stats enemigos.
@@ -119,16 +119,21 @@ La plaza permanece reservada mientras viva, aunque se aleje. Ambos actores
 reciben daño real y pueden morir; al morir, el soldado deja de combatir,
 pierde su moral y libera su plaza de origen sin esperar la caída visual.
 
-**Pendiente de 005-I3:** seleccionar la trinchera mostrará carga/moral de su
-dueño; «Recargar» sólo aceptará un soldado vivo con carga cero y fondos suficientes. Cobrará una vez,
-conservará salud/moral e iniciará un regreso físico vulnerable, sin ofensiva,
-hasta reanudar el fusil al llegar; el botón estará desactivado durante el
-retorno. La velocidad de regreso de 40 unidades/s ya está preparada como dato,
-pero todavía no tiene una ruta activa. I2 conserva la operación heredada de
-recarga para un soldado vivo, en PLAYING y en la posición de su hogar
-(tolerancia ≤0,01 unidades), con fondos suficientes; fuera rechaza sin cobrar.
-Esa operación no exige aún carga cero ni un estado de movimiento concreto;
-la elegibilidad estricta, la transacción nueva y el control jugable son I3.
+**005-I3, aprobado para integración en T042, todavía en su rama:** seleccionar
+una trinchera muestra fila, carga/capacidad y moral de su dueño vivo, también
+cuando está fuera; no despliega otro soldado ni cobra. «Recargar» sólo acepta
+carga cero, fondos suficientes y partida PLAYING, sin orden ya aceptada o
+retorno activo. Cobra `UnitStats.deploy_ammo_cost` una sola vez, repone la
+carga y conserva salud/moral. Una intención dirigida a un dueño muerto o
+reemplazado no recarga a su sucesor.
+
+Fuera del hogar, regresa físicamente por su fila a 40 unidades/s, vulnerable
+y sin disparar ni golpear hasta llegar; dentro, recupera el fusil sin viaje.
+El panel indica «Regresando» y deshabilita el botón durante la orden/retorno,
+con carga parcial/llena, sin fondos o fuera de PLAYING. Morir libera su origen
+y cancela la selección sin reembolso; el fin de partida detiene movimiento,
+combate y nuevas órdenes. La recogida conserva precedencia sobre selección y
+despliegue; los controles consumen su gesto sin activar el tablero.
 
 La [referencia aprobada](../specs/005-cinco-carriles/references/visual-reference.md)
 orienta la composición futura y no fija costos, estadísticas ni HUD final.
@@ -211,9 +216,9 @@ Su orientación visual actual aún necesita las poses laterales de 005-I4.
 
 La caja amarilla de munición sigue provisional, pendiente de 004-I3. El
 movimiento/contacto de machete de 005-I2 conserva las poses existentes; las
-poses laterales y la presentación completa de marcha son 005-I4. También
-siguen pendientes selección/recarga y regreso 005-I3, HUD, pantallas terminales,
-audio y resto del acabado.
+poses laterales y la presentación completa de marcha son 005-I4. I3 incorpora
+HUD mínimo de selección/recarga, avisos y pantalla terminal, con regreso físico
+funcional; el acabado visual de interfaz, audio y demás presentación sigue pendiente.
 Esta integración parcial no completa las features 004/005 ni el MVP.
 
 La [comparación visual](../specs/002-monte-calvo-terreno-trincheras/evidence/us3.md)
@@ -238,11 +243,20 @@ de rendimiento físico nativo ni amplía esas aprobaciones históricas.
 
 La constitución 4.0.0 distingue integración funcional de publicación. La
 integración conjunta 004-I2/005-I1, realizada en `main` mediante el
-[PR #24](https://github.com/Juanpvivas/demons/pull/24), y la aprobación funcional
-de 005-I2 en su rama no certifican 60 FPS físicos, Mobile, GPU,
+[PR #24](https://github.com/Juanpvivas/demons/pull/24), y la integración de
+005-I2 mediante el [PR #25](https://github.com/Juanpvivas/demons/pull/25) no certifican 60 FPS físicos, Mobile, GPU,
 renderer o empaquetado final; esos gates y SC-007 permanecen pendientes de
 publicación en las tareas de cada feature. Las comprobaciones de emulador,
 simulador y Compatibility/software conservan sólo su propio alcance.
+
+La aprobación funcional de I3 cubre Chrome de computador y apps instaladas en
+Android Emulator/iOS Simulator con Compatibility y renderizado software.
+Se observaron caídas importantes (aprox. 39 FPS en Android y 6,67 FPS en iOS);
+no certifican 60 FPS físicos, Mobile ni costo del retorno: las muestras tenían
+cinco soldados en HOME y ninguno fuera. El smoke de producción llegó a LOST;
+los casos difíciles se verificaron en fixtures separados, sin acreditar una
+victoria manual de producción. El paquete/renderer final original y hardware
+permanecen pendientes en T071.
 
 ## 9. Alcance del MVP (primera versión jugable)
 
@@ -256,7 +270,7 @@ simulador y Compatibility/software conservan sólo su propio alcance.
 
 ## 10. Preguntas abiertas / decisiones pendientes
 
-- Implementar los incrementos restantes de [005](../specs/005-cinco-carriles/tasks.md): regreso por recarga y controles I3, arte lateral I4 y consolidación I5. I1 está integrado en `main`; I2 tiene aprobación funcional para integración en `codex/005-i2-machete`, pendiente de su PR e integración. No deducir balance de la imagen.
+- Implementar los incrementos restantes de [005](../specs/005-cinco-carriles/tasks.md): arte lateral I4 y consolidación I5. I1 e I2 están integrados en `main` mediante los PR #24 y #25; I3 está aprobado funcionalmente para integración en su rama, pendiente de documentación final y PR en borrador. No deducir balance de la imagen.
 - Caja de munición de 004-I3, poses laterales de 005-I4, interfaz y demás acabado, siguiendo la dirección aprobada en §8; SC-007 y certificaciones de publicación siguen pendientes.
 - ¿Habrá progresión entre niveles (más batallas históricas) o es un solo escenario?
 - ¿Narrativa/contexto histórico se presenta dentro del juego (cutscenes, texto) o queda solo como inspiración temática?
@@ -266,8 +280,10 @@ simulador y Compatibility/software conservan sólo su propio alcance.
 
 ### Resueltas (graduadas desde specs de feature)
 
+- ✅ Selección por dueño de trinchera, recarga única sólo con carga cero y regreso físico vulnerable sin ofensiva: 005-I3/T037–T042, aprobado para integración en su rama. No completa I4/I5 ni publicación T071.
+
 - ✅ Tablero horizontal de cinco filas/plazas y fusil hacia +X, enemigos hacia −X, cinco cargas gratuitas/reserva cero y reparto continuo de oleadas sin alterar los 100 enemigos: 005-I1, integrado con 004-I2 mediante PR #24 (`658dd7e`).
-- ✅ Salida/espera/contacto real de machete en la misma fila, velocidad propia 40, hogar reservado y liberación al morir fuera: 005-I2/T023–T028, aprobado funcionalmente para integración en su rama. §6.3 distingue la recarga heredada del futuro regreso/UI de I3; no implica que I2 ya esté en `main` ni aprobado para publicación.
+- ✅ Salida/espera/contacto real de machete en la misma fila, velocidad propia 40, hogar reservado y liberación al morir fuera: 005-I2/T023–T028, integrado en `main` mediante PR #25 (`c1f43d2`). §6.3 describe además la recarga y el regreso de I3 aprobados para integración; publicación sigue pendiente.
 - ✅ Presentación observadora del enemigo, contacto basado en movimiento real, snapshot anterior al reciclado y reset por activación: 004-I2, extendiendo el patrón común sin dar autoridad jugable a la animación.
 - ✅ Dirección visual de la primera iteración del terreno y las trincheras de Monte Calvo: entorno pictórico ocre/oliva, montañas azul grisáceo y decoración estática de tierra, madera y sacos, conservando actores provisionales y reglas actuales en aquella entrega. Aprobada en T016 de `002-monte-calvo-terreno-trincheras`; §8 y sus enlaces delimitan el alcance y la evidencia. I1 de 004 avanza después el soldado; enemigo, caja e interfaz continúan pendientes.
 - ✅ Soldado pictórico y presentación de sus estados reales, sin alterar el combate ni esperar a la caída para retirarlo: I1 de `004-personajes-municion-monte-calvo`, aprobado en T011. §8 describe su alcance parcial; el patrón compartido de presentación y efecto independiente se gradúa a `ARCHITECTURE.md` §4.7. No resuelve el acabado del enemigo, la caja o la interfaz.
@@ -309,3 +325,4 @@ simulador y Compatibility/software conservan sólo su propio alcance.
 | 2026-10-19 | §6.3/§10: confirmadas velocidades propias 40/40, recarga solo con carga cero y una orden por retorno, sin ataques durante el regreso vulnerable, y secuencia de filas 1→5 continua entre oleadas; se conservan 1 atacante inicial + 99 autorados. Pendiente QA de especificación completa de 005, sin implementación o cierre I2 |
 | 2026-10-19 | 005/T015 y 004/T021: consolidación de integración funcional del tablero de cinco filas y presentación del enemigo; se distinguen machete móvil, recarga UI, arte lateral, caja y publicación aún pendientes |
 | 2026-10-20 | 005/T029 tras QA T028: salida, espera y contacto móvil con machete en su carril, velocidad propia y hogar reservado; recarga heredada limitada a la posición del hogar. Se actualiza el estado integrado de PR #24 y se conservan I3, arte lateral y publicación pendientes. |
+| 2026-10-20 | 005/T043 tras QA T042: selección del dueño por trinchera, recarga única con carga cero y regreso físico vulnerable sin ofensiva; HUD mínimo y precedencia de entrada. I3 aprobado para integración en su rama; arte lateral, consolidación y publicación pendientes. |

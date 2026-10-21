@@ -2,7 +2,7 @@
 
 **Feature ID**: `005-cinco-carriles` | **Planned Branch**: `codex/005-cinco-carriles-preparacion` | **Date**: 2026-10-19 | **Spec**: [spec.md](spec.md)
 
-**Estado**: preparación aprobada; I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 aprobado funcionalmente para integración en `codex/005-i2-machete`, pendiente de consolidación y PR en borrador; aún no integrado. I3–I5 y publicación T071 pendientes.
+**Estado**: preparación aprobada; I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 integrado mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 implementado en `codex/005-i3-recarga` y aprobado funcionalmente para integración en T042; documentación T043/T044 y PR en borrador T045 en consolidación, todavía fuera de `main`. I4–I5 y publicación T071 pendientes.
 
 ## Summary
 
@@ -82,8 +82,8 @@ declara completa ni el Issue se cierra con requisitos restantes.
    ni notificar baja de oleada; conserva drop 3/moral/visual/derrota. Los 99
    restantes conservan Resources/orden/Timers, incluido retraso del primer
    spawn. Registro visual y conexiones una vez por instancia física.
-5. **Recarga/UI (I3 pendiente)**: nivel resolverá plaza→dueño actual; actor
-   validará/aceptará
+5. **Recarga/UI (I3 aprobado para integración)**: nivel resuelve plaza→dueño
+   actual y revalida identidad; actor valida/acepta
    atómicamente antes de notificar gasto. Solo vivo/vacío/fondos/PLAYING,
    bloqueo desde aceptación y todo retorno. UI observa señales y revalida
    identidad; deshabilitar botón no es la única protección. [Contrato](contracts/horizontal-combat.md).
@@ -98,12 +98,12 @@ declara completa ni el Issue se cierra con requisitos restantes.
 del soldado estático y documenta la evolución aprobada de I2: ambos cuerpos
 móviles, consulta del tick físico y colisión real, con enum de arma y otro de
 movimiento pequeño, sin framework de FSM, navegación libre o autoload nuevo.
-La plaza y posición de hogar permanecen estables al moverse. La recarga heredada
-sólo opera en la posición de hogar (≤0,01), con actor vivo, PLAYING y fondos;
-no exige enum `HOME` ni carga cero. Fuera rechaza sin cobro hasta I3.
-`advance_speed=40` se usa en I2; `return_speed=40` queda preparado sin retorno
-activo. Contacto y daño durante ese futuro regreso se validarán en I3, sin
-atribuirlos a la aprobación actual.
+La plaza y posición de hogar permanecen estables al moverse. I3 activa regreso
+físico a `return_speed=40` sin ofensiva y con daño entrante; recarga exige carga
+cero, actor vivo, PLAYING y fondos. El guard precede las señales/cobro y la
+intención del HUD lleva identidad revalidada por el nivel. `reload()` comparte
+la operación `request_reload()`. Estos comportamientos cuentan con aprobación
+funcional para integración T042; I4/I5 y publicación conservan sus gates.
 
 ## Incrementos previstos
 
@@ -114,8 +114,10 @@ conservan. La transición conjunta 004-I2/005-I1 se integró desde
 autorización humana. QA revisó el conjunto y su tamaño excepcional, sin
 fragmentar TDD ni reescribir historial. El PR usó `Refs #18` y `Refs #22` y no
 cerró las features ni distribuyó builds. Las dos ramas superadas se eliminaron
-tras verificar su integración. I2 retoma una rama breve desde ese `main`;
-los siguientes incrementos conservan ese flujo tras integrar el PR anterior.
+tras verificar su integración. I2 se integró mediante el
+[PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`); I3 continúa
+en su propia rama desde ese `main`. Los siguientes incrementos conservan ese
+flujo tras integrar el PR anterior.
 
 | Incremento | Resultado y rama propuesta | TDD y gate de destinos propio, antes de QA/docs |
 |---|---|---|
@@ -175,10 +177,10 @@ tests/unit/{systems,levels,units,enemies,ui}/
 | SC-007 | Mediciones separadas; hardware pendiente sin excepción implícita |
 
 [Research](research.md), modelo, contrato y [quickstart](quickstart.md) resuelven
-el diseño sin volcar registros. C4–C6 resueltos. I1 ya está integrado; I2 cuenta
-con aprobación funcional T028 para integración en su rama. Su consolidación
-documental T029 y revisión final T030 preceden al PR en borrador T031.
-I3–I5 conservan sus gates propios y T071 permanece abierto para publicación.
+el diseño sin volcar registros. C4–C6 resueltos. I1 e I2 están integrados
+mediante los PR #24 y #25. I3 está implementado y aprobado funcionalmente
+para integración en T042; su consolidación documental T043/T044 precede al
+PR en borrador T045. I4–I5 y T071 permanecen pendientes.
 
 ## Complexity Tracking
 
