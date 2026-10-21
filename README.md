@@ -49,14 +49,20 @@ enemigo frontal de su fila, se detiene para combatir y espera donde está si
 no queda ninguno delante. Ambos cuerpos pueden recibir daño y morir; su plaza
 sigue reservada mientras viva y queda libre al morir, aunque esté fuera.
 
-005-I3 está implementado y aprobado funcionalmente para integración en
-`codex/005-i3-recarga`; su documentación y PR en borrador siguen en preparación.
+005-I3 está integrado en `main` mediante el
+[PR #26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`).
 Seleccionar una trinchera muestra fila, carga y moral de su dueño vivo, aunque
 esté fuera. «Recargar» exige carga cero, fondos y partida activa: cobra una vez,
 conserva salud/moral y devuelve al soldado físicamente a 40 unidades/s,
 vulnerable y sin atacar hasta llegar. El HUD muestra el regreso y bloquea
-órdenes duplicadas. Las bandas y plazas actuales son provisionales hasta las
-trincheras/poses laterales de I4.
+órdenes duplicadas.
+
+005-I4 cuenta con aprobación funcional para integración en
+`codex/005-i4-presentacion`; su revisión documental final y PR siguen en preparación.
+Añade cinco trincheras con parapetos y personajes laterales: fusil dentro,
+marcha/espera con machete, golpe, regreso con fusil bajo y caída orientada.
+Las poses observan acciones reales y conservan la geometría y las reglas.
+I4 todavía no está integrado en `main`; la consolidación I5 queda pendiente.
 La caja amarilla sigue pendiente de 004-I3. Las features 004/005 y la publicación
 permanecen abiertas: esta integración no acredita 60 FPS físicos, renderer
 Mobile, hardware ni empaquetado final.
