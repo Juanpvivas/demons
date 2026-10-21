@@ -95,8 +95,9 @@ Una recogida de munición bajo un actor o sobre una plaza libre/ocupada conserva
 su precedencia: no despliega ni cobra con el mismo gesto. Las cajas solapadas
 mantienen la semántica existente. La cámara centra el tablero en ambos ejes;
 los gestos se convierten con la transformación inversa del canvas tras resize.
-005-I4, aprobado para integración en su rama, sustituye los recuadros de plaza
-por cinco trincheras laterales y conserva bandas discretas y números de fila.
+005-I4, integrado mediante [PR #27](https://github.com/Juanpvivas/demons/pull/27),
+sustituye los recuadros de plaza por cinco trincheras laterales y conserva
+bandas discretas y números de fila.
 Ninguna decoración concede cobertura ni cambia las plazas jugables.
 
 ### 6.3 Tipos de unidad (borrador inicial — por refinar)
@@ -179,7 +180,7 @@ enmarcan la posición defendida. La [referencia aprobada](../specs/002-monte-cal
 orienta los materiales y la jerarquía visual. La composición original de un
 avance central se conserva como antecedente; 005-I1 la acompaña de cinco bandas
 y plazas provisionales y oculta las antiguas trincheras inferiores en el nivel.
-005-I4, aprobado para integración en T055 y todavía en su rama, añade cinco
+005-I4, integrado en `main` mediante PR #27, añade cinco
 puestos laterales: interior de tierra/madera detrás del actor y parapeto de
 sacos delante de sus piernas. El fusil y el torso permanecen legibles; la
 decoración deja recoger las cajas sobre el hogar o bajo los actores.
@@ -227,11 +228,13 @@ protección ni alteran combate, economía o velocidades.
 
 La [procedencia del soldado](../assets/sprites/units/monte_calvo/SOURCES.md)
 y [del entorno](../assets/sprites/levels/monte_calvo/SOURCES.md) documentan los
-nuevos atlas y conserva los anteriores. La caja amarilla sigue provisional,
+nuevos atlas y conservan los anteriores. La caja amarilla sigue provisional,
 pendiente de 004-I3. I3 incorpora HUD mínimo de selección/recarga, avisos y
 pantalla terminal; I4 conserva sus controles y adaptación. El acabado visual
-de interfaz y audio sigue pendiente, al igual que la consolidación I5.
-Esta integración parcial no completa las features 004/005 ni el MVP.
+de interfaz y audio sigue pendiente. I5 consolida el alcance funcional
+integrado con aprobación independiente para integración; las
+[tareas de 005](../specs/005-cinco-carriles/tasks.md) mantienen el estado de
+entrega y PR. La publicación, las features 004/005 y el MVP siguen abiertos.
 
 La [comparación visual](../specs/002-monte-calvo-terreno-trincheras/evidence/us3.md)
 y la [matriz nativa](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
@@ -257,8 +260,9 @@ La constitución 4.0.0 distingue integración funcional de publicación. La
 integración conjunta 004-I2/005-I1, realizada en `main` mediante el
 [PR #24](https://github.com/Juanpvivas/demons/pull/24), y la integración de
 005-I2/005-I3 mediante los [PR #25](https://github.com/Juanpvivas/demons/pull/25)
-y [#26](https://github.com/Juanpvivas/demons/pull/26), y la aprobación funcional
-de I4 no certifican 60 FPS físicos, Mobile, GPU,
+y [#26](https://github.com/Juanpvivas/demons/pull/26), la de I4 mediante
+[#27](https://github.com/Juanpvivas/demons/pull/27) y la consolidación funcional
+I5 no certifican 60 FPS físicos, Mobile, GPU,
 renderer o empaquetado final; esos gates y SC-007 permanecen pendientes de
 publicación en las tareas de cada feature. Las comprobaciones de emulador,
 simulador y Compatibility/software conservan sólo su propio alcance.
@@ -279,6 +283,18 @@ Los estados difíciles y la victoria determinista usan fixtures separados de
 las partidas de producción; no acreditan victoria con los 100 enemigos.
 El renderer software y las variantes temporales conservan sus límites de
 publicación, sin certificar el paquete final ni SC-007.
+La comparación I4 en Android software bajó de unos 49,6 a 41,7 FPS, con
+empeoramiento de los tiempos de frame; el fixture dinámico usa cohortes
+distintas y no descarta esa regresión. iOS se mantuvo cerca de 150 ms por frame
+(6,67 FPS), con stdout parcial y sin aislamiento acreditado respecto de la
+antigua app I2. Son muestras descriptivas de esos entornos, sin atribuir
+causalidad ni certificar hardware.
+
+I5 conserva esos límites al revalidar la suite y la carga del nivel original.
+El conteo de 100 enemigos y la victoria por 99 bajas de oleada tienen
+cobertura automatizada; el recorrido de producción hasta LOST y la victoria
+determinista separada conservan el alcance aprobado de I4. Esto no acredita
+una victoria manual con los 100 enemigos ni una revisión visual nueva.
 
 ## 9. Alcance del MVP (primera versión jugable)
 
@@ -292,7 +308,7 @@ publicación, sin certificar el paquete final ni SC-007.
 
 ## 10. Preguntas abiertas / decisiones pendientes
 
-- Consolidación I5 de [005](../specs/005-cinco-carriles/tasks.md). I1–I3 están integrados en `main` mediante los PR #24–#26; I4 está aprobado para integración en su rama, con documentación revisada y todavía fuera de `main`. Consultar las tareas para el estado de entrega y PR. No deducir balance de la imagen.
+- Publicación de [005](../specs/005-cinco-carriles/tasks.md), T071/SC-007: rendimiento físico, renderer y artefacto final, firma/instalación/versionado y matriz de destino. I1–I4 están integrados en `main` mediante los PR #24–#27 e I5 consolida el alcance funcional aprobado; las tareas mantienen el estado de entrega. No deducir balance de la imagen.
 - Caja de munición de 004-I3, interfaz y demás acabado, siguiendo la dirección aprobada en §8; SC-007 y certificaciones de publicación siguen pendientes.
 - ¿Habrá progresión entre niveles (más batallas históricas) o es un solo escenario?
 - ¿Narrativa/contexto histórico se presenta dentro del juego (cutscenes, texto) o queda solo como inspiración temática?
@@ -302,8 +318,8 @@ publicación, sin certificar el paquete final ni SC-007.
 
 ### Resueltas (graduadas desde specs de feature)
 
-- ✅ Selección por dueño de trinchera, recarga única sólo con carga cero y regreso físico vulnerable sin ofensiva: 005-I3/T037–T042, integrado mediante PR #26 (`8c4cab4`). No completa I5 ni publicación T071.
-- ✅ Composición lateral y estados observadores de marcha/espera, regreso con fusil bajo y caída orientada: 005-I4/T050–T057, aprobado para integración en su rama y con documentación revisada, todavía fuera de `main`. El estado de entrega y PR se mantiene en las tareas de 005. No cambia reglas, geometría ni concede cobertura.
+- ✅ Selección por dueño de trinchera, recarga única sólo con carga cero y regreso físico vulnerable sin ofensiva: 005-I3/T037–T042, integrado mediante PR #26 (`8c4cab4`). La publicación T071 sigue pendiente.
+- ✅ Composición lateral y estados observadores de marcha/espera, regreso con fusil bajo y caída orientada: 005-I4/T050–T057, integrado mediante PR #27 (`cffb2ec`). El estado de entrega y PR se mantiene en las tareas de 005. No cambia reglas, geometría ni concede cobertura.
 
 - ✅ Tablero horizontal de cinco filas/plazas y fusil hacia +X, enemigos hacia −X, cinco cargas gratuitas/reserva cero y reparto continuo de oleadas sin alterar los 100 enemigos: 005-I1, integrado con 004-I2 mediante PR #24 (`658dd7e`).
 - ✅ Salida/espera/contacto real de machete en la misma fila, velocidad propia 40, hogar reservado y liberación al morir fuera: 005-I2/T023–T028, integrado en `main` mediante PR #25 (`c1f43d2`). §6.3 describe además la recarga y el regreso de I3 integrados por PR #26; publicación sigue pendiente.
@@ -350,3 +366,4 @@ publicación, sin certificar el paquete final ni SC-007.
 | 2026-10-20 | 005/T029 tras QA T028: salida, espera y contacto móvil con machete en su carril, velocidad propia y hogar reservado; recarga heredada limitada a la posición del hogar. Se actualiza el estado integrado de PR #24 y se conservan I3, arte lateral y publicación pendientes. |
 | 2026-10-20 | 005/T043 tras QA T042: selección del dueño por trinchera, recarga única con carga cero y regreso físico vulnerable sin ofensiva; HUD mínimo y precedencia de entrada. I3 aprobado para integración en su rama; arte lateral, consolidación y publicación pendientes. |
 | 2026-10-20 | 005/T056 tras QA T055: composición lateral de cinco trincheras, marcha/espera y regreso observados, caída con orientación real y procedencia. I3 integrado por PR #26; I4 aprobado en su rama, I5 y publicación pendientes. |
+| 2026-10-21 | 005/T063 tras QA T062: consolidación funcional de I1–I4 integrados, con límites de producción/fixtures y rendimiento software explícitos; publicación T071, 004-I3 y acabado del MVP pendientes. |

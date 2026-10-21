@@ -2,11 +2,11 @@
 
 **Feature ID**: `005-cinco-carriles` | **Planned Branch**: `codex/005-cinco-carriles-preparacion` | **Date**: 2026-10-19 | **Spec**: [spec.md](spec.md)
 
-**Estado**: preparación aprobada; I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 integrado mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 integrado en `main` mediante [PR #26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`). I4 aprobado para integración en `codex/005-i4-presentacion`, con documentación revisada y todavía fuera de `main`; consultar [tareas](tasks.md) para el estado de entrega y PR. I5 y publicación T071 pendientes.
+**Estado**: preparación aprobada; I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`), I2 mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`), I3 mediante [PR #26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`) e I4 mediante [PR #27](https://github.com/Juanpvivas/demons/pull/27) (`cffb2ec`). I5 consolida el alcance funcional verificado con APROBADO PARA INTEGRACIÓN T062; consultar [tareas](tasks.md) para el estado de entrega y PR. Publicación T071/SC-007 y cierre completo de la feature pendientes.
 
 ## Summary
 
-Resultado completo previsto de la feature: cinco filas con soldados cargados en trincheras izquierdas, reserva inicial
+Alcance funcional integrado: cinco filas con soldados cargados en trincheras izquierdas, reserva inicial
 cero y enemigos hacia −X. El soldado vacío sale con machete a 40 unidades/s
 solo en su fila; una recarga válida cobra una vez y lo devuelve físicamente
 a 40, vulnerable y sin atacar hasta llegar. Su plaza se reserva mientras viva.
@@ -106,9 +106,9 @@ la operación `request_reload()`. Estos comportamientos cuentan con aprobación
 funcional T042 e integración mediante PR #26. I4 amplía el presentador con
 movimiento físico observado, retorno con fusil bajo y orientación actual de
 caída; sus cinco pares de trincheras son decoración por capas. T055 aprueba
-el alcance funcional disponible en su rama y T057 su documentación. I4 sigue
-fuera de `main`; las [tareas](tasks.md) mantienen el estado de entrega y PR.
-I5 y publicación conservan sus gates.
+el alcance funcional y T057 su documentación, integrados mediante PR #27.
+I5 consolida ese estado con aprobación funcional T062; las [tareas](tasks.md)
+mantienen el estado de entrega y PR. Publicación conserva el gate T071.
 
 ## Incrementos previstos
 
@@ -121,9 +121,9 @@ fragmentar TDD ni reescribir historial. El PR usó `Refs #18` y `Refs #22` y no
 cerró las features ni distribuyó builds. Las dos ramas superadas se eliminaron
 tras verificar su integración. I2 se integró mediante el
 [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`) e I3 mediante
-[PR #26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`); I4 continúa
-en su propia rama desde ese `main`. Los siguientes incrementos conservan ese
-flujo tras integrar el PR anterior.
+[PR #26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`); I4 mediante
+[PR #27](https://github.com/Juanpvivas/demons/pull/27) (`cffb2ec`). I5 parte
+de ese `main` actualizado, sin cambiar gameplay ni recursos.
 
 | Incremento | Resultado y rama propuesta | TDD y gate de destinos propio, antes de QA/docs |
 |---|---|---|
@@ -184,10 +184,11 @@ tests/unit/{systems,levels,units,enemies,ui}/
 
 [Research](research.md), modelo, contrato y [quickstart](quickstart.md) resuelven
 el diseño sin volcar registros. C4–C6 resueltos. I1 e I2 están integrados
-mediante los PR #24 y #25; I3 mediante PR #26. I4 tiene aprobación funcional
-para integración en su rama y documentación revisada en T057, todavía fuera
-de `main`. Consultar las [tareas](tasks.md) para el estado de entrega y PR.
-I5 y T071 permanecen pendientes.
+mediante los PR #24 y #25; I3 mediante PR #26 e I4 mediante PR #27. I5 consolida
+el alcance funcional integrado con aprobación T062 y conserva los límites
+de los entornos verificados, sin acreditar una victoria manual de producción
+ni nuevas mediciones de rendimiento. Consultar las [tareas](tasks.md) para
+el estado de entrega y PR. T071 permanece pendiente.
 
 ## Complexity Tracking
 

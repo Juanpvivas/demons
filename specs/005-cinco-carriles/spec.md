@@ -3,7 +3,7 @@
 **Feature ID**: `005-cinco-carriles`
 **Planned Branch**: `codex/005-cinco-carriles-preparacion`
 **Created**: 2026-10-19
-**Status**: Preparación aprobada. I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 integrado en `main` mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 integrado en `main` mediante [PR #26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`). I4 aprobado para integración en `codex/005-i4-presentacion`, con documentación revisada y todavía fuera de `main`; consultar [tareas](tasks.md) para el estado de entrega y PR. I5 y publicación T071 pendientes.
+**Status**: Preparación aprobada. I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 integrado mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`), I3 mediante [PR #26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`) e I4 mediante [PR #27](https://github.com/Juanpvivas/demons/pull/27) (`cffb2ec`). I5 consolida el alcance funcional verificado con APROBADO PARA INTEGRACIÓN T062; consultar [tareas](tasks.md) para el estado de entrega y PR. Publicación T071/SC-007 y cierre completo de la feature pendientes.
 
 **Input**: Cinco filas horizontales, con cinco trincheras a la izquierda,
 soldados colombianos disparando hacia la derecha desde ellas y enemigos de
@@ -16,18 +16,16 @@ I2/004 conservado en `f90e888`, sin aprobar entonces su cierre. La transición
 autorizada integró 004-I2 y 005-I1 mediante el
 [PR #24](https://github.com/Juanpvivas/demons/pull/24), conservando pendientes
 y sus IDs. Las ramas superadas se eliminaron tras comprobar su integración;
-I2 de 005 se integró mediante el PR #25 e I3 mediante el PR #26; I4 parte
-de ese `main` actualizado en su propia rama.
-Este spec abarca también comportamientos posteriores aún no implementados;
-las tareas y QA distinguen el alcance de cada entrega.
+I2 de 005 se integró mediante el PR #25, I3 mediante el PR #26 e I4 mediante
+el PR #27. La consolidación I5 revisa ese estado integrado; las tareas y QA
+distinguen el alcance funcional aprobado de la publicación pendiente.
 
 I2 integrado aporta salida/espera/contacto de machete y liberación de origen
 al morir. I3 añade selección por dueño vivo, HUD mínimo, recarga con carga cero
 y cobro único, y regreso físico vulnerable a `return_speed=40`, sin ofensiva
 hasta llegar a HOME. I4 añade composición y poses laterales observadoras,
-con aprobación para integración y documentación revisada en su rama, todavía
-fuera de `main`. Las [tareas](tasks.md) mantienen el estado de entrega y PR;
-publicación sigue pendiente.
+integradas mediante PR #27. Las [tareas](tasks.md) mantienen el estado de
+entrega y PR; publicación sigue pendiente.
 
 ## Clarifications
 
@@ -305,15 +303,14 @@ cada gesto válido o rechazado, incluida la salida y derrota del dueño de una p
 
 - La [imagen aprobada](references/visual-reference.md) fija dirección visual,
   no costos, HUD final, balance o recursos artísticos terminados.
-- Dimensiones y distancias se fijarán expresamente al planificar, sin alterar
+- Dimensiones y distancias se definen en el plan, sin alterar
   los stats vigentes por deducción ni tomar números de la imagen. La velocidad
   propia de 40 unidades/s se toma de la decisión humana, no de la imagen.
 - Se reutilizan soldado/enemigo actuales y economía, sin roster nuevo,
   selección manual de objetivos o movimiento entre filas no autorizado.
 - Se incorpora el control mínimo confirmado de selección de trinchera y botón
-  «Recargar», con munición/moral del soldado individual. Actualmente solo
-  existe la operación de recarga, sin ese control integrado en el nivel;
-  la selección no modifica recursos y la imagen no autoriza un HUD completo.
+  «Recargar», con munición/moral del soldado individual, integrado desde I3.
+  La selección no modifica recursos y la imagen no autoriza un HUD completo.
 - La dependencia 004-I2, cuyo punto de partida fue `f90e888`, está integrada
   con 005-I1 en `main` desde PR #24 (`658dd7e`); su antigua rama ya se eliminó.
   Se conservan IDs, aprobaciones e historia de 004 y sus pendientes de

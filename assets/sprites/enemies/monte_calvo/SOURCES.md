@@ -20,8 +20,10 @@ El presentador mantiene avance por desplazamiento real, contacto al bloquearse,
 impacto confirmado y caída independiente. Los frames son recursos compartidos
 de solo lectura, sin callbacks, daño, economía o geometría jugable.
 
-Los atlas laterales de 005-I4 cuentan con aprobación funcional para integración
-T055 en `codex/005-i4-presentacion`; aún no están integrados en `main`.
+Los atlas laterales de 005-I4, aprobados funcionalmente en T055, están
+integrados en `main` mediante [PR #27](https://github.com/Juanpvivas/demons/pull/27).
+La publicación sigue pendiente; las [tareas de 005](../../../../specs/005-cinco-carriles/tasks.md)
+mantienen el estado de entrega y PR.
 Los PNG conservan los píxeles y el alfa de la salida seleccionada, sin recorte,
 repintado o empaquetado por scripts. Importación lossless, límite de lado 1024,
 corrección de borde alfa y sin mipmaps; filtro lineal y sin repetición locales.

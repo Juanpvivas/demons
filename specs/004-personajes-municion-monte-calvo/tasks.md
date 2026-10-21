@@ -1,10 +1,10 @@
 # Tasks: Personajes y munición de Monte Calvo
 
-**Estado**: I1 y corrección UX T031–T038 aprobados e integrados en `main`. I2 y su documentación aprobados para integración conjunta con 005-I1 en el PR #24, en borrador y pendiente de integración humana. I3 y publicación T039 pendientes.
-**PR conjunto de integración**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; aprobación para integración, publicación pendiente.
+**Estado**: I1 y corrección UX T031–T038 aprobados e integrados en `main`. I2 y su documentación integrados junto con 005-I1 mediante el PR #24 (`658dd7e`). I3 y publicación T039 pendientes.
+**PR conjunto integrado**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; publicación pendiente.
 **Issue**: [#18](https://github.com/Juanpvivas/demons/issues/18).
 **Incremento de esta entrega**: I2 / US2, enemigo, contacto y reutilización (T014–T022), sin iniciar I3.
-**Execution Branch**: `codex/005-i1-tablero` para transición conjunta autorizada 004-I2 + 005-I1, contra `main` en `2dc532d`; rama histórica 004 conservada hasta integrar.
+**Rama histórica de integración**: `codex/005-i1-tablero` para transición conjunta autorizada 004-I2 + 005-I1, contra `main` en `2dc532d`; contenido integrado mediante PR #24.
 **Base del PR funcional**: `main`, con I1 del [PR #20](https://github.com/Juanpvivas/demons/pull/20)
 y la preparación del [PR #19](https://github.com/Juanpvivas/demons/pull/19) ya integrados;
 la transición reúne el código ya contenido con 005-I1. El historial y las

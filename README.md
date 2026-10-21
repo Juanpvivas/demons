@@ -57,16 +57,19 @@ conserva salud/moral y devuelve al soldado físicamente a 40 unidades/s,
 vulnerable y sin atacar hasta llegar. El HUD muestra el regreso y bloquea
 órdenes duplicadas.
 
-005-I4 cuenta con aprobación funcional para integración en
-`codex/005-i4-presentacion`, con documentación revisada. El estado de entrega
-y PR se mantiene en las [tareas de 005](specs/005-cinco-carriles/tasks.md).
+005-I4 está integrado en `main` mediante el
+[PR #27](https://github.com/Juanpvivas/demons/pull/27) (`cffb2ec`).
 Añade cinco trincheras con parapetos y personajes laterales: fusil dentro,
 marcha/espera con machete, golpe, regreso con fusil bajo y caída orientada.
 Las poses observan acciones reales y conservan la geometría y las reglas.
-I4 todavía no está integrado en `main`; la consolidación I5 queda pendiente.
+La consolidación I5 verifica el alcance funcional integrado, con aprobación
+independiente para integración; el estado de entrega y PR se mantiene en las
+[tareas de 005](specs/005-cinco-carriles/tasks.md).
 La caja amarilla sigue pendiente de 004-I3. Las features 004/005 y la publicación
 permanecen abiertas: esta integración no acredita 60 FPS físicos, renderer
-Mobile, hardware ni empaquetado final.
+Mobile, hardware ni empaquetado final. Android software mostró una regresión;
+iOS software conserva rendimiento muy limitado.
+[Alcance y límites](docs/SPEC.md#8-arte-y-estilo-visual).
 
 La feature `001-soldado-defensor-oleadas` (`specs/001-soldado-defensor-oleadas/`)
 está completa: un soldado defensor automático que dispara con fusil mientras
@@ -185,13 +188,14 @@ versión se mantienen también en los despachos manuales, sin bypass.
   de `PROVISIONING_PROFILE_SPECIFIER` en el workflow, si cambia el nombre
   del perfil).
 
-**Antes de mergear a `main`, subí la versión**: ambos workflows de arriba
-fallan a propósito (paso "Verificar que la versión ... cambió desde el
+**Antes de una distribución autorizada, subí la versión**: ambos workflows
+de arriba fallan a propósito (paso "Verificar que la versión ... cambió desde el
 último deploy exitoso") si `export_presets.cfg` no tiene un bump de
 `version/code`/`version/name` (Android) o
 `application/version`/`application/short_version` (iOS) desde el último
 deploy exitoso — no está permitido re-subir el mismo build sin cambiar la
-versión. Ver `docs/ARCHITECTURE.md` §7 para el detalle de la política.
+versión. Un merge de integración no exige ese bump ni autoriza distribuir.
+Ver `docs/ARCHITECTURE.md` §7 para el detalle de la política.
 
 ## Pipeline de desarrollo
 

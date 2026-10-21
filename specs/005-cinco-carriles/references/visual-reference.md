@@ -25,13 +25,12 @@ El único control añadido por esas decisiones es seleccionar la trinchera y
 pulsar «Recargar», mostrando munición y moral individuales del soldado.
 
 No se integrará el concepto entero con actores y controles incrustados como
-sustituto del juego. I4 prepara atlas laterales de soldado/enemigo y dos piezas
-de trinchera
-separadas del terreno, con aprobación funcional para integración T055 en su
-rama. La procedencia y el encaje están en los catálogos de
+sustituto del juego. I4 incorpora atlas laterales de soldado/enemigo y dos piezas
+de trinchera separadas del terreno, aprobados funcionalmente en T055 e
+integrados en `main` mediante [PR #27](https://github.com/Juanpvivas/demons/pull/27).
+La procedencia y el encaje están en los catálogos de
 [soldado](../../../assets/sprites/units/monte_calvo/SOURCES.md),
 [enemigo](../../../assets/sprites/enemies/monte_calvo/SOURCES.md) y
-[entorno](../../../assets/sprites/levels/monte_calvo/SOURCES.md). La
-documentación está revisada y el estado de entrega y PR se mantiene en las
-[tareas](../tasks.md). I4 sigue fuera de `main`; publicación y HUD final
+[entorno](../../../assets/sprites/levels/monte_calvo/SOURCES.md). El estado de
+entrega y PR se mantiene en las [tareas](../tasks.md). Publicación y HUD final
 conservan su alcance pendiente.
