@@ -76,7 +76,7 @@ func compare_runs(base: Dictionary, candidate: Dictionary) -> Dictionary:
 		if not _serializable(run):
 			_error(errors, "valid: report contains unsupported values")
 			continue
-		if run.get("valid") != true or not run.get("errors") is Array or not run.get("errors", []).is_empty():
+		if not _same_value(run.get("valid"), true) or not run.get("errors") is Array or not run.get("errors", []).is_empty():
 			_error(errors, "valid: comparison requires valid runs")
 		_validate_config(run, errors)
 		var initial: Dictionary = _dictionary(run.get("initial_snapshot"))
@@ -86,14 +86,15 @@ func compare_runs(base: Dictionary, candidate: Dictionary) -> Dictionary:
 		_validate_snapshot(run, initial, "initial", initial_at, true, errors)
 		var series: Array = run.get("frame_intervals_usec", []) if run.get("frame_intervals_usec", []) is Array else []
 		var duration: int = _validate_intervals(series, run.get("window_usec", 0), errors)
+		_validate_frame_summary(series, run.get("frame_ms"), errors)
 		_validate_snapshot(run, final, "final", initial_at + duration, false, errors)
-		if run.get("sample_count") != series.size() or run.get("duration_usec") != duration:
+		if not _same_value(run.get("sample_count"), series.size()) or not _same_value(run.get("duration_usec"), duration):
 			_error(errors, "sample: report disagrees with original intervals")
 		_compare_cohort(initial, final, true, errors)
 	for key: String in _CONDITIONS:
-		if _observed_value(base, key) != _observed_value(candidate, key):
+		if not _same_value(_observed_value(base, key), _observed_value(candidate, key)):
 			_error(errors, "%s: observed conditions differ between runs" % key)
-	if base.get("window_usec") != candidate.get("window_usec"):
+	if not _same_value(base.get("window_usec"), candidate.get("window_usec")):
 		_error(errors, "window_usec: requested windows differ")
 	_compare_cohort(_dictionary(base.get("initial_snapshot")), _dictionary(candidate.get("initial_snapshot")), false, errors)
 	return {"valid": errors.is_empty(), "errors": errors}
@@ -118,7 +119,7 @@ func _validate_snapshot(config: Dictionary, snapshot: Dictionary, phase: String,
 	var observation := _dictionary(snapshot.get("observation"))
 	for key: String in ["run_id", "phase"]:
 		var expected: Variant = config.get("run_id") if key == "run_id" else phase
-		if not observation.has(key) or observation[key] != expected:
+		if not observation.has(key) or not _same_value(observation[key], expected):
 			_error(errors, "%s: wrong %s observation" % [key, phase])
 	var at: Variant = observation.get("at_usec")
 	if not at is int or at < 0 or (at != boundary if exact_time else at < boundary):
@@ -127,15 +128,15 @@ func _validate_snapshot(config: Dictionary, snapshot: Dictionary, phase: String,
 	var observed := _dictionary(observation.get("conditions"))
 	for key: String in _CONDITIONS:
 		var reading := _dictionary(observed.get(key))
-		if reading.get("availability") != "observed" or not _source_present(reading.get("source")) \
+		if not _same_value(reading.get("availability"), "observed") or not _source_present(reading.get("source")) \
 				or not reading.has("value") or not expected_conditions.has(key) \
-				or reading.get("value") != expected_conditions.get(key):
+				or not _same_value(reading.get("value"), expected_conditions.get(key)):
 			_error(errors, "%s: invalid %s observation" % [key, phase])
 	var counts := _dictionary(snapshot.get("counts"))
 	_validate_counts(counts, errors)
 	var expected_counts := _dictionary(config.get("expected_counts"))
 	for key: String in _COUNTS:
-		if counts.get(key) != expected_counts.get(key):
+		if not _same_value(counts.get(key), expected_counts.get(key)):
 			_error(errors, "%s: count differs from independent oracle" % key)
 	_validate_entities(snapshot, errors)
 
@@ -181,7 +182,7 @@ func _validate_entities(snapshot: Dictionary, errors: Array[String]) -> void:
 				_error(errors, "cohort.%s: applicable value missing" % field)
 		if not ["soldier", "enemy", "pickup"].has(kind):
 			_error(errors, "cohort.type: unknown actor")
-		elif entity.get("state") == "queued":
+		elif _same_value(entity.get("state"), "queued"):
 			counts["queued"] += 1
 		elif kind == "enemy":
 			if not ["active", "inactive"].has(entity.get("state")):
@@ -191,7 +192,7 @@ func _validate_entities(snapshot: Dictionary, errors: Array[String]) -> void:
 		else:
 			counts["soldiers" if kind == "soldier" else "pickups"] += 1
 	for key: String in _COUNTS:
-		if counts[key] != _dictionary(snapshot.get("counts")).get(key):
+		if not _same_value(counts[key], _dictionary(snapshot.get("counts")).get(key)):
 			_error(errors, "%s: inventory disagrees with count" % key)
 
 
@@ -209,9 +210,9 @@ func _compare_cohort(initial: Dictionary, final: Dictionary, identity: bool, err
 		for field: Variant in a.keys() + b.keys():
 			if not identity and field in ["instance_id", "activation"]:
 				continue
-			if not a.has(field) or not b.has(field) or a[field] != b[field]:
+			if not a.has(field) or not b.has(field) or not _same_value(a[field], b[field]):
 				_error(errors, "cohort.%s: value changed for %s" % [field, key])
-	if initial.get("counts") != final.get("counts"):
+	if not _same_value(initial.get("counts"), final.get("counts")):
 		_error(errors, "cohort: counts differ")
 
 
@@ -245,8 +246,25 @@ func _validate_intervals(series: Array, window: Variant, errors: Array[String]) 
 	return total
 
 
-func _frame_stats(series: Array[int]) -> Dictionary:
-	var ordered: Array[int] = series.duplicate()
+func _validate_frame_summary(series: Array, summary: Variant, errors: Array[String]) -> void:
+	if not summary is Dictionary:
+		_error(errors, "frame_ms: complete summary required")
+		return
+	if series.size() < 2:
+		return
+	for interval: Variant in series:
+		if not interval is int or interval <= 0:
+			return # La serie inválida ya tiene su motivo en _validate_intervals.
+	var calculated := _frame_stats(series)
+	for key: String in calculated:
+		var metric: Variant = summary.get(key)
+		# Tolerancia relativa estándar de Godot para el transporte decimal JSON.
+		if not (metric is int or metric is float) or not is_equal_approx(float(metric), float(calculated[key])):
+			_error(errors, "frame_ms.%s: summary disagrees with original intervals" % key)
+
+
+func _frame_stats(series: Array) -> Dictionary:
+	var ordered: Array = series.duplicate()
 	ordered.sort()
 	var total: int = 0
 	for interval: int in ordered:
@@ -295,6 +313,30 @@ func _source_present(value: Variant) -> bool:
 
 func _dictionary(value: Variant) -> Dictionary:
 	return value if value is Dictionary else {}
+
+
+func _same_value(a: Variant, b: Variant, depth: int = 0) -> bool:
+	if depth > 64:
+		return false
+	if (a is int or a is float) and (b is int or b is float):
+		return a == b
+	if typeof(a) != typeof(b):
+		return false
+	if a is Dictionary:
+		if a.size() != b.size():
+			return false
+		for key: Variant in a:
+			if not b.has(key) or not _same_value(a[key], b[key], depth + 1):
+				return false
+		return true
+	if a is Array:
+		if a.size() != b.size():
+			return false
+		for index: int in a.size():
+			if not _same_value(a[index], b[index], depth + 1):
+				return false
+		return true
+	return a == b
 
 
 func _copy_input(value: Dictionary, key: String, errors: Array[String]) -> Dictionary:
