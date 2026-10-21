@@ -69,6 +69,22 @@ func test_real_post_physics_displacement_drives_advance() -> void:
 	assert_eq(enemy.get_node("AnimatedSprite2D").animation, &"advance")
 	assert_eq(enemy.stats.move_speed, 120.0)
 
+
+## 005/T048: cobertura adicional ya implementada; no se atribuye RED retroactivo.
+func test_i4_lateral_enemy_snapshot_keeps_neutral_authored_geometry_and_material() -> void:
+	var enemy := _enemy()
+	var visual: EnemigoVisual = enemy.get_node("AnimatedSprite2D")
+	await wait_physics_frames(3)
+	enemy.take_damage(1)
+	visual.scale *= 1.1
+	var snapshot := visual.capture_defeat_snapshot(enemy.global_position)
+	assert_eq(snapshot.world_position, enemy.global_position)
+	assert_eq(snapshot.visual_scale, Vector2(0.75, 0.80))
+	assert_eq(snapshot.visual_offset, Vector2(0, -3))
+	assert_false(snapshot.flip_h)
+	assert_null(snapshot.visual_material)
+	assert_false(snapshot.has("modulate"))
+
 func test_real_soldier_blocks_enemy_and_stops_advance_despite_desired_velocity() -> void:
 	_soldier()
 	var enemy := _enemy(Vector2(194, 336))
