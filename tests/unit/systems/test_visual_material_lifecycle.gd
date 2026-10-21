@@ -37,7 +37,6 @@ func test_snapshot_keeps_authored_style_and_neutral_transform_during_hit_and_mor
 	var visual := _visual(style)
 	visual.play_confirmed_hit()
 	visual.play_confirmed_morale()
-	await wait_seconds(0.04)
 	assert_ne(visual.modulate, Color.WHITE, "Control: impacto transitorio activo")
 	assert_gt(visual.scale.x, 0.5, "Control: pulso transitorio activo")
 	var snapshot := visual.capture_defeat_snapshot(Vector2(320, 240))
