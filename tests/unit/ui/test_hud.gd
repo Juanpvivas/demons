@@ -388,6 +388,33 @@ func _reload_button() -> Button:
 	return null
 
 
+## 005/T048: geometría utilizable; no certifica tipografía/arte ni toque de SO.
+func test_i4_selected_hud_stays_contained_after_each_supported_resize() -> void:
+	var viewport := SubViewport.new()
+	viewport.size = Vector2i(1152, 648)
+	viewport.world_2d = World2D.new()
+	add_child_autofree(viewport)
+	var soldier := preload("res://scenes/units/Soldado.tscn").instantiate() as Soldado
+	viewport.add_child(soldier)
+	_hud = load(HUD_SCENE_PATH).instantiate()
+	viewport.add_child(_hud)
+	_hud.set_selected_soldier(soldier)
+	for size: Vector2i in [Vector2i(960, 540), Vector2i(1440, 648), Vector2i(1152, 864), Vector2i(1152, 648)]:
+		viewport.size = size
+		await wait_process_frames(3)
+		var bounds := Rect2(Vector2.ZERO, Vector2(size))
+		var button := _reload_button()
+		assert_not_null(button)
+		if button == null:
+			continue
+		assert_true(bounds.encloses(button.get_global_rect()), "Recargar visible tras resize " + str(size))
+		assert_gte(button.size.y, 48.0, "Área de gesto conserva tamaño útil")
+		for label: Label in [_hud._selection_label, _hud._individual_ammo_label, _hud._morale_label]:
+			assert_true(bounds.encloses(label.get_global_rect()), "Lectura individual dentro de vista")
+			assert_false(button.get_global_rect().intersects(label.get_global_rect()), "Botón no tapa datos individuales")
+		assert_false(button.get_global_rect().intersects(_hud._ammo_label.get_global_rect()), "Reserva y control independientes")
+
+
 func _individual_labels() -> String:
 	# El panel de selección se identifica por su función, sin imponer un nombre exacto.
 	for panel: Node in _hud.find_children("*", "Control", true, false):

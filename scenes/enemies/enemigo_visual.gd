@@ -31,6 +31,7 @@ func reset_visual() -> void:
 	_play_pose(&"contact")
 
 
+## Recibe desplazamiento físico confirmado; la velocidad deseada no basta.
 func observe_displacement(displacement: Vector2) -> void:
 	if not _alive:
 		return

@@ -1,5 +1,43 @@
 # Soldado de Monte Calvo — procedencia y uso
 
+## 005-I4 — Arte lateral (2026-10-20)
+
+`soldado_lateral_atlas.png` se generó con OpenAI `image_gen`, usando el
+[concepto horizontal aprobado](../../../../specs/005-cinco-carriles/references/visual-reference.md)
+como referencia de estilo. Contiene 16 poses nuevas hacia +X. El regreso
+refleja sus cuatro pasos de fusil bajo hacia −X durante la partida.
+
+| Recurso/encaje | Valor |
+|---|---|
+| Original RGBA → textura importada | 1411×1115 → 1024×809; ≈3,16 MiB |
+| Frames | `soldado_lateral_frames.tres`; lienzo lógico 384×288, apoyo (192,264) |
+| Hijo visual | Escala 0,3936942; offset (0,−59,038979); altura neutra ≈72; pies raíz+y24 |
+| Poses quietas/ataques | `rifle_idle`, `rifle_shot` (0,16 s), `melee_idle`, `melee_attack` (0,24 s) |
+| Desplazamiento | `melee_march` y `returning`, 4 pasos/0,60 s cada uno; `returning_idle`, 1 pose |
+| Caída | `defeat`, 4 poses/0,40 s |
+
+Los cambios de escala/offset afectan sólo al hijo visual; el cuerpo conserva
+48×48. Los frames compartidos son de solo lectura y no contienen callbacks,
+daño, economía o geometría jugable. La marcha exige desplazamiento confirmado;
+un regreso bloqueado conserva fusil bajo sin pasos. El snapshot guarda la
+orientación actual de caída y el reset recupera la orientación autorada.
+
+Los atlas laterales de 005-I4 cuentan con aprobación funcional para integración
+T055 en `codex/005-i4-presentacion`; aún no están integrados en `main`.
+Los PNG conservan los píxeles y el alfa de la salida seleccionada, sin recorte,
+repintado o empaquetado por scripts. Importación lossless, límite de lado 1024,
+corrección de borde alfa y sin mipmaps; filtro lineal y sin repetición locales.
+Las regiones se miden por silueta en la textura importada, sin suponer grilla.
+La memoria indicada es estimación RGBA8, no VRAM medida. La procedencia y las
+condiciones de uso del arte generado descritas abajo siguen vigentes.
+
+Prompt final (generación):
+
+> Use case: historical-scene. Production transparent sprite atlas for the 2D game Demonios de las Trincheras. Input image is approved style/composition reference ONLY. Create NEW isolated Colombian infantryman sprites, exactly 4 columns by 4 rows, 16 complete figures, evenly spaced with ample transparent gutters. Same character/proportions/height throughout. Olive fatigues, worn steel helmet, brown boots and small pack, wooden-stock rifle, broad utilitarian machete. Side view with a slight elevated three-quarter perspective, ALL figures face RIGHT (+X), head and gun profile clearly facing right. Matte hand-painted textured 2D illustration, restrained military palette and diffuse daylight, crisp readable silhouette at 72 pixels tall; not glossy 3D, not pixel art. Row1 left to right: rifle ready standing and aiming horizontally right; confirmed rifle shot slight shoulder recoil no muzzle flash; machete idle rifle stowed; machete clear forward chopping strike rifle stowed. Row2: four consecutive walking steps toward right WITH MACHETE in hand and rifle stowed, alternating legs. Row3: four consecutive walking steps toward right WITH RIFLE LOWERED nonoffensive, machete stowed, barrel pointed down; these poses will be mirrored at runtime for return journey. Row4: four consecutive calm non-graphic defeat poses facing right: knees buckle, kneeling slump, collapse onto right side, fully lying still; rifle stays with character. Stable standing ground baseline within each grid cell; complete head-to-boots figures and entire weapons visible, no overlap between cells. Genuine transparent alpha in ALL empty space, no ground shadow. No scenery, trench, UI, text, labels, gridlines, blood, insignia, flags, fire, projectiles, particles, checkerboard or watermark. Do not copy HUD or characters from reference; match painterly material finish and readable side-on composition.
+
+
+## Antecedente de 004 — atlas anterior
+
 Creado el 2026-10-16 para T004 de `004-personajes-municion-monte-calvo`
 mediante la herramienta nativa `image_gen` de Codex. La referencia de estilo es
 `specs/002-monte-calvo-terreno-trincheras/references/monte-calvo-concept.png`,

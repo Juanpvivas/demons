@@ -3,7 +3,7 @@
 **Feature ID**: `005-cinco-carriles`
 **Planned Branch**: `codex/005-cinco-carriles-preparacion`
 **Created**: 2026-10-19
-**Status**: Preparación aprobada. I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 integrado en `main` mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 implementado en `codex/005-i3-recarga` y aprobado funcionalmente para integración en T042; documentación T043/T044 y PR en borrador T045 en consolidación, todavía fuera de `main`. I4–I5 y publicación T071 pendientes.
+**Status**: Preparación aprobada. I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 integrado en `main` mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`). I3 integrado en `main` mediante [PR #26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`). I4 aprobado para integración en `codex/005-i4-presentacion`, con documentación revisada y todavía fuera de `main`; consultar [tareas](tasks.md) para el estado de entrega y PR. I5 y publicación T071 pendientes.
 
 **Input**: Cinco filas horizontales, con cinco trincheras a la izquierda,
 soldados colombianos disparando hacia la derecha desde ellas y enemigos de
@@ -16,16 +16,18 @@ I2/004 conservado en `f90e888`, sin aprobar entonces su cierre. La transición
 autorizada integró 004-I2 y 005-I1 mediante el
 [PR #24](https://github.com/Juanpvivas/demons/pull/24), conservando pendientes
 y sus IDs. Las ramas superadas se eliminaron tras comprobar su integración;
-I2 de 005 se integró mediante el PR #25; I3 parte de ese `main` actualizado
-en su propia rama.
+I2 de 005 se integró mediante el PR #25 e I3 mediante el PR #26; I4 parte
+de ese `main` actualizado en su propia rama.
 Este spec abarca también comportamientos posteriores aún no implementados;
 las tareas y QA distinguen el alcance de cada entrega.
 
 I2 integrado aporta salida/espera/contacto de machete y liberación de origen
 al morir. I3 añade selección por dueño vivo, HUD mínimo, recarga con carga cero
 y cobro único, y regreso físico vulnerable a `return_speed=40`, sin ofensiva
-hasta llegar a HOME. T042 aprueba su integración funcional en la rama;
-consolidación documental y PR siguen pendientes, sin aprobar publicación.
+hasta llegar a HOME. I4 añade composición y poses laterales observadoras,
+con aprobación para integración y documentación revisada en su rama, todavía
+fuera de `main`. Las [tareas](tasks.md) mantienen el estado de entrega y PR;
+publicación sigue pendiente.
 
 ## Clarifications
 
@@ -59,8 +61,8 @@ El botón introduce una orden con costo observable: una recarga aceptada cobra
 una vez el costo equivalente al despliegue; una orden inválida o repetida
 durante el retorno no cobra. Durante el regreso el soldado ya está recargado:
 no usa fusil ni machete, sigue vulnerable al contacto/daño y reanuda el fusil
-solo al llegar a su trinchera. Estas reglas describen requisitos futuros,
-no una implementación o validación ya entregada.
+solo al llegar a su trinchera. Estas reglas conservan su carácter de contrato;
+el estado de cada incremento se distingue al inicio y en las tareas.
 
 ## User Scenarios & Testing *(mandatory)*
 

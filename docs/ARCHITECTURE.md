@@ -437,7 +437,7 @@ tinte, escala y callbacks pertenecen a cada instancia.
 
 Antes de las señales que retiran al actor, este captura un snapshot neutro por
 valor y emite `defeat_visual_requested(snapshot: Dictionary)` una sola vez.
-Incluye posición, frames, animación, escala/offset, flips, z y material autorados, sin
+Incluye posición, frames, animación, escala/offset, flips, z y material, sin
 tinte/pulso transitorio, referencia al actor o callbacks jugables. Los valores
 mutables se copian; los recursos de arte inmutables pueden compartirse. La
 ausencia de listener o de recursos visuales nunca impide la muerte jugable.
@@ -477,7 +477,18 @@ los objetivos del soldado validan identidad/generación además de geometría.
 La recompensa conserva el contexto anterior aunque se reutilice el nodo dentro
 de una señal síncrona. `ObjectPool` conserva su API genérica.
 
-La caja de 004-I3 y las poses laterales de 005-I4 continúan pendientes.
+005-I4, aprobado para integración en T055 y aún en su rama, extiende el
+presentador del soldado con `observe_motion(movement_state, displacement)`.
+El actor informa después del movimiento físico: sólo el desplazamiento real
+activa `melee_march`; un bloqueo conserva `melee_idle`. `RETURNING` elige
+`returning` o `returning_idle`, refleja el sprite hacia −X y cancela ataques
+incompatibles. No decide la llegada ni mueve al actor. Repetir una pose ya
+activa no reinicia su progreso. El snapshot captura los flips actuales para
+que una baja durante el retorno caiga en esa dirección; escala, offset y
+material mantienen sus valores autorados neutros. Reset restaura también
+rotación y velocidad de reproducción, limpia frame/progreso e invalida
+callbacks anteriores. Los atlas/frames laterales sustituyen los de producción
+y conservan los originales históricos. La caja de 004-I3 sigue pendiente.
 El [contrato de 004](../specs/004-personajes-municion-monte-calvo/contracts/visual-presentation.md)
 delimita los tiempos y la frontera jugable.
 
@@ -547,7 +558,8 @@ delimita los tiempos y la frontera jugable.
   callback mató al actor o terminó el juego. Desde fuera entra en `RETURNING`;
   desde el hogar pasa a `HOME`/fusil sin viaje. Muerte y terminal detienen
   ofensiva/movimiento y nuevas órdenes; la muerte libera el hogar de inmediato.
-  Poses laterales y acabado de interfaz siguen pendientes de I4.
+  I4 añade poses laterales observadoras; conserva cámara, HUD y mapping
+  existentes. El acabado general de interfaz sigue pendiente.
 
 ### 5.1 Entorno decorativo separado del nivel
 
@@ -556,13 +568,13 @@ modificarla sin alterar la geometría, el input o la lógica del nivel.
 `MonteCalvoVisual.tscn`, aprobada en `002-monte-calvo-terreno-trincheras`,
 concreta este patrón con una raíz `Node2D` de transformación identidad y
 `z_index=-10`. Sus grupos `Suelo`, `FondoMontanas`, `Bordes` y `Trincheras`
-usan z relativo 0–3: el entorno completo queda en z efectivo −10…−7,
-por detrás de los actores y pickups.
+usan originalmente z relativo 0–3, con z efectivo −10…−7 detrás de actores
+y pickups. I4 añade las capas de trinchera lateral descritas abajo.
 
 La escena contiene únicamente composición estática de `Node2D` y `Sprite2D`:
 una hoja de terreno sin repetición, montañas con alfa, un cielo de
 `GradientTexture2D` y piezas de trincheras/bordes que comparten seis regiones
-`AtlasTexture`. Los tres PNG y sus `.import` viven en
+`AtlasTexture`. Los tres PNG originales y sus `.import` viven en
 `assets/sprites/levels/monte_calvo/`; se versionan los originales y ajustes,
 con importación lossless, corrección del borde alfa y sin mipmaps en esta
 iteración. `.godot/` sigue siendo caché regenerable. La [procedencia y regiones](../assets/sprites/levels/monte_calvo/SOURCES.md)
@@ -582,8 +594,14 @@ ocupación/liberación y la whitelist vive en la composición del nivel. 005-I1
 oculta sólo la instancia de las trincheras inferiores antiguas y añade
 `LaneBoardVisual` como guía provisional de cinco bandas/plazas numeradas,
 sin input, física, economía ni autoridad sobre esas plazas. La subescena
-ambiental se conserva; las trincheras y poses laterales definitivas son 005-I4.
-No se migró `TileMap` ni cambió `canvas_items`/`expand`.
+ambiental se conserva. I4 retira los recuadros de plaza y conserva bandas
+discretas y números de fila. `TrincherasLaterales` añade cinco
+pares de sprites centrados en x=144, separados 96 unidades según los hogares:
+posterior en hogar+y4, escala 0,1561 y z relativo 6 (efectivo −4); parapeto
+en hogar+y21, escala 0,12 y z relativo 11 (efectivo +1). El primero queda
+detrás del actor y el segundo oculta parcialmente sus piernas. Dos
+`AtlasTexture` con recorte de filtro comparten `trinchera_lateral_atlas.png`.
+No se migró `TileMap` ni cambió `canvas_items`/`expand`, la whitelist o la física.
 La [comparación de US3](../specs/002-monte-calvo-terreno-trincheras/evidence/us3.md)
 y la [matriz de pantallas/entrada](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
 registran los encuadres comprobados y el recorte inferior existente.
@@ -821,3 +839,4 @@ sección, sin exigir navegador móvil ni convertirlo en prueba de app instalada.
 | 2026-10-19 | 005/T015 y 004/T021: geometría de nivel en Resource, cinco actores creados por partida, orientación horizontal y cursor/origen del pool; presentación enemiga observadora con reset por activación, cámara centrada en ambos ejes y arte/controles/publicación delimitados |
 | 2026-10-20 | 005/T029 tras QA T028: evolución a dos cuerpos móviles, consultas físicas por tick y hogar estable; estados/velocidades propios y recarga heredada delimitados frente a I3. Se gradúa validar referencias antes de operaciones tipadas y después elegibilidad/activación, conservando el hallazgo histórico de overlaps. |
 | 2026-10-20 | 005/T043 tras QA T042: RETURNING físico separado del arma y HUD observador; se gradúan intención con identidad, revalidación de autoridad y guard antes de callbacks síncronos, sin framework nuevo. |
+| 2026-10-20 | 005/T056 tras QA T055: extensión del patrón observador con movimiento real, retorno y flips actuales de caída; reset de reproducción y composición estática de cinco trincheras por capas. I4 aprobado en rama, publicación pendiente. |

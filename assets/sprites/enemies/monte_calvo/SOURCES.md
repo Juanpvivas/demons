@@ -1,5 +1,41 @@
 # Enemigo de Monte Calvo — procedencia y uso
 
+## 005-I4 — Arte lateral (2026-10-20)
+
+`enemigo_lateral_atlas.png` se generó con OpenAI `image_gen`, usando el
+[concepto horizontal aprobado](../../../../specs/005-cinco-carriles/references/visual-reference.md)
+y el atlas lateral colombiano propio como referencias de acabado, sin editarlos.
+Contiene ocho poses nuevas hacia −X, con gorra y uniforme gris/marrón para
+conservar la distinción respecto al colombiano oliva con casco.
+
+| Recurso/encaje | Valor |
+|---|---|
+| Original RGBA → textura importada | 1774×887 → 1024×512; 2 MiB |
+| Frames | `enemigo_lateral_frames.tres`; lienzo lógico 384×288, apoyo (192,264) |
+| Hijo visual | Escala 0,32231105; offset (0,−45,537768); altura neutra ≈72; pies raíz+y24 |
+| Clips | `advance`, 4 pasos/0,60 s; `contact`, 1 pose; `defeat`, 3 poses/0,40 s |
+
+Los cambios de encaje afectan sólo al hijo visual; el cuerpo conserva 48×48.
+El presentador mantiene avance por desplazamiento real, contacto al bloquearse,
+impacto confirmado y caída independiente. Los frames son recursos compartidos
+de solo lectura, sin callbacks, daño, economía o geometría jugable.
+
+Los atlas laterales de 005-I4 cuentan con aprobación funcional para integración
+T055 en `codex/005-i4-presentacion`; aún no están integrados en `main`.
+Los PNG conservan los píxeles y el alfa de la salida seleccionada, sin recorte,
+repintado o empaquetado por scripts. Importación lossless, límite de lado 1024,
+corrección de borde alfa y sin mipmaps; filtro lineal y sin repetición locales.
+Las regiones se miden por silueta en la textura importada, sin suponer grilla.
+La memoria indicada es estimación RGBA8, no VRAM medida. La procedencia y las
+condiciones de uso del arte generado descritas abajo siguen vigentes.
+
+Prompt final (generación):
+
+> Use case: historical-scene. Asset: production transparent sprite atlas for 2D Godot game Demonios de las Trincheras. Reference1 approved Monte Calvo concept for palette/composition only; reference2 new Colombian sprite atlas for EXACT matching painterly finish, scale and elevated side view only. Create NEW enemy infantry character with cool gray-brown padded jacket, charcoal trousers, brown boots and pouches, soft short-brim gray field cap instead of helmet, wooden-stock rifle. Clearly distinct from olive helmeted Colombian. All figures face LEFT (-X), including rifle pointed down-left/across chest. Eight isolated complete poses exactly4columns2rows, ample transparent gutters. Row1 four consecutive walking steps left alternating feet; row2 contact braced standing rifle across chest no strike, defeated knees buckling, lowered to one knee, collapsed and lying completely still on side. Stable standing height/ground baseline within each cell and full weapons visible, no overlaps. Calm respectful human depiction. Matte hand-painted detailed but readable silhouette at72pixels tall, muted fabric/wood/metal, diffuse daylight, matching reference2 crisp edges. Genuine transparent alpha all empty space. No insignia, flags, blood, muzzle flash, projectiles, shadows, terrain, UI, text, labels, gridlines, checkerboard or watermark. Entire figures fully visible, including final lying pose.
+
+
+## Antecedente de 004 — atlas anterior
+
 Creado el 2026-10-17 para T014 de `004-personajes-municion-monte-calvo`
 mediante la herramienta nativa `image_gen` de Codex. La referencia conceptual
 del proyecto, `specs/002-monte-calvo-terreno-trincheras/references/monte-calvo-concept.png`,

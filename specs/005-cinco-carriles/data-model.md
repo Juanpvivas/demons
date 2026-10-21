@@ -2,10 +2,13 @@
 
 Modelo de la feature: I1 y movimiento/contacto I2 integrados en `main`
 mediante los PR #24 y [#25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`).
-I3 está implementado y aprobado funcionalmente para integración en T042,
-en `codex/005-i3-recarga`, pendiente de consolidación documental y PR.
+I3 está integrado mediante [PR #26](https://github.com/Juanpvivas/demons/pull/26)
+(`8c4cab4`). I4 tiene aprobación funcional para integración T055 en
+`codex/005-i4-presentacion`, con documentación revisada y todavía fuera de
+`main`. Las [tareas](tasks.md) mantienen el estado de entrega y PR.
 Selección, transacción de recarga y `RETURNING` corresponden a I3;
-la presentación lateral es I4. Filas internas 0…4; UI 1…5 de arriba abajo.
+I4 añade presentación lateral sin mutar esos datos. Filas internas 0…4;
+UI 1…5 de arriba abajo.
 [Contrato de conducta](contracts/horizontal-combat.md).
 
 ## Configuración compartida de solo lectura

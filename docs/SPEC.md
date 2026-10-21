@@ -95,8 +95,9 @@ Una recogida de munición bajo un actor o sobre una plaza libre/ocupada conserva
 su precedencia: no despliega ni cobra con el mismo gesto. Las cajas solapadas
 mantienen la semántica existente. La cámara centra el tablero en ambos ejes;
 los gestos se convierten con la transformación inversa del canvas tras resize.
-Las bandas y plazas numeradas son una guía provisional; las trincheras y poses
-laterales definitivas pertenecen a 005-I4. Ninguna decoración concede cobertura.
+005-I4, aprobado para integración en su rama, sustituye los recuadros de plaza
+por cinco trincheras laterales y conserva bandas discretas y números de fila.
+Ninguna decoración concede cobertura ni cambia las plazas jugables.
 
 ### 6.3 Tipos de unidad (borrador inicial — por refinar)
 
@@ -119,7 +120,7 @@ La plaza permanece reservada mientras viva, aunque se aleje. Ambos actores
 reciben daño real y pueden morir; al morir, el soldado deja de combatir,
 pierde su moral y libera su plaza de origen sin esperar la caída visual.
 
-**005-I3, aprobado para integración en T042, todavía en su rama:** seleccionar
+**005-I3, integrado en `main` mediante [PR #26](https://github.com/Juanpvivas/demons/pull/26):** seleccionar
 una trinchera muestra fila, carga/capacidad y moral de su dueño vivo, también
 cuando está fuera; no despliega otro soldado ni cobra. «Recargar» sólo acepta
 carga cero, fondos suficientes y partida PLAYING, sin orden ya aceptada o
@@ -136,7 +137,7 @@ combate y nuevas órdenes. La recogida conserva precedencia sobre selección y
 despliegue; los controles consumen su gesto sin activar el tablero.
 
 La [referencia aprobada](../specs/005-cinco-carriles/references/visual-reference.md)
-orienta la composición futura y no fija costos, estadísticas ni HUD final.
+orienta la composición lateral y no fija costos, estadísticas ni HUD final.
 
 **Futuras unidades (post-MVP, no bloquean el prototipo inicial):**
 - [ ] Variantes con distinto alcance/cadencia (ej. mortero de área, francotirador de rango largo)
@@ -178,7 +179,10 @@ enmarcan la posición defendida. La [referencia aprobada](../specs/002-monte-cal
 orienta los materiales y la jerarquía visual. La composición original de un
 avance central se conserva como antecedente; 005-I1 la acompaña de cinco bandas
 y plazas provisionales y oculta las antiguas trincheras inferiores en el nivel.
-Las piezas laterales de la nueva referencia siguen pendientes de 005-I4.
+005-I4, aprobado para integración en T055 y todavía en su rama, añade cinco
+puestos laterales: interior de tierra/madera detrás del actor y parapeto de
+sacos delante de sus piernas. El fusil y el torso permanecen legibles; la
+decoración deja recoger las cajas sobre el hogar o bajo los actores.
 
 El entorno es estático y sus trincheras son decorativas: no añaden cobertura,
 obstáculos, carriles, casillas o límites de despliegue. El primer incremento de
@@ -212,13 +216,21 @@ apariencia neutra antes del reciclado y usa la misma caída independiente. El
 reset por activación limpia poses, tintes, tweens y callbacks anteriores; la
 animación no gobierna daño, recompensas ni retiro. La procedencia está en
 [el catálogo del enemigo](../assets/sprites/enemies/monte_calvo/SOURCES.md).
-Su orientación visual actual aún necesita las poses laterales de 005-I4.
+005-I4 sustituye los frames de producción por poses laterales: colombiano
+hacia la derecha y enemigo gris/marrón hacia la izquierda. La marcha con
+machete sólo se muestra tras desplazamiento real; sin movimiento hay espera
+o golpe confirmado. El regreso muestra fusil bajo hacia la izquierda, con
+pose quieta si está bloqueado. La última bala cancela el disparo incompatible;
+volver al hogar restaura el fusil. La caída conserva la orientación real,
+incluido el retorno, sin seguir al cuerpo retirado. Estos cambios no otorgan
+protección ni alteran combate, economía o velocidades.
 
-La caja amarilla de munición sigue provisional, pendiente de 004-I3. El
-movimiento/contacto de machete de 005-I2 conserva las poses existentes; las
-poses laterales y la presentación completa de marcha son 005-I4. I3 incorpora
-HUD mínimo de selección/recarga, avisos y pantalla terminal, con regreso físico
-funcional; el acabado visual de interfaz, audio y demás presentación sigue pendiente.
+La [procedencia del soldado](../assets/sprites/units/monte_calvo/SOURCES.md)
+y [del entorno](../assets/sprites/levels/monte_calvo/SOURCES.md) documentan los
+nuevos atlas y conserva los anteriores. La caja amarilla sigue provisional,
+pendiente de 004-I3. I3 incorpora HUD mínimo de selección/recarga, avisos y
+pantalla terminal; I4 conserva sus controles y adaptación. El acabado visual
+de interfaz y audio sigue pendiente, al igual que la consolidación I5.
 Esta integración parcial no completa las features 004/005 ni el MVP.
 
 La [comparación visual](../specs/002-monte-calvo-terreno-trincheras/evidence/us3.md)
@@ -244,7 +256,9 @@ de rendimiento físico nativo ni amplía esas aprobaciones históricas.
 La constitución 4.0.0 distingue integración funcional de publicación. La
 integración conjunta 004-I2/005-I1, realizada en `main` mediante el
 [PR #24](https://github.com/Juanpvivas/demons/pull/24), y la integración de
-005-I2 mediante el [PR #25](https://github.com/Juanpvivas/demons/pull/25) no certifican 60 FPS físicos, Mobile, GPU,
+005-I2/005-I3 mediante los [PR #25](https://github.com/Juanpvivas/demons/pull/25)
+y [#26](https://github.com/Juanpvivas/demons/pull/26), y la aprobación funcional
+de I4 no certifican 60 FPS físicos, Mobile, GPU,
 renderer o empaquetado final; esos gates y SC-007 permanecen pendientes de
 publicación en las tareas de cada feature. Las comprobaciones de emulador,
 simulador y Compatibility/software conservan sólo su propio alcance.
@@ -258,6 +272,14 @@ los casos difíciles se verificaron en fixtures separados, sin acreditar una
 victoria manual de producción. El paquete/renderer final original y hardware
 permanecen pendientes en T071.
 
+La aprobación funcional de I4 cubre Web de computador y variantes de apps
+instaladas en Android Emulator/iOS Simulator. Web y Android incluyen entrada
+tras cambiar la vista; iOS acredita sólo la vista disponible del iPad Simulator.
+Los estados difíciles y la victoria determinista usan fixtures separados de
+las partidas de producción; no acreditan victoria con los 100 enemigos.
+El renderer software y las variantes temporales conservan sus límites de
+publicación, sin certificar el paquete final ni SC-007.
+
 ## 9. Alcance del MVP (primera versión jugable)
 
 - [ ] 1 nivel (ej. defensa de Monte Calvo)
@@ -270,8 +292,8 @@ permanecen pendientes en T071.
 
 ## 10. Preguntas abiertas / decisiones pendientes
 
-- Implementar los incrementos restantes de [005](../specs/005-cinco-carriles/tasks.md): arte lateral I4 y consolidación I5. I1 e I2 están integrados en `main` mediante los PR #24 y #25; I3 está aprobado funcionalmente para integración en su rama, pendiente de documentación final y PR en borrador. No deducir balance de la imagen.
-- Caja de munición de 004-I3, poses laterales de 005-I4, interfaz y demás acabado, siguiendo la dirección aprobada en §8; SC-007 y certificaciones de publicación siguen pendientes.
+- Consolidación I5 de [005](../specs/005-cinco-carriles/tasks.md). I1–I3 están integrados en `main` mediante los PR #24–#26; I4 está aprobado para integración en su rama, con documentación revisada y todavía fuera de `main`. Consultar las tareas para el estado de entrega y PR. No deducir balance de la imagen.
+- Caja de munición de 004-I3, interfaz y demás acabado, siguiendo la dirección aprobada en §8; SC-007 y certificaciones de publicación siguen pendientes.
 - ¿Habrá progresión entre niveles (más batallas históricas) o es un solo escenario?
 - ¿Narrativa/contexto histórico se presenta dentro del juego (cutscenes, texto) o queda solo como inspiración temática?
 - Balance de costos exactos de cada unidad (se define con playtesting).
@@ -280,10 +302,11 @@ permanecen pendientes en T071.
 
 ### Resueltas (graduadas desde specs de feature)
 
-- ✅ Selección por dueño de trinchera, recarga única sólo con carga cero y regreso físico vulnerable sin ofensiva: 005-I3/T037–T042, aprobado para integración en su rama. No completa I4/I5 ni publicación T071.
+- ✅ Selección por dueño de trinchera, recarga única sólo con carga cero y regreso físico vulnerable sin ofensiva: 005-I3/T037–T042, integrado mediante PR #26 (`8c4cab4`). No completa I5 ni publicación T071.
+- ✅ Composición lateral y estados observadores de marcha/espera, regreso con fusil bajo y caída orientada: 005-I4/T050–T057, aprobado para integración en su rama y con documentación revisada, todavía fuera de `main`. El estado de entrega y PR se mantiene en las tareas de 005. No cambia reglas, geometría ni concede cobertura.
 
 - ✅ Tablero horizontal de cinco filas/plazas y fusil hacia +X, enemigos hacia −X, cinco cargas gratuitas/reserva cero y reparto continuo de oleadas sin alterar los 100 enemigos: 005-I1, integrado con 004-I2 mediante PR #24 (`658dd7e`).
-- ✅ Salida/espera/contacto real de machete en la misma fila, velocidad propia 40, hogar reservado y liberación al morir fuera: 005-I2/T023–T028, integrado en `main` mediante PR #25 (`c1f43d2`). §6.3 describe además la recarga y el regreso de I3 aprobados para integración; publicación sigue pendiente.
+- ✅ Salida/espera/contacto real de machete en la misma fila, velocidad propia 40, hogar reservado y liberación al morir fuera: 005-I2/T023–T028, integrado en `main` mediante PR #25 (`c1f43d2`). §6.3 describe además la recarga y el regreso de I3 integrados por PR #26; publicación sigue pendiente.
 - ✅ Presentación observadora del enemigo, contacto basado en movimiento real, snapshot anterior al reciclado y reset por activación: 004-I2, extendiendo el patrón común sin dar autoridad jugable a la animación.
 - ✅ Dirección visual de la primera iteración del terreno y las trincheras de Monte Calvo: entorno pictórico ocre/oliva, montañas azul grisáceo y decoración estática de tierra, madera y sacos, conservando actores provisionales y reglas actuales en aquella entrega. Aprobada en T016 de `002-monte-calvo-terreno-trincheras`; §8 y sus enlaces delimitan el alcance y la evidencia. I1 de 004 avanza después el soldado; enemigo, caja e interfaz continúan pendientes.
 - ✅ Soldado pictórico y presentación de sus estados reales, sin alterar el combate ni esperar a la caída para retirarlo: I1 de `004-personajes-municion-monte-calvo`, aprobado en T011. §8 describe su alcance parcial; el patrón compartido de presentación y efecto independiente se gradúa a `ARCHITECTURE.md` §4.7. No resuelve el acabado del enemigo, la caja o la interfaz.
@@ -326,3 +349,4 @@ permanecen pendientes en T071.
 | 2026-10-19 | 005/T015 y 004/T021: consolidación de integración funcional del tablero de cinco filas y presentación del enemigo; se distinguen machete móvil, recarga UI, arte lateral, caja y publicación aún pendientes |
 | 2026-10-20 | 005/T029 tras QA T028: salida, espera y contacto móvil con machete en su carril, velocidad propia y hogar reservado; recarga heredada limitada a la posición del hogar. Se actualiza el estado integrado de PR #24 y se conservan I3, arte lateral y publicación pendientes. |
 | 2026-10-20 | 005/T043 tras QA T042: selección del dueño por trinchera, recarga única con carga cero y regreso físico vulnerable sin ofensiva; HUD mínimo y precedencia de entrada. I3 aprobado para integración en su rama; arte lateral, consolidación y publicación pendientes. |
+| 2026-10-20 | 005/T056 tras QA T055: composición lateral de cinco trincheras, marcha/espera y regreso observados, caída con orientación real y procedencia. I3 integrado por PR #26; I4 aprobado en su rama, I5 y publicación pendientes. |

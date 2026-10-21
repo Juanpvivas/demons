@@ -1,5 +1,45 @@
 # Monte Calvo — procedencia del arte
 
+## 005-I4 — Arte lateral (2026-10-20)
+
+`trinchera_lateral_atlas.png` se generó con OpenAI `image_gen` siguiendo el
+[concepto horizontal aprobado](../../../../specs/005-cinco-carriles/references/visual-reference.md).
+Una edición dirigida eliminó la bruma exterior para obtener las dos piezas
+con transparencia: posterior/interior y parapeto delantero, abiertas hacia +X.
+
+| Recurso/encaje | Valor |
+|---|---|
+| Original RGBA → textura importada | 1536×1024 → 1024×682; ≈2,66 MiB |
+| Región posterior `AtlasTexture` | (6,6,820,410), `filter_clip=true` |
+| Región parapeto `AtlasTexture` | (13,416,1000,247), `filter_clip=true` |
+| Cinco posteriores | x=144, y=148/244/340/436/532; escala 0,1561; z efectivo −4 |
+| Cinco parapetos | x=144, y=165/261/357/453/549; escala 0,12; z efectivo +1 |
+
+`MonteCalvoVisual.tscn` coloca un par por hogar: posterior debajo del actor,
+parapeto delante de sus piernas y torso/fusil legibles. Son sprites estáticos,
+sin física, input, cobertura ni autoridad de colocación. La recogida conserva
+su precedencia sobre el hogar y bajo actores. Terreno, panorama y piezas
+anteriores se conservan; las trincheras inferiores antiguas permanecen ocultas
+en la instancia del nivel de cinco filas.
+
+Los atlas laterales de 005-I4 cuentan con aprobación funcional para integración
+T055 en `codex/005-i4-presentacion`; aún no están integrados en `main`.
+Los PNG conservan los píxeles y el alfa de la salida seleccionada, sin recorte,
+repintado o empaquetado por scripts. Importación lossless, límite de lado 1024,
+corrección de borde alfa y sin mipmaps; filtro lineal y sin repetición locales.
+Las regiones se miden por silueta en la textura importada, sin suponer grilla.
+La memoria indicada es estimación RGBA8, no VRAM medida. La procedencia y las
+condiciones de uso del arte generado descritas abajo siguen vigentes.
+
+Prompt final (generación y edición dirigida de transparencia):
+
+> Use case: historical-scene. Production TRANSPARENT modular environmental sprite atlas for 2D Godot game Demonios de las Trincheras. Reference approved concept for exact earth/wood/sandbag material palette and slightly elevated side view. TWO aligned pieces arranged vertically in two separate equal-width rows with ample transparent gutter: TOP row rear half of ONE compact U-shaped dug-in infantry trench open to RIGHT, three-quarter side view, dark excavated earthen interior, rough timber back wall on LEFT, low muted ochre sandbags on rear/top rim, floor cavity visible, NO near/front wall; BOTTOM row the detached NEAR/FRONT parapet of that SAME trench: a low horizontal lip of two courses of olive-ochre sandbags with earth and vertical wooden planks beneath, matching width and perspective, left end slightly curves up. Pieces will be layered with a soldier BETWEEN rear and front so lower legs are occluded by front lip and chest/rifle remain visible. Rear piece with empty transparent front edge, detached foreground strip is only the low wall, no complete second trench. 2D matte hand-painted game illustration, restrained ocre/olive dirt, worn wood and sandbags, diffuse light. Production clear silhouettes at about100pixels wide. Genuine transparent alpha all empty space, isolated pieces, entire components visible, no shadows outside. No people, weapons, flags, barbed wire, scenery, sky, mountains, ground plane beyond trench, crates, UI, text, labels, grid, checkerboard or watermark. Upper/rear piece should have dark interior well but no painted rectangular background.
+
+> Edit target is the attached two-piece trench atlas. Change ONLY background transparency: REMOVE ALL brown haze, gradients, glow, cast shadows and low-opacity paint outside the actual solid trench silhouettes. Output clean production cutouts with genuine transparent alpha around precisely the earth/wood/sandbag shapes. Preserve both components EXACTLY as drawn, their layout, size, colors, texture, positions and perspective. Keep solid dirt within upper interior cavity and solid earth attached to base, only eliminate atmospheric diffuse background surrounding pieces and between them. No new elements, no checkerboard.
+
+
+## Antecedente de 002 — entorno original
+
 Producción T005, 2026-10-15, herramienta nativa `image_gen` de Codex. Referencia
 de estilo: `specs/002-monte-calvo-terreno-trincheras/references/monte-calvo-concept.png`.
 No se extrajeron personajes o interfaz del concepto. No hubo edición de píxeles

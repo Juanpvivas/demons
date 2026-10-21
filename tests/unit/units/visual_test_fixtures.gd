@@ -12,6 +12,13 @@ static func frames() -> SpriteFrames:
 		result.set_animation_loop(entry[0], entry[2])
 		for index in 4:
 			result.add_frame(entry[0], texture)
+	# 005/T048: datos sintéticos, sin implementar la transición observadora.
+	for pose: StringName in [&"melee_march", &"returning", &"returning_idle"]:
+		result.add_animation(pose)
+		result.set_animation_speed(pose, 8.0)
+		result.set_animation_loop(pose, true)
+		for index in 4:
+			result.add_frame(pose, texture)
 	return result
 
 static func snapshot(position := Vector2(320, 240)) -> Dictionary:

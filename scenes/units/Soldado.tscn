@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scenes/units/soldado.gd" id="1_soldado"]
 [ext_resource type="Resource" path="res://resources/units/soldado_base_stats.tres" id="2_stats"]
 [ext_resource type="Script" path="res://scenes/units/soldado_visual.gd" id="3_visual"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/units/monte_calvo/soldado_frames.tres" id="4_frames"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/units/monte_calvo/soldado_lateral_frames.tres" id="4_frames"]
 [ext_resource type="Material" path="res://assets/sprites/units/monte_calvo/soldado_readability.tres" id="5_readability"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
@@ -24,8 +24,8 @@ stats = ExtResource("2_stats")
 texture_filter = 2
 texture_repeat = 1
 material = ExtResource("5_readability")
-scale = Vector2(0.34615385, 0.34615385)
-offset = Vector2(0, -34.666667)
+scale = Vector2(0.3936942, 0.3936942)
+offset = Vector2(0, -59.038979)
 script = ExtResource("3_visual")
 sprite_frames = ExtResource("4_frames")
 animation = &"rifle_idle"

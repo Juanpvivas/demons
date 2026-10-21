@@ -3,9 +3,11 @@
 Contrato de la feature para agentes/tester; sin API remota nueva. I1 está
 integrado en `main`; salida/espera/contacto I2 está integrado mediante
 [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`).
-Recarga, selección y regreso de I3 (`codex/005-i3-recarga`) están implementados
-y aprobados funcionalmente para integración en T042; documentación final y PR
-siguen en preparación. La presentación lateral sigue pendiente de I4.
+Recarga, selección y regreso de I3 están integrados mediante
+[PR #26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`). La
+presentación lateral I4 tiene aprobación funcional para integración T055 en
+`codex/005-i4-presentacion`, con documentación revisada y todavía fuera de
+`main`. Las [tareas](../tasks.md) mantienen el estado de entrega y PR.
 Las firmas concretas
 se definen mediante setup/RED sin cambiar estas invariantes.
 [Spec](../spec.md) · [Modelo](../data-model.md).
@@ -92,4 +94,8 @@ Presentador observa ataques/daño y desplazamiento confirmados: fusil dentro,
 última bala, marcha/espera/golpe de machete, regreso y muerte. No causa daño,
 gasto o llegada desde frames. Caída independiente captura posición/orientación
 reales y libera actor/plaza inmediatamente. Reset limpia material, flips,
-frames, tweens y generación. Imagen orienta materiales/siluetas, no HUD/stats.
+frames, tweens y generación. I4 observa el desplazamiento confirmado para
+distinguir marcha de espera; el retorno usa fusil bajo y orientación hacia
+la izquierda, también en su snapshot de caída. Las cinco trincheras por capas
+no aportan física ni interceptan gestos. Imagen orienta materiales/siluetas,
+no HUD/stats.
