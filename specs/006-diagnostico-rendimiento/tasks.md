@@ -1,9 +1,9 @@
 # Tasks: Diagnóstico y estabilización del rendimiento
 
 **Feature**: `006-diagnostico-rendimiento` · **Issue**: [#30](https://github.com/Juanpvivas/demons/issues/30) · **I1**: `codex/006-i1-rendimiento`, base `5d50cb0`.
-**Estado**: instrumento T001–T007 y dictamen limitado T009 aprobados para integración por QA; I1 entrega instrumento y diagnóstico sin parche. Documentación y entrega en ejecución. T008/base nativa y T010–T012/US2 pendientes; publicación pendiente. Input: [spec](spec.md), [plan](plan.md), [protocolo](contracts/profiling-protocol.md), [quickstart](quickstart.md) y [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
+**Estado**: instrumento T001–T007 y dictamen limitado T009 aprobados para integración por QA; I1 entrega instrumento y diagnóstico sin parche. Documentación T013/T014 aprobada por QA; entrega en preparación. T008/base nativa y T010–T012/US2 pendientes; publicación pendiente. Input: [spec](spec.md), [plan](plan.md), [protocolo](contracts/profiling-protocol.md), [quickstart](quickstart.md) y [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
 
-Spec Kit sólo prepara. Orquestador registra `[X]` tras QA; dev no escribe/ejecuta tests, QA sólo revisa. Nuevos resultados de validación quedan en temporales/CI y en el resumen del PR, no en Git. No fabricar RED de presentación equivalente ni de fuente histórica. I1 incluye US1 y la primera corrección US2 autorizada; el Issue conserva seguimiento posterior y usa `Refs`, sin publicación.
+Spec Kit sólo prepara. Orquestador registra `[X]` tras QA; dev no escribe/ejecuta tests, QA sólo revisa. Nuevos resultados de validación quedan en temporales/CI y en el resumen del PR, no en Git. No fabricar RED de presentación equivalente ni de fuente histórica. El alcance previsto reúne US1 y una primera corrección US2 autorizada; T009 delimita esta entrega al instrumento y diagnóstico, con bases nativas y US2 pendientes. El Issue conserva seguimiento posterior y usa `Refs`, sin publicación.
 
 ## Fase 1: Base y contrato invocable
 
@@ -32,8 +32,8 @@ Spec Kit sólo prepara. Orquestador registra `[X]` tras QA; dev no escribe/ejecu
 
 ## Fase final: Documentación y entrega
 
-- [ ] T013 docs-writer: consolidar alcance aprobado y guía útil en `docs/SPEC.md`, `docs/ARCHITECTURE.md`, `README.md` cuando corresponda y documentos006, sin volcar registros; reportar metadatos postmerge004 desactualizados al orquestador; depende de T012 aprobado si se entrega corrección, o de T009 con dictamen explícito sin parche para entregar sólo instrumento y diagnóstico limitado.
-- [ ] T014 qa-validator: revisar documentación T013 y vigencia de fuente/verificaciones en `specs/006-diagnostico-rendimiento/`, sin exigir repetir evidencia no invalidada; depende de T013.
+- [X] T013 docs-writer: consolidar alcance aprobado y guía útil en `docs/SPEC.md`, `docs/ARCHITECTURE.md`, `README.md` cuando corresponda y documentos006, sin volcar registros; reportar metadatos postmerge004 desactualizados al orquestador; depende de T012 aprobado si se entrega corrección, o de T009 con dictamen explícito sin parche para entregar sólo instrumento y diagnóstico limitado.
+- [X] T014 qa-validator: revisar documentación T013 y vigencia de fuente/verificaciones en `specs/006-diagnostico-rendimiento/`, sin exigir repetir evidencia no invalidada; depende de T013.
 - [ ] T015 project-orchestrator: registrar aprobaciones en `specs/006-diagnostico-rendimiento/tasks.md`, alinear sólo encabezados postmerge del seguimiento004, comprobar diff/base/tamaño/CI/exportación, publicar rama y crear PR en borrador `Refs #30`. Conservar Issue #30 abierto, T039/T071 pendientes, sin promover/fusionar/distribuir; depende de T014 aprobado.
 
 ## Dependencias y estrategia

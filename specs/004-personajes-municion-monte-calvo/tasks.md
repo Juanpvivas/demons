@@ -1,9 +1,9 @@
 # Tasks: Personajes y munición de Monte Calvo
 
-**Estado**: I1 y corrección UX T031–T038 aprobados e integrados en `main`. I2 y su documentación integrados junto con 005-I1 mediante el PR #24 (`658dd7e`). I3 tiene T023–T030 aprobadas para integración y documentación consolidada en el PR #29 en borrador. La corrección de legibilidad T040–T046 está aprobada para integración en el mismo PR, con documentación y entrega actualizadas; revisión humana y merge continúan pendientes. La ampliación adicional T047–T051 está aprobada para integración, documentada y entregada en el mismo PR en borrador. Publicación T039 permanece pendiente.
+**Estado**: I1 y corrección UX T031–T038 aprobados e integrados en `main`. I2 y su documentación integrados junto con 005-I1 mediante el PR #24 (`658dd7e`). I3 (T023–T030), la corrección de legibilidad (T040–T046) y la ampliación adicional (T047–T051) están aprobadas e integradas en `main` mediante el PR #29 (`5d50cb0`). Publicación T039 permanece pendiente.
 **PR conjunto integrado**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; publicación pendiente.
 **Issue**: [#18](https://github.com/Juanpvivas/demons/issues/18).
-**PR I3 en borrador**: [#29](https://github.com/Juanpvivas/demons/pull/29), `Refs #18`; sin cierre del Issue, promoción, merge ni distribución automática.
+**PR I3 integrado**: [#29](https://github.com/Juanpvivas/demons/pull/29), `5d50cb0`, `Refs #18`; el Issue permanece abierto y la integración no publica.
 **Incremento de esta entrega**: I3 / US3, caja de munición e integración visual funcional (T023–T030), desde `main` actualizado con el PR #28 (`163a2dc`), en `codex/004-i3-municion`. El diseño horizontal, HUD y controles ya entregados por 005 conservan su alcance; no se cambia lógica ni balance.
 **Rama histórica de integración**: `codex/005-i1-tablero` para transición conjunta autorizada 004-I2 + 005-I1, contra `main` en `2dc532d`; contenido integrado mediante PR #24.
 **Base histórica del PR conjunto #24**: `main`, con I1 del [PR #20](https://github.com/Juanpvivas/demons/pull/20)
