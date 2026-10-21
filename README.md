@@ -66,7 +66,9 @@ La consolidación I5 está integrada mediante el
 [PR #28](https://github.com/Juanpvivas/demons/pull/28); el estado de entrega se mantiene en las
 [tareas de 005](specs/005-cinco-carriles/tasks.md).
 
-004-I3 sustituye el bloque amarillo por una caja oliva con cartuchos. La
+004-I3, integrado mediante el
+[PR #29](https://github.com/Juanpvivas/demons/pull/29), sustituye el bloque
+amarillo por una caja oliva con cartuchos. La
 última ampliación, aprobada para integración en T049, la aumenta otro 50 %
 respecto a la versión con brillo. Conserva el pulso suave de 1,4 s, sin
 desaparecer. La envolvente visual máxima es 60×60; conserva radio de recolección
@@ -77,6 +79,14 @@ esta integración no acredita 60 FPS físicos, renderer
 Mobile, hardware ni empaquetado final. Android software mostró una regresión;
 iOS software conserva rendimiento muy limitado.
 [Alcance y límites](docs/SPEC.md#8-arte-y-estilo-visual).
+
+[006-I1](specs/006-diagnostico-rendimiento/spec.md) incorpora un instrumento
+optativo de diagnóstico, aprobado para integración y sin activación en el
+juego normal. Las mediciones nuevas no justifican modificar el shader:
+Web no distingue una ganancia y Android conserva deriva y límites de
+observación; iOS no tuvo nuevas ejecuciones por bloqueo del Mac. Las bases
+nativas y la estabilización siguen pendientes en el
+[seguimiento de 006](specs/006-diagnostico-rendimiento/tasks.md).
 
 La feature `001-soldado-defensor-oleadas` (`specs/001-soldado-defensor-oleadas/`)
 está completa: un soldado defensor automático que dispara con fusil mientras

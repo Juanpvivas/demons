@@ -1,12 +1,12 @@
 # Feature Specification: Diagnóstico y estabilización del rendimiento
 
 **Feature ID**: `006-diagnostico-rendimiento` · **Planned Branch**: `codex/006-i1-rendimiento` · **Created**: 2026-10-21
-**Status**: Borrador de preparación; no acredita implementación ni publicación.
+**Status**: T009 aprueba para integración el instrumento y diagnóstico limitado, sin parche. Bases nativas T008/SC-001 y US2 pendientes; publicación pendiente.
 **Input**: «Continúa con el diagnóstico y estabilización del rendimiento desde main actualizado, siguiendo el flujo de agentes y QA. Actualiza la documentación y prepara el PR en borrador, manteniendo la publicación pendiente».
 
 ## Contexto y alcance
 
-Monte Calvo tiene el alcance funcional de 004/005 integrado en `main` (`5d50cb0`, PR #29). Las muestras históricas registran caídas en Android emulado y rendimiento muy limitado en iOS Simulator; no permiten atribuir la causa al hardware, al arte, al pulso o a una función concreta. I1 reúne un diagnóstico reproducible y la primera corrección segura que ese diagnóstico justifique. Los siguientes problemas independientes se entregarán en otros incrementos; no se amplía gameplay ni se distribuye una versión.
+Monte Calvo tiene el alcance funcional de 004/005 integrado en `main` (`5d50cb0`, PR #29). Las muestras históricas registran caídas en Android emulado y rendimiento muy limitado en iOS Simulator; no permiten atribuir la causa al hardware, al arte, al pulso o a una función concreta. I1 prevé un diagnóstico reproducible y la primera corrección segura que ese diagnóstico justifique. La entrega actual se limita al instrumento aprobado y al diagnóstico sin mejora causal acreditada; no completa US1/US2 ni autoriza el parche. Las bases nativas y los problemas restantes conservan seguimiento en [las tareas](tasks.md); no se amplía gameplay ni se distribuye una versión.
 
 ## User Scenarios & Testing
 

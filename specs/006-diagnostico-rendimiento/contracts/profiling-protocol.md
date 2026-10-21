@@ -12,7 +12,7 @@ La clave de comparabilidad incluye revisión y modificaciones QA, engine/build, 
 
 ## Instrumento mínimo
 
-`tools/performance/probe.gd` es un Node optativo, instanciado sólo por un collector de QA en copias temporales. El juego normal no lo referencia ni lo activa. API mínima a concretar mediante esqueleto invocable antes de RED:
+`tools/performance/probe.gd` es un Node optativo, instanciado sólo por un collector de QA en copias temporales. El juego normal no lo referencia ni lo activa. Su API se preparó como esqueleto invocable antes de RED y quedó aprobada funcionalmente en T007:
 
 - `start(config: Dictionary, initial_snapshot: Dictionary, at_usec: int) -> bool`: limpia todo run previo; exige `run_id`, contexto y conteos iniciales esperados independientes de la función de snapshot. Copia por valor la configuración y valida la observación inicial contra ella; rechaza inicio incompatible o incompleto.
 - `record_wall_interval(at_usec: int) -> void`: recibe marcas absolutas monotónicas y almacena diferencias positivas desde la marca de `start`, fijada después del calentamiento externo. No usa delta de juego; cero/regresión invalida el run. Se registra el intervalo que alcanza o supera `window_usec` y se conserva su duración real, incluido ese último frame.
@@ -41,9 +41,11 @@ Config contiene `run_id`, `revision`, `artifact`, `window_usec`, `conditions` es
 
 `start` exige phase `initial`, run_id correcto y `at_usec` igual a su marca de inicio. `finish` exige phase `final`, el mismo run_id y una marca ≥la última muestra; verifica nuevamente todas las condiciones contra las esperadas y el inicio. Cada lectura ausente, `unknown`, `unavailable`, sin procedencia o con distinto valor requerido invalida la comparabilidad con una razón identificable; no se rellena con expected. Esto no obliga a inventar métricas opcionales GPU/Self/memoria ausentes. `compare_runs` comprueba por código las condiciones observadas completas de los runs válidos, sin comparar sus etiquetas de origen o sus instantes como si fueran configuración.
 
+`valid=true` acredita las comprobaciones mecánicas sobre los valores entregados, no que una API mida su significado efectivo. El collector debe comprobar su observabilidad: un getter constante o de fallback se declara no disponible como observación efectiva y no satisface la condición causal, aunque coincida con expected. T009 detectó este límite en foco/vsync nativos del motor usado; véase [la decisión](../research.md#decisión-de-t009-entregar-diagnóstico-sin-parche). No se reinterpretan los informes APK ya recogidos como una base nativa acreditada.
+
 Dentro de un run se auditan IDs de instancia y activación para detectar retiro/reciclado inesperado. Entre runs se compara el manifiesto lógico de roles, conteos y estados esperados, no IDs asignados por otro proceso. Los conteos esperados proceden del montaje independiente; la actividad sigue al estado real del actor/pool y un activo oculto sigue contado como activo.
 
-El esqueleto sólo declara estos métodos con resultados vacíos/falsos, sin implementar el contrato. Las pruebas usan series conocidas, reloj regresivo, inicio incompatible y condiciones observadas distintas/ausentes frente a expected en inicio/final/comparación, inventario anidado/activo oculto/inactivo y queued, neutralidad del snapshot y reinicio; no inspeccionan texto del shader ni fijan FPS de CI.
+El esqueleto inicial sólo declaraba estos métodos con resultados vacíos/falsos, sin implementar el contrato. Las pruebas usan series conocidas, reloj regresivo, inicio incompatible y condiciones observadas distintas/ausentes frente a expected en inicio/final/comparación, inventario anidado/activo oculto/inactivo y queued, neutralidad del snapshot y reinicio; no inspeccionan texto del shader ni fijan FPS de CI.
 
 El collector toma snapshots inicial/final y cada 2 s. Comprueba conteos frente a un manifiesto independiente y conserva identidad/activación, salud, carga, moral, posición, movimiento, reserva, ocupación y estado terminal pertinentes. Registra inactivos aparte; arrays vacíos no se interpretan como población cero válida. Un cambio inesperado de geometría o cohorte invalida la comparación constante.
 

@@ -5,7 +5,7 @@
 
 ## Summary
 
-I1 entrega medición reproducible y la primera corrección de presentación cuyo coste se confirme. Se separan producción natural, fixture de render constante y experimentos de un solo factor. La hipótesis inicial es el muestreo del shader de legibilidad en texels transparentes; sigue sin confirmar hasta T008/T009. El [protocolo](contracts/profiling-protocol.md) es la fuente única de condiciones, API y aceptación.
+El alcance previsto de I1 es medición reproducible y la primera corrección de presentación cuyo coste se confirme. T009 aprueba para integración sólo el instrumento y el diagnóstico limitado: Web no distingue ganancia; Android tiene deriva y observabilidad insuficiente de foco/vsync; iOS no tuvo nuevas ejecuciones por bloqueo del Mac. La hipótesis del shader no queda confirmada y no se aplica un parche. Bases nativas T008/SC-001 y US2 siguen pendientes, sin declarar US1 completa. El [protocolo](contracts/profiling-protocol.md) es la fuente única de condiciones, API y aceptación.
 
 ## Technical Context
 
@@ -34,6 +34,6 @@ Antes de investigar y tras diseño: I, separación/datos conservados; II, instru
 
 ## Ejecución por agentes
 
-T001 fija base/Issue/contratos. T002 crea sólo interfaz invocable; T003/T004 prueban RED válido. T005/T006 implementan/verifican el instrumento y T007 aprueba su uso. T008/T009 diagnostican antes de autorizar el parche T010. T011 compara/renderiza y verifica regresión; T012 emite QA de integración. T013/T014 documentan/revisan y T015 entrega PR en borrador. No ejecutar implementación ni tests desde Spec Kit.
+T001 fija base/Issue/contratos. T002 crea sólo interfaz invocable; T003/T004 prueban RED válido. T005/T006 implementan/verifican el instrumento y T007 aprueba su uso. T008/T009 diagnostican antes de autorizar un parche. Al no autorizarlo T009, la entrega limitada continúa por T013/T014 (documentación/revisión) y T015 (PR en borrador), dejando T008 y T010–T012 pendientes en su alcance no acreditado. La corrección del determinismo de una prueba histórica no es una optimización del producto ni TDD retroactivo. No ejecutar implementación ni tests desde Spec Kit.
 
 No hay paralelismo sobre el checkout/motor. La investigación de sólo lectura puede avanzar en paralelo. Las muestras antiguas son contexto, nunca la nueva base. Si no hay causa/mejora confirmadas, no se marca US2 completada; se informa al orquestador para delimitar el resultado diagnóstico. No se cambia de hipótesis ni se amplía el parche sin actualizar alcance/QA.

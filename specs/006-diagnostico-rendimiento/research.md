@@ -1,6 +1,6 @@
 # Research: Decisiones para I1
 
-Preparación desde `5d50cb0`, sin ejecutar pruebas ni mediciones. Las hipótesis siguientes proceden de la revisión de sólo lectura de dev-godot y el protocolo de godot-tester, no de resultados nuevos. Se consultaron `using-godot-prompter` y `godot-optimization`; cada ejecutor consulta además sus skills específicas.
+La preparación partió de `5d50cb0`, sin pruebas ni mediciones en esa etapa. Las hipótesis de la tabla proceden de la revisión de sólo lectura de dev-godot y el protocolo de godot-tester. Se consultaron `using-godot-prompter` y `godot-optimization`; cada ejecutor consulta además sus skills específicas.
 
 | Decisión | Motivo y alternativa descartada |
 |---|---|
@@ -14,3 +14,11 @@ Preparación desde `5d50cb0`, sin ejecutar pruebas ni mediciones. Las hipótesis
 | Monitores con significado explícito | `TIME_PROCESS` es tiempo de completar el frame; no Self de GDScript ni tiempo GPU aislado. Cero/ausencia puede significar no disponible y las actualizaciones pueden ser más lentas que cada frame. |
 
 Se mantienen los límites e hipótesis históricas de [SPEC §8](../../docs/SPEC.md#8-arte-y-estilo-visual). El coste CPU/GPU se atribuye sólo con profiler apropiado o experimento que lo aísle; en otro caso se informa coste de frame/presentación sin dividirlo artificialmente. Memoria de motor/render no es RSS ni coste causal exclusivo del PNG.
+
+## Decisión de T009: entregar diagnóstico sin parche
+
+Las nuevas comparaciones Web no distinguen ganancia al retirar el material ni coste del observador respecto a la dispersión/cadencia. Esto no demuestra coste cero del shader. Android muestra deriva entre repeticiones y sólo permite descripción; no se atribuye su diferencia al material. El bloqueo del Mac impidió nuevas ejecuciones iOS. Se conserva el shader, el pulso, el tamaño, las reglas y los presets; T008/SC-001 nativos y US2 siguen pendientes.
+
+En el motor exacto `a13da4feb8d8aefc283c3763d33a2f170a18d541`, `window_is_focused()` devuelve `true` fijo en Android y AppleEmbedded; sin contexto RenderingDevice, el getter de vsync devuelve `VSYNC_ENABLED` y su setter no actúa. Fuentes primarias: [Android](https://github.com/godotengine/godot/blob/a13da4feb8d8aefc283c3763d33a2f170a18d541/platform/android/display_server_android.cpp#L581) y [AppleEmbedded](https://github.com/godotengine/godot/blob/a13da4feb8d8aefc283c3763d33a2f170a18d541/drivers/apple_embedded/display_server_apple_embedded.mm#L607). Por ello, un informe mecánicamente válido no acredita foco/vsync efectivos ni comparabilidad causal nativa. La siguiente medición requiere una observación independiente que resuelva esa limitación; no se cambia renderer o motor para ocultarla.
+
+El instrumento permanece optativo y aprobado para integración; la estabilización del producto no está acreditada. Resultados, dispersión, picos, intentos inválidos y límites se resumen en el PR, con registros fuera de Git. La corrección de una espera arbitraria en una prueba histórica estabiliza el test, no el rendimiento del juego.
