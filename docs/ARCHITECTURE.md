@@ -477,8 +477,8 @@ los objetivos del soldado validan identidad/generación además de geometría.
 La recompensa conserva el contexto anterior aunque se reutilice el nodo dentro
 de una señal síncrona. `ObjectPool` conserva su API genérica.
 
-005-I4, aprobado para integración en T055 y aún en su rama, extiende el
-presentador del soldado con `observe_motion(movement_state, displacement)`.
+005-I4, integrado mediante [PR #27](https://github.com/Juanpvivas/demons/pull/27),
+extiende el presentador del soldado con `observe_motion(movement_state, displacement)`.
 El actor informa después del movimiento físico: sólo el desplazamiento real
 activa `melee_march`; un bloqueo conserva `melee_idle`. `RETURNING` elige
 `returning` o `returning_idle`, refleja el sprite hacia −X y cancela ataques
@@ -677,6 +677,14 @@ La ausencia de convención explícita documentada aquí sigue vigente tal cual.
   el camino de derrota (T044) como el de victoria (T046) tienen cobertura
   de integración de punta a punta con instancias reales.
 
+La consolidación I5 de 005 mantiene separadas la población de producción
+(un inicial y 99 enemigos de diez oleadas), las 99 bajas de oleada necesarias
+para WON y la victoria determinista de un fixture reducido. La suite y la
+carga del nivel original se revalidan sin cambiar sus Resources. Reutilizar
+entrada, visuales y recorridos de una entrega exige comprobar que la fuente
+y los recursos relevantes siguen siendo equivalentes; no convierte esa
+evidencia en una ejecución nueva ni amplía sus destinos o renderers.
+
 ## 7. Consideraciones multiplataforma
 
 - **Destinos del producto:** Web solo en navegador de computador y aplicaciones
@@ -772,6 +780,15 @@ La constitución 3.0.0 conserva la referencia física nativa y esas aprobaciones
 históricas; las nuevas verificaciones siguen los destinos vigentes de esta
 sección, sin exigir navegador móvil ni convertirlo en prueba de app instalada.
 
+005-I5 consolida la integración funcional de I1–I4 y conserva la caída observada
+en Android software, sin descartarla desde fixtures con cohortes distintas.
+iOS acredita sólo la vista disponible de iPad Simulator, con renderizado
+software, stdout parcial y aislamiento entre apps no confirmado. Las muestras
+de ambos entornos no certifican Mobile, GPU, 60 FPS físicos ni el paquete final.
+T071 mantiene esos requisitos, firma/instalación/versionado y matriz de
+publicación pendientes; las variantes temporales de QA no modifican los presets
+de producción. [Alcance funcional y límites](SPEC.md#8-arte-y-estilo-visual).
+
 - **Política de versionado para releases de prueba**: ambos workflows de
   deploy comparan `version/code`/`version/name` (Android) o
   `application/version`/`application/short_version` (iOS) de
@@ -840,3 +857,4 @@ sección, sin exigir navegador móvil ni convertirlo en prueba de app instalada.
 | 2026-10-20 | 005/T029 tras QA T028: evolución a dos cuerpos móviles, consultas físicas por tick y hogar estable; estados/velocidades propios y recarga heredada delimitados frente a I3. Se gradúa validar referencias antes de operaciones tipadas y después elegibilidad/activación, conservando el hallazgo histórico de overlaps. |
 | 2026-10-20 | 005/T043 tras QA T042: RETURNING físico separado del arma y HUD observador; se gradúan intención con identidad, revalidación de autoridad y guard antes de callbacks síncronos, sin framework nuevo. |
 | 2026-10-20 | 005/T056 tras QA T055: extensión del patrón observador con movimiento real, retorno y flips actuales de caída; reset de reproducción y composición estática de cinco trincheras por capas. I4 aprobado en rama, publicación pendiente. |
+| 2026-10-21 | 005/T063 tras QA T062: I4 integrado por PR #27 y consolidación funcional I5; distinción entre población/victoria de fixture, evidencia reutilizada y certificaciones pendientes de publicación, sin nuevos patrones. |
