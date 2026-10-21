@@ -13,8 +13,8 @@ La base vigente es [005](../005-cinco-carriles/quickstart.md), integrada por
 PR #24–#28: cinco filas, actores móviles, poses laterales, HUD/recarga y
 pantallas terminales. §7 conserva el procedimiento histórico de la corrección
 I1; no ordena restaurar su encuadre al verificar I3.
-La corrección T040 de tamaño/brillo está en preparación y requiere el recorrido
-adicional de §8; las aprobaciones de `e025722` conservan su alcance anterior.
+La corrección T040 de tamaño/brillo tiene aprobación funcional para integración
+T043 con el alcance disponible de §8; `e025722` conserva su aprobación anterior.
 
 ## 1. Antes de implementar
 
@@ -214,9 +214,11 @@ históricas de CSS 794×305 y Web aproximadamente 1684×648.
    como historia sobre `87a39c6`; resultados nuevos al PR, temporales o CI,
    sin archivos de evidencias nuevos en Git ni inicio de I2/I3.
 
-## 8. Corrección T040 — Comprobaciones pendientes
+## 8. Corrección T040 — Procedimiento de comprobación
 
-Este procedimiento prepara la validación; no acredita su ejecución ni QA.
+T043 aprueba el alcance funcional disponible de este procedimiento: Web en los
+dos tamaños indicados, APK horizontal e iPad Simulator en su vista disponible.
+Los resultados se resumen en el PR; el coste del pulso no se ha cuantificado.
 
 1. Inspeccionar la escena: escala visual 0,15625 (+25 %), arte opaco dentro de
    40×40 centrados, misma raíz/drop, PNG/importación y círculo radio 20.
@@ -237,6 +239,6 @@ Este procedimiento prepara la validación; no acredita su ejecución ni QA.
    archivos/píxeles ni cambios de reglas. Reutilizar las muestras de `e025722`
    sólo para la base y el alcance intacto: no acreditan el coste del pulso nuevo.
    Realizar un smoke acotado con varias cajas animadas y declarar sus límites,
-   sin repetir benchmarks por rutina. QA revisa el alcance nuevo antes de aprobar
-   integración; documentación del producto y PR se consolidan después.
+   sin repetir benchmarks por rutina. La aprobación funcional T043 conserva
+   esos límites; documentación y estado de entrega se siguen en las tareas y PR.
    T039/SC-007 y publicación siguen pendientes.

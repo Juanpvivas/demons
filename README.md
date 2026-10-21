@@ -66,9 +66,11 @@ La consolidación I5 está integrada mediante el
 [PR #28](https://github.com/Juanpvivas/demons/pull/28); el estado de entrega se mantiene en las
 [tareas de 005](specs/005-cinco-carriles/tasks.md).
 
-004-I3 sustituye el bloque amarillo por una caja oliva con cartuchos, aprobada
-funcionalmente para integración en T027. Conserva huella de 32×32, radio de
-recolección 20, valor y precedencia del gesto; su
+004-I3 sustituye el bloque amarillo por una caja oliva con cartuchos. La
+corrección de visibilidad, aprobada para integración en T043, la aumenta un
+25 % y añade un pulso suave de brillo de 1,4 s, sin desaparecer. La envolvente
+visual máxima es 40×40; conserva radio de recolección 20, valor y precedencia
+del gesto. Su
 [seguimiento](specs/004-personajes-municion-monte-calvo/tasks.md) concentra entrega y PR.
 Las features 004/005 y la publicación permanecen abiertas en T039/T071:
 esta integración no acredita 60 FPS físicos, renderer

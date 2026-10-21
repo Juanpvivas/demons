@@ -489,7 +489,7 @@ material mantienen sus valores autorados neutros. Reset restaura también
 rotación y velocidad de reproducción, limpia frame/progreso e invalida
 callbacks anteriores. Los atlas/frames laterales sustituyen los de producción
 y conservan los originales históricos. 004-I3 completa la caja pictórica sin
-añadir un presentador o comportamiento nuevo.
+añadir un presentador ni lógica nueva.
 El [contrato de 004](../specs/004-personajes-municion-monte-calvo/contracts/visual-presentation.md)
 delimita los tiempos y la frontera jugable.
 
@@ -528,8 +528,11 @@ delimita los tiempos y la frontera jugable.
   victoria. El contexto de origen se lee antes del release síncrono.
 - **`AmmoPickup.tscn` (004-I3):** conserva raíz, posición, script y círculo de
   recolección de radio 20. Su sprite de un fotograma usa la caja oliva con
-  cartuchos, textura importada 256×256, escala visual 0,125 y offset local
-  `(0; −5,818182)`, con arte dentro de 32×32. Los cambios visuales no alteran
+  cartuchos, textura importada 256×256, escala visual 0,15625 y offset local
+  `(0; −5,818182)`, con arte dentro de 40×40. La corrección añade un `AnimationPlayer`
+  de escena que pulsa sólo el brillo del sprite, con alfa de modulación 1;
+  el [contrato](../specs/004-personajes-municion-monte-calvo/contracts/visual-presentation.md#5-arte-huella-y-procedencia)
+  delimita el ciclo. Los cambios visuales no alteran
   valor, picking ni precedencia sobre selección/despliegue. La
   [procedencia](../assets/sprites/pickups/monte_calvo/SOURCES.md) recoge original,
   importación y condiciones de uso.
@@ -797,7 +800,8 @@ T071 mantiene esos requisitos, firma/instalación/versionado y matriz de
 publicación pendientes; las variantes temporales de QA no modifican los presets
 de producción. [Alcance funcional y límites](SPEC.md#8-arte-y-estilo-visual).
 
-004-I3 tiene aprobación funcional para integración en T027 con caja, gestos y
+004-I3 y su corrección de brillo tienen aprobación funcional para integración
+en T027/T043, con caja, gestos y
 terminales verificados en sus destinos disponibles. La neutralidad del sprite
 no certifica renderer Mobile, GPU, hardware o paquete final; T039 de 004 y
 T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
@@ -872,3 +876,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-20 | 005/T056 tras QA T055: extensión del patrón observador con movimiento real, retorno y flips actuales de caída; reset de reproducción y composición estática de cinco trincheras por capas. I4 aprobado en rama, publicación pendiente. |
 | 2026-10-21 | 005/T063 tras QA T062: I4 integrado por PR #27 y consolidación funcional I5; distinción entre población/victoria de fixture, evidencia reutilizada y certificaciones pendientes de publicación, sin nuevos patrones. |
 | 2026-10-21 | 004/T028 tras QA T027: encaje de la caja pictórica en el pickup existente, sin cambios de lógica/picking; vigencia de la evolución 005 y publicación T039/T071 pendiente, sin patrones nuevos. |
+| 2026-10-21 | 004/T044 tras QA T043: escala visual 0,15625 y brillo por recurso de escena, conservando raíz/radio/input y sin patrones nuevos; publicación pendiente. |

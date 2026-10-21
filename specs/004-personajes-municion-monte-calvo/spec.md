@@ -10,8 +10,8 @@
 005-I1 mediante [PR #24](https://github.com/Juanpvivas/demons/pull/24).
 I3 aprobado para integración funcional en T027. Las [tareas](tasks.md)
 mantienen el estado de entrega y PR; SC-007/publicación T039 y el Issue siguen abiertos.
-La corrección T040 de tamaño/brillo es un borrador pendiente de QA documental,
-implementación y validación propias; no amplía la aprobación anterior.
+La corrección T040 de tamaño/brillo tiene aprobación funcional para integración
+T043; la aprobación anterior conserva su alcance original.
 
 **Input**: «Entonces preparemos con Spec Kit la siguiente feature de personajes
 y munición de Monte Calvo, siguiendo el flujo que ya tengo definido».
@@ -360,11 +360,11 @@ aprueba SC-007, renderer/paquete de producción ni hardware. Esos requisitos
 siguen pendientes de publicación y no se eximen por falta de dispositivo.
 No se cierra el Issue ni se distribuye automáticamente.
 
-## Corrección T040 — Tamaño y brillo de la munición (borrador)
+## Corrección T040 — Tamaño y brillo de la munición
 
 La persona pidió que la munición fuera «un poco más grande y tal vez parpadee»
 para identificarla sobre el suelo. Esta corrección conserva la aprobación de
-`e025722` en su alcance anterior; el resultado nuevo requiere su propia QA.
+`e025722` en su alcance anterior; T043 aprueba la presentación nueva.
 
 - Aumentar el tamaño visual un 25 %, con envolvente máxima de 40×40 centrada
   en el mismo drop. El PNG, su importación y el motivo de cartuchos se conservan.
@@ -380,5 +380,6 @@ para identificarla sobre el suelo. Esta corrección conserva la aprobación de
 
 La aceptación exige comparar tamaño/lectura y el ciclo completo sobre el suelo,
 también con cajas solapadas, bajo actores y junto al parapeto, además de verificar
-los gestos vigentes en los destinos disponibles. No se da por comprobada desde
-esta preparación. T039/SC-007 y la publicación permanecen pendientes.
+los gestos vigentes en los destinos disponibles. La corrección cuenta con
+aprobación funcional T043 para ese alcance. El coste del pulso no está
+cuantificado; T039/SC-007 y la publicación permanecen pendientes.

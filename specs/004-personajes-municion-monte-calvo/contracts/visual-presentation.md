@@ -5,8 +5,8 @@ tamaño, contraste, material y encuadre delimitada en T031 está aprobada
 funcionalmente en T036. I2 está integrado mediante PR #24 e I3 aprobado
 funcionalmente para integración T027; las [tareas](../tasks.md) mantienen
 el estado de entrega y publicación T039 pendiente.
-T040 es una corrección documental en borrador de la huella visual y brillo;
-no hereda aprobación de implementación ni validación de `e025722`.
+La corrección de huella visual y brillo preparada en T040 tiene aprobación
+funcional T043; `e025722` conserva su aprobación en el alcance anterior.
 
 La base actual incorpora [005](../../005-cinco-carriles/contracts/horizontal-combat.md)
 mediante PR #24–#28. Los detectores orientados al avance central y el encuadre
@@ -118,7 +118,7 @@ límite visual por 40×40 centrados, con escala 0,15625 y radio 20 intacto.
 Sin aureola/etiqueta que prometa área interactiva extra. Bandos distintos por silueta/uniforme;
 caja por forma/cartuchos/contraste sobre suelo y junto a trincheras.
 
-**Pulso T040, pendiente de validar:** sólo el color del sprite interpola
+**Pulso T040, aprobado funcionalmente en T043:** sólo el color del sprite interpola
 continuamente de `Color(1.0, 1.0, 1.0, 1.0)` a `Color(1.35, 1.35, 1.35, 1.0)`
 a los 0,7 s y vuelve al blanco opaco a los 1,4 s, repitiéndose mientras exista
 la caja disponible.

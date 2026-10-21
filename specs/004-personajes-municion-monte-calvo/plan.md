@@ -10,8 +10,8 @@ I2 está integrado mediante [PR #24](https://github.com/Juanpvivas/demons/pull/2
 e I3 tiene aprobación funcional para integración T027. Las [tareas](tasks.md)
 mantienen el seguimiento de entrega; publicación T039 y cierre de 004 pendientes.
 La transición histórica no inició I3 ni declaró completa 004.
-T040 prepara la corrección de tamaño/brillo solicitada después; su borrador,
-implementación y validación siguen pendientes de QA propia.
+La corrección de tamaño/brillo preparada en T040 está implementada y tiene
+aprobación funcional para integración T043.
 
 ## Summary
 
@@ -181,7 +181,7 @@ sin sustituirlos por la aprobación histórica de I1. El estado de consolidació
 y entrega se conserva en las tareas y el PR. I3 completa el acabado funcional
 de los tres elementos sin nuevas mecánicas; publicación T039 sigue pendiente.
 
-## Corrección T040 — Plan acotado (borrador)
+## Corrección T040 — Plan acotado
 
 Conservar el PNG/importación de la caja y modificar sólo su escena:
 escala visual uniforme de 0,125 a 0,15625 (+25 %), con encaje centrado en el
@@ -196,5 +196,5 @@ shader, halo, sonidos ni regenerar el arte.
 La verificación proporcional inspecciona el recurso y su reproducción temporal,
 la lectura en los tamaños vigentes y la regresión de picking/economía. No fabricar
 RED por píxeles o archivos ni reutilizar QA de `e025722` como aprobación de este
-cambio. Antes de entregar, tester y QA deben confirmar el nuevo alcance; T039
-permanece separado y pendiente.
+cambio. T043 aprueba el nuevo alcance funcional con smoke de varias cajas;
+el coste del pulso no se ha cuantificado. T039 permanece separado y pendiente.
