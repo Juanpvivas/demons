@@ -10,6 +10,8 @@
 005-I1 mediante [PR #24](https://github.com/Juanpvivas/demons/pull/24).
 I3 aprobado para integración funcional en T027. Las [tareas](tasks.md)
 mantienen el estado de entrega y PR; SC-007/publicación T039 y el Issue siguen abiertos.
+La corrección T040 de tamaño/brillo es un borrador pendiente de QA documental,
+implementación y validación propias; no amplía la aprobación anterior.
 
 **Input**: «Entonces preparemos con Spec Kit la siguiente feature de personajes
 y munición de Monte Calvo, siguiendo el flujo que ya tengo definido».
@@ -39,8 +41,9 @@ Las referencias al avance central (FR-003), al encuadre original de I1
 (FR-010/SC-005) y a la ausencia de controles describen la base histórica de 004;
 I3 conserva la geometría, orientación y controles de 005. Las exclusiones de
 FR-012 prohíben añadirlos en este incremento, sin retirar los ya integrados.
-El alcance actual se limita a la imagen de la caja, dentro de 32×32 y con
-radio 20, sin cambiar código, economía, picking o reglas.
+El alcance de I3 aprobado antes de T040 limita la imagen de la caja a 32×32,
+con radio 20 y sin cambiar código, economía, picking o reglas. La corrección
+T040 sustituye sólo ese límite visual por 40×40 según la enmienda final.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -356,3 +359,26 @@ aplicables, documentación, CI y QA independiente en entornos disponibles. No
 aprueba SC-007, renderer/paquete de producción ni hardware. Esos requisitos
 siguen pendientes de publicación y no se eximen por falta de dispositivo.
 No se cierra el Issue ni se distribuye automáticamente.
+
+## Corrección T040 — Tamaño y brillo de la munición (borrador)
+
+La persona pidió que la munición fuera «un poco más grande y tal vez parpadee»
+para identificarla sobre el suelo. Esta corrección conserva la aprobación de
+`e025722` en su alcance anterior; el resultado nuevo requiere su propia QA.
+
+- Aumentar el tamaño visual un 25 %, con envolvente máxima de 40×40 centrada
+  en el mismo drop. El PNG, su importación y el motivo de cartuchos se conservan.
+- Mientras la caja esté disponible, repetir un pulso lento y continuo de brillo:
+  blanco → RGB 1,35 → blanco en un ciclo completo de 1,4 s. Alfa de modulación
+  siempre 1, conservando la transparencia del PNG; sin desaparecer, alternar
+  visibilidad, añadir halo o crear un shader.
+- Conservar raíz, posición, radio de recolección 20, valor y precedencia de
+  recoger sobre seleccionar/desplegar. La imagen mayor no promete más alcance.
+- Resolver el pulso sólo con recursos de animación de escena, sin GDScript
+  nuevo, callbacks jugables ni cambios de economía/input. Recoger sigue retirando
+  la caja una sola vez; la animación no concede munición ni decide su retiro.
+
+La aceptación exige comparar tamaño/lectura y el ciclo completo sobre el suelo,
+también con cajas solapadas, bajo actores y junto al parapeto, además de verificar
+los gestos vigentes en los destinos disponibles. No se da por comprobada desde
+esta preparación. T039/SC-007 y la publicación permanecen pendientes.

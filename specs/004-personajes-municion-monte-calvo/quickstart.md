@@ -13,6 +13,8 @@ La base vigente es [005](../005-cinco-carriles/quickstart.md), integrada por
 PR #24–#28: cinco filas, actores móviles, poses laterales, HUD/recarga y
 pantallas terminales. §7 conserva el procedimiento histórico de la corrección
 I1; no ordena restaurar su encuadre al verificar I3.
+La corrección T040 de tamaño/brillo está en preparación y requiere el recorrido
+adicional de §8; las aprobaciones de `e025722` conservan su alcance anterior.
 
 ## 1. Antes de implementar
 
@@ -211,3 +213,30 @@ históricas de CSS 794×305 y Web aproximadamente 1684×648.
    consolidación y entrega figura en las tareas y el PR. Conservar T001–T013
    como historia sobre `87a39c6`; resultados nuevos al PR, temporales o CI,
    sin archivos de evidencias nuevos en Git ni inicio de I2/I3.
+
+## 8. Corrección T040 — Comprobaciones pendientes
+
+Este procedimiento prepara la validación; no acredita su ejecución ni QA.
+
+1. Inspeccionar la escena: escala visual 0,15625 (+25 %), arte opaco dentro de
+   40×40 centrados, misma raíz/drop, PNG/importación y círculo radio 20.
+   `AnimationPlayer` automático con loop 1,4 s, sólo color del sprite:
+   blanco a 0 s, RGB 1,35 a 0,7 s y blanco a 1,4 s; alfa de modulación siempre
+   1, conservando la transparencia original.
+   No GDScript nuevo, shader, halo, pistas de métodos o cambios de visibilidad.
+2. Observar varios ciclos completos en Web de computador 1152×648 y 960×540,
+   APK horizontal e iOS nativo en la vista disponible. Comprobar caja/cartuchos
+   mayores y reconocibles en ambos extremos del brillo, sin ocultación o saltos,
+   sobre suelo, junto al parapeto, bajo actor y con cajas solapadas. Identificar
+   renderer/entorno y conservar límites de disponibilidad; no navegador móvil.
+3. Repetir los cuatro resultados económicos de §4 y la recolección de cajas
+   solapadas con entrada real. Corroborar retiro único, saldo, ocupación y
+   precedencia; el tamaño mayor no amplía el radio. Observar que una caja recién
+   aparecida inicia su pulso opaco sin heredar el estado de otra instancia.
+4. Confirmar importación y regresión pertinente, sin pruebas artificiales de
+   archivos/píxeles ni cambios de reglas. Reutilizar las muestras de `e025722`
+   sólo para la base y el alcance intacto: no acreditan el coste del pulso nuevo.
+   Realizar un smoke acotado con varias cajas animadas y declarar sus límites,
+   sin repetir benchmarks por rutina. QA revisa el alcance nuevo antes de aprobar
+   integración; documentación del producto y PR se consolidan después.
+   T039/SC-007 y publicación siguen pendientes.

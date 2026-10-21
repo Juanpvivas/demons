@@ -5,6 +5,8 @@ tamaño, contraste, material y encuadre delimitada en T031 está aprobada
 funcionalmente en T036. I2 está integrado mediante PR #24 e I3 aprobado
 funcionalmente para integración T027; las [tareas](../tasks.md) mantienen
 el estado de entrega y publicación T039 pendiente.
+T040 es una corrección documental en borrador de la huella visual y brillo;
+no hereda aprobación de implementación ni validación de `e025722`.
 
 La base actual incorpora [005](../../005-cinco-carriles/contracts/horizontal-combat.md)
 mediante PR #24–#28. Los detectores orientados al avance central y el encuadre
@@ -111,9 +113,21 @@ compartido inmutable; sin anillos, barras, halo de selección o HUD.
 El enemigo conserva el encaje de producción ya integrado. En canvas 960×540,
 arma principal visible aproximadamente ≥ 8 px de largo/2 px de espesor; revisión
 manual sigue exigiendo reconocer fusil/machete sin tinte.
-Caja opaca/motivo dentro de 32×32 centrados, radio 20 intacto; sin aureola/etiqueta
-que prometa área interactiva extra. Bandos distintos por silueta/uniforme;
+Caja opaca/motivo dentro de 32×32 en el alcance anterior; T040 sustituye ese
+límite visual por 40×40 centrados, con escala 0,15625 y radio 20 intacto.
+Sin aureola/etiqueta que prometa área interactiva extra. Bandos distintos por silueta/uniforme;
 caja por forma/cartuchos/contraste sobre suelo y junto a trincheras.
+
+**Pulso T040, pendiente de validar:** sólo el color del sprite interpola
+continuamente de `Color(1.0, 1.0, 1.0, 1.0)` a `Color(1.35, 1.35, 1.35, 1.0)`
+a los 0,7 s y vuelve al blanco opaco a los 1,4 s, repitiéndose mientras exista
+la caja disponible.
+El alfa de modulación permanece en 1 y conserva la transparencia del PNG;
+no se anima visibilidad ni escala.
+`AnimationPlayer`/recursos de escena exclusivamente, sin GDScript nuevo,
+pistas de métodos o callbacks que recojan, cobren o alteren el área interactiva.
+No modifica PNG/importación, raíz, posición del drop, radio 20, valor, input,
+precedencia o reglas de solapamiento. Sin shader nuevo, halo ni desaparición.
 
 Textura importada de ejecución: atlas actor ≤ 1024² por bando, caja ≤ 256²;
 alfa y regiones sin vecinos/halos. El límite corresponde a la textura importada,
