@@ -8,14 +8,14 @@ Spec Kit sólo prepara. Orquestador registra `[X]` tras QA; dev no escribe/ejecu
 ## Fase 1: Base y contrato invocable
 
 - [X] T001 project-orchestrator: comprobar `AGENTS.md`, `specs/006-diagnostico-rendimiento/checklists/requirements.md`, base/checkout, Issue #30, preparación y matriz; entregar roles, contratos y rama real, conservando T039/T071 pendientes.
-- [ ] T002 dev-godot: crear sólo esqueleto invocable de `tools/performance/probe.gd` según API del protocolo, sin cálculos/inventario/validación ni integración productiva; QA revisa el alcance mínimo; depende de T001 y preparación aprobada.
+- [X] T002 dev-godot: crear sólo esqueleto invocable de `tools/performance/probe.gd` según API del protocolo, sin cálculos/inventario/validación ni integración productiva; QA revisa el alcance mínimo; depende de T001 y preparación aprobada.
 
 ## Fase 2: US1 — Diagnóstico reproducible (P1)
 
 **Criterio independiente**: instrumento valida series/población/condiciones y permite repetir una base honesta sin cambiar el juego.
 
-- [ ] T003 [US1] godot-tester: escribir y ejecutar RED semántico en `tests/unit/systems/test_performance_probe.gd`: números/percentiles conocidos y reloj real, vacío/regresión/duración corta, oráculo incompatible y condiciones observadas distintas/ausentes contra expected en inicio/final/comparación, lectura anidada/activo oculto/inactivo/queued sin mutación, reinicio/cierre y comparación que permite distinta revisión pero rechaza escenario/renderer/viewport/cap/config/cohorte distintos; depende de T002, sin aceptar parser/import como RED.
-- [ ] T004 [US1] qa-validator: revisar prueba/contrato/esqueleto en `tools/performance/probe.gd` y `tests/unit/systems/test_performance_probe.gd`; aprobar sólo RED válido, sin entregar instrumento ni optimización; depende de T003.
+- [X] T003 [US1] godot-tester: escribir y ejecutar RED semántico en `tests/unit/systems/test_performance_probe.gd`: números/percentiles conocidos y reloj real, vacío/regresión/duración corta, oráculo incompatible y condiciones observadas distintas/ausentes contra expected en inicio/final/comparación, lectura anidada/activo oculto/inactivo/queued sin mutación, reinicio/cierre y comparación que permite distinta revisión pero rechaza escenario/renderer/viewport/cap/config/cohorte distintos; depende de T002, sin aceptar parser/import como RED.
+- [X] T004 [US1] qa-validator: revisar prueba/contrato/esqueleto en `tools/performance/probe.gd` y `tests/unit/systems/test_performance_probe.gd`; aprobar sólo RED válido, sin entregar instrumento ni optimización; depende de T003.
 - [ ] T005 [US1] dev-godot: implementar el instrumento optativo mínimo en `tools/performance/probe.gd`, sin IO por frame, autoridad jugable, autoload ni referencia desde escenas normales; depende de T004 aprobado.
 - [ ] T006 [US1] godot-tester: verificar GREEN de `tests/unit/systems/test_performance_probe.gd`, regresión pertinente y neutralidad de la lectura con nodos reales; informar modificaciones propias de test sin debilitar contrato; depende de T005.
 - [ ] T007 [US1] qa-validator: validar instrumento y RED/GREEN frente al `contracts/profiling-protocol.md`, incluidos invalidación/compatibilidad y límites del observador; habilitar su uso sin aprobar aún diagnóstico o parche; depende de T006.
