@@ -20,6 +20,7 @@ implementarlos en Godot.
 res://
 ├── addons/                  # Plugins de terceros (ej. GUT). No se edita a mano.
 ├── scenes/
+│   ├── game/                 # GameRoot.tscn: entrada y composición de menú/nivel
 │   ├── units/                # Soldado.tscn y futuras variantes de unidades
 │   ├── enemies/               # EnemigoBase.tscn y variantes
 │   ├── levels/                 # Nivel_MonteCalvo.tscn, MonteCalvoVisual.tscn, futuros niveles
@@ -96,7 +97,10 @@ atajo para evitar pasar referencias:
   recalculado, para que lo que muestra el HUD coincida siempre con lo que
   diseño fijó.
 - **`GameStateManager`**: controla condición de victoria/derrota y el
-  estado general de la partida (en curso / pausada / terminada).
+  estado general de la partida (menú / en curso / pausada / terminada).
+  Se inicializa en `MENU=4`, añadido sin renumerar `PLAYING/PAUSED/WON/LOST`.
+  `enter_menu()` establece el estado no jugable sin emitir un resultado;
+  el nivel inicia explícitamente la partida mediante `start_new_match()`.
 
 **Convención: autoloads orquestadores no instancian ni temporizan, un
 spawner externo se lo notifica.** Un autoload que decide "cuándo" algo
@@ -492,6 +496,16 @@ y conservan los originales históricos. 004-I3 completa la caja pictórica sin
 añadir un presentador ni lógica nueva.
 El [contrato de 004](../specs/004-personajes-municion-monte-calvo/contracts/visual-presentation.md)
 delimita los tiempos y la frontera jugable.
+
+### 4.8 Entrada común y composición local
+
+`GameRoot.tscn` es la entrada del producto y compone menú y nivel sin un
+autoload adicional. `MainMenu` sólo emite la intención `play_requested`;
+la raíz acepta una vez el inicio y monta el nivel de forma diferida, protegida
+contra reentrada. Hasta «Jugar» no existe un nivel de combate activo.
+El menú usa `CanvasLayer` para mantener su presentación independiente de la
+`Camera2D` del nivel. Este patrón corresponde a US1 de 007, aprobada
+funcionalmente; el cierre para repetir y regresar al menú sigue pendiente.
 
 ## 5. Composición de escenas (ejemplo concreto)
 
@@ -894,3 +908,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-21 | 004/T044 tras QA T043: escala visual 0,15625 y brillo por recurso de escena, conservando raíz/radio/input y sin patrones nuevos; publicación pendiente. |
 | 2026-10-21 | 004/T050 tras QA T049: escala visual 0,234375 y envolvente 60×60, sin ampliar el círculo de recogida ni cambiar animación/recursos; publicación pendiente. |
 | 2026-10-21 | 006/T013 tras QA T009: herramienta optativa de diagnóstico en §6, separada del producto; validez mecánica y observabilidad efectiva diferenciadas, sin nuevos patrones de gameplay ni parche de rendimiento. |
+| 2026-10-21 | 007/T010 tras QA T009: entrada común con composición local, intención de UI, montaje diferido protegido y estado MENU sin renumeración; sólo US1 funcional, con repetición/regreso y verificación final pendientes. |
