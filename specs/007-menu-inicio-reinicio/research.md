@@ -1,6 +1,6 @@
 # Research: decisiones de navegación y ciclo de vida
 
-Diseño propuesto para [007](spec.md), aún sin implementar. Investigación local de sólo lectura sobre `main` `d86543f` y skills GodotPrompter: `scene-organization`, `event-bus`, `state-machine`, `godot-ui`, `responsive-ui`, `godot-testing`, `godot-code-review` y `gdscript-patterns`. Se sigue el flujo del repositorio y se conservan sus rutas `specs/`.
+Decisiones de preparación para [007](spec.md), aplicadas al ciclo implementado en `codex/007-i1-menu`. La investigación original fue local y de sólo lectura sobre `main` `d86543f`, con skills GodotPrompter: `scene-organization`, `event-bus`, `state-machine`, `godot-ui`, `responsive-ui`, `godot-testing`, `godot-code-review` y `gdscript-patterns`. Se sigue el flujo del repositorio y se conservan sus rutas `specs/`.
 
 ## 1. Una raíz local, sin nivel detrás del menú
 
@@ -19,7 +19,7 @@ Diseño propuesto para [007](spec.md), aún sin implementar. Investigación loca
 
 - **Decisión**: añadir `MENU` al final del enum de `GameStateManager`, preservando `PLAYING=0`, `PAUSED=1`, `WON=2`, `LOST=3`; el arranque de producto queda en `MENU`. `enter_menu()` no emite resultado. `start_new_match()` sigue siendo el único inicio jugable del nivel.
 - **Decisión**: `WaveManager.cancel_waves()` vacía secuencia/contadores y deja índice `-1` sin señales de progreso o victoria. No usar `start_waves([])`, que actualmente emite `all_waves_completed`.
-- **Motivo**: los reportes terminales ya ignoran estados distintos de `PLAYING`; un estado explícito protege el menú. QA revisará regresión de consumidores/fixtures que suponían el valor inicial previo.
+- **Motivo**: los reportes terminales ya ignoran estados distintos de `PLAYING`; un estado explícito protege el menú. La regresión contempla consumidores/fixtures que suponían el valor inicial previo.
 - **Alternativas**: reutilizar `PAUSED` confunde una partida suspendida con ausencia de partida; renumerar el enum cambia consumidores sin necesidad.
 
 ## 4. UI y entrada
@@ -27,9 +27,10 @@ Diseño propuesto para [007](spec.md), aún sin implementar. Investigación loca
 - **Decisión**: los botones sólo emiten intenciones; HUD conserva «VICTORIA»/«DERROTA» actuales. El nivel las propaga y la raíz decide el destino, valida origen/estado y bloquea reentrada durante la transición.
 - **Motivo**: responsabilidades y señales hacia arriba, referencias sólo a hijos propios; sin bus nuevo. `Control` y contenedores gestionan aspecto, márgenes utilizables, foco y activación de teclado. Un evento aceptado no llega a `_unhandled_input` del tablero nuevo.
 - **Alternativa**: HUD cambiando escenas o reiniciando Managers mezcla navegación, resultado y presentación.
+- **Acabado compartido**: menú y resultado reutilizan `resources/ui/monte_calvo_theme.tres`, sin cambios de lógica o balance.
 
 ## 5. RED y verificación proporcional
 
-- **Decisión**: setup mínimo de escenas/API cargables y métodos no operativos antes de RED; probar comportamiento mediante llamadas y UI reales, no existencia de archivos. La entrada real aún apunta al nivel hasta la implementación guiada por RED.
+- **Decisión**: setup mínimo de escenas/API cargables y métodos no operativos antes de RED; probar comportamiento mediante llamadas y UI reales, no existencia de archivos. Durante el setup previo a RED se conservó la entrada al nivel; el producto actual entra por `GameRoot`.
 - **Motivo**: permite fallos por inicio/cambio/limpieza ausentes. El fixture existente de `test_horizontal_board.gd` permite WON con baja WAVE real y LOST por cruce físico; usarlo a través del flujo no demuestra victoria manual de producción con 100 enemigos.
 - **Alternativa**: un RED causado por importación o comprobar sólo nombres/nodos no prueba el requisito. No son necesarias persistencia, red o bibliotecas nuevas.

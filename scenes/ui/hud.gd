@@ -52,7 +52,12 @@ extends CanvasLayer
 ## Intención con identidad capturada: el nivel revalidará dueño y selección.
 signal reload_requested(soldier_instance_id: int)
 
+## La UI sólo emite intenciones; no cambia escenas ni reinicia Managers.
+signal retry_requested
+signal menu_requested
+
 var _selected_soldier: Soldado
+var _closing: bool = false
 
 
 @onready var _ammo_label: Label = $Root/Info/AmmoLabel
@@ -67,6 +72,8 @@ var _selected_soldier: Soldado
 @onready var _individual_ammo_label: Label = $SelectionPanel/Contents/Details/IndividualAmmoLabel
 @onready var _morale_label: Label = $SelectionPanel/Contents/Details/MoraleLabel
 @onready var _reload_button: Button = $SelectionPanel/Contents/ReloadButton
+@onready var _retry_button: Button = $GameOverScreen/Actions/RetryButton
+@onready var _menu_button: Button = $GameOverScreen/Actions/MenuButton
 
 
 func set_selected_soldier(soldier: Soldado) -> void:
@@ -85,6 +92,8 @@ func get_selected_soldier() -> Soldado:
 
 
 func request_selected_reload() -> void:
+	if _closing:
+		return
 	var soldier := get_selected_soldier()
 	if soldier != null and soldier.can_reload():
 		reload_requested.emit(soldier.get_instance_id())
@@ -104,7 +113,55 @@ func _refresh_selection() -> void:
 
 
 func _on_game_state_changed(_state: int) -> void:
-	_refresh_selection()
+	if not _closing:
+		_refresh_selection()
+
+
+func _can_request_result_action() -> bool:
+	return not _closing and _game_over_screen.visible \
+		and GameStateManager._current_state in [
+			GameStateManager.GameState.WON, GameStateManager.GameState.LOST]
+
+
+func _on_retry_pressed() -> void:
+	if _can_request_result_action():
+		get_viewport().set_input_as_handled()
+		retry_requested.emit()
+
+
+func _on_menu_pressed() -> void:
+	if _can_request_result_action():
+		get_viewport().set_input_as_handled()
+		menu_requested.emit()
+
+
+## Conserva el overlay bloqueando el gesto hasta que la raíz retire el árbol.
+func close_match() -> void:
+	if _closing:
+		return
+	_closing = true
+	set_selected_soldier(null)
+	_reload_button.disabled = true
+	_retry_button.disabled = true
+	_menu_button.disabled = true
+	_rejection_message_timer.stop()
+	_wave_message_timer.stop()
+	_disconnect_signal(EconomyManager.ammo_pool_changed, _on_ammo_pool_changed)
+	_disconnect_signal(EconomyManager.deploy_or_reload_rejected, _on_deploy_or_reload_rejected)
+	_disconnect_signal(WaveManager.wave_started, _on_wave_started)
+	_disconnect_signal(GameStateManager.game_won, _on_game_won)
+	_disconnect_signal(GameStateManager.game_lost, _on_game_lost)
+	_disconnect_signal(GameStateManager.game_state_changed, _on_game_state_changed)
+	_disconnect_signal(get_viewport().size_changed, _apply_safe_area)
+
+
+func _disconnect_signal(source: Signal, callback: Callable) -> void:
+	if source.is_connected(callback):
+		source.disconnect(callback)
+
+
+func _exit_tree() -> void:
+	close_match()
 
 
 func _apply_safe_area() -> void:
@@ -140,6 +197,8 @@ func _ready() -> void:
 	GameStateManager.game_lost.connect(_on_game_lost)
 	GameStateManager.game_state_changed.connect(_on_game_state_changed)
 	_reload_button.pressed.connect(request_selected_reload)
+	_retry_button.pressed.connect(_on_retry_pressed)
+	_menu_button.pressed.connect(_on_menu_pressed)
 	get_viewport().size_changed.connect(_apply_safe_area)
 	_apply_safe_area()
 	_refresh_selection()
@@ -155,6 +214,8 @@ func _ready() -> void:
 
 
 func _on_ammo_pool_changed(new_amount: int) -> void:
+	if _closing:
+		return
 	_update_ammo_label(new_amount)
 	_refresh_selection()
 
@@ -166,6 +227,8 @@ func _update_ammo_label(amount: int) -> void:
 ## FR-011: muestra el motivo del rechazo y (re)inicia el temporizador de
 ## ocultamiento.
 func _on_deploy_or_reload_rejected(reason: String) -> void:
+	if _closing:
+		return
 	_rejection_label.text = reason
 	_rejection_label.visible = true
 	_rejection_message_timer.start()
@@ -182,6 +245,8 @@ func _on_rejection_message_timer_timeout() -> void:
 ## aviso anterior sigue visible reemplaza el texto y reinicia el
 ## temporizador, dándole su propio tiempo completo de lectura.
 func _on_wave_started(wave_number: int) -> void:
+	if _closing:
+		return
 	_wave_label.text = "Oleada %d por llegar" % wave_number
 	_wave_label.visible = true
 	_wave_message_timer.start()
@@ -206,5 +271,8 @@ func _on_game_lost() -> void:
 
 
 func _show_game_over_screen(message: String) -> void:
+	if _closing:
+		return
 	_game_over_label.text = message
 	_game_over_screen.visible = true
+	_retry_button.grab_focus()

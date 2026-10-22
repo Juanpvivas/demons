@@ -1,8 +1,8 @@
 extends GutTest
 ## Verificación del autoload GameStateManager (`autoloads/game_state_manager.gd`).
 ##
-## Primera sección (T009): estructura base — enum GameState, estado inicial
-## PLAYING, y las tres señales declaradas en contracts/signals.md.
+## Primera sección (T009): estructura base y señales. 007/T005 cambia el
+## arranque esperado de PLAYING a MENU; las reglas de combate siguen vigentes.
 ##
 ## Segunda sección (T038, más abajo): comportamiento real de condiciones de
 ## victoria/derrota — `constitution.md` Principio II exige cobertura
@@ -79,6 +79,9 @@ var _game_state_manager: Node
 func before_each() -> void:
 	_game_state_manager = load(GAME_STATE_MANAGER_SCRIPT_PATH).new()
 	add_child_autofree(_game_state_manager)
+	# Los escenarios de combate empiezan su partida de forma explícita.
+	# El arranque MENU se verifica aparte con una instancia nueva sin iniciar.
+	_game_state_manager.start_new_match()
 
 
 func test_game_state_manager_script_extends_node() -> void:
@@ -109,13 +112,85 @@ func test_game_state_enum_has_expected_values() -> void:
 	assert_has(_game_state_manager.GameState, "LOST")
 
 
-func test_initial_state_is_playing() -> void:
-	# Given/Then: al arrancar la partida, el estado inicial debe ser PLAYING
-	# (ninguna condición de victoria/derrota puede cumplirse antes de jugar).
+func test_initial_state_is_menu_before_an_explicit_start() -> void:
+	# 007/T005: la apertura espera una intención; PLAYING sigue reservado
+	# a una partida iniciada. Los escenarios históricos de combate se
+	# adaptarán en GREEN para iniciar explícitamente su fixture.
+	var opening: Node = load(GAME_STATE_MANAGER_SCRIPT_PATH).new()
+	watch_signals(opening)
+	add_child_autofree(opening)
 	assert_eq(
-		_game_state_manager._current_state, _game_state_manager.GameState.PLAYING,
-		"el estado inicial de la partida debe ser PLAYING"
+		opening._current_state, opening.GameState.MENU,
+		"el estado inicial debe impedir combate antes de Jugar"
 	)
+	assert_signal_not_emitted(opening, "game_won")
+	assert_signal_not_emitted(opening, "game_lost")
+
+
+func test_enter_menu_leaves_playing_without_emitting_a_terminal_result() -> void:
+	_game_state_manager.start_new_match()
+	watch_signals(_game_state_manager)
+	_game_state_manager.enter_menu()
+	assert_eq(_game_state_manager._current_state, _game_state_manager.GameState.MENU)
+	assert_signal_emitted_with_parameters(
+		_game_state_manager, "game_state_changed", [_game_state_manager.GameState.MENU]
+	)
+	assert_signal_not_emitted(_game_state_manager, "game_won")
+	assert_signal_not_emitted(_game_state_manager, "game_lost")
+
+
+func test_menu_ignores_late_terminal_reports() -> void:
+	_game_state_manager.start_new_match()
+	_game_state_manager.enter_menu()
+	watch_signals(_game_state_manager)
+	_game_state_manager.report_reached_defended_position()
+	_game_state_manager._on_all_waves_completed()
+	assert_eq(_game_state_manager._current_state, _game_state_manager.GameState.MENU)
+	assert_signal_not_emitted(_game_state_manager, "game_won")
+	assert_signal_not_emitted(_game_state_manager, "game_lost")
+
+
+## 007/T011: el estado no jugable intermedio no produce otro desenlace.
+func test_enter_menu_from_a_terminal_is_idempotent_before_a_new_match(
+		outcome = use_parameters(["won", "lost"])) -> void:
+	if outcome == "won":
+		_game_state_manager._on_all_waves_completed()
+	else:
+		_game_state_manager.report_reached_defended_position()
+	watch_signals(_game_state_manager)
+	_game_state_manager.enter_menu()
+	_game_state_manager.enter_menu()
+	assert_eq(_game_state_manager._current_state, _game_state_manager.GameState.MENU)
+	assert_signal_emit_count(_game_state_manager, "game_state_changed", 1)
+	assert_signal_not_emitted(_game_state_manager, "game_won")
+	assert_signal_not_emitted(_game_state_manager, "game_lost")
+	_game_state_manager.start_new_match()
+	assert_eq(_game_state_manager._current_state, _game_state_manager.GameState.PLAYING)
+	assert_signal_emit_count(_game_state_manager, "game_state_changed", 2)
+
+
+func test_cancelling_real_wave_manager_does_not_create_a_victory_from_late_kills() -> void:
+	var saved_state: int = GameStateManager._current_state
+	var saved_waves := {}
+	for key: String in ["waves", "current_wave_index", "_total_enemies_in_current_wave", "_defeated_in_current_wave"]:
+		saved_waves[key] = WaveManager.get(key)
+	var entry := WaveSpawnEntry.new()
+	entry.enemy_stats = EnemyStats.new()
+	entry.count = 2
+	var wave := WaveData.new()
+	wave.spawn_entries = [entry]
+	var sequence: Array[WaveData] = [wave]
+	GameStateManager.start_new_match()
+	WaveManager.start_waves(sequence)
+	watch_signals(GameStateManager)
+	WaveManager.cancel_waves()
+	WaveManager.notify_enemy_defeated()
+	WaveManager.notify_enemy_defeated()
+	assert_eq(GameStateManager._current_state, GameStateManager.GameState.PLAYING)
+	assert_signal_not_emitted(GameStateManager, "game_won", "Cancelar/avisos retirados no resuelven una victoria")
+	GameStateManager._current_state = saved_state
+	for key: String in saved_waves:
+		WaveManager.set(key, saved_waves[key])
 
 
 func test_game_won_signal_exists() -> void:

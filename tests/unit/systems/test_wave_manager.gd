@@ -132,6 +132,75 @@ func _build_wave_multi(wave_number: int, counts: Array) -> WaveData:
 	return wave
 
 
+## 007/T011: cancelar no equivale a completar una secuencia vacía.
+func test_cancel_active_waves_clears_progress_without_emitting_completion() -> void:
+	var sequence: Array[WaveData] = [_build_wave(1, 2), _build_wave(2, 3)]
+	_wave_manager.start_waves(sequence)
+	_wave_manager.notify_enemy_defeated()
+	watch_signals(_wave_manager)
+	_wave_manager.cancel_waves()
+	assert_true(_wave_manager.waves.is_empty())
+	assert_eq(_wave_manager.current_wave_index, -1)
+	assert_eq(_wave_manager._total_enemies_in_current_wave, 0)
+	assert_eq(_wave_manager._defeated_in_current_wave, 0)
+	assert_null(_wave_manager.get_current_wave())
+	assert_signal_not_emitted(_wave_manager, "wave_started")
+	assert_signal_not_emitted(_wave_manager, "wave_completed")
+	assert_signal_not_emitted(_wave_manager, "all_waves_completed")
+
+
+func test_cancelled_waves_ignore_late_defeat_notifications() -> void:
+	var sequence: Array[WaveData] = [_build_wave(1, 1)]
+	_wave_manager.start_waves(sequence)
+	watch_signals(_wave_manager)
+	_wave_manager.cancel_waves()
+	_wave_manager.notify_enemy_defeated()
+	_wave_manager.notify_enemy_defeated()
+	assert_eq(_wave_manager.current_wave_index, -1)
+	assert_eq(_wave_manager._defeated_in_current_wave, 0)
+	assert_signal_not_emitted(_wave_manager, "wave_started")
+	assert_signal_not_emitted(_wave_manager, "wave_completed")
+	assert_signal_not_emitted(_wave_manager, "all_waves_completed")
+
+
+func test_cancel_empty_or_already_cancelled_sequence_is_silent() -> void:
+	watch_signals(_wave_manager)
+	_wave_manager.cancel_waves()
+	_wave_manager.cancel_waves()
+	assert_true(_wave_manager.waves.is_empty())
+	assert_eq(_wave_manager.current_wave_index, -1)
+	assert_signal_not_emitted(_wave_manager, "wave_started")
+	assert_signal_not_emitted(_wave_manager, "wave_completed")
+	assert_signal_not_emitted(_wave_manager, "all_waves_completed")
+
+
+func test_cancel_completed_sequence_clears_last_counters_without_new_result() -> void:
+	var sequence: Array[WaveData] = [_build_wave(1, 1)]
+	_wave_manager.start_waves(sequence)
+	_wave_manager.notify_enemy_defeated()
+	watch_signals(_wave_manager)
+	_wave_manager.cancel_waves()
+	assert_true(_wave_manager.waves.is_empty())
+	assert_eq(_wave_manager._total_enemies_in_current_wave, 0)
+	assert_eq(_wave_manager._defeated_in_current_wave, 0)
+	assert_signal_not_emitted(_wave_manager, "all_waves_completed")
+
+
+func test_new_sequence_after_cancel_starts_at_its_own_first_wave() -> void:
+	var old: Array[WaveData] = [_build_wave(1, 3)]
+	_wave_manager.start_waves(old)
+	_wave_manager.notify_enemy_defeated()
+	_wave_manager.cancel_waves()
+	watch_signals(_wave_manager)
+	var next: Array[WaveData] = [_build_wave(7, 2)]
+	_wave_manager.start_waves(next)
+	assert_same(_wave_manager.get_current_wave(), next[0])
+	assert_eq(_wave_manager._defeated_in_current_wave, 0)
+	assert_eq(_wave_manager._total_enemies_in_current_wave, 2)
+	assert_signal_emitted_with_parameters(_wave_manager, "wave_started", [7])
+	assert_signal_not_emitted(_wave_manager, "all_waves_completed")
+
+
 ## --- Estructura base ---
 
 func test_wave_manager_script_extends_node() -> void:

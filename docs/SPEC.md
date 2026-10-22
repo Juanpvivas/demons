@@ -248,12 +248,46 @@ audio sigue pendiente. I5 consolida el alcance funcional integrado mediante
 [tareas de 005](../specs/005-cinco-carriles/tasks.md) mantienen el estado de
 entrega y PR. La publicación, las features 004/005 y el MVP siguen abiertos.
 
-La preparación de [007 — Menú de inicio y nueva partida](../specs/007-menu-inicio-reinicio/spec.md)
-recoge la dirección confirmada: menú pictórico inerte → «Jugar» → partida →
-victoria/derrota → «Volver a jugar» o «Menú principal». Cada nuevo intento
-restablecerá por completo Monte Calvo con sus condiciones iniciales vigentes.
-Este alcance aún no está implementado; preparar la feature no acredita su
-entrega funcional ni cierra los pendientes de 006 o de publicación.
+[007 — Menú de inicio y nueva partida](../specs/007-menu-inicio-reinicio/spec.md)
+implementa US1–US3 en su rama funcional: la entrada muestra el menú con arte
+estático de Monte Calvo, sin un nivel activo detrás. «Jugar» inicia una única
+partida con las condiciones vigentes, sin propagar el gesto al tablero.
+US2 añade «Volver a jugar» desde victoria o derrota: retira el intento anterior
+y restablece soldados, recursos, plazas, selección y oleadas sin refrescar ni
+reabrir. Eventos del intento retirado no alteran el siguiente.
+US3 añade «Menú principal» desde ambos resultados: retira la partida y deja
+el menú inerte con «Jugar» disponible y enfocado; sólo esa acción inicia otro
+intento limpio. Repetición y regreso comparten el mismo cierre protegido.
+El ciclo lógico está aprobado funcionalmente con una oleada autorada de un enemigo;
+la derrota usa además un enemigo de cruce controlado. Este escenario reducido
+no acredita una victoria manual con los 100 enemigos de producción, cuyo reparto
+de 1 inicial + 99 se conserva.
+
+Menú y resultado comparten el acabado oliva/crema/ocre y foco dorado del recurso
+`resources/ui/monte_calvo_theme.tres`. El flujo, las esperas activas de menú y la
+legibilidad fueron verificados en Chrome de computador, Android AVD Compatibility
+e iPad Simulator Compatibility/Apple Software Renderer. El smoke separado de
+producción alcanzó derrota natural y un nuevo inicio limpio; no certifica
+victoria manual contra 100 enemigos ni rendimiento físico.
+
+Los paquetes nativos internos conservan assets GUT/fixtures inactivos; sus
+variantes de QA y el empaquetado original no equivalen a un artefacto final
+aprobado. El error del loader GUT al exportar Android original también se
+reprodujo en la base; el paquete original no se considera limpio ni aprobado.
+
+Las mediciones Web son descriptivas: no aíslan una mejora
+causal ni certifican 60 FPS estables. El monitor de memoria de render del motor
+subió unos 11–13 MiB en la candidata; no es RSS ni VRAM y no demuestra causa o fuga.
+En Android AVD/SwiftShader, la mediana de combate pasó de unos 41,3 a 39,9 FPS
+(−3,5 % observado); el menú sin actores rondó 32 FPS. En iPad Simulator/Apple
+Software Renderer, ambas revisiones rondaron 6,66 FPS durante combate y el menú
+sin actores rondó 4,27 FPS. Los monitores de memoria de render nativos aumentaron
+unos 4,5 MiB. Son observaciones
+en software, con cohortes dinámicas; no atribuyen causa o fuga ni se extrapolan
+a dispositivos físicos. Las pausas previas al calentamiento continuo se conservan
+separadas de las ventanas medidas válidas. El veredicto y CI de la revisión exacta
+se registran en el PR y en las [tareas de 007](../specs/007-menu-inicio-reinicio/tasks.md).
+Este avance no cierra 004/T039, 005/T071, 006 ni publicación.
 
 La [comparación visual](../specs/002-monte-calvo-terreno-trincheras/evidence/us3.md)
 y la [matriz nativa](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
@@ -424,3 +458,7 @@ delimita las próximas mediciones, sin acreditar hardware o paquete final.
 | 2026-10-21 | 006/T013 tras QA T009: instrumento optativo y diagnóstico limitado aprobados para integración, sin mejora causal ni parche; bases nativas, estabilización y publicación pendientes. |
 | 2026-10-21 | 006/T013: ampliación del diagnóstico con tres ventanas descriptivas de iPad Simulator/software, conservando límites de observación y bases nativas pendientes. |
 | 2026-10-21 | Preparación de 007: dirección pictórica y flujo de menú, inicio y repetición confirmados; implementación, pendientes de 006 y publicación conservados. |
+| 2026-10-21 | 007/T010 tras QA T009: menú inerte e inicio explícito de US1 aprobados funcionalmente en rama; repetición, regreso al menú, validación visual/matriz final y publicación pendientes. |
+| 2026-10-21 | 007/T016 tras QA T015: repetición desde victoria/derrota, cierre y reinicio aprobados funcionalmente con fixture reducido; producción 1+99 intacta, regreso al menú, matriz final y publicación pendientes. |
+| 2026-10-21 | 007/T022 tras QA T021: regreso al menú y nuevo inicio completan el ciclo lógico aprobado; guía de usuario actualizada, con verificación final por plataforma y publicación pendientes. |
+| 2026-10-22 | 007/T027 tras QA T026: ciclo completo, Theme y matriz local aprobados; mediciones descriptivas conservan límites de software/paquete, con revisión exacta en PR y publicación pendiente. |

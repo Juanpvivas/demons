@@ -1,8 +1,8 @@
 # Implementation Plan: Menú de inicio y nueva partida
 
 **Feature ID**: `007-menu-inicio-reinicio` · **Date**: 2026-10-21 · **Spec**: [spec.md](spec.md) · **Issue**: [#32](https://github.com/Juanpvivas/demons/issues/32)
-**Planned Branch**: preparación en `codex/007-preparacion`; incremento funcional posterior desde `main` actualizado, preparado por el orquestador.
-**Estado**: Preparación revisada y lista para ejecución por agentes; implementación, pruebas y publicación pendientes.
+**Branch**: `codex/007-i1-menu`, desde `main` `a97affd`; preparación original en `codex/007-preparacion`.
+**Estado**: ciclo US1–US3 implementado y alcance local técnico/funcional/visual aprobado por QA. Mediciones descriptivas con límites de software; veredicto y CI de la revisión exacta en el PR y seguimiento. Issue #32 abierto y publicación pendiente.
 
 ## Summary
 
@@ -37,10 +37,11 @@ Revisado antes de investigación y nuevamente sobre el diseño; no se propone ex
 
 Documentos de esta feature: [research](research.md), [modelo](data-model.md), [contrato](contracts/match-flow.md), [quickstart](quickstart.md) y [tareas](tasks.md).
 
-| Archivos previstos | Responsabilidad |
+| Archivos del incremento | Responsabilidad |
 |---|---|
 | `scenes/game/GameRoot.tscn`, `scenes/game/game_root.gd` | Raíz persistente, dueño único del menú/nivel y transiciones |
 | `scenes/ui/MainMenu.tscn`, `scenes/ui/main_menu.gd` | Presentación estática, título y señal de «Jugar» |
+| `resources/ui/monte_calvo_theme.tres` | Acabado pictórico y foco compartidos por menú y resultado |
 | `project.godot` | Cambiar entrada a `GameRoot` sólo tras RED del arranque real |
 | `scenes/ui/HUD.tscn`, `scenes/ui/hud.gd` | Reutilizar resultado existente, añadir dos intenciones y foco |
 | `scenes/levels/nivel_monte_calvo.gd`, `scenes/levels/wave_spawner.gd` | Encauzar intenciones y cierre local sin cambiar combate |
@@ -48,7 +49,7 @@ Documentos de esta feature: [research](research.md), [modelo](data-model.md), [c
 | `tests/unit/game/test_game_root.gd`, `tests/unit/ui/test_main_menu.gd` | Flujo, arranque inerte, multicíclos, controles y gesto consumido |
 | `tests/unit/{systems,ui,levels}/` existentes | Regresión de Managers, HUD, oleadas, encuadre y entrada |
 
-## Secuencia de implementación prevista
+## Secuencia de implementación
 
 1. Orquestador comprueba documentos y rama; `dev-godot` crea sólo esqueleto cargable/API del contrato, métodos sin comportamiento y sin cambiar la entrada. QA verifica el límite del setup antes de RED.
 2. Tester obtiene RED ejecutando aserciones sobre entrada real, inicio y cierre/reset. Un archivo ausente, parser roto o importación fallida no es RED; no reconstruir RED de comportamiento histórico.

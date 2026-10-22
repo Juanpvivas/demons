@@ -49,6 +49,14 @@ signal wave_completed(wave_number: int)
 signal all_waves_completed()
 
 
+## Cancelar retira el progreso sin completar ni mutar la secuencia autorada.
+func cancel_waves() -> void:
+	waves = []
+	current_wave_index = -1
+	_total_enemies_in_current_wave = 0
+	_defeated_in_current_wave = 0
+
+
 ## Fija la secuencia de oleadas a consumir y arranca la primera. Si
 ## `new_waves` está vacío (nivel sin oleadas configuradas), no hay ninguna
 ## oleada que iniciar: se emite `all_waves_completed()` directamente, sin

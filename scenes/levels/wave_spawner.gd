@@ -68,6 +68,7 @@ var _enemy_pool: ObjectPool
 var _spawn_position: Vector2
 var _board_config: LaneBoardConfig
 var _next_lane: int = 0
+var _closing: bool = false
 
 ## Servicio local opcional: registro por creación física, nunca por acquire.
 var _combat_visual_effects: CombatVisualEffects
@@ -88,6 +89,20 @@ func _ready() -> void:
 	add_child(_spawn_timer)
 	_spawn_timer.timeout.connect(_on_spawn_timer_timeout)
 	WaveManager.wave_started.connect(_on_wave_started)
+
+
+func close_match() -> void:
+	if _closing:
+		return
+	_closing = true
+	_spawn_timer.stop()
+	_pending_spawns.clear()
+	if WaveManager.wave_started.is_connected(_on_wave_started):
+		WaveManager.wave_started.disconnect(_on_wave_started)
+
+
+func _exit_tree() -> void:
+	close_match()
 
 
 ## Crea el pool y conserva la configuración compartida de geometría. Debe llamarse una
@@ -112,7 +127,7 @@ func setup(enemy_scene: PackedScene, initial_pool_size: int, spawn_position: Vec
 
 ## Activación inmediata independiente: fila central, sin consumir el cursor.
 func spawn_initial_enemy(stats: EnemyStats) -> Enemigo:
-	if GameStateManager._current_state != GameStateManager.GameState.PLAYING:
+	if _closing or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
 		return null
 	var lane := 2 if _board_config != null else -1
 	return _activate_enemy(stats, lane, Enemigo.SpawnOrigin.INITIAL)
@@ -134,6 +149,8 @@ func _activate_enemy(stats: EnemyStats, lane: int, origin: Enemigo.SpawnOrigin) 
 ## nada — no es responsabilidad de este nodo decidir qué pasa con una
 ## oleada mal configurada, solo no debe fallar.
 func _on_wave_started(_wave_number: int) -> void:
+	if _closing:
+		return
 	_spawn_timer.stop()
 	_pending_spawns.clear()
 
@@ -152,7 +169,8 @@ func _on_wave_started(_wave_number: int) -> void:
 ## Todo WAVE, incluido el primero, espera el intervalo autorado. El inicial
 ## es independiente y no reinicia ni consume el cursor de las oleadas.
 func _on_spawn_timer_timeout() -> void:
-	if _pending_spawns.is_empty() or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
+	if _closing or _pending_spawns.is_empty() \
+			or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
 		return
 
 	var next: _PendingSpawn = _pending_spawns.pop_front()
@@ -193,6 +211,8 @@ func _on_enemy_pool_instance_created(instance: Node) -> void:
 ## dejar que se autodestruya — ver conflicto documentado en la cabecera de
 ## esta clase y en `enemigo.gd`.
 func _on_enemy_defeated(_ammo_dropped: int, _position: Vector2, enemy: Enemigo) -> void:
+	if _closing:
+		return
 	var origin := enemy.get_defeat_origin()
 	if origin == Enemigo.SpawnOrigin.WAVE:
 		WaveManager.notify_enemy_defeated()

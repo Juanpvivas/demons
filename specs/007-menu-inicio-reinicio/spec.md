@@ -1,9 +1,9 @@
 # Feature Specification: Menú de inicio y nueva partida
 
 **Feature ID**: `007-menu-inicio-reinicio`
-**Planned Branch**: `codex/007-preparacion` para preparación; rama funcional posterior desde `main` actualizado, a cargo del orquestador.
+**Branch**: `codex/007-i1-menu`, desde `main` `a97affd`; preparación original en `codex/007-preparacion`.
 **Created**: 2026-10-21
-**Status**: Preparación revisada y lista para ejecución por agentes; implementación, pruebas y publicación pendientes.
+**Status**: US1–US3 implementadas; alcance local técnico/funcional/visual aprobado por QA. Mediciones descriptivas sin certificación física; veredicto y CI de la revisión exacta en el PR y seguimiento. Issue #32 abierto y publicación pendiente.
 **Input**: «Conservemos el estilo pictórico de Monte Calvo. Prepara la feature 007 con el alcance propuesto, siguiendo el flujo de agentes y QA del proyecto y manteniendo la publicación pendiente».
 
 ## Contexto y alcance
@@ -112,4 +112,4 @@ Como jugador, quiero regresar al menú después de terminar para decidir cuándo
 - Monte Calvo es el único escenario del incremento, con el comportamiento integrado de 004/005. El estado de cada intento es temporal; no se añaden almacenamiento ni servicios externos.
 - La adaptación parte de la presentación horizontal y tamaños/aspectos vigentes, sin plataformas o modalidades de entrada nuevas.
 - La matriz de integración usa Web de computador y apps Android/iOS disponibles con límites explícitos; la certificación física para publicar sigue pendiente sin heredar excepciones de otras features.
-- Esta especificación no acredita implementación, pruebas ni rendimiento. La ejecución seguirá el [flujo de agentes y TDD](../../docs/DEVELOPMENT_WORKFLOW.md); se conservan los pendientes de [006](../006-diagnostico-rendimiento/tasks.md).
+- Esta especificación define aceptación; su estado no sustituye el dictamen sobre cada entorno y artefacto. La ejecución sigue el [flujo de agentes y TDD](../../docs/DEVELOPMENT_WORKFLOW.md); se conservan los pendientes de [006](../006-diagnostico-rendimiento/tasks.md).

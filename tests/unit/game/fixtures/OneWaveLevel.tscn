@@ -1,0 +1,20 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/levels/Nivel_MonteCalvo.tscn" id="1_level"]
+[ext_resource type="Script" path="res://resources/schemas/wave_data.gd" id="2_wave"]
+[ext_resource type="Script" path="res://resources/schemas/wave_spawn_entry.gd" id="3_entry"]
+[ext_resource type="Resource" path="res://resources/enemies/enemigo_infanteria_base.tres" id="4_stats"]
+
+[sub_resource type="Resource" id="Entry"]
+script = ExtResource("3_entry")
+enemy_stats = ExtResource("4_stats")
+count = 1
+spawn_interval = 0.05
+
+[sub_resource type="Resource" id="Wave"]
+script = ExtResource("2_wave")
+wave_number = 1
+spawn_entries = Array[ExtResource("3_entry")]([SubResource("Entry")])
+
+[node name="OneWaveLevel" instance=ExtResource("1_level")]
+waves = Array[ExtResource("2_wave")]([SubResource("Wave")])

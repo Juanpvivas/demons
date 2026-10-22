@@ -55,6 +55,105 @@ func _spawn_hud() -> Node:
 	return _hud
 
 
+## 007/T011: HUD real; los resultados los resuelve GameStateManager,
+## sin asignar su enum. La baja WAVE/cruce físico se cubren en GameRoot.
+func _result_context(outcome: String) -> Dictionary:
+	var context := {"state": GameStateManager._current_state, "ammo": EconomyManager.collected_ammo, "waves": {}}
+	for key: String in ["waves", "current_wave_index", "_total_enemies_in_current_wave", "_defeated_in_current_wave"]:
+		context.waves[key] = WaveManager.get(key)
+	var viewport := SubViewport.new()
+	viewport.size = Vector2i(1152, 648)
+	viewport.handle_input_locally = true
+	add_child_autofree(viewport)
+	viewport.notify_mouse_entered()
+	context["viewport"] = viewport
+	EconomyManager.collected_ammo = 9
+	GameStateManager.start_new_match()
+	_hud = load(HUD_SCENE_PATH).instantiate()
+	viewport.add_child(_hud)
+	if outcome == "won":
+		var entry := WaveSpawnEntry.new()
+		entry.enemy_stats = EnemyStats.new()
+		entry.count = 1
+		var wave := WaveData.new()
+		wave.spawn_entries = [entry]
+		var sequence: Array[WaveData] = [wave]
+		WaveManager.start_waves(sequence)
+		WaveManager.notify_enemy_defeated()
+	else:
+		GameStateManager.report_reached_defended_position()
+	await wait_process_frames(2)
+	return context
+
+
+func _restore_result_context(context: Dictionary) -> void:
+	GameStateManager._current_state = context.state
+	EconomyManager.collected_ammo = context.ammo
+	for key: String in context.waves:
+		WaveManager.set(key, context.waves[key])
+
+
+func _result_action(text: String) -> Button:
+	for node: Node in _hud.find_children("*", "Button", true, false):
+		if (node as Button).text == text:
+			return node as Button
+	return null
+
+
+func _click_result(viewport: SubViewport, position: Vector2) -> void:
+	var motion := InputEventMouseMotion.new()
+	motion.position = position
+	motion.global_position = position
+	viewport.push_input(motion, true)
+	for down: bool in [true, false]:
+		var event := InputEventMouseButton.new()
+		event.position = position
+		event.global_position = position
+		event.button_index = MOUSE_BUTTON_LEFT
+		event.button_mask = MOUSE_BUTTON_MASK_LEFT if down else 0
+		event.pressed = down
+		viewport.push_input(event, true)
+
+
+func test_real_results_show_both_actions_and_focus_retry(
+		outcome = use_parameters(["won", "lost"])) -> void:
+	var context: Dictionary = await _result_context(outcome)
+	var retry := _result_action("Volver a jugar")
+	var menu := _result_action("Menú principal")
+	assert_not_null(retry)
+	assert_not_null(menu)
+	assert_eq(_hud._game_over_label.text, "VICTORIA" if outcome == "won" else "DERROTA")
+	if retry != null and menu != null:
+		assert_true(retry.is_visible_in_tree())
+		assert_true(menu.is_visible_in_tree())
+		assert_same(context.viewport.gui_get_focus_owner(), retry, "El resultado permite activar retry con teclado")
+	_restore_result_context(context)
+
+
+func test_result_button_only_emits_its_intent_without_mutating_the_match(
+		scenario = use_parameters(["won/retry", "lost/retry", "won/menu", "lost/menu"])) -> void:
+	var parts: PackedStringArray = scenario.split("/")
+	var context: Dictionary = await _result_context(parts[0])
+	var signal_name := "retry_requested" if parts[1] == "retry" else "menu_requested"
+	var other_signal := "menu_requested" if parts[1] == "retry" else "retry_requested"
+	var button := _result_action("Volver a jugar" if parts[1] == "retry" else "Menú principal")
+	assert_not_null(button)
+	if button != null:
+		var native: Array[bool] = []
+		button.pressed.connect(func(): native.append(true))
+		watch_signals(_hud)
+		var state: int = GameStateManager._current_state
+		var index: int = WaveManager.current_wave_index
+		_click_result(context.viewport, button.get_global_rect().get_center())
+		assert_eq(native.size(), 1, "Control positivo: el Viewport activó el Button real")
+		assert_signal_emit_count(_hud, signal_name, 1)
+		assert_signal_not_emitted(_hud, other_signal)
+		assert_eq(GameStateManager._current_state, state, "HUD no navega ni reinicia Managers")
+		assert_eq(WaveManager.current_wave_index, index)
+		assert_eq(EconomyManager.collected_ammo, 9)
+	_restore_result_context(context)
+
+
 ## --- Contador de munición al instanciar (FR-015) ---
 
 func test_ammo_label_reflects_already_collected_ammo_immediately_on_ready() -> void:
@@ -514,3 +613,31 @@ func test_i3_ineligible_selected_owner_disables_control_and_rejects_direct_inten
 	assert_eq(EconomyManager.collected_ammo, 100)
 	GameStateManager._current_state = saved_state
 	EconomyManager.collected_ammo = saved_ammo
+
+
+## 007/T017: navegación real de foco; no emite señales manuales del Button.
+func test_keyboard_reaches_menu_action_and_emits_only_its_intent(
+		outcome = use_parameters(["won", "lost"])) -> void:
+	var context: Dictionary = await _result_context(outcome)
+	var menu := _result_action("Menú principal")
+	assert_not_null(menu)
+	if menu != null:
+		var native: Array[bool] = []
+		menu.pressed.connect(func(): native.append(true))
+		watch_signals(_hud)
+		var state: int = GameStateManager._current_state
+		for keycode: Key in [KEY_TAB, KEY_ENTER]:
+			for down: bool in [true, false]:
+				var event := InputEventKey.new()
+				event.keycode = keycode
+				event.physical_keycode = keycode
+				event.pressed = down
+				context.viewport.push_input(event, true)
+			if keycode == KEY_TAB:
+				assert_same(context.viewport.gui_get_focus_owner(), menu, "Tab desde Retry alcanza Menú principal")
+		assert_eq(native.size(), 1, "Control: Enter activó el Button enfocado")
+		assert_signal_emit_count(_hud, "menu_requested", 1)
+		assert_signal_not_emitted(_hud, "retry_requested")
+		assert_eq(GameStateManager._current_state, state)
+		assert_eq(EconomyManager.collected_ammo, 9)
+	_restore_result_context(context)

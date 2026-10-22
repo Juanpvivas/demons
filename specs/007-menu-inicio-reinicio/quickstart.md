@@ -1,12 +1,12 @@
-# Guía futura de validación de 007
+# Guía de validación de 007
 
-Esta guía se ejecutará al implementar, por los agentes asignados. La preparación documental no ha ejecutado GUT, juego, builds o pruebas de dispositivo. Referencias: [spec](spec.md), [modelo](data-model.md) y [contrato](contracts/match-flow.md).
+Procedimiento reproducible para los agentes asignados; no sustituye la aceptación de cada revisión, entorno y artefacto. El alcance local técnico/funcional/visual está aprobado; las mediciones son descriptivas. El veredicto y CI de la revisión exacta se registran en el PR y seguimiento; publicación pendiente. Referencias: [spec](spec.md), [modelo](data-model.md) y [contrato](contracts/match-flow.md).
 
 ## Preparación y TDD
 
 1. Confirmar rama/SHA, checkout limpio o cambios preservados y binario Godot 4.7.1 disponible. Para resolver esta feature en un clon sin `.specify/feature.json`, proporcionar `SPECIFY_FEATURE_DIRECTORY=specs/007-menu-inicio-reinicio` a los scripts de preparación; no depende del nombre de rama ni requiere versionar ese archivo local. Importación aislada antes de RED; un fallo de entorno no cuenta como fallo semántico.
 2. Tras QA del esqueleto, el tester escribe/ejecuta RED de arranque inerte, transición única y cierre/reset de Managers con escenas reales. Desarrollo implementa por grupos y el tester repite esas pruebas para GREEN y regresiones.
-3. Pruebas dirigidas futuras (GODOT_BIN representa el ejecutable real localizado, no uno instalado por esta guía):
+3. Pruebas dirigidas (GODOT_BIN representa el ejecutable real localizado, no uno instalado por esta guía):
 
 ```bash
 "$GODOT_BIN" --headless --path . -s addons/gut/gut_cmdln.gd -gtest=res://tests/unit/game/test_game_root.gd -gexit
@@ -24,6 +24,16 @@ La suite completa verifica también HUD, `GameStateManager`, `WaveManager`, spaw
 4. Preparar estado residual (selección, daño, moral, recarga/regreso, cajas y efectos); comprobar nueva salud/carga/moral, reserva/plazas/cursor y ausencia de objetos o recompensas anteriores. Repetir botones rápidamente/alternarlos y observar avisos tardíos, cero duplicados y cierre antes del nuevo spawn.
 5. Comprobar por UI los botones terminales, foco y bloqueo del tablero, resize/aspectos vigentes y márgenes utilizables; no confundir llamada directa al controlador con validación de gesto real.
 6. Smoke separado de producción: menú → partida autorada → terminal alcanzable → repetir/menú. Verificar 1 inicial + 99 WAVE con reglas vigentes. Un WON determinista de fixture no acredita una victoria manual de la partida de producción con 100 enemigos; declarar cuál se alcanzó.
+
+## Alcance de las variantes internas
+
+- El Web normal excluye pruebas/fixtures y no activa observadores. Las rutas controladas se exportan por separado.
+- El fixture conserva el atacante inicial y una oleada autorada de un WAVE; LOST añade un enemigo físico de cruce controlado. No representa victoria manual contra los 100 enemigos de producción.
+- Las apps nativas internas usan Compatibility, con AVD Android e iPad Simulator/Apple Software Renderer. Sus paquetes incluyen assets GUT/fixtures inactivos por el preset heredado; no son artefactos finales certificados.
+- El Android original genera APK pero presenta un error postexportación del loader GUT, también reproducido en la base. Las variantes internas limpias excluyen temporalmente esa escena heredada; el paquete original no está aprobado como limpio y esas variantes no certifican el renderer Mobile.
+- iPad Simulator usa un shell ARM64 reutilizado con el PCK correspondiente, sin certificar IPA física o empaquetado final.
+- El smoke de producción y el observador de UI acreditan función, no métricas de rendimiento. Tras QA se restauraron apps normales de la candidata y los datos previos, sin observador activo; la restauración se comprobó por separado de las métricas. Esto no convierte emulación en hardware físico.
+- Las comparaciones descriptivas no aíslan mejoras causales; el aumento observado del monitor de memoria de render no equivale a RSS/VRAM ni demuestra una fuga. Android SwiftShader e iPad Simulator/Apple Software Renderer permanecen por debajo de 60 FPS en ambas revisiones. Preservar las pausas anteriores al calentamiento continuo y no confundir ventanas válidas con fluidez aceptable o certificación física.
 
 ## Matriz, rendimiento y entrega
 

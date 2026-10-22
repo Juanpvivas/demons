@@ -28,10 +28,10 @@ extends Node
 ## conservador, no especificado explícitamente en `spec.md`).
 
 ## Estados posibles de la partida.
-enum GameState { PLAYING, PAUSED, WON, LOST }
+enum GameState { PLAYING, PAUSED, WON, LOST, MENU }
 
-## Estado actual de la partida. Arranca en `PLAYING`.
-var _current_state: GameState = GameState.PLAYING
+## La apertura espera una intención explícita antes de iniciar el combate.
+var _current_state: GameState = GameState.MENU
 
 ## Emitida cuando `WaveManager.all_waves_completed` se recibe y el estado
 ## era `PLAYING`. Escucha: HUD/UI (pantalla de victoria).
@@ -48,6 +48,14 @@ signal game_state_changed(new_state: GameState)
 
 func _ready() -> void:
 	WaveManager.all_waves_completed.connect(_on_all_waves_completed)
+
+
+## Fuera de una partida no se aceptan reportes de victoria o derrota.
+func enter_menu() -> void:
+	if _current_state == GameState.MENU:
+		return
+	_current_state = GameState.MENU
+	game_state_changed.emit(_current_state)
 
 
 ## Un nivel nuevo inicia otra partida; no hereda el terminal anterior.

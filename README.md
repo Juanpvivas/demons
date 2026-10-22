@@ -89,11 +89,24 @@ software mantienen unos 150–151 ms por frame, sin causa confirmada. Las bases
 nativas y la estabilización siguen pendientes en el
 [seguimiento de 006](specs/006-diagnostico-rendimiento/tasks.md).
 
-La preparación de [007 — Menú de inicio y nueva partida](specs/007-menu-inicio-reinicio/spec.md)
-define un menú pictórico de Monte Calvo, inicio mediante «Jugar» y las acciones
-«Volver a jugar» o «Menú principal» tras victoria/derrota, con reinicio completo.
-Este flujo aún no está implementado; los pendientes de 006 y de publicación
-se conservan.
+[007 — Menú de inicio y nueva partida](specs/007-menu-inicio-reinicio/spec.md)
+implementa el ciclo completo en su rama funcional:
+
+- Al abrir, el menú espera a que pulses «Jugar» para iniciar Monte Calvo.
+- Tras ganar o perder, «Volver a jugar» empieza un intento nuevo sin refrescar.
+- «Menú principal» permite esperar antes de iniciar otro intento con «Jugar».
+
+Cada intento comienza limpio. El alcance local funcional/visual está aprobado en
+Chrome de computador y apps internas Android AVD/iPad Simulator en Compatibility.
+Las rutas usan escenarios de prueba reducidos, separados del smoke de producción;
+no acreditan victoria manual contra los 100 enemigos ni certificación física.
+Las comparaciones descriptivas muestran mayor memoria de render del motor y
+rendimiento muy limitado en software nativo, incluido el menú sin actores, sin
+causa o fuga demostradas. El
+[seguimiento de 007](specs/007-menu-inicio-reinicio/tasks.md) y el PR del incremento
+identifican el veredicto y CI de su revisión exacta. Los
+[límites de las variantes nativas](docs/SPEC.md#8-arte-y-estilo-visual),
+los pendientes de 006 y la publicación se conservan.
 
 La feature `001-soldado-defensor-oleadas` (`specs/001-soldado-defensor-oleadas/`)
 está completa: un soldado defensor automático que dispara con fusil mientras
