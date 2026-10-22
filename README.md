@@ -89,11 +89,16 @@ software mantienen unos 150–151 ms por frame, sin causa confirmada. Las bases
 nativas y la estabilización siguen pendientes en el
 [seguimiento de 006](specs/006-diagnostico-rendimiento/tasks.md).
 
-La preparación de [007 — Menú de inicio y nueva partida](specs/007-menu-inicio-reinicio/spec.md)
-define un menú pictórico de Monte Calvo, inicio mediante «Jugar» y las acciones
-«Volver a jugar» o «Menú principal» tras victoria/derrota, con reinicio completo.
-Este flujo aún no está implementado; los pendientes de 006 y de publicación
-se conservan.
+[007 — Menú de inicio y nueva partida](specs/007-menu-inicio-reinicio/spec.md)
+implementa el ciclo completo en su rama funcional:
+
+- Al abrir, el menú espera a que pulses «Jugar» para iniciar Monte Calvo.
+- Tras ganar o perder, «Volver a jugar» empieza un intento nuevo sin refrescar.
+- «Menú principal» permite esperar antes de iniciar otro intento con «Jugar».
+
+Cada intento comienza limpio. El ciclo lógico está aprobado con escenarios de
+prueba reducidos; la verificación final visual, por plataforma, de compilación,
+rendimiento y CI sigue pendiente. Se conservan los pendientes de 006 y publicación.
 
 La feature `001-soldado-defensor-oleadas` (`specs/001-soldado-defensor-oleadas/`)
 está completa: un soldado defensor automático que dispara con fusil mientras

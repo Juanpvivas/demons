@@ -506,17 +506,19 @@ contra reentrada. Hasta «Jugar» no existe un nivel de combate activo.
 El menú usa `CanvasLayer` para mantener su presentación independiente de la
 `Camera2D` del nivel.
 
-US2 de 007 añade repetición desde `WON/LOST`: el HUD emite una intención,
+US2–US3 de 007 añaden repetición y regreso al menú desde `WON/LOST`: el HUD emite una intención,
 propagada por el nivel y aceptada por la raíz sólo para el intento actual.
 El cierre bloquea reentrada, invalida la generación anterior, entra en `MENU`
 y cancela oleadas sin emitir progreso o victoria. Nivel y spawner detienen
 actividad y desconectan consumidores antes de retirar su árbol; el siguiente
 nivel se monta sólo tras su liberación efectiva y conserva su inicialización
-vigente. Orígenes o callbacks antiguos no cambian el nuevo intento.
-Este ciclo está aprobado funcionalmente con una oleada autorada de un WAVE;
+vigente. El destino menú usa el mismo cierre, deja cero niveles y restituye
+«Jugar» habilitado y enfocado; sólo un nuevo inicio monta otra partida.
+Orígenes o callbacks antiguos no cambian el destino ni el nuevo intento.
+Este ciclo lógico está aprobado funcionalmente con una oleada autorada de un WAVE;
 la derrota añade un enemigo de cruce controlado. No acredita victoria manual
-de producción 1+99 ni la matriz final. El destino
-«Menú principal» desde un resultado sigue pendiente de US3.
+de producción 1+99 ni la verificación visual, de plataformas, compilación,
+rendimiento y CI final.
 
 ## 5. Composición de escenas (ejemplo concreto)
 
@@ -921,3 +923,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-21 | 006/T013 tras QA T009: herramienta optativa de diagnóstico en §6, separada del producto; validez mecánica y observabilidad efectiva diferenciadas, sin nuevos patrones de gameplay ni parche de rendimiento. |
 | 2026-10-21 | 007/T010 tras QA T009: entrada común con composición local, intención de UI, montaje diferido protegido y estado MENU sin renumeración; sólo US1 funcional, con repetición/regreso y verificación final pendientes. |
 | 2026-10-21 | 007/T016 tras QA T015: cierre previo a repetir, cancelación silenciosa y aislamiento por intento; aprobación funcional con fixture reducido, sin entregar aún regreso al menú o validación final. |
+| 2026-10-21 | 007/T022 tras QA T021: destino menú mediante el cierre compartido, sin nivel activo y con foco de inicio restaurado; ciclo lógico aprobado, validación final y publicación pendientes. |

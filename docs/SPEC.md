@@ -249,18 +249,22 @@ audio sigue pendiente. I5 consolida el alcance funcional integrado mediante
 entrega y PR. La publicación, las features 004/005 y el MVP siguen abiertos.
 
 [007 — Menú de inicio y nueva partida](../specs/007-menu-inicio-reinicio/spec.md)
-ya implementa US1 en su rama funcional: la entrada muestra el menú con arte
+implementa US1–US3 en su rama funcional: la entrada muestra el menú con arte
 estático de Monte Calvo, sin un nivel activo detrás. «Jugar» inicia una única
 partida con las condiciones vigentes, sin propagar el gesto al tablero.
 US2 añade «Volver a jugar» desde victoria o derrota: retira el intento anterior
 y restablece soldados, recursos, plazas, selección y oleadas sin refrescar ni
 reabrir. Eventos del intento retirado no alteran el siguiente.
-La repetición está aprobada funcionalmente con una oleada autorada de un enemigo;
+US3 añade «Menú principal» desde ambos resultados: retira la partida y deja
+el menú inerte con «Jugar» disponible y enfocado; sólo esa acción inicia otro
+intento limpio. Repetición y regreso comparten el mismo cierre protegido.
+El ciclo lógico está aprobado funcionalmente con una oleada autorada de un enemigo;
 la derrota usa además un enemigo de cruce controlado. Este escenario reducido
 no acredita una victoria manual con los 100 enemigos de producción, cuyo reparto
 de 1 inicial + 99 se conserva.
-«Menú principal» desde el resultado (US3), revisión visual y matriz final siguen
-pendientes; US1–US2 no entregan aún el ciclo completo ni cierran 006 o publicación.
+La revisión visual, espera por UI, matriz de plataformas, suite completa,
+compilación/exportaciones, rendimiento y CI finales siguen pendientes.
+Este avance no cierra los pendientes de 006 o de publicación.
 
 La [comparación visual](../specs/002-monte-calvo-terreno-trincheras/evidence/us3.md)
 y la [matriz nativa](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
@@ -433,3 +437,4 @@ delimita las próximas mediciones, sin acreditar hardware o paquete final.
 | 2026-10-21 | Preparación de 007: dirección pictórica y flujo de menú, inicio y repetición confirmados; implementación, pendientes de 006 y publicación conservados. |
 | 2026-10-21 | 007/T010 tras QA T009: menú inerte e inicio explícito de US1 aprobados funcionalmente en rama; repetición, regreso al menú, validación visual/matriz final y publicación pendientes. |
 | 2026-10-21 | 007/T016 tras QA T015: repetición desde victoria/derrota, cierre y reinicio aprobados funcionalmente con fixture reducido; producción 1+99 intacta, regreso al menú, matriz final y publicación pendientes. |
+| 2026-10-21 | 007/T022 tras QA T021: regreso al menú y nuevo inicio completan el ciclo lógico aprobado; guía de usuario actualizada, con verificación final por plataforma y publicación pendientes. |
