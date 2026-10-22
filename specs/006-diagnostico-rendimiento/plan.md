@@ -1,11 +1,20 @@
 # Implementation Plan: Diagnóstico y estabilización del rendimiento
 
-**Feature ID**: `006-diagnostico-rendimiento` · **Planned Branch**: `codex/006-i1-rendimiento` · **Date**: 2026-10-21 · **Spec**: [spec.md](spec.md)
-**Issue**: [#30](https://github.com/Juanpvivas/demons/issues/30). I1 usa `Refs #30`; el Issue sigue abierto para seguimiento posterior.
+**Feature ID**: `006-diagnostico-rendimiento` · **Branch**: `codex/006-i2-estabilizacion` · **Date**: 2026-10-21 · **Spec**: [spec.md](spec.md)
+**Issue**: [#30](https://github.com/Juanpvivas/demons/issues/30). I1 integrado por PR #31; I2 conserva `Refs #30` y el Issue abierto.
 
 ## Summary
 
 El alcance previsto de I1 es medición reproducible y la primera corrección de presentación cuyo coste se confirme. T009 aprueba para integración sólo el instrumento y el diagnóstico limitado: Web no distingue ganancia; Android tiene deriva y observabilidad insuficiente de foco/vsync; tres ventanas posteriores de iPad Simulator/software rondan 150–151 ms por frame y siguen siendo descriptivas por la misma limitación de observación efectiva. La hipótesis del shader no queda confirmada y no se aplica un parche. Bases nativas T008/SC-001 y US2 siguen pendientes, sin declarar US1 completa. El [protocolo](contracts/profiling-protocol.md) es la fuente única de condiciones, API y aceptación.
+
+I2 continúa sobre `main` `2272aa2`: B es esa revisión y C la misma fuente más
+una intervención temporal. La [adenda I2](contracts/profiling-protocol.md#adenda-i2-componente-gpu-web)
+añade un preflight acotado de timer queries GPU WebGL2 en el contexto de Godot,
+con cobertura pre/post draw demostrada y control del observador. Ese carril no
+sustituye al probe ni acredita FPS físicos. El lote requiere autorización tras
+preflight; T009-I2 deberá emitir un nuevo dictamen antes de cualquier T010.
+Preparación, preflight, medición y candidata son etapas distintas; no se afirma
+un ahorro ni se completan los pendientes nativos o de publicación.
 
 ## Technical Context
 

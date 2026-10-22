@@ -1,12 +1,20 @@
 # Feature Specification: Diagnóstico y estabilización del rendimiento
 
-**Feature ID**: `006-diagnostico-rendimiento` · **Planned Branch**: `codex/006-i1-rendimiento` · **Created**: 2026-10-21
-**Status**: T009 aprueba para integración el instrumento y diagnóstico limitado, sin parche. Bases nativas T008/SC-001 y US2 pendientes; publicación pendiente.
+**Feature ID**: `006-diagnostico-rendimiento` · **Branch**: `codex/006-i2-estabilizacion` · **Created**: 2026-10-21
+**Status**: I1 integrado por PR #31, sin parche. I2 prepara preflight sobre `2272aa2`; lote, nuevo T009-I2 y optimización aún no autorizados. T008/SC-001 nativos y T010–T012/US2 pendientes; publicación pendiente.
 **Input**: «Continúa con el diagnóstico y estabilización del rendimiento desde main actualizado, siguiendo el flujo de agentes y QA. Actualiza la documentación y prepara el PR en borrador, manteniendo la publicación pendiente».
 
 ## Contexto y alcance
 
-Monte Calvo tiene el alcance funcional de 004/005 integrado en `main` (`5d50cb0`, PR #29). Las muestras históricas registran caídas en Android emulado y rendimiento muy limitado en iOS Simulator; no permiten atribuir la causa al hardware, al arte, al pulso o a una función concreta. I1 prevé un diagnóstico reproducible y la primera corrección segura que ese diagnóstico justifique. La entrega actual se limita al instrumento aprobado y al diagnóstico sin mejora causal acreditada; no completa US1/US2 ni autoriza el parche. Las bases nativas y los problemas restantes conservan seguimiento en [las tareas](tasks.md); no se amplía gameplay ni se distribuye una versión.
+En la preparación de I1, Monte Calvo tenía el alcance funcional de 004/005 integrado en `main` (`5d50cb0`, PR #29). Las muestras históricas registraban caídas en Android emulado y rendimiento muy limitado en iOS Simulator, sin atribuir causa al hardware, al arte, al pulso o a una función concreta. I1 preveía un diagnóstico reproducible y la primera corrección segura que justificara. Su entrega se limitó al instrumento aprobado y al diagnóstico sin mejora causal acreditada; no completó US1/US2 ni autorizó el parche. Las bases nativas y los problemas restantes conservan seguimiento en [las tareas](tasks.md); no se amplía gameplay ni se distribuye una versión.
+
+Ese contexto corresponde a I1 y conserva `5d50cb0` como base histórica.
+I2 usa B=`2272aa2`, con el menú de 007 integrado, y C sobre esa misma base con
+una intervención. La [adenda I2](contracts/profiling-protocol.md#adenda-i2-componente-gpu-web)
+define perfilado de componente GPU Web separado de comparabilidad global/FPS,
+sin relajar el probe. Sólo un nuevo T009-I2 con señal repetible y control del
+observador podrá autorizar una candidata; no hay resultados nuevos acreditados
+por esta preparación.
 
 ## User Scenarios & Testing
 

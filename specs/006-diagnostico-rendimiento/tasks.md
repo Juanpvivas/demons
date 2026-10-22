@@ -1,8 +1,9 @@
 # Tasks: Diagnóstico y estabilización del rendimiento
 
-**Feature**: `006-diagnostico-rendimiento` · **Issue**: [#30](https://github.com/Juanpvivas/demons/issues/30) · **I1**: `codex/006-i1-rendimiento`, base `5d50cb0`.
-**PR I1 en borrador**: [#31](https://github.com/Juanpvivas/demons/pull/31), `Refs #30`; bases nativas, US2 y publicación pendientes.
-**Estado**: instrumento T001–T007, dictamen limitado T009 y documentación/entrega T013–T015 aprobados por QA para integración; I1 entrega instrumento y diagnóstico sin parche, en PR en borrador. T008/base nativa y T010–T012/US2 pendientes; publicación pendiente. Input: [spec](spec.md), [plan](plan.md), [protocolo](contracts/profiling-protocol.md), [quickstart](quickstart.md) y [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
+**Feature**: `006-diagnostico-rendimiento` · **Issue**: [#30](https://github.com/Juanpvivas/demons/issues/30).
+**I1 integrado**: [PR #31](https://github.com/Juanpvivas/demons/pull/31), `d86543f`, base histórica `5d50cb0`.
+**I2 en curso**: `codex/006-i2-estabilizacion`, desde `main` actualizado `2272aa2` (PR #34).
+**Estado**: T001–T007, dictamen limitado T009 y T013–T015 conservan su aprobación histórica de I1, sin parche. I2 continúa T008 y exige un nuevo dictamen T009 antes de autorizar T010; T008 y T010–T012/US2 siguen pendientes. La preparación de I2 y la autorización para ejecutar el preflight están aprobadas por QA; sus resultados y el lote siguen pendientes. Publicación pendiente. Input: [spec](spec.md), [plan](plan.md), [protocolo](contracts/profiling-protocol.md), [quickstart](quickstart.md) y [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
 
 Spec Kit sólo prepara. Orquestador registra `[X]` tras QA; dev no escribe/ejecuta tests, QA sólo revisa. Nuevos resultados de validación quedan en temporales/CI y en el resumen del PR, no en Git. No fabricar RED de presentación equivalente ni de fuente histórica. El alcance previsto reúne US1 y una primera corrección US2 autorizada; T009 delimita esta entrega al instrumento y diagnóstico, con bases nativas y US2 pendientes. El Issue conserva seguimiento posterior y usa `Refs`, sin publicación.
 
@@ -20,8 +21,8 @@ Spec Kit sólo prepara. Orquestador registra `[X]` tras QA; dev no escribe/ejecu
 - [X] T005 [US1] dev-godot: implementar el instrumento optativo mínimo en `tools/performance/probe.gd`, sin IO por frame, autoridad jugable, autoload ni referencia desde escenas normales; depende de T004 aprobado.
 - [X] T006 [US1] godot-tester: verificar GREEN de `tests/unit/systems/test_performance_probe.gd`, regresión pertinente y neutralidad de la lectura con nodos reales; informar modificaciones propias de test sin debilitar contrato; depende de T005.
 - [X] T007 [US1] qa-validator: validar instrumento y RED/GREEN frente al `contracts/profiling-protocol.md`, incluidos invalidación/compatibilidad y límites del observador; habilitar su uso sin aprobar aún diagnóstico o parche; depende de T006.
-- [ ] T008 [US1] godot-tester: ejecutar nueva base `5d50cb0` y diagnóstico del `contracts/profiling-protocol.md` en Web de computador/APK/app iPad disponibles, con tres repeticiones por condición y oráculos independientes. Perfilar o aislar un factor para confirmar/descartar coste del shader; separar render fijo, producción y pacing/foco iOS, sin atribuir GPU/Self desde TIME_PROCESS. Collectors/ablaciones/resultados sólo temporales; depende de T007.
-- [X] T009 [US1] qa-validator: revisar muestras/cohortes/contexto y atribución de T008 contra `contracts/profiling-protocol.md`; emitir dictamen causal y alcance exacto del primer parche autorizado, o mantener US2 pendiente si no hay señal válida; depende de T008.
+- [ ] T008 [US1] godot-tester: continuar en I2 sobre `2272aa2`, conservando `5d50cb0` como base histórica de I1, y ejecutar el diagnóstico del `contracts/profiling-protocol.md` en Web de computador/APK/app iPad disponibles, con tres repeticiones por condición y oráculos independientes. Perfilar o aislar un factor para confirmar/descartar coste del shader; separar render fijo, producción y pacing/foco iOS, sin atribuir GPU/Self desde TIME_PROCESS. Collectors/ablaciones/resultados sólo temporales; depende de T007.
+- [X] T009 [US1] qa-validator: revisar muestras/cohortes/contexto y atribución de T008 contra `contracts/profiling-protocol.md`; emitir dictamen causal y alcance exacto del primer parche autorizado, o mantener US2 pendiente si no hay señal válida; depende de T008. Esta casilla acredita el dictamen I1 sin parche; I2 requiere reevaluación independiente, todavía pendiente.
 
 ## Fase 3: US2 — Primera estabilización verificada (P2)
 

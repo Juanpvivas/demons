@@ -2,7 +2,17 @@
 
 Fuente normativa: [protocolo](contracts/profiling-protocol.md); requisitos en [spec](spec.md). Ejecutan los agentes asignados, nunca Spec Kit.
 
-T009 aprobó para integración el instrumento y diagnóstico limitado, sin parche. Esta guía conserva el recorrido pendiente: las bases nativas de T008/SC-001 y US2 no se completaron. El detalle de ejecución y límites queda en el PR; no se exige repetir evidencia vigente por cambios sólo documentales.
+El T009 de I1 aprobó para integración el instrumento y diagnóstico limitado, sin parche. Esta guía conserva el recorrido pendiente: las bases nativas de T008/SC-001 y US2 no se completaron. El detalle de ejecución y límites queda en el PR; no se exige repetir evidencia vigente por cambios sólo documentales.
+
+Para I2, B=`2272aa2` y C es la misma fuente con una intervención. Antes del lote,
+el tester verifica el [preflight GPU Web](contracts/profiling-protocol.md#adenda-i2-componente-gpu-web):
+contexto real, bracket single-thread de dibujo, queries asíncronas disponibles
+y sin disjoint, con control de perturbación. Un fallo invalida ese carril.
+Sólo tras revisión QA y confirmación del orquestador se ejecuta B,C,C,B,B,C,
+10 s de calentamiento y 30 s de reloj monotónico por ventana. DOM/RAF no acreditan
+VSync físico; el probe mantiene sus ocho condiciones y nunca se fuerza válido.
+El nuevo T009-I2 decide sobre señal repetible antes de T010; material-off no
+prueba ahorro de cuatro lecturas ni neutralidad. I1/PR #31 es antecedente integrado.
 
 1. Confirmar rama/base y SHA, entorno nativo/Web y fuentes disponibles. Antes de tests, importación aislada con Godot4.7.1; no tratar fallos de parser/import como RED.
 2. T003 ejecuta RED dirigido: `godot --headless --path <copia-aislada> -s addons/gut/gut_cmdln.gd -gtest=res://tests/unit/systems/test_performance_probe.gd -gexit`. QA revisa fallo semántico; tras T005 se repite el mismo comando para GREEN.
