@@ -49,6 +49,11 @@ signal wave_completed(wave_number: int)
 signal all_waves_completed()
 
 
+## Interfaz de 007; la cancelación silenciosa se implementa tras RED.
+func cancel_waves() -> void:
+	pass
+
+
 ## Fija la secuencia de oleadas a consumir y arranca la primera. Si
 ## `new_waves` está vacío (nivel sin oleadas configuradas), no hay ninguna
 ## oleada que iniciar: se emite `all_waves_completed()` directamente, sin

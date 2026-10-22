@@ -28,7 +28,7 @@ extends Node
 ## conservador, no especificado explícitamente en `spec.md`).
 
 ## Estados posibles de la partida.
-enum GameState { PLAYING, PAUSED, WON, LOST }
+enum GameState { PLAYING, PAUSED, WON, LOST, MENU }
 
 ## Estado actual de la partida. Arranca en `PLAYING`.
 var _current_state: GameState = GameState.PLAYING
@@ -48,6 +48,11 @@ signal game_state_changed(new_state: GameState)
 
 func _ready() -> void:
 	WaveManager.all_waves_completed.connect(_on_all_waves_completed)
+
+
+## Interfaz de 007; la transición a menú se implementa tras RED.
+func enter_menu() -> void:
+	pass
 
 
 ## Un nivel nuevo inicia otra partida; no hereda el terminal anterior.
