@@ -1,7 +1,7 @@
 # Tasks: Menú de inicio y nueva partida
 
 **Feature**: `007-menu-inicio-reinicio` · **Issue**: [#32](https://github.com/Juanpvivas/demons/issues/32) · **Input**: [spec](spec.md), [plan](plan.md), [research](research.md), [modelo](data-model.md), [contrato](contracts/match-flow.md), [quickstart](quickstart.md).
-**Estado**: 007-I1 en ejecución en `codex/007-i1-menu`, desde `main` actualizado `a97affd` tras PR #33. T001–T004 aprobadas por QA como setup; las historias funcionales y la publicación siguen pendientes.
+**Estado**: 007-I1 en ejecución en `codex/007-i1-menu`, desde `main` actualizado `a97affd` tras PR #33. T001–T009 aprobadas por QA hasta US1 funcional; repetición US2, regreso US3, matriz final y publicación pendientes.
 **Flujo**: [desarrollo con agentes](../../docs/DEVELOPMENT_WORKFLOW.md). Tester escribe/ejecuta pruebas; dev implementa sin escribir/ejecutarlas; QA sólo revisa. Sólo el orquestador marca `[X]` tras `APROBADO`. RED aprobado no aprueba implementación.
 **Entrega**: un I1 funcional con US1–US3 completas, `Refs #32`, PR en borrador y publicación pendiente. No entregar sólo el menú. Logs/capturas/resultados nuevos quedan en temporales/CI y se resumen en el PR, no en Git.
 
@@ -18,11 +18,11 @@
 
 **Criterio independiente**: apertura real sin partida; «Jugar» inicia una sola con condiciones vigentes. Cubre FR-001–003/008–010 y SC-001/004–006.
 
-- [ ] T005 [US1] godot-tester RED: crear `tests/unit/game/test_game_root.gd` y `tests/unit/ui/test_main_menu.gd`, ampliar `tests/unit/systems/test_game_state_manager.gd`; ejecutar aserciones de entrada real todavía automática, menú sin nivel/oleadas, MENU inicial sin resultado, inicio único, foco y gesto no propagado; fallo semántico, no import/parser; depende de T004.
-- [ ] T006 [US1] qa-validator: revisar pruebas y RED de T005 contra `specs/007-menu-inicio-reinicio/spec.md`; aprobar sólo calidad/fallo esperado, sin dar por entregado menú o inicio; depende de T005.
-- [ ] T007 [US1] dev-godot: implementar raíz/menú pictórico en `scenes/game/` y `scenes/ui/MainMenu.tscn`, conectar intención de inicio y cambiar `project.godot`; activar MENU/enter_menu en `autoloads/game_state_manager.gd` sin renumerar PLAYING/PAUSED/WON/LOST ni cambiar combate; depende de T006 aprobado.
-- [ ] T008 [US1] godot-tester GREEN: repetir T005 y regresión de `tests/unit/{systems,ui,levels}/`, incluyendo consumidores/fixtures que asumían PLAYING inicial, entrada real, cinco soldados/reserva cero y exclusión de gesto; adaptar sólo expectativas legítimamente modificadas, sin fingir RED histórico; depende de T007.
-- [ ] T009 [US1] qa-validator: contrastar menú/inicio, fuente, RED/GREEN y arte reutilizado con `specs/007-menu-inicio-reinicio/contracts/match-flow.md`; validar sólo US1, sin entregar aún I1; depende de T008.
+- [X] T005 [US1] godot-tester RED: crear `tests/unit/game/test_game_root.gd` y `tests/unit/ui/test_main_menu.gd`, ampliar `tests/unit/systems/test_game_state_manager.gd`; ejecutar aserciones de entrada real todavía automática, menú sin nivel/oleadas, MENU inicial sin resultado, inicio único, foco y gesto no propagado; fallo semántico, no import/parser; depende de T004.
+- [X] T006 [US1] qa-validator: revisar pruebas y RED de T005 contra `specs/007-menu-inicio-reinicio/spec.md`; aprobar sólo calidad/fallo esperado, sin dar por entregado menú o inicio; depende de T005.
+- [X] T007 [US1] dev-godot: implementar raíz/menú pictórico en `scenes/game/` y `scenes/ui/MainMenu.tscn`, conectar intención de inicio y cambiar `project.godot`; activar MENU/enter_menu en `autoloads/game_state_manager.gd` sin renumerar PLAYING/PAUSED/WON/LOST ni cambiar combate; depende de T006 aprobado.
+- [X] T008 [US1] godot-tester GREEN: repetir T005 y regresión de `tests/unit/{systems,ui,levels}/`, incluyendo consumidores/fixtures que asumían PLAYING inicial, entrada real, cinco soldados/reserva cero y exclusión de gesto; adaptar sólo expectativas legítimamente modificadas, sin fingir RED histórico; depende de T007.
+- [X] T009 [US1] qa-validator: contrastar menú/inicio, fuente, RED/GREEN y arte reutilizado con `specs/007-menu-inicio-reinicio/contracts/match-flow.md`; validar sólo US1, sin entregar aún I1; depende de T008.
 - [ ] T010 [P] [US1] docs-writer: documentar únicamente inicio/menú aprobados en `docs/SPEC.md` y notas útiles de `docs/ARCHITECTURE.md`, manteniendo repetición aún pendiente; revisión documental en T031; depende de T009 aprobado.
 
 ## Fase 3: US2 — Resultado y repetición limpia (P1)
