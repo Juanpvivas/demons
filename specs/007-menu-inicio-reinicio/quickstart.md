@@ -32,7 +32,7 @@ La suite completa verifica también HUD, `GameStateManager`, `WaveManager`, spaw
 - Las apps nativas internas usan Compatibility, con AVD Android e iPad Simulator/Apple Software Renderer. Sus paquetes incluyen assets GUT/fixtures inactivos por el preset heredado; no son artefactos finales certificados.
 - El Android original genera APK pero presenta un error postexportación del loader GUT, también reproducido en la base. Las variantes internas limpias excluyen temporalmente esa escena heredada; el paquete original no está aprobado como limpio y esas variantes no certifican el renderer Mobile.
 - iPad Simulator usa un shell ARM64 reutilizado con el PCK correspondiente, sin certificar IPA física o empaquetado final.
-- El smoke de producción y el observador de UI acreditan función, no métricas de rendimiento. Tras QA se restauraron apps y datos originales, sin observador activo; la restauración se comprobó por separado de las métricas. Esto no convierte emulación en hardware físico.
+- El smoke de producción y el observador de UI acreditan función, no métricas de rendimiento. Tras QA se restauraron apps normales de la candidata y los datos previos, sin observador activo; la restauración se comprobó por separado de las métricas. Esto no convierte emulación en hardware físico.
 - Las comparaciones descriptivas no aíslan mejoras causales; el aumento observado del monitor de memoria de render no equivale a RSS/VRAM ni demuestra una fuga. Android SwiftShader e iPad Simulator/Apple Software Renderer permanecen por debajo de 60 FPS en ambas revisiones. Preservar las pausas anteriores al calentamiento continuo y no confundir ventanas válidas con fluidez aceptable o certificación física.
 
 ## Matriz, rendimiento y entrega
