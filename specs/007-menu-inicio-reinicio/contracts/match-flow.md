@@ -1,8 +1,8 @@
 # Contrato de inicio, resultado y repetición
 
-Contrato futuro para [FR-001–013](../spec.md), no prueba de implementación. La raíz decide navegación; Managers conservan economía/oleadas/resultado y UI sólo expresa intenciones.
+Contrato aplicado a [FR-001–013](../spec.md); no sustituye la validación de cada entorno y artefacto. La raíz decide navegación; Managers conservan economía/oleadas/resultado y UI sólo expresa intenciones.
 
-## Interfaces previstas
+## Interfaces
 
 | Dueño | Interfaz | Efecto contractual |
 |---|---|---|
@@ -28,7 +28,8 @@ Contrato futuro para [FR-001–013](../spec.md), no prueba de implementación. L
 - `MainMenu`: pantalla completa con fondo pictórico estático, título y «Jugar», contenedores/márgenes y foco inicial. Reutilizar arte existente sin cargar una escena de combate de fondo.
 - Resultado: conserva desenlace vigente y añade «Volver a jugar»/«Menú principal», navegación por foco y toque/ratón. Bloquea entrada hacia el tablero; no añade pausa o salida durante PLAYING.
 - Redimensionar conserva correspondencia visible/interactiva y área utilizable, sin acciones económicas o navegación espontánea.
+- Menú y resultado comparten `resources/ui/monte_calvo_theme.tres`; su estilo y foco no cambian la autoridad de navegación.
 
-## Esqueleto anterior a RED
+## Límite del esqueleto anterior a RED (antecedente de preparación)
 
-Escenas `GameRoot`/`MainMenu` cargables, API/señales declaradas y entradas sin efecto; no conectar el flujo funcional, no instanciar el nivel, no resetear/cancelar Managers ni cambiar `project.godot`. Declarar el símbolo MENU al final del enum sin activarlo y las APIs nuevas de Managers como no-op permite RED semántico del estado inicial aún PLAYING. QA revisa el límite; los tests de entrada real fallan porque la entrada vigente aún inicia el nivel.
+El setup previo a RED sólo declaró escenas/API cargables y métodos sin efecto, sin montar nivel, cancelar Managers o cambiar la entrada. MENU se declaró al final del enum sin activarlo. Ese límite permitió probar semánticamente la conducta ausente; no describe el comportamiento del producto actual.

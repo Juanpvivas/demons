@@ -32,6 +32,7 @@ res://
 │   ├── units/                  # soldado_base_stats.tres, futuras unidades
 │   ├── enemies/                # stats de cada tipo de enemigo (.tres)
 │   ├── levels/                 # LaneBoardConfig concreto por nivel (.tres)
+│   ├── ui/                     # Theme compartido del menú y resultado
 │   └── waves/                  # definición de oleadas por nivel (.tres)
 ├── autoloads/                   # Singletons globales (ver sección 4.1)
 ├── core/                          # Lógica compartida NO-autoload (ver sección 4.5)
@@ -504,10 +505,13 @@ autoload adicional. `MainMenu` sólo emite la intención `play_requested`;
 la raíz acepta una vez el inicio y monta el nivel de forma diferida, protegida
 contra reentrada. Hasta «Jugar» no existe un nivel de combate activo.
 El menú usa `CanvasLayer` para mantener su presentación independiente de la
-`Camera2D` del nivel.
+`Camera2D` del nivel. Menú y resultado reutilizan el `Theme` de
+`resources/ui/monte_calvo_theme.tres`; el acabado y el foco se comparten como
+presentación, sin dar autoridad jugable al recurso.
 
-US2–US3 de 007 añaden repetición y regreso al menú desde `WON/LOST`: el HUD emite una intención,
-propagada por el nivel y aceptada por la raíz sólo para el intento actual.
+US2–US3 de 007 añaden repetición y regreso al menú desde `WON/LOST`: el HUD
+emite una intención, propagada por el nivel y aceptada por la raíz sólo para
+el intento actual.
 El cierre bloquea reentrada, invalida la generación anterior, entra en `MENU`
 y cancela oleadas sin emitir progreso o victoria. Nivel y spawner detienen
 actividad y desconectan consumidores antes de retirar su árbol; el siguiente
@@ -517,8 +521,16 @@ vigente. El destino menú usa el mismo cierre, deja cero niveles y restituye
 Orígenes o callbacks antiguos no cambian el destino ni el nuevo intento.
 Este ciclo lógico está aprobado funcionalmente con una oleada autorada de un WAVE;
 la derrota añade un enemigo de cruce controlado. No acredita victoria manual
-de producción 1+99 ni la verificación visual, de plataformas, compilación,
-rendimiento y CI final.
+de producción 1+99. La matriz funcional/visual disponible distingue Chrome de
+computador, Android AVD Compatibility e iPad Simulator Compatibility/Apple
+Software Renderer. Las variantes nativas internas incluyen assets de prueba
+inactivos y una exclusión temporal del loader GUT heredado. iPad Simulator usa
+un shell ARM64 reutilizado con el PCK del juego; no certifica empaquetado final,
+renderer Mobile o hardware.
+Las comparaciones son descriptivas: la memoria de render observada es un monitor
+del motor, no RSS/VRAM ni prueba de causa o fuga. La cadencia en renderers nativos
+software permanece muy por debajo de 60 FPS; no certifica dispositivos físicos.
+La aceptación y CI de cada revisión exacta se registran en el PR del incremento.
 
 ## 5. Composición de escenas (ejemplo concreto)
 
@@ -924,3 +936,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-21 | 007/T010 tras QA T009: entrada común con composición local, intención de UI, montaje diferido protegido y estado MENU sin renumeración; sólo US1 funcional, con repetición/regreso y verificación final pendientes. |
 | 2026-10-21 | 007/T016 tras QA T015: cierre previo a repetir, cancelación silenciosa y aislamiento por intento; aprobación funcional con fixture reducido, sin entregar aún regreso al menú o validación final. |
 | 2026-10-21 | 007/T022 tras QA T021: destino menú mediante el cierre compartido, sin nivel activo y con foco de inicio restaurado; ciclo lógico aprobado, validación final y publicación pendientes. |
+| 2026-10-22 | 007/T027 tras QA T026: Theme compartido y alcance local aprobado; variantes internas y cadencia software limitada documentadas, con revisión exacta en PR y publicación pendiente. |

@@ -96,9 +96,17 @@ implementa el ciclo completo en su rama funcional:
 - Tras ganar o perder, «Volver a jugar» empieza un intento nuevo sin refrescar.
 - «Menú principal» permite esperar antes de iniciar otro intento con «Jugar».
 
-Cada intento comienza limpio. El ciclo lógico está aprobado con escenarios de
-prueba reducidos; la verificación final visual, por plataforma, de compilación,
-rendimiento y CI sigue pendiente. Se conservan los pendientes de 006 y publicación.
+Cada intento comienza limpio. El alcance local funcional/visual está aprobado en
+Chrome de computador y apps internas Android AVD/iPad Simulator en Compatibility.
+Las rutas usan escenarios de prueba reducidos, separados del smoke de producción;
+no acreditan victoria manual contra los 100 enemigos ni certificación física.
+Las comparaciones descriptivas muestran mayor memoria de render del motor y
+rendimiento muy limitado en software nativo, incluido el menú sin actores, sin
+causa o fuga demostradas. El
+[seguimiento de 007](specs/007-menu-inicio-reinicio/tasks.md) y el PR del incremento
+identifican el veredicto y CI de su revisión exacta. Los
+[límites de las variantes nativas](docs/SPEC.md#8-arte-y-estilo-visual),
+los pendientes de 006 y la publicación se conservan.
 
 La feature `001-soldado-defensor-oleadas` (`specs/001-soldado-defensor-oleadas/`)
 está completa: un soldado defensor automático que dispara con fusil mientras

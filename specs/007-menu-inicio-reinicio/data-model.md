@@ -1,12 +1,12 @@
 # Modelo de estado de una sesión
 
-Diseño futuro; [contrato operativo](contracts/match-flow.md). No se persiste ningún dato ni se modifican Resources de balance.
+Modelo del ciclo implementado; [contrato operativo](contracts/match-flow.md). La aceptación por entorno y artefacto se conserva en el seguimiento de la feature. No se persiste ningún dato ni se modifican Resources de balance.
 
 | Dueño | Estado/dato | Regla |
 |---|---|---|
 | `GameRoot` | Referencia a menú y nivel actual | Cero niveles en menú; como máximo uno activo |
 | `GameRoot` | `transition_pending`, generación del intento | Una transición aceptada; eventos de otra generación se descartan |
-| `GameStateManager` | `MENU`, `PLAYING`, `PAUSED`, `WON`, `LOST` | Añadir MENU sin renumerar valores existentes; sin resultado fuera de PLAYING |
+| `GameStateManager` | `MENU`, `PLAYING`, `PAUSED`, `WON`, `LOST` | MENU=4 conserva los valores existentes; sin resultado fuera de PLAYING |
 | `WaveManager` | Secuencia, índice y contadores | Cancelar vacía/restaura; no completar una oleada al cancelar |
 | Nivel | Tablero, soldados, spawner/pools, cajas, efectos, selección | Propiedad del intento; retirar todo antes de crear otro |
 | `EconomyManager` | Reserva global | Reset vigente a cero al crear partida; no recompensas de intentos retirados |
