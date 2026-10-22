@@ -2,6 +2,10 @@
 ## La ocupación se asocia al origen, independientemente de la posición del actor.
 extends Node2D
 
+## Interfaces de navegación de 007; el forwarding se implementa tras RED.
+signal retry_requested
+signal menu_requested
+
 @export var board_config: LaneBoardConfig = preload("res://resources/levels/monte_calvo_board.tres")
 @export var soldado_scene: PackedScene = preload("res://scenes/units/Soldado.tscn")
 @export var soldado_deploy_stats: UnitStats = preload("res://resources/units/soldado_base_stats.tres")

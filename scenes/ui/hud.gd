@@ -52,6 +52,10 @@ extends CanvasLayer
 ## Intención con identidad capturada: el nivel revalidará dueño y selección.
 signal reload_requested(soldier_instance_id: int)
 
+## Interfaces de resultado de 007; los botones aún no emiten intenciones.
+signal retry_requested
+signal menu_requested
+
 var _selected_soldier: Soldado
 
 

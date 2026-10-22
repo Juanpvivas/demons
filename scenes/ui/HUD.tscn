@@ -114,3 +114,27 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = ""
 horizontal_alignment = 1
+
+[node name="Actions" type="VBoxContainer" parent="GameOverScreen"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = 64.0
+offset_right = 160.0
+offset_bottom = 188.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="RetryButton" type="Button" parent="GameOverScreen/Actions"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 56)
+text = "Volver a jugar"
+
+[node name="MenuButton" type="Button" parent="GameOverScreen/Actions"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 56)
+text = "Menú principal"
