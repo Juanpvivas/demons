@@ -252,10 +252,14 @@ entrega y PR. La publicación, las features 004/005 y el MVP siguen abiertos.
 ya implementa US1 en su rama funcional: la entrada muestra el menú con arte
 estático de Monte Calvo, sin un nivel activo detrás. «Jugar» inicia una única
 partida con las condiciones vigentes, sin propagar el gesto al tablero.
-La aprobación funcional parcial de US1 no entrega aún el ciclo completo:
-«Volver a jugar» (US2), «Menú principal» desde el resultado (US3), revisión
-visual y matriz final siguen pendientes. Se conservan los pendientes de 006
-y de publicación.
+US2 añade «Volver a jugar» desde victoria o derrota: retira el intento anterior
+y restablece soldados, recursos, plazas, selección y oleadas sin refrescar ni
+reabrir. Eventos del intento retirado no alteran el siguiente.
+La repetición está aprobada funcionalmente con un escenario de prueba reducido
+de un atacante inicial y un enemigo de oleada; no acredita una victoria manual
+con los 100 enemigos de producción, cuyo reparto de 1 inicial + 99 se conserva.
+«Menú principal» desde el resultado (US3), revisión visual y matriz final siguen
+pendientes; US1–US2 no entregan aún el ciclo completo ni cierran 006 o publicación.
 
 La [comparación visual](../specs/002-monte-calvo-terreno-trincheras/evidence/us3.md)
 y la [matriz nativa](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
@@ -427,3 +431,4 @@ delimita las próximas mediciones, sin acreditar hardware o paquete final.
 | 2026-10-21 | 006/T013: ampliación del diagnóstico con tres ventanas descriptivas de iPad Simulator/software, conservando límites de observación y bases nativas pendientes. |
 | 2026-10-21 | Preparación de 007: dirección pictórica y flujo de menú, inicio y repetición confirmados; implementación, pendientes de 006 y publicación conservados. |
 | 2026-10-21 | 007/T010 tras QA T009: menú inerte e inicio explícito de US1 aprobados funcionalmente en rama; repetición, regreso al menú, validación visual/matriz final y publicación pendientes. |
+| 2026-10-21 | 007/T016 tras QA T015: repetición desde victoria/derrota, cierre y reinicio aprobados funcionalmente con fixture reducido; producción 1+99 intacta, regreso al menú, matriz final y publicación pendientes. |
