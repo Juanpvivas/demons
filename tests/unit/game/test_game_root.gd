@@ -3,6 +3,9 @@ extends GutTest
 ## SubViewport evita mezclar coordenadas locales con el stretch del Window.
 const ROOT_SCENE := preload("res://scenes/game/GameRoot.tscn")
 const BOARD := preload("res://resources/levels/monte_calvo_board.tres")
+const RETRY_LEVEL := preload("res://tests/unit/game/fixtures/OneWaveLevel.tscn")
+const ENEMY_SCENE := preload("res://scenes/enemies/EnemigoBase.tscn")
+const PICKUP_SCENE := preload("res://scenes/levels/AmmoPickup.tscn")
 var _viewport: SubViewport
 var _app: Node
 var _saved_state: int
@@ -54,8 +57,10 @@ func _on_wave_started(number: int) -> void:
 	_wave_events.append(number)
 
 
-func _mount(scene: PackedScene = ROOT_SCENE) -> void:
+func _mount(scene: PackedScene = ROOT_SCENE, level_override: PackedScene = null) -> void:
 	_app = scene.instantiate()
+	if level_override != null:
+		_app.set("level_scene", level_override)
 	_viewport.add_child(_app)
 	await wait_process_frames(2)
 
@@ -201,3 +206,217 @@ func test_real_play_click_burst_starts_once_and_does_not_reach_gameplay_input() 
 	if level != null:
 		assert_eq(EconomyManager.collected_ammo, 0)
 		assert_null(level.get("_hud").get_selected_soldier(), "El gesto no selecciona además una trinchera")
+
+
+## 007/T011: fixture reducido con nivel, actores, física y Managers reales.
+## No acredita una victoria manual de los cien enemigos de producción.
+func _start_retry_fixture() -> Node:
+	await _mount(ROOT_SCENE, RETRY_LEVEL)
+	_app.request_start()
+	var level: Node = await _new_level()
+	assert_not_null(level, "Control US1: la raíz monta el nivel real inyectado")
+	return level
+
+
+func _active_wave_enemies(level: Node) -> Array[Enemigo]:
+	var result: Array[Enemigo] = []
+	for enemy: Enemigo in _enemies(level):
+		if enemy.is_targetable() and enemy.spawn_origin == Enemigo.SpawnOrigin.WAVE:
+			result.append(enemy)
+	return result
+
+
+func _real_result(level: Node, outcome: String) -> bool:
+	if outcome == "won":
+		for frame in 60:
+			if not _active_wave_enemies(level).is_empty():
+				break
+			await wait_physics_frames(1)
+		var enemies := _active_wave_enemies(level)
+		assert_eq(enemies.size(), 1, "Control: la oleada real produjo un WAVE")
+		if enemies.size() != 1:
+			return false
+		enemies[0].take_damage(enemies[0].stats.max_health)
+	else:
+		var board: BoardManager = level.get("_board_manager")
+		var defender := board.get_occupant(BOARD.home_cells[0]) as Soldado
+		assert_not_null(defender, "Control: existe el defensor que deja libre el carril")
+		if defender == null:
+			return false
+		defender.take_damage(defender.stats.max_health)
+		var breach := ENEMY_SCENE.instantiate() as Enemigo
+		breach.stats = breach.stats.duplicate()
+		breach.stats.move_speed = 240.0
+		breach.position = Vector2(144, 144)
+		level.add_child(breach)
+		breach.prepare_for_spawn(breach.stats, breach.position, 0, Enemigo.SpawnOrigin.WAVE)
+	for frame in 90:
+		if GameStateManager._current_state != GameStateManager.GameState.PLAYING:
+			break
+		await wait_physics_frames(1)
+	var expected: int = GameStateManager.GameState.WON if outcome == "won" else GameStateManager.GameState.LOST
+	assert_eq(GameStateManager._current_state, expected, "Control: resultado por baja WAVE o cruce físico")
+	# La resolución es síncrona; Containers ordena el panel recién visible
+	# al procesar frames. No tomar un centro provisional como gesto de UI.
+	await wait_process_frames(2)
+	return GameStateManager._current_state == expected
+
+
+func _dirty_attempt(level: Node) -> void:
+	EconomyManager.add_ammo(31)
+	var board: BoardManager = level.get("_board_manager")
+	var owner := board.get_occupant(BOARD.home_cells[1]) as Soldado
+	assert_true(level.select_trench(BOARD.home_cells[1]))
+	owner.take_damage(1)
+	owner.set("_current_ammo", 0)
+	owner.set("_current_morale", 7.0)
+	owner.global_position += Vector2(192, 0)
+	assert_true(level.request_selected_reload(owner.get_instance_id()), "Control: queda una orden real de regreso")
+	assert_eq(owner.get_reload_state().movement_state, Soldado.MovementState.RETURNING)
+	var fallen := board.get_occupant(BOARD.home_cells[4]) as Soldado
+	fallen.take_damage(fallen.stats.max_health)
+	var pickup := PICKUP_SCENE.instantiate() as AmmoPickup
+	pickup.amount = 7
+	(level.get("_wave_spawner") as Node).get("_enemy_pool").add_child(pickup)
+
+
+func _weak_tree(node: Node) -> Array[WeakRef]:
+	var result: Array[WeakRef] = [weakref(node)]
+	for child: Node in node.get_children():
+		result.append_array(_weak_tree(child))
+	return result
+
+
+func _replacement(previous: Node) -> Node:
+	for frame in 30:
+		var level: Node = _app.get_current_level()
+		if level != null and level != previous:
+			return level
+		await wait_process_frames(1)
+	return null
+
+
+func _assert_clean_retry(level: Node, old_objects: Array[WeakRef]) -> void:
+	assert_eq(GameStateManager._current_state, GameStateManager.GameState.PLAYING)
+	assert_eq(EconomyManager.collected_ammo, 0)
+	assert_null(level.get_selected_soldier())
+	assert_eq(_soldiers(level).size(), 5)
+	var board: BoardManager = level.get("_board_manager")
+	for home: Vector2i in BOARD.home_cells:
+		var owner := board.get_occupant(home) as Soldado
+		assert_not_null(owner)
+		if owner != null:
+			assert_eq(owner._current_health, owner.stats.max_health)
+			assert_eq(owner._current_ammo, owner.stats.max_ammo)
+			assert_eq(owner._current_morale, 0.0)
+			assert_eq(owner.global_position, Vector2(home) * 96.0 + Vector2(48, 48))
+			assert_eq(owner.get_reload_state().movement_state, Soldado.MovementState.HOME)
+	var initials := _enemies(level).filter(func(enemy: Enemigo):
+		return enemy.is_targetable() and enemy.spawn_origin == Enemigo.SpawnOrigin.INITIAL)
+	assert_eq(initials.size(), 1, "Retry conserva un único atacante inicial")
+	if initials.size() == 1:
+		assert_eq(initials[0].lane_id, 2)
+	var old_alive := 0
+	for reference: WeakRef in old_objects:
+		if reference.get_ref() != null:
+			old_alive += 1
+	assert_eq(old_alive, 0, "No quedan actores, cajas, efectos, timers o HUD del intento anterior")
+	for node: Node in level.find_children("*", "Area2D", true, false):
+		assert_false(node is AmmoPickup, "No se heredan cajas")
+	for frame in 60:
+		if not _active_wave_enemies(level).is_empty():
+			break
+		await wait_physics_frames(1)
+	var enemies := _active_wave_enemies(level)
+	assert_eq(enemies.size(), 1)
+	if enemies.size() == 1:
+		assert_eq(enemies[0].lane_id, 0, "El cursor de WAVE vuelve a fila1")
+
+
+func test_three_retries_from_real_results_release_before_new_waves_and_reset_every_attempt(
+		outcome = use_parameters(["won", "lost"])) -> void:
+	var level: Node = await _start_retry_fixture()
+	if level == null:
+		return
+	for cycle in 3:
+		_dirty_attempt(level)
+		if not await _real_result(level, outcome):
+			return
+		var previous := level
+		var old_objects := _weak_tree(previous)
+		var old_live_at_new_wave: Array[bool] = []
+		var on_new_wave := func(_number: int): old_live_at_new_wave.append(is_instance_valid(previous))
+		WaveManager.wave_started.connect(on_new_wave)
+		for repeat in 4:
+			_app.request_retry()
+		level = await _replacement(previous)
+		WaveManager.wave_started.disconnect(on_new_wave)
+		assert_false(is_instance_valid(previous), "El intento retirado se libera efectivamente")
+		assert_eq(old_live_at_new_wave, [false], "La liberación efectiva precede al nuevo wave_started")
+		assert_not_null(level, "Retry desde " + outcome + " crea otro intento sin reabrir")
+		if level == null:
+			return
+		await _assert_clean_retry(level, old_objects)
+		assert_eq(_wave_events.size(), cycle + 2, "Una sola nueva secuencia por retry aceptado")
+
+
+func test_retry_during_playing_does_not_replace_a_live_attempt() -> void:
+	var level: Node = await _start_retry_fixture()
+	if level == null:
+		return
+	_app.request_retry()
+	await wait_process_frames(2)
+	assert_same(_app.get_current_level(), level)
+	assert_eq(GameStateManager._current_state, GameStateManager.GameState.PLAYING)
+	assert_eq(_wave_events, [1])
+
+
+func test_retired_level_callback_cannot_retry_the_next_terminal_attempt() -> void:
+	var first: Node = await _start_retry_fixture()
+	if first == null or not await _real_result(first, "won"):
+		return
+	var old_callbacks: Array[Callable] = []
+	for connection: Dictionary in first.get_signal_connection_list("retry_requested"):
+		if connection.callable.get_object() == _app:
+			old_callbacks.append(connection.callable)
+	assert_false(old_callbacks.is_empty(), "La intención del nivel actual tiene un receptor de navegación")
+	_app.request_retry()
+	var current: Node = await _replacement(first)
+	assert_not_null(current)
+	if current == null:
+		return
+	if not await _real_result(current, "won"):
+		return
+	var waves_before := _wave_events.size()
+	for callback: Callable in old_callbacks:
+		callback.call() # Reproduce una entrega diferida capturada antes de retirar el origen.
+	await wait_process_frames(3)
+	assert_same(_app.get_current_level(), current, "Un origen retirado no acepta otra transición")
+	assert_eq(GameStateManager._current_state, GameStateManager.GameState.WON)
+	assert_eq(_wave_events.size(), waves_before)
+
+
+func test_real_retry_button_burst_accepts_once_and_consumes_the_gesture(
+		outcome = use_parameters(["won", "lost"])) -> void:
+	var previous: Node = await _start_retry_fixture()
+	if previous == null or not await _real_result(previous, outcome):
+		return
+	var retry := _button("Volver a jugar")
+	assert_not_null(retry)
+	if retry == null:
+		return
+	var native: Array[bool] = []
+	retry.pressed.connect(func(): native.append(true))
+	var observer := GestureObserver.new()
+	_viewport.add_child(observer)
+	var position := retry.get_global_rect().get_center()
+	for repeat in 3:
+		_click(position)
+	var current: Node = await _replacement(previous)
+	assert_gt(native.size(), 0, "Control: el gesto activó el Button terminal real")
+	assert_not_null(current, "La intención del HUD llega a la raíz")
+	assert_eq(observer.presses, 0, "El gesto terminal no alcanza el tablero nuevo")
+	if current != null:
+		assert_eq(_wave_events, [1, 1])
+		assert_null(current.get_selected_soldier())
+		assert_eq(EconomyManager.collected_ammo, 0)

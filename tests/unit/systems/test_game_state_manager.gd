@@ -150,6 +150,49 @@ func test_menu_ignores_late_terminal_reports() -> void:
 	assert_signal_not_emitted(_game_state_manager, "game_lost")
 
 
+## 007/T011: el estado no jugable intermedio no produce otro desenlace.
+func test_enter_menu_from_a_terminal_is_idempotent_before_a_new_match(
+		outcome = use_parameters(["won", "lost"])) -> void:
+	if outcome == "won":
+		_game_state_manager._on_all_waves_completed()
+	else:
+		_game_state_manager.report_reached_defended_position()
+	watch_signals(_game_state_manager)
+	_game_state_manager.enter_menu()
+	_game_state_manager.enter_menu()
+	assert_eq(_game_state_manager._current_state, _game_state_manager.GameState.MENU)
+	assert_signal_emit_count(_game_state_manager, "game_state_changed", 1)
+	assert_signal_not_emitted(_game_state_manager, "game_won")
+	assert_signal_not_emitted(_game_state_manager, "game_lost")
+	_game_state_manager.start_new_match()
+	assert_eq(_game_state_manager._current_state, _game_state_manager.GameState.PLAYING)
+	assert_signal_emit_count(_game_state_manager, "game_state_changed", 2)
+
+
+func test_cancelling_real_wave_manager_does_not_create_a_victory_from_late_kills() -> void:
+	var saved_state: int = GameStateManager._current_state
+	var saved_waves := {}
+	for key: String in ["waves", "current_wave_index", "_total_enemies_in_current_wave", "_defeated_in_current_wave"]:
+		saved_waves[key] = WaveManager.get(key)
+	var entry := WaveSpawnEntry.new()
+	entry.enemy_stats = EnemyStats.new()
+	entry.count = 2
+	var wave := WaveData.new()
+	wave.spawn_entries = [entry]
+	var sequence: Array[WaveData] = [wave]
+	GameStateManager.start_new_match()
+	WaveManager.start_waves(sequence)
+	watch_signals(GameStateManager)
+	WaveManager.cancel_waves()
+	WaveManager.notify_enemy_defeated()
+	WaveManager.notify_enemy_defeated()
+	assert_eq(GameStateManager._current_state, GameStateManager.GameState.PLAYING)
+	assert_signal_not_emitted(GameStateManager, "game_won", "Cancelar/avisos retirados no resuelven una victoria")
+	GameStateManager._current_state = saved_state
+	for key: String in saved_waves:
+		WaveManager.set(key, saved_waves[key])
+
+
 func test_game_won_signal_exists() -> void:
 	assert_true(
 		_game_state_manager.has_signal("game_won"),
