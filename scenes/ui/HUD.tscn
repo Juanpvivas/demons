@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/hud.gd" id="1_hud"]
+[ext_resource type="Theme" path="res://resources/ui/monte_calvo_theme.tres" id="2_result_theme"]
 
 [node name="HUD" type="CanvasLayer"]
 layer = 1
@@ -91,6 +92,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_result_theme")
 
 [node name="Background" type="ColorRect" parent="GameOverScreen"]
 layout_mode = 1
@@ -132,6 +134,7 @@ theme_override_constants/separation = 12
 [node name="RetryButton" type="Button" parent="GameOverScreen/Actions"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 56)
+theme_override_font_sizes/font_size = 20
 focus_neighbor_top = NodePath("../MenuButton")
 focus_neighbor_bottom = NodePath("../MenuButton")
 text = "Volver a jugar"
@@ -139,6 +142,7 @@ text = "Volver a jugar"
 [node name="MenuButton" type="Button" parent="GameOverScreen/Actions"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 56)
+theme_override_font_sizes/font_size = 20
 focus_neighbor_top = NodePath("../RetryButton")
 focus_neighbor_bottom = NodePath("../RetryButton")
 text = "Menú principal"
