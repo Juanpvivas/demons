@@ -1,7 +1,7 @@
 # Tasks: Menú de inicio y nueva partida
 
 **Feature**: `007-menu-inicio-reinicio` · **Issue**: [#32](https://github.com/Juanpvivas/demons/issues/32) · **Input**: [spec](spec.md), [plan](plan.md), [research](research.md), [modelo](data-model.md), [contrato](contracts/match-flow.md), [quickstart](quickstart.md).
-**Estado**: Preparación documental; todas las tareas de ejecución siguen pendientes. Rama funcional desde `main` actualizado a cargo del orquestador; `codex/007-preparacion` sólo contiene preparación.
+**Estado**: 007-I1 en ejecución en `codex/007-i1-menu`, desde `main` actualizado `a97affd` tras PR #33. T001–T004 aprobadas por QA como setup; las historias funcionales y la publicación siguen pendientes.
 **Flujo**: [desarrollo con agentes](../../docs/DEVELOPMENT_WORKFLOW.md). Tester escribe/ejecuta pruebas; dev implementa sin escribir/ejecutarlas; QA sólo revisa. Sólo el orquestador marca `[X]` tras `APROBADO`. RED aprobado no aprueba implementación.
 **Entrega**: un I1 funcional con US1–US3 completas, `Refs #32`, PR en borrador y publicación pendiente. No entregar sólo el menú. Logs/capturas/resultados nuevos quedan en temporales/CI y se resumen en el PR, no en Git.
 
@@ -9,10 +9,10 @@
 
 **Objetivo**: preparar una interfaz cargable sin resolver el comportamiento que guiará RED; nunca considerar importación rota como RED.
 
-- [ ] T001 project-orchestrator: revisar `specs/007-menu-inicio-reinicio/checklists/requirements.md`, documentos, Issue/base y roles; preparar rama funcional estable, conservar pendientes 004/005/006 y declarar gate de integración, sin distribución.
-- [ ] T002 dev-godot: crear sólo esqueleto de `scenes/game/GameRoot.tscn`, `scenes/game/game_root.gd`, `scenes/ui/MainMenu.tscn`, `scenes/ui/main_menu.gd` y APIs no-op nuevas de Managers según `specs/007-menu-inicio-reinicio/contracts/match-flow.md`; declarar MENU al final del enum sin activarlo; sin flujo, reset/cancelación, nivel instanciado ni cambio de `project.godot`; depende de T001.
-- [ ] T003 godot-tester: verificar importación/carga del esqueleto y runner de `tests/unit/` con `tools/ci/run_gut.py`; caracterizar base sin crear RED artificial ni modificar gameplay; depende de T002.
-- [ ] T004 qa-validator: revisar límite de setup, contratos y carga en `scenes/game/game_root.gd`/`scenes/ui/main_menu.gd` y Managers; aprobar sólo invocabilidad sin resolver conducta, confirmando entrada original intacta; depende de T003.
+- [X] T001 project-orchestrator: revisar `specs/007-menu-inicio-reinicio/checklists/requirements.md`, documentos, Issue/base y roles; preparar rama funcional estable, conservar pendientes 004/005/006 y declarar gate de integración, sin distribución.
+- [X] T002 dev-godot: crear sólo esqueleto de `scenes/game/GameRoot.tscn`, `scenes/game/game_root.gd`, `scenes/ui/MainMenu.tscn`, `scenes/ui/main_menu.gd` y APIs no-op nuevas de Managers según `specs/007-menu-inicio-reinicio/contracts/match-flow.md`; declarar MENU al final del enum sin activarlo; sin flujo, reset/cancelación, nivel instanciado ni cambio de `project.godot`; depende de T001.
+- [X] T003 godot-tester: verificar importación/carga del esqueleto y runner de `tests/unit/` con `tools/ci/run_gut.py`; caracterizar base sin crear RED artificial ni modificar gameplay; depende de T002.
+- [X] T004 qa-validator: revisar límite de setup, contratos y carga en `scenes/game/game_root.gd`/`scenes/ui/main_menu.gd` y Managers; aprobar sólo invocabilidad sin resolver conducta, confirmando entrada original intacta; depende de T003.
 
 ## Fase 2: US1 — Menú inerte e inicio explícito (P1)
 
