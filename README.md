@@ -89,6 +89,12 @@ software mantienen unos 150–151 ms por frame, sin causa confirmada. Las bases
 nativas y la estabilización siguen pendientes en el
 [seguimiento de 006](specs/006-diagnostico-rendimiento/tasks.md).
 
+La preparación de [007 — Menú de inicio y nueva partida](specs/007-menu-inicio-reinicio/spec.md)
+define un menú pictórico de Monte Calvo, inicio mediante «Jugar» y las acciones
+«Volver a jugar» o «Menú principal» tras victoria/derrota, con reinicio completo.
+Este flujo aún no está implementado; los pendientes de 006 y de publicación
+se conservan.
+
 La feature `001-soldado-defensor-oleadas` (`specs/001-soldado-defensor-oleadas/`)
 está completa: un soldado defensor automático que dispara con fusil mientras
 tiene munición y pasa a machete al quedarse sin ella (con daño escalado por
