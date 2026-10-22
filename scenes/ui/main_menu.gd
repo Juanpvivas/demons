@@ -20,6 +20,13 @@ func set_start_enabled(enabled: bool) -> void:
 	_play_button.disabled = not enabled
 
 
+func show_menu() -> void:
+	show()
+	set_start_enabled(true)
+	_apply_layout()
+	_play_button.grab_focus()
+
+
 func _on_play_pressed() -> void:
 	get_viewport().set_input_as_handled()
 	play_requested.emit()

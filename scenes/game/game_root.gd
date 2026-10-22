@@ -42,6 +42,14 @@ func _start_match() -> void:
 
 
 func request_retry() -> void:
+	_request_terminal_destination(true)
+
+
+func request_menu() -> void:
+	_request_terminal_destination(false)
+
+
+func _request_terminal_destination(restart: bool) -> void:
 	if _transition_pending or not is_instance_valid(_current_level) \
 			or GameStateManager._current_state not in [
 				GameStateManager.GameState.WON, GameStateManager.GameState.LOST]:
@@ -54,10 +62,10 @@ func request_retry() -> void:
 	GameStateManager.enter_menu()
 	WaveManager.cancel_waves()
 	previous.close_match()
-	_replace_attempt.call_deferred(previous)
+	_finish_attempt.call_deferred(previous, restart)
 
 
-func _replace_attempt(previous: Node) -> void:
+func _finish_attempt(previous: Node, restart: bool) -> void:
 	# La UI sigue consumiendo la ráfaga hasta terminar el dispatch del botón.
 	remove_child(previous)
 	previous.queue_free()
@@ -70,7 +78,11 @@ func _replace_attempt(previous: Node) -> void:
 			return
 	if is_queued_for_deletion() or not is_inside_tree():
 		return
-	_start_match()
+	if restart:
+		_start_match()
+	else:
+		_menu.show_menu()
+		_transition_pending = false
 
 
 func _on_level_retry_requested(generation: int) -> void:
@@ -81,10 +93,6 @@ func _on_level_retry_requested(generation: int) -> void:
 func _on_level_menu_requested(generation: int) -> void:
 	if generation == _generation:
 		request_menu()
-
-
-func request_menu() -> void:
-	pass
 
 
 func get_current_level() -> Node:
