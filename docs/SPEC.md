@@ -255,9 +255,10 @@ partida con las condiciones vigentes, sin propagar el gesto al tablero.
 US2 añade «Volver a jugar» desde victoria o derrota: retira el intento anterior
 y restablece soldados, recursos, plazas, selección y oleadas sin refrescar ni
 reabrir. Eventos del intento retirado no alteran el siguiente.
-La repetición está aprobada funcionalmente con un escenario de prueba reducido
-de un atacante inicial y un enemigo de oleada; no acredita una victoria manual
-con los 100 enemigos de producción, cuyo reparto de 1 inicial + 99 se conserva.
+La repetición está aprobada funcionalmente con una oleada autorada de un enemigo;
+la derrota usa además un enemigo de cruce controlado. Este escenario reducido
+no acredita una victoria manual con los 100 enemigos de producción, cuyo reparto
+de 1 inicial + 99 se conserva.
 «Menú principal» desde el resultado (US3), revisión visual y matriz final siguen
 pendientes; US1–US2 no entregan aún el ciclo completo ni cierran 006 o publicación.
 

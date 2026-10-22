@@ -513,8 +513,9 @@ y cancela oleadas sin emitir progreso o victoria. Nivel y spawner detienen
 actividad y desconectan consumidores antes de retirar su árbol; el siguiente
 nivel se monta sólo tras su liberación efectiva y conserva su inicialización
 vigente. Orígenes o callbacks antiguos no cambian el nuevo intento.
-Este ciclo está aprobado funcionalmente con un fixture de 1 inicial + 1 WAVE;
-no acredita victoria manual de producción 1+99 ni la matriz final. El destino
+Este ciclo está aprobado funcionalmente con una oleada autorada de un WAVE;
+la derrota añade un enemigo de cruce controlado. No acredita victoria manual
+de producción 1+99 ni la matriz final. El destino
 «Menú principal» desde un resultado sigue pendiente de US3.
 
 ## 5. Composición de escenas (ejemplo concreto)
