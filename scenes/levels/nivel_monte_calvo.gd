@@ -2,7 +2,7 @@
 ## La ocupación se asocia al origen, independientemente de la posición del actor.
 extends Node2D
 
-## Interfaces de navegación de 007; el forwarding se implementa tras RED.
+## El nivel propaga intenciones; la raíz conserva la autoridad de navegación.
 signal retry_requested
 signal menu_requested
 
@@ -36,6 +36,7 @@ var _combat_visual_effects := CombatVisualEffects.new()
 var _deploying_cells: Dictionary[Vector2i, bool] = {}
 var _selected_soldier: Soldado
 var _selected_home := Vector2i(-1, -1)
+var _closing: bool = false
 
 @onready var _tablero: TileMap = $Tablero
 @onready var _posicion_defendida: Area2D = $PosicionDefendida
@@ -46,7 +47,7 @@ var _selected_home := Vector2i(-1, -1)
 
 
 func select_trench(cell: Vector2i) -> bool:
-	if GameStateManager._current_state != GameStateManager.GameState.PLAYING:
+	if _closing or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
 		return false
 	if not board_config.home_cells.has(cell):
 		return false
@@ -68,6 +69,8 @@ func get_selected_soldier() -> Soldado:
 
 ## La identidad será obligatoria para rechazar intenciones de dueños anteriores.
 func request_selected_reload(expected_instance_id: int) -> bool:
+	if _closing:
+		return false
 	var soldier := get_selected_soldier()
 	if soldier == null or soldier.get_instance_id() != expected_instance_id:
 		return false
@@ -81,6 +84,8 @@ func _ready() -> void:
 	_board_visual.board_config = board_config
 	EconomyManager.reset_ammo_pool()
 	_hud.reload_requested.connect(request_selected_reload)
+	_hud.retry_requested.connect(_on_retry_requested)
+	_hud.menu_requested.connect(_on_menu_requested)
 	add_child(_combat_visual_effects)
 	_combat_visual_effects.setup()
 
@@ -100,8 +105,40 @@ func _ready() -> void:
 	WaveManager.start_waves(waves)
 
 
+func _on_retry_requested() -> void:
+	if not _closing:
+		retry_requested.emit()
+
+
+func _on_menu_requested() -> void:
+	if not _closing:
+		menu_requested.emit()
+
+
+## El cierre es local: la raíz cancela los Managers antes de retirar el nivel.
+func close_match() -> void:
+	if _closing:
+		return
+	_closing = true
+	set_process_unhandled_input(false)
+	_wave_spawner.close_match()
+	_hud.close_match()
+	_selected_soldier = null
+	_selected_home = Vector2i(-1, -1)
+	_deploying_cells.clear()
+	if _posicion_defendida.body_entered.is_connected(_on_posicion_defendida_body_entered):
+		_posicion_defendida.body_entered.disconnect(_on_posicion_defendida_body_entered)
+	for child: Node in get_children():
+		if child != _hud:
+			child.process_mode = Node.PROCESS_MODE_DISABLED
+
+
+func _exit_tree() -> void:
+	close_match()
+
+
 func _unhandled_input(event: InputEvent) -> void:
-	if GameStateManager._current_state != GameStateManager.GameState.PLAYING:
+	if _closing or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
 		return
 	if not event.is_action_pressed("select_cell"):
 		return
@@ -138,7 +175,7 @@ func _has_pickable_ammo_at(world_position: Vector2) -> bool:
 
 
 func _try_deploy_soldado(cell: Vector2i) -> void:
-	if GameStateManager._current_state != GameStateManager.GameState.PLAYING:
+	if _closing or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
 		return
 	if not board_config.home_cells.has(cell) or not _board_manager.is_cell_free(cell):
 		return
@@ -164,7 +201,7 @@ func _create_soldier(cell: Vector2i) -> void:
 
 
 func _on_posicion_defendida_body_entered(body: Node2D) -> void:
-	if GameStateManager._current_state != GameStateManager.GameState.PLAYING:
+	if _closing or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
 		return
 	var enemy := body as Enemigo
 	if enemy == null or not enemy.is_targetable():
@@ -174,6 +211,8 @@ func _on_posicion_defendida_body_entered(body: Node2D) -> void:
 
 
 func _on_soldado_defeated(grid_cell: Vector2i) -> void:
+	if _closing:
+		return
 	_board_manager.free_cell(grid_cell)
 	if grid_cell == _selected_home:
 		_selected_soldier = null

@@ -132,9 +132,13 @@ theme_override_constants/separation = 12
 [node name="RetryButton" type="Button" parent="GameOverScreen/Actions"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 56)
+focus_neighbor_top = NodePath("../MenuButton")
+focus_neighbor_bottom = NodePath("../MenuButton")
 text = "Volver a jugar"
 
 [node name="MenuButton" type="Button" parent="GameOverScreen/Actions"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 56)
+focus_neighbor_top = NodePath("../RetryButton")
+focus_neighbor_bottom = NodePath("../RetryButton")
 text = "Menú principal"
