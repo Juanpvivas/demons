@@ -1,7 +1,7 @@
 # Tasks: Menú de inicio y nueva partida
 
 **Feature**: `007-menu-inicio-reinicio` · **Issue**: [#32](https://github.com/Juanpvivas/demons/issues/32) · **Input**: [spec](spec.md), [plan](plan.md), [research](research.md), [modelo](data-model.md), [contrato](contracts/match-flow.md), [quickstart](quickstart.md).
-**Estado**: 007-I1 en ejecución en `codex/007-i1-menu`, desde `main` actualizado `a97affd` tras PR #33. T001–T009 aprobadas por QA hasta US1 funcional; repetición US2, regreso US3, matriz final y publicación pendientes.
+**Estado**: 007-I1 en ejecución en `codex/007-i1-menu`, desde `main` actualizado `a97affd` tras PR #33. T001–T016 aprobadas por QA hasta US1 y US2 funcionales y documentadas; regreso US3, matriz final y publicación pendientes.
 **Flujo**: [desarrollo con agentes](../../docs/DEVELOPMENT_WORKFLOW.md). Tester escribe/ejecuta pruebas; dev implementa sin escribir/ejecutarlas; QA sólo revisa. Sólo el orquestador marca `[X]` tras `APROBADO`. RED aprobado no aprueba implementación.
 **Entrega**: un I1 funcional con US1–US3 completas, `Refs #32`, PR en borrador y publicación pendiente. No entregar sólo el menú. Logs/capturas/resultados nuevos quedan en temporales/CI y se resumen en el PR, no en Git.
 
@@ -23,18 +23,18 @@
 - [X] T007 [US1] dev-godot: implementar raíz/menú pictórico en `scenes/game/` y `scenes/ui/MainMenu.tscn`, conectar intención de inicio y cambiar `project.godot`; activar MENU/enter_menu en `autoloads/game_state_manager.gd` sin renumerar PLAYING/PAUSED/WON/LOST ni cambiar combate; depende de T006 aprobado.
 - [X] T008 [US1] godot-tester GREEN: repetir T005 y regresión de `tests/unit/{systems,ui,levels}/`, incluyendo consumidores/fixtures que asumían PLAYING inicial, entrada real, cinco soldados/reserva cero y exclusión de gesto; adaptar sólo expectativas legítimamente modificadas, sin fingir RED histórico; depende de T007.
 - [X] T009 [US1] qa-validator: contrastar menú/inicio, fuente, RED/GREEN y arte reutilizado con `specs/007-menu-inicio-reinicio/contracts/match-flow.md`; validar sólo US1, sin entregar aún I1; depende de T008.
-- [ ] T010 [P] [US1] docs-writer: documentar únicamente inicio/menú aprobados en `docs/SPEC.md` y notas útiles de `docs/ARCHITECTURE.md`, manteniendo repetición aún pendiente; revisión documental en T031; depende de T009 aprobado.
+- [X] T010 [P] [US1] docs-writer: documentar únicamente inicio/menú aprobados en `docs/SPEC.md` y notas útiles de `docs/ARCHITECTURE.md`, manteniendo repetición aún pendiente; revisión documental en T031; depende de T009 aprobado.
 
 ## Fase 3: US2 — Resultado y repetición limpia (P1)
 
 **Criterio independiente**: WON y LOST → «Volver a jugar», tres ciclos por resultado, sin estado ni actividad anterior. Cubre FR-004–008/011 y SC-002–004/006.
 
-- [ ] T011 [P] [US2] godot-tester RED: ampliar `tests/unit/game/test_game_root.gd`, `tests/unit/ui/test_hud.gd`, `tests/unit/systems/test_wave_manager.gd` y `test_game_state_manager.gd`; probar cancelación sin señales de victoria/progreso, teardown efectivo antes de nuevos wave_started, reset y retry desde ambos resultados reales del fixture; depende de T009 aprobado, nunca de T013.
-- [ ] T012 [US2] qa-validator: revisar RED T011 y oráculos de reset/liberación en `tests/unit/game/test_game_root.gd`; rechazar esperas ciegas o enum terminal forzado como sustituto del recorrido; depende de T011.
-- [ ] T013 [US2] dev-godot: implementar retry y cierre idempotente en `scenes/game/game_root.gd`, `scenes/levels/nivel_monte_calvo.gd`, `wave_spawner.gd`, `scenes/ui/HUD.tscn`/`hud.gd` y `autoloads/wave_manager.gd`; cancelar sin start_waves([]), desconectar/retirar/liberar árbol antes de rearmar, bloquear reentrada/orígenes viejos y añadir intenciones de botones; depende de T012 aprobado.
-- [ ] T014 [US2] godot-tester GREEN: repetir T011 y comprobar tres retries consecutivos desde cada resultado en `tests/unit/game/test_game_root.gd`, sin heredar salud/carga/moral, reserva, plazas, selección, órdenes, cajas, efectos, cursor o callbacks; regresión de HUD/Managers/spawners y entrada pertinente; depende de T013.
-- [ ] T015 [US2] qa-validator: revisar fuente y RED/GREEN de retry con `specs/007-menu-inicio-reinicio/data-model.md`, confirmando generación antigua aislada, liberación observable y reglas 1 inicial + 99 WAVE intactas; depende de T014.
-- [ ] T016 [P] [US2] docs-writer: documentar repetición aprobada y límite fixture/producción en `docs/SPEC.md`/`docs/ARCHITECTURE.md`, sin declarar regreso al menú entregado; revisión documental en T031; depende de T015 aprobado.
+- [X] T011 [P] [US2] godot-tester RED: ampliar `tests/unit/game/test_game_root.gd`, `tests/unit/ui/test_hud.gd`, `tests/unit/systems/test_wave_manager.gd` y `test_game_state_manager.gd`; probar cancelación sin señales de victoria/progreso, teardown efectivo antes de nuevos wave_started, reset y retry desde ambos resultados reales del fixture; depende de T009 aprobado, nunca de T013.
+- [X] T012 [US2] qa-validator: revisar RED T011 y oráculos de reset/liberación en `tests/unit/game/test_game_root.gd`; rechazar esperas ciegas o enum terminal forzado como sustituto del recorrido; depende de T011.
+- [X] T013 [US2] dev-godot: implementar retry y cierre idempotente en `scenes/game/game_root.gd`, `scenes/levels/nivel_monte_calvo.gd`, `wave_spawner.gd`, `scenes/ui/HUD.tscn`/`hud.gd` y `autoloads/wave_manager.gd`; cancelar sin start_waves([]), desconectar/retirar/liberar árbol antes de rearmar, bloquear reentrada/orígenes viejos y añadir intenciones de botones; depende de T012 aprobado.
+- [X] T014 [US2] godot-tester GREEN: repetir T011 y comprobar tres retries consecutivos desde cada resultado en `tests/unit/game/test_game_root.gd`, sin heredar salud/carga/moral, reserva, plazas, selección, órdenes, cajas, efectos, cursor o callbacks; regresión de HUD/Managers/spawners y entrada pertinente; depende de T013.
+- [X] T015 [US2] qa-validator: revisar fuente y RED/GREEN de retry con `specs/007-menu-inicio-reinicio/data-model.md`, confirmando generación antigua aislada, liberación observable y reglas 1 inicial + 99 WAVE intactas; depende de T014.
+- [X] T016 [P] [US2] docs-writer: documentar repetición aprobada y límite fixture/producción en `docs/SPEC.md`/`docs/ARCHITECTURE.md`, sin declarar regreso al menú entregado; revisión documental en T031; depende de T015 aprobado.
 
 ## Fase 4: US3 — Volver al menú y completar el ciclo (P2)
 
