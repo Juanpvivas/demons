@@ -471,6 +471,7 @@ func test_return_from_each_real_result_waits_in_menu_and_starts_clean_three_time
 	var level: Node = await _start_retry_fixture()
 	if level == null:
 		return
+	watch_signals(GameStateManager)
 	for cycle in 3:
 		_dirty_attempt(level)
 		if not await _real_result(level, outcome):
@@ -485,7 +486,10 @@ func test_return_from_each_real_result_waits_in_menu_and_starts_clean_three_time
 		if not await _assert_returned_menu(previous, old_objects, waves_before):
 			return
 		var reserve_in_menu: int = EconomyManager.collected_ammo
-		watch_signals(GameStateManager)
+		# El historial incluye los resultados legítimos anteriores; sólo esta
+		# ventana inerte debe añadir cero resultados nuevos.
+		var wins_before: int = get_signal_emit_count(GameStateManager, "game_won")
+		var losses_before: int = get_signal_emit_count(GameStateManager, "game_lost")
 		_click(Vector2(12, 12))
 		for callback: Callable in callbacks:
 			callback.call() # Entrega tardía que se capturó cuando el origen era vigente.
@@ -496,8 +500,8 @@ func test_return_from_each_real_result_waits_in_menu_and_starts_clean_three_time
 		assert_eq(GameStateManager._current_state, GameStateManager.GameState.MENU)
 		assert_eq(EconomyManager.collected_ammo, reserve_in_menu, "Esperar en menú no mueve recursos")
 		assert_eq(_wave_events.size(), waves_before)
-		assert_signal_not_emitted(GameStateManager, "game_won")
-		assert_signal_not_emitted(GameStateManager, "game_lost")
+		assert_eq(get_signal_emit_count(GameStateManager, "game_won"), wins_before, "El menú no añade victorias tardías")
+		assert_eq(get_signal_emit_count(GameStateManager, "game_lost"), losses_before, "El menú no añade derrotas tardías")
 		var play := _button("Jugar")
 		var native: Array[bool] = []
 		play.pressed.connect(func(): native.append(true), CONNECT_ONE_SHOT)
