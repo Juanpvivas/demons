@@ -344,8 +344,9 @@ func test_three_retries_from_real_results_release_before_new_waves_and_reset_eve
 			return
 		var previous := level
 		var old_objects := _weak_tree(previous)
+		var previous_ref: WeakRef = weakref(previous)
 		var old_live_at_new_wave: Array[bool] = []
-		var on_new_wave := func(_number: int): old_live_at_new_wave.append(is_instance_valid(previous))
+		var on_new_wave := func(_number: int): old_live_at_new_wave.append(previous_ref.get_ref() != null)
 		WaveManager.wave_started.connect(on_new_wave)
 		for repeat in 4:
 			_app.request_retry()
