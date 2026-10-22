@@ -421,3 +421,166 @@ func test_real_retry_button_burst_accepts_once_and_consumes_the_gesture(
 		assert_eq(_wave_events, [1, 1])
 		assert_null(current.get_selected_soldier())
 		assert_eq(EconomyManager.collected_ammo, 0)
+
+
+## 007/T017: mismo fixture reducido; el destino menú no instancia combate.
+func _wait_menu() -> bool:
+	for frame in 30:
+		var play := _button("Jugar")
+		if _app.get_current_level() == null \
+				and GameStateManager._current_state == GameStateManager.GameState.MENU \
+				and play != null and play.is_visible_in_tree() and not play.disabled:
+			return true
+		await wait_process_frames(1)
+	return false
+
+
+func _assert_returned_menu(previous: WeakRef, old_objects: Array[WeakRef], waves_before: int) -> bool:
+	var arrived := await _wait_menu()
+	assert_true(arrived, "Menú principal vuelve a la apertura sin iniciar otro intento")
+	assert_null(_app.get_current_level(), "El menú no conserva un nivel terminado detrás")
+	assert_null(previous.get_ref(), "El destino espera la liberación efectiva del intento")
+	assert_eq(GameStateManager._current_state, GameStateManager.GameState.MENU)
+	assert_eq(_wave_events.size(), waves_before, "Volver al menú no emite un nuevo wave_started")
+	if not arrived:
+		return false
+	var alive := 0
+	for reference: WeakRef in old_objects:
+		if reference.get_ref() != null:
+			alive += 1
+	assert_eq(alive, 0, "El menú no retiene actores, cajas, efectos, HUD o timers anteriores")
+	assert_true(_soldiers(_app).is_empty())
+	assert_true(_enemies(_app).is_empty())
+	assert_same(_viewport.gui_get_focus_owner(), _button("Jugar"), "El regreso recupera el foco inicial")
+	assert_true(WaveManager.waves.is_empty())
+	assert_eq(WaveManager.current_wave_index, -1)
+	return true
+
+
+func _navigation_callbacks(level: Node) -> Array[Callable]:
+	var callbacks: Array[Callable] = []
+	for signal_name: String in ["retry_requested", "menu_requested"]:
+		for connection: Dictionary in level.get_signal_connection_list(signal_name):
+			if connection.callable.get_object() == _app:
+				callbacks.append(connection.callable)
+	return callbacks
+
+
+func test_return_from_each_real_result_waits_in_menu_and_starts_clean_three_times(
+		outcome = use_parameters(["won", "lost"])) -> void:
+	var level: Node = await _start_retry_fixture()
+	if level == null:
+		return
+	for cycle in 3:
+		_dirty_attempt(level)
+		if not await _real_result(level, outcome):
+			return
+		var previous: WeakRef = weakref(level)
+		var old_objects := _weak_tree(level)
+		var callbacks := _navigation_callbacks(level)
+		assert_eq(callbacks.size(), 2, "Control: ambas intenciones actuales llegan a la raíz")
+		var waves_before := _wave_events.size()
+		for repeat in 4:
+			_app.request_menu()
+		if not await _assert_returned_menu(previous, old_objects, waves_before):
+			return
+		var reserve_in_menu: int = EconomyManager.collected_ammo
+		watch_signals(GameStateManager)
+		_click(Vector2(12, 12))
+		for callback: Callable in callbacks:
+			callback.call() # Entrega tardía que se capturó cuando el origen era vigente.
+		WaveManager.notify_enemy_defeated()
+		GameStateManager.report_reached_defended_position()
+		await wait_process_frames(4)
+		assert_null(_app.get_current_level(), "Ni fondo ni avisos tardíos abren una partida")
+		assert_eq(GameStateManager._current_state, GameStateManager.GameState.MENU)
+		assert_eq(EconomyManager.collected_ammo, reserve_in_menu, "Esperar en menú no mueve recursos")
+		assert_eq(_wave_events.size(), waves_before)
+		assert_signal_not_emitted(GameStateManager, "game_won")
+		assert_signal_not_emitted(GameStateManager, "game_lost")
+		var play := _button("Jugar")
+		var native: Array[bool] = []
+		play.pressed.connect(func(): native.append(true), CONNECT_ONE_SHOT)
+		var position := play.get_global_rect().get_center()
+		for repeat in 3:
+			_click(position)
+		level = await _new_level()
+		assert_eq(native.size(), 1, "Control: el Button Jugar real recibió la activación")
+		assert_not_null(level, "Jugar desde el menú retornado monta un único intento")
+		if level == null:
+			return
+		await _assert_clean_retry(level, old_objects)
+		assert_eq(_wave_events.size(), waves_before + 1)
+
+
+func test_menu_request_during_playing_keeps_the_live_attempt() -> void:
+	var level: Node = await _start_retry_fixture()
+	if level == null:
+		return
+	_app.request_menu()
+	await wait_process_frames(3)
+	assert_same(_app.get_current_level(), level, "No se añade salida durante combate")
+	assert_eq(GameStateManager._current_state, GameStateManager.GameState.PLAYING)
+	assert_false(_button("Jugar").is_visible_in_tree())
+	assert_eq(_wave_events, [1])
+
+
+func test_alternating_result_buttons_keep_the_first_accepted_destination(
+		scenario = use_parameters(["won/menu", "lost/menu", "won/retry", "lost/retry"])) -> void:
+	var parts: PackedStringArray = scenario.split("/")
+	var previous: Node = await _start_retry_fixture()
+	if previous == null or not await _real_result(previous, parts[0]):
+		return
+	var menu := _button("Menú principal")
+	var retry := _button("Volver a jugar")
+	assert_true(menu.is_visible_in_tree() and not menu.disabled)
+	assert_true(retry.is_visible_in_tree() and not retry.disabled)
+	var first := menu if parts[1] == "menu" else retry
+	var second := retry if parts[1] == "menu" else menu
+	var native: Array[bool] = []
+	first.pressed.connect(func(): native.append(true))
+	var observer := GestureObserver.new()
+	_viewport.add_child(observer)
+	var first_position := first.get_global_rect().get_center()
+	var second_position := second.get_global_rect().get_center()
+	var previous_ref: WeakRef = weakref(previous)
+	var old_objects := _weak_tree(previous)
+	_click(first_position)
+	_click(second_position)
+	_click(first_position)
+	assert_gt(native.size(), 0, "Control: se activó el primer Button real antes de alternar")
+	if parts[1] == "menu":
+		await _assert_returned_menu(previous_ref, old_objects, 1)
+	else:
+		var current: Node = await _replacement(previous)
+		assert_not_null(current, "La primera acción Retry prevalece frente a Menú")
+		if current != null:
+			await _assert_clean_retry(current, old_objects)
+			assert_eq(_wave_events, [1, 1], "La alternancia acepta una sola partida")
+	assert_eq(observer.presses, 0, "Ningún gesto terminal atraviesa al tablero")
+
+
+func test_callbacks_retired_via_menu_cannot_navigate_a_new_terminal_attempt() -> void:
+	var first: Node = await _start_retry_fixture()
+	if first == null or not await _real_result(first, "won"):
+		return
+	var callbacks := _navigation_callbacks(first)
+	assert_eq(callbacks.size(), 2, "Control: se capturan ambos receptores de la generación vigente")
+	var old_objects := _weak_tree(first)
+	var previous_ref: WeakRef = weakref(first)
+	_app.request_menu()
+	if not await _assert_returned_menu(previous_ref, old_objects, 1):
+		return
+	_click(_button("Jugar").get_global_rect().get_center())
+	var current: Node = await _new_level()
+	assert_not_null(current)
+	if current == null or not await _real_result(current, "lost"):
+		return
+	var waves_before := _wave_events.size()
+	for callback: Callable in callbacks:
+		callback.call()
+	await wait_process_frames(4)
+	assert_same(_app.get_current_level(), current, "El resultado actual ignora las dos intenciones de un origen retirado")
+	assert_eq(GameStateManager._current_state, GameStateManager.GameState.LOST)
+	assert_eq(_wave_events.size(), waves_before)
+	assert_false(_button("Jugar").is_visible_in_tree())

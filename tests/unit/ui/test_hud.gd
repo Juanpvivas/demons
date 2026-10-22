@@ -613,3 +613,31 @@ func test_i3_ineligible_selected_owner_disables_control_and_rejects_direct_inten
 	assert_eq(EconomyManager.collected_ammo, 100)
 	GameStateManager._current_state = saved_state
 	EconomyManager.collected_ammo = saved_ammo
+
+
+## 007/T017: navegación real de foco; no emite señales manuales del Button.
+func test_keyboard_reaches_menu_action_and_emits_only_its_intent(
+		outcome = use_parameters(["won", "lost"])) -> void:
+	var context: Dictionary = await _result_context(outcome)
+	var menu := _result_action("Menú principal")
+	assert_not_null(menu)
+	if menu != null:
+		var native: Array[bool] = []
+		menu.pressed.connect(func(): native.append(true))
+		watch_signals(_hud)
+		var state: int = GameStateManager._current_state
+		for keycode: Key in [KEY_TAB, KEY_ENTER]:
+			for down: bool in [true, false]:
+				var event := InputEventKey.new()
+				event.keycode = keycode
+				event.physical_keycode = keycode
+				event.pressed = down
+				context.viewport.push_input(event, true)
+			if keycode == KEY_TAB:
+				assert_same(context.viewport.gui_get_focus_owner(), menu, "Tab desde Retry alcanza Menú principal")
+		assert_eq(native.size(), 1, "Control: Enter activó el Button enfocado")
+		assert_signal_emit_count(_hud, "menu_requested", 1)
+		assert_signal_not_emitted(_hud, "retry_requested")
+		assert_eq(GameStateManager._current_state, state)
+		assert_eq(EconomyManager.collected_ammo, 9)
+	_restore_result_context(context)
