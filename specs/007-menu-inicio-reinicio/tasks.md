@@ -1,7 +1,7 @@
 # Tasks: Menú de inicio y nueva partida
 
 **Feature**: `007-menu-inicio-reinicio` · **Issue**: [#32](https://github.com/Juanpvivas/demons/issues/32) · **Input**: [spec](spec.md), [plan](plan.md), [research](research.md), [modelo](data-model.md), [contrato](contracts/match-flow.md), [quickstart](quickstart.md).
-**Estado**: 007-I1 en ejecución en `codex/007-i1-menu`, desde `main` actualizado `a97affd` tras PR #33. T001–T016 aprobadas por QA hasta US1 y US2 funcionales y documentadas; regreso US3, matriz final y publicación pendientes.
+**Estado**: 007-I1 en ejecución en `codex/007-i1-menu`, desde `main` actualizado `a97affd` tras PR #33. T001–T022 aprobadas por QA hasta el ciclo lógico completo US1–US3 y su guía; suite/build, matriz visual y de rendimiento, consolidación final, CI y publicación pendientes.
 **Flujo**: [desarrollo con agentes](../../docs/DEVELOPMENT_WORKFLOW.md). Tester escribe/ejecuta pruebas; dev implementa sin escribir/ejecutarlas; QA sólo revisa. Sólo el orquestador marca `[X]` tras `APROBADO`. RED aprobado no aprueba implementación.
 **Entrega**: un I1 funcional con US1–US3 completas, `Refs #32`, PR en borrador y publicación pendiente. No entregar sólo el menú. Logs/capturas/resultados nuevos quedan en temporales/CI y se resumen en el PR, no en Git.
 
@@ -40,12 +40,12 @@
 
 **Criterio independiente**: WON y LOST → «Menú principal» → espera → «Jugar», tres ciclos por resultado. Completa FR-005/007–011 y SC-001–005.
 
-- [ ] T017 [P] [US3] godot-tester RED: ampliar `tests/unit/game/test_game_root.gd`/`tests/unit/ui/test_hud.gd` para regreso al menú desde ambos resultados, inactividad y nuevo inicio, alternancia de botones y origen/avisos tardíos; depender sólo de contratos e implementación US2 aprobada en T015, no de T019.
-- [ ] T018 [US3] qa-validator: revisar RED T017 contra `specs/007-menu-inicio-reinicio/contracts/match-flow.md`, comprobando gesto/UI y estado, sin aceptar sólo conteo de nodos; depende de T017.
-- [ ] T019 [US3] dev-godot: completar destino menú y conexiones de UI en `scenes/game/game_root.gd`, `scenes/ui/main_menu.gd` y `scenes/levels/nivel_monte_calvo.gd`; mismo cierre compartido, foco, márgenes/aspectos y bloqueo de tablero, sin pausa ni APIs paralelas de reset; depende de T018 aprobado.
-- [ ] T020 [US3] godot-tester GREEN: repetir T017 y el conjunto `tests/unit/game/test_game_root.gd`/`tests/unit/ui/`; cubrir las cuatro combinaciones terminal × acción con tres ciclos cada una, menú sin actividad y gesto consumido, sin duplicar conexiones/partidas; depende de T019.
-- [ ] T021 [US3] qa-validator: revisar ciclo completo y RED/GREEN con `specs/007-menu-inicio-reinicio/spec.md`; confirmar equivalencia de inicio directo/desde menú y ninguna herencia residual; depende de T020.
-- [ ] T022 [US3] docs-writer: documentar regreso/flujo completo aprobado en `docs/SPEC.md` y guía de usuario de `README.md`, conservando verificaciones/plataformas aún pendientes; revisión documental en T031; depende de T021 aprobado.
+- [X] T017 [P] [US3] godot-tester RED: ampliar `tests/unit/game/test_game_root.gd`/`tests/unit/ui/test_hud.gd` para regreso al menú desde ambos resultados, inactividad y nuevo inicio, alternancia de botones y origen/avisos tardíos; depender sólo de contratos e implementación US2 aprobada en T015, no de T019.
+- [X] T018 [US3] qa-validator: revisar RED T017 contra `specs/007-menu-inicio-reinicio/contracts/match-flow.md`, comprobando gesto/UI y estado, sin aceptar sólo conteo de nodos; depende de T017.
+- [X] T019 [US3] dev-godot: completar destino menú y conexiones de UI en `scenes/game/game_root.gd`, `scenes/ui/main_menu.gd` y `scenes/levels/nivel_monte_calvo.gd`; mismo cierre compartido, foco, márgenes/aspectos y bloqueo de tablero, sin pausa ni APIs paralelas de reset; depende de T018 aprobado.
+- [X] T020 [US3] godot-tester GREEN: repetir T017 y el conjunto `tests/unit/game/test_game_root.gd`/`tests/unit/ui/`; cubrir las cuatro combinaciones terminal × acción con tres ciclos cada una, menú sin actividad y gesto consumido, sin duplicar conexiones/partidas; depende de T019.
+- [X] T021 [US3] qa-validator: revisar ciclo completo y RED/GREEN con `specs/007-menu-inicio-reinicio/spec.md`; confirmar equivalencia de inicio directo/desde menú y ninguna herencia residual; depende de T020.
+- [X] T022 [US3] docs-writer: documentar regreso/flujo completo aprobado en `docs/SPEC.md` y guía de usuario de `README.md`, conservando verificaciones/plataformas aún pendientes; revisión documental en T031; depende de T021 aprobado.
 
 ## Fase final: Verificación y entrega de I1
 
