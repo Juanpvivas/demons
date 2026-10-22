@@ -1,8 +1,8 @@
 extends GutTest
 ## Verificación del autoload GameStateManager (`autoloads/game_state_manager.gd`).
 ##
-## Primera sección (T009): estructura base — enum GameState, estado inicial
-## PLAYING, y las tres señales declaradas en contracts/signals.md.
+## Primera sección (T009): estructura base y señales. 007/T005 cambia el
+## arranque esperado de PLAYING a MENU; las reglas de combate siguen vigentes.
 ##
 ## Segunda sección (T038, más abajo): comportamiento real de condiciones de
 ## victoria/derrota — `constitution.md` Principio II exige cobertura
@@ -109,13 +109,42 @@ func test_game_state_enum_has_expected_values() -> void:
 	assert_has(_game_state_manager.GameState, "LOST")
 
 
-func test_initial_state_is_playing() -> void:
-	# Given/Then: al arrancar la partida, el estado inicial debe ser PLAYING
-	# (ninguna condición de victoria/derrota puede cumplirse antes de jugar).
+func test_initial_state_is_menu_before_an_explicit_start() -> void:
+	# 007/T005: la apertura espera una intención; PLAYING sigue reservado
+	# a una partida iniciada. Los escenarios históricos de combate se
+	# adaptarán en GREEN para iniciar explícitamente su fixture.
+	var opening: Node = load(GAME_STATE_MANAGER_SCRIPT_PATH).new()
+	watch_signals(opening)
+	add_child_autofree(opening)
 	assert_eq(
-		_game_state_manager._current_state, _game_state_manager.GameState.PLAYING,
-		"el estado inicial de la partida debe ser PLAYING"
+		opening._current_state, opening.GameState.MENU,
+		"el estado inicial debe impedir combate antes de Jugar"
 	)
+	assert_signal_not_emitted(opening, "game_won")
+	assert_signal_not_emitted(opening, "game_lost")
+
+
+func test_enter_menu_leaves_playing_without_emitting_a_terminal_result() -> void:
+	_game_state_manager.start_new_match()
+	watch_signals(_game_state_manager)
+	_game_state_manager.enter_menu()
+	assert_eq(_game_state_manager._current_state, _game_state_manager.GameState.MENU)
+	assert_signal_emitted_with_parameters(
+		_game_state_manager, "game_state_changed", [_game_state_manager.GameState.MENU]
+	)
+	assert_signal_not_emitted(_game_state_manager, "game_won")
+	assert_signal_not_emitted(_game_state_manager, "game_lost")
+
+
+func test_menu_ignores_late_terminal_reports() -> void:
+	_game_state_manager.start_new_match()
+	_game_state_manager.enter_menu()
+	watch_signals(_game_state_manager)
+	_game_state_manager.report_reached_defended_position()
+	_game_state_manager._on_all_waves_completed()
+	assert_eq(_game_state_manager._current_state, _game_state_manager.GameState.MENU)
+	assert_signal_not_emitted(_game_state_manager, "game_won")
+	assert_signal_not_emitted(_game_state_manager, "game_lost")
 
 
 func test_game_won_signal_exists() -> void:
