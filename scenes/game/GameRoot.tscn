@@ -6,4 +6,7 @@
 [node name="GameRoot" type="Node"]
 script = ExtResource("1_root")
 
-[node name="MainMenu" parent="." instance=ExtResource("2_menu")]
+[node name="MenuLayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="MainMenu" parent="MenuLayer" instance=ExtResource("2_menu")]
