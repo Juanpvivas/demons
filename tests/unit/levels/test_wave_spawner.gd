@@ -55,12 +55,13 @@ var _spawner: WaveSpawner
 # `EconomyManager.collected_ammo` en `tests/unit/levels/test_nivel_montecalvo.gd`)
 # para no contaminar otros archivos de test (ej.
 # `tests/unit/systems/test_autoloads_registration.gd`, que asume el estado
-# inicial `PLAYING` del singleton real).
+# inicial del singleton real).
 var _original_game_state: int
 
 
 func before_each() -> void:
 	_original_game_state = GameStateManager._current_state
+	GameStateManager.start_new_match() # 007: fixture de combate, no apertura del producto.
 	_spawner = WaveSpawner.new()
 	add_child_autofree(_spawner)
 	_spawner.setup(load(ENEMY_SCENE_PATH), 0, SPAWN_POSITION)

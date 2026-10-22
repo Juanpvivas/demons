@@ -74,8 +74,8 @@ func test_game_state_manager_singleton_is_in_scene_tree() -> void:
 
 func test_game_state_manager_singleton_exposes_expected_state_and_signals() -> void:
 	assert_eq(
-		GameStateManager._current_state, GameStateManager.GameState.PLAYING,
-		"el singleton GameStateManager debe iniciar en GameState.PLAYING"
+		GameStateManager._current_state, GameStateManager.GameState.MENU,
+		"el singleton GameStateManager espera Jugar en GameState.MENU"
 	)
 	assert_true(
 		GameStateManager.has_signal("game_won"),

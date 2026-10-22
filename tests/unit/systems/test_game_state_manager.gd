@@ -79,6 +79,9 @@ var _game_state_manager: Node
 func before_each() -> void:
 	_game_state_manager = load(GAME_STATE_MANAGER_SCRIPT_PATH).new()
 	add_child_autofree(_game_state_manager)
+	# Los escenarios de combate empiezan su partida de forma explícita.
+	# El arranque MENU se verifica aparte con una instancia nueva sin iniciar.
+	_game_state_manager.start_new_match()
 
 
 func test_game_state_manager_script_extends_node() -> void:
