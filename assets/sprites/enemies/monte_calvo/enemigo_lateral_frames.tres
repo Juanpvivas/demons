@@ -1,29 +1,55 @@
-[gd_resource type="SpriteFrames" load_steps=10 format=3]
+[gd_resource type="SpriteFrames" load_steps=16 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/enemies/monte_calvo/enemigo_lateral_atlas.png" id="1_atlas"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/monte_calvo/enemigo_marcha_atlas.png" id="2_marcha"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/monte_calvo/enemigo_marcha_opuesta_atlas.png" id="3_opuesta"]
 
-[sub_resource type="AtlasTexture" id="Pose_0"]
-atlas = ExtResource("1_atlas")
-region = Rect2(7, 42, 203, 228)
-margin = Rect2(75.473506, 38.166855, 181, 60)
+[sub_resource type="AtlasTexture" id="Advance_0"]
+atlas = ExtResource("2_marcha")
+region = Rect2(13, 31, 219, 234)
+margin = Rect2(69.784667418, 32.939120631, 165, 54)
 filter_clip = true
 
-[sub_resource type="AtlasTexture" id="Pose_1"]
-atlas = ExtResource("1_atlas")
-region = Rect2(254, 37, 202, 234)
-margin = Rect2(75.420519, 32.012401, 182, 54)
+[sub_resource type="AtlasTexture" id="Advance_1"]
+atlas = ExtResource("2_marcha")
+region = Rect2(271, 33, 181, 230)
+margin = Rect2(75.103720406, 37.248027057, 203, 58)
 filter_clip = true
 
-[sub_resource type="AtlasTexture" id="Pose_2"]
-atlas = ExtResource("1_atlas")
-region = Rect2(508, 43, 213, 228)
-margin = Rect2(70.822999, 38.589628, 171, 60)
+[sub_resource type="AtlasTexture" id="Advance_2"]
+atlas = ExtResource("2_marcha")
+region = Rect2(527, 30, 186, 234)
+margin = Rect2(77.701240135, 33.093573844, 198, 54)
 filter_clip = true
 
-[sub_resource type="AtlasTexture" id="Pose_3"]
-atlas = ExtResource("1_atlas")
-region = Rect2(774, 43, 205, 228)
-margin = Rect2(74.762120, 38.589628, 179, 60)
+[sub_resource type="AtlasTexture" id="Advance_3"]
+atlas = ExtResource("2_marcha")
+region = Rect2(783, 30, 222, 233)
+margin = Rect2(71.640360767, 33.670800451, 162, 55)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Advance_4"]
+atlas = ExtResource("3_opuesta")
+region = Rect2(99, 5, 238, 235)
+margin = Rect2(69.28125, 31.8125, 146, 53)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Advance_5"]
+atlas = ExtResource("3_opuesta")
+region = Rect2(414, 13, 208, 225)
+margin = Rect2(67.640625, 41.6875, 176, 63)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Advance_6"]
+atlas = ExtResource("3_opuesta")
+region = Rect2(101, 238, 214, 236)
+margin = Rect2(74.5625, 31.375, 170, 52)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Advance_7"]
+atlas = ExtResource("3_opuesta")
+region = Rect2(414, 239, 244, 233)
+margin = Rect2(68.109375, 34.25, 140, 55)
 filter_clip = true
 
 [sub_resource type="AtlasTexture" id="Pose_4"]
@@ -53,10 +79,10 @@ filter_clip = true
 [resource]
 animations = [
 {
-"frames": [{"duration": 1.0, "texture": SubResource("Pose_0")}, {"duration": 1.0, "texture": SubResource("Pose_1")}, {"duration": 1.0, "texture": SubResource("Pose_2")}, {"duration": 1.0, "texture": SubResource("Pose_3")}],
+"frames": [{"duration": 1.0, "texture": SubResource("Advance_0")}, {"duration": 1.0, "texture": SubResource("Advance_1")}, {"duration": 1.0, "texture": SubResource("Advance_2")}, {"duration": 1.0, "texture": SubResource("Advance_3")}, {"duration": 1.0, "texture": SubResource("Advance_4")}, {"duration": 1.0, "texture": SubResource("Advance_5")}, {"duration": 1.0, "texture": SubResource("Advance_6")}, {"duration": 1.0, "texture": SubResource("Advance_7")}],
 "loop": true,
 "name": &"advance",
-"speed": 6.666667
+"speed": 13.3333333333333
 },
 {
 "frames": [{"duration": 1.0, "texture": SubResource("Pose_4")}],
