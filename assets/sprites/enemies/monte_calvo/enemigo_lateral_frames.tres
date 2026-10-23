@@ -79,7 +79,7 @@ filter_clip = true
 [resource]
 animations = [
 {
-"frames": [{"duration": 1.0, "texture": SubResource("Advance_0")}, {"duration": 1.0, "texture": SubResource("Advance_1")}, {"duration": 1.0, "texture": SubResource("Advance_2")}, {"duration": 1.0, "texture": SubResource("Advance_3")}, {"duration": 1.0, "texture": SubResource("Advance_4")}, {"duration": 1.0, "texture": SubResource("Advance_5")}, {"duration": 1.0, "texture": SubResource("Advance_6")}, {"duration": 1.0, "texture": SubResource("Advance_7")}],
+"frames": [{"duration": 1.0, "texture": SubResource("Advance_0")}, {"duration": 1.0, "texture": SubResource("Advance_1")}, {"duration": 1.0, "texture": SubResource("Advance_6")}, {"duration": 1.0, "texture": SubResource("Advance_7")}, {"duration": 1.0, "texture": SubResource("Advance_4")}, {"duration": 1.0, "texture": SubResource("Advance_5")}, {"duration": 1.0, "texture": SubResource("Advance_2")}, {"duration": 1.0, "texture": SubResource("Advance_3")}],
 "loop": true,
 "name": &"advance",
 "speed": 13.3333333333333

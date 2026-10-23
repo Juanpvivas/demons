@@ -3,7 +3,7 @@
 **Feature ID**: `008-marcha-enemiga`
 **Planned Branch**: `codex/008-marcha-enemiga`, desde `main` `90cc824` (PR #35).
 **Created**: 2026-10-23
-**Status**: US1 implementada con validación técnica, funcional y visual local APROBADA por QA en T004. El cierre de integración y la CI de la revisión exacta se registran en [tareas](tasks.md) y el Issue [#36](https://github.com/Juanpvivas/demons/issues/36); publicación pendiente.
+**Status**: US1 implementada y corrección de continuidad validada funcional y visualmente en T013. La aprobación de `f05d9e6`/T001–T009 se conserva como histórica; el cierre de integración y la CI de la revisión actual se registran en [tareas](tasks.md), el mismo [PR #37 en borrador](https://github.com/Juanpvivas/demons/pull/37) e Issue [#36](https://github.com/Juanpvivas/demons/issues/36). Publicación pendiente.
 **Input**: La persona da por terminado por ahora el trabajo de rendimiento y pide mejorar la animación de los enemigos al acercarse a las trincheras, usando el GIF de un soldado de Metal Slug como ejemplo de movimiento.
 
 ## User Scenarios & Testing

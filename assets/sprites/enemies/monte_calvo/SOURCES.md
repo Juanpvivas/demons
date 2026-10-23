@@ -2,7 +2,9 @@
 
 ## 008-I1 — Ciclo de marcha (2026-10-23)
 
-El ciclo de 008 tiene aprobación local técnica, funcional y visual de QA.
+La revisión original de 008 en `f05d9e6` conserva su aprobación local técnica,
+funcional y visual de QA; la corrección de continuidad tiene validación
+funcional y visual local en T013.
 El alcance por destino, el cierre de integración y la revisión exacta se
 registran en el [seguimiento de 008](../../../../specs/008-marcha-enemiga/tasks.md);
 la publicación permanece pendiente.
@@ -34,6 +36,17 @@ explica esa distinción.
 | Encaje lógico común | Lienzo 384×288, apoyo (192,264) |
 | Hijo visual existente | Escala 0,32231105; offset `Vector2(0, -45.537768)`, sin cambio de escena |
 | Estados conservados | `contact`: una pose; `defeat`: tres poses/0,40 s, del atlas anterior |
+
+La secuencia de la corrección intercala las poses por continuidad de apoyo:
+**A0, A1, B2, B3, B0, B1, A2, A3**, donde A identifica las cuatro figuras
+superiores de `enemigo_marcha_atlas.png` y B las de la hoja opuesta, numeradas
+de izquierda a derecha y de arriba abajo. Corresponde a los subrecursos
+`Advance_0, 1, 6, 7, 4, 5, 2, 3`; la numeración identifica procedencia, no
+orden temporal. Los enlaces A3→A0 y B3→B0 llevan el alcance al contacto del
+mismo pie, sin intercambiar bruscamente las piernas. Esta secuencia tiene
+validación funcional y visual local en T013; el cierre de integración de la
+revisión exacta se registra en el seguimiento. PNG, importación,
+regiones, márgenes, cadencia y estados restantes se conservan.
 
 La importación Godot mantiene lossless, corrección de borde alfa y sin mipmaps;
 el filtro lineal y la repetición desactivada siguen en el hijo visual. Los

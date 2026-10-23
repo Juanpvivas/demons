@@ -1,7 +1,7 @@
 # Tasks: Marcha enemiga
 
 **Input**: [spec](spec.md), [plan](plan.md), [contrato](contracts/advance-visual.md) y [quickstart](quickstart.md).
-**Incremento**: I1 visual en `codex/008-marcha-enemiga`, base `90cc824`. Issue [#36](https://github.com/Juanpvivas/demons/issues/36). APROBADO PARA INTEGRACIÓN por QA; [PR #37 en borrador](https://github.com/Juanpvivas/demons/pull/37), con resultados, CI y límites de la revisión exacta. Publicación pendiente.
+**Incremento**: I1 visual en `codex/008-marcha-enemiga`, base `90cc824`. Issue [#36](https://github.com/Juanpvivas/demons/issues/36); [PR #37 en borrador](https://github.com/Juanpvivas/demons/pull/37). T001–T009 conservan su aprobación histórica en `f05d9e6`. Corrección de continuidad y documentación T010–T015 APROBADAS por QA; CI y cierre de integración actual pendientes de T016. Publicación pendiente.
 
 Flujo: [desarrollo](../../docs/DEVELOPMENT_WORKFLOW.md). Arte/recursos sin lógica nueva usan importación y criterios visuales, no RED artificial. Si cambia comportamiento, volver al orquestador para una secuencia tester RED → dev → GREEN → QA. Sólo el orquestador registra `[X]` tras aprobación independiente; no añadir evidencias nuevas a Git.
 
@@ -29,4 +29,18 @@ Flujo: [desarrollo](../../docs/DEVELOPMENT_WORKFLOW.md). Arte/recursos sin lógi
 
 Cadena T001 → T002 → T003 → T004 → T005 → T006 → T007 → T008 → T009. Un único I1; no hay tareas `[P]` porque arte, recurso, importación y estado aprobado se comparten. La investigación de sólo lectura puede avanzar en paralelo sin usar el mismo motor/dispositivo.
 
-El orquestador registra las aprobaciones y entrega el enlace después de T009. Los PR intermedios usan `Refs`; `Closes` sólo si todos los criterios del Issue 008 están cumplidos. Conserva Issue30/004/T039/005/T071 y demás requisitos históricos sin marcarlos por esta mejora. La preparación termina aquí y se entrega al flujo de agentes, sin invocar `speckit-implement`.
+El orquestador registra las aprobaciones: T009 cierra la entrega original y T016 la corrección solicitada en revisión. Los PR intermedios usan `Refs`; `Closes` sólo si todos los criterios del Issue 008 están cumplidos. Conserva Issue30/004/T039/005/T071 y demás requisitos históricos sin marcarlos por esta mejora. La preparación termina aquí y se entrega al flujo de agentes, sin invocar `speckit-implement`.
+
+## Corrección solicitada en revisión: continuidad del ciclo
+
+La persona observa un leve brinco al completar los dos apoyos y aporta dos referencias adicionales. Se conserva el alcance de FR-001–008/SC-001–005 y la historia anterior; no es una nueva feature ni autoriza gameplay o rendimiento.
+
+- [X] T010 godot-tester: diagnosticar la discontinuidad en las ocho fases y el cierre, comparando altura del cuerpo, apoyo, alineación y orden temporal con las nuevas referencias. Entregar capturas y causa a desarrollo; sin modificar la implementación ni fabricar RED de arte.
+- [X] T011 dev-godot: corregir la causa visual identificada por T010 en el encaje, secuencia o arte de `advance`, preservando contacto/caída, escena, lógica, stats y velocidad jugable. Consultar al orquestador si requiere código o cambio de alcance. No ejecutar pruebas.
+- [X] T012 godot-tester: comparar antes/después durante varios ciclos, ampliados y a tamaño de juego, y comprobar la marcha real en Chrome y los destinos afectados disponibles; verificar importación/carga y regresión pertinente, reutilizando evidencia no invalidada. Sin mediciones de rendimiento ni instalaciones sin preservar apps/datos.
+- [X] T013 qa-validator: revisar T010–T012 de forma independiente contra FR-001–008/SC-001–004, especialmente continuidad del cuerpo, transferencia de apoyo y última→primera pose. No sustituir movimiento real por una imagen estática ni extrapolar destinos.
+- [X] T014 docs-writer: documentar la corrección aprobada, las referencias adicionales y el encaje final útil en documentos de 008/SOURCES; mantener historia, pausa de 006 y publicación pendiente. Sin registros nuevos de QA en Git.
+- [X] T015 qa-validator: revisar T014 y la vigencia del estado probado antes de actualizar el PR; aprobar sólo el alcance documentado real.
+- [ ] T016 project-orchestrator, godot-tester y qa-validator: guardar el resultado aprobado, actualizar el mismo PR en borrador y el Issue, verificar CI/paquete de la revisión exacta y obtener APROBADO PARA INTEGRACIÓN final. Marcar sólo después del veredicto independiente; sin promoción, merge o publicación.
+
+Orden de corrección: T010 → T011 → T012 → T013 → T014 → T015 → T016. Los criterios visuales e importación son proporcionales; cualquier cambio de comportamiento requiere su ciclo TDD antes de desarrollo.

@@ -1,11 +1,13 @@
 # Implementation Plan: Marcha enemiga
 
 **Feature ID**: `008-marcha-enemiga` | **Planned Branch**: `codex/008-marcha-enemiga` | **Date**: 2026-10-23 | **Spec**: [spec.md](spec.md)
-**Base**: `main` `90cc824`, PR #35 integrado. Un I1 visual con validación técnica, funcional y visual local APROBADA por QA en T004; cierre de integración en [tareas](tasks.md) y PR. Spec Kit sólo prepara; los agentes ejecutan según el [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
+**Base**: `main` `90cc824`, PR #35 integrado. I1 en `f05d9e6` conserva su aprobación histórica de integración; la corrección de continuidad tiene validación funcional y visual local en T013. El cierre de integración y la revisión exacta se registran en [tareas](tasks.md) y el mismo [PR #37 en borrador](https://github.com/Juanpvivas/demons/pull/37). Spec Kit sólo prepara; los agentes ejecutan según el [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
 
 ## Summary
 
 I1 incorpora un ciclo completo de ocho fases de avance, conservando el personaje pictórico actual. El [estudio de referencia](references/visual-reference.md) guía apoyos opuestos, pasos intermedios y balanceo. Cambiar sólo `advance` en el recurso compartido; mantener `contact`, `defeat`, encaje y lógica existentes. Arte y recursos usan inspección visual/importación, sin RED artificial.
+
+Las [referencias adicionales](references/visual-reference.md) orientan la continuidad del cuerpo y de los apoyos. El orden validado localmente en T013 intercala poses de ambas hojas para enlazar el alcance con el contacto del mismo pie; conserva ocho exposiciones iguales de 75 ms, identidad pictórica y reglas vigentes.
 
 ## Technical Context
 
