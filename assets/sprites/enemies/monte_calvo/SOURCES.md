@@ -1,5 +1,90 @@
 # Enemigo de Monte Calvo — procedencia y uso
 
+## 008-I1 — Ciclo de marcha (2026-10-23)
+
+La revisión original de 008 en `f05d9e6` conserva su aprobación local técnica,
+funcional y visual de QA; la corrección de continuidad tiene validación
+funcional y visual local en T013.
+El alcance por destino, el cierre de integración y la revisión exacta se
+registran en el [seguimiento de 008](../../../../specs/008-marcha-enemiga/tasks.md);
+la publicación permanece pendiente.
+Sólo se sustituye `advance`; `contact` y `defeat` conservan las texturas,
+regiones, tiempos y comportamiento del atlas lateral de 005-I4.
+
+Los dos PNG de producción son las salidas originales seleccionadas de la
+herramienta nativa OpenAI `image_gen`: sus píxeles, dimensiones y alfa se
+conservan sin recorte, repintado, reescalado o empaquetado por scripts.
+`enemigo_marcha_atlas.png` usa el personaje lateral propio como referencia de
+identidad/acabado; sólo sus cuatro figuras superiores entran en el ciclo.
+Para `enemigo_marcha_opuesta_atlas.png` se generó primero una pose auxiliar
+con el apoyo opuesto y luego una hoja de cuatro poses. La salida final ajusta
+mediante `image_gen` su acabado, identidad y proporciones del rifle respecto
+al primer atlas, manteniendo la anatomía de esas cuatro poses. «Normalizada»
+describe esa generación final, no una edición posterior de píxeles.
+
+El GIF `soldier-metal-slug.gif` aportado por la persona orienta únicamente
+la mecánica del movimiento. No se extraen su personaje, vestuario, paleta o
+acabado pixel art: se conserva la infantería pictórica gris/marrón con gorra
+de Monte Calvo. La [referencia de 008](../../../../specs/008-marcha-enemiga/references/visual-reference.md)
+explica esa distinción.
+
+| Recurso/encaje de la candidata | Valor |
+|---|---|
+| `enemigo_marcha_atlas.png`, original → importación | 1774×887 → 1024×512; sólo cuatro poses superiores |
+| `enemigo_marcha_opuesta_atlas.png`, original → importación | 1536×1024 → 720×480; cuatro poses opuestas |
+| Reproducción de `advance` | Ocho fotogramas de igual duración, 13,333333… fotogramas/s; ciclo de 0,60 s |
+| Encaje lógico común | Lienzo 384×288, apoyo (192,264) |
+| Hijo visual existente | Escala 0,32231105; offset `Vector2(0, -45.537768)`, sin cambio de escena |
+| Estados conservados | `contact`: una pose; `defeat`: tres poses/0,40 s, del atlas anterior |
+
+La secuencia de la corrección intercala las poses por continuidad de apoyo:
+**A0, A1, B2, B3, B0, B1, A2, A3**, donde A identifica las cuatro figuras
+superiores de `enemigo_marcha_atlas.png` y B las de la hoja opuesta, numeradas
+de izquierda a derecha y de arriba abajo. Corresponde a los subrecursos
+`Advance_0, 1, 6, 7, 4, 5, 2, 3`; la numeración identifica procedencia, no
+orden temporal. Los enlaces A3→A0 y B3→B0 llevan el alcance al contacto del
+mismo pie, sin intercambiar bruscamente las piernas. Esta secuencia tiene
+validación funcional y visual local en T013; el cierre de integración de la
+revisión exacta se registra en el seguimiento. PNG, importación,
+regiones, márgenes, cadencia y estados restantes se conservan.
+
+La importación Godot mantiene lossless, corrección de borde alfa y sin mipmaps;
+el filtro lineal y la repetición desactivada siguen en el hijo visual. Los
+límites 1024 y 720 permiten igualar el encaje de los grupos sin modificar los
+PNG ni la escena. Las regiones de `AtlasTexture` se definen por silueta en cada
+textura importada, con `filter_clip` y márgenes al lienzo común. La fila
+inferior del primer atlas queda sin referencia; no se edita para eliminarla.
+Estos valores describen recursos; no son una medición de rendimiento ni
+una certificación de publicación.
+
+SHA-256 de los originales seleccionados:
+
+- `enemigo_marcha_atlas.png`: `dd04c5d57eb14386bacef174526d088b8920a7ebb2aa89f3ef9f5c3ed68c426e`.
+- `enemigo_marcha_opuesta_atlas.png`: `359a007c3f49c4d4913eb585dc415375581d7e024a12fc1b24780f839f0132df`.
+
+Prompt final del primer atlas (generación; se usan sus cuatro poses superiores):
+
+> Use case: historical-scene.
+> Asset type: NEW transparent sprite animation atlas for the 2D Godot game Demonios de las Trincheras; art preparation preview, not a screenshot.
+> Input images: Image 1 is the OWN production character/style reference: preserve this exact adult gray-brown infantryman, short-brim soft field cap, gray-brown padded jacket, charcoal trousers, brown boots and belt pouches, backpack/rolled blanket, wooden-stock rifle, proportions, face, matte painterly finish and elevated side perspective. Images 2 and 3 are MOTION MECHANICS ONLY: use the alternating bent knees, grounded push-off and natural marching/jogging rhythm. Do not copy their pixel art character, helmet, green costume, colors or purple background.
+> Primary request: Draw eight genuinely different consecutive phases of ONE complete leftward brisk marching/jogging cycle of the SAME Image1 infantryman. He stays in place in each separate cell and faces LEFT (-X) throughout. This must animate like a real two-leg gait, never eight near-duplicates of the same open stride.
+> Composition: landscape atlas approximately 2:1, EXACTLY FOUR COLUMNS by TWO ROWS, one full figure in each equally spaced cell, transparent gutters, ample padding for full boots, head, backpack and complete rifle. Read frames left-to-right top row then left-to-right bottom row. Identical scale, stable torso center, grounded foot baseline and viewpoint in all eight.
+> Frame order: 1 left-leg-forward heel-contact, opposite leg behind; 2 weight absorption/down on that left leg, right knee bending; 3 right leg PASSING FORWARD with visibly bent/lifted right knee under body and left leg supporting; 4 body rises and left foot pushes off as right leg reaches forward; 5 RIGHT-leg-forward heel-contact, clearly opposite leg configuration to frame1; 6 weight absorption/down on right leg, left knee bending; 7 LEFT leg passing forward with visibly bent/lifted left knee under body and right leg supporting; 8 body rises and right foot pushes off as left leg reaches toward frame1. Distinguish front/back legs using consistent overlaps and subtle cloth tones. A real full alternating gait: both contact poses, both compressed poses and both passing poses must be visually distinguishable. Smooth seamless frame8-to-frame1 loop intended for eight equal frames over0.60seconds.
+> Body and equipment: modest natural torso bob and counter-rotation; rifle held steadily across chest/down-left by both hands, elbows flex gently, gear follows subtly. Preserve character identity, clothing and rifle in every frame. Not attacking, not firing, not falling.
+> Style: match Image1's hand-painted, matte restrained historical 2D game art, subtle brush texture, readable strong edges at72pixels standing height. Same gray/brown enemy distinction, no insignia or flags. Respectful human depiction.
+> Background: genuine transparent RGBA alpha in all empty space. NO ground, cast shadow, colored background, painted transparency, checkerboard, labels, text, numbering, panel borders, gridlines, UI, particles, smoke, blood or watermark. Fully visible isolated characters without overlaps. No copied MetalSlug character or pixel-art finish.
+
+Prompt final del atlas opuesto (normalización de la hoja propia de cuatro poses):
+
+> Use case: identity-preserve.
+> Asset type: precise style-and-rifle normalization edit of an existing transparent4-pose sprite sheet.
+> IMAGE1 is the EDIT TARGET B,1536×1024, FOUR figures in2columns×2rows. IMAGE2 is the APPROVED appearance reference A: use its TOP ROW for exact character identity, face, muted palette, matte finish and compact rifle proportions ONLY. Do not copy its gait or anatomy.
+> This is a correction so these two sheets can alternate in ONE animation. Currently B becomes warmer/brighter, skin and leather too orange, and its rifle is longer/chunkier than A. Correct ONLY those appearance differences.
+> INVARIANTS: preserve B's exact four poses, leg anatomy/overlap, every hip/knee/ankle/boot position and lower-body silhouette, body scale, figure placement, stable ground baselines, head/torso orientation LEFT, full-body layout and transparency. The NEAR foreground legs must remain trailing/supporting toRIGHT and FAR background legs forwardLEFT as in B. Do NOT revert to A's near-leg-forward gait. Do not mirror any figure. Do not replace the B sheet with an eight-frame atlas.
+> COLOR/MATERIAL/IDENTITY: match A's same adult face/nose/chin profile and cap details at the same head size; match its darker cooler gray-brown matte padded jacket, charcoal trousers, muted brown boots/pouches/backpack and subdued skin tone. Remove B's warmer orange highlights/gloss and brighter leather/skin. Match A's painterly texture and restrained edge weight; keep the leg shapes and clothing folds unchanged, just normalize their material/colors. Consistent head, torso, arms, gear and boots among all four B figures.
+> WEAPON: B's gun must become the SAME compact wooden-stock rifle as A, with matching wood/metal tone, barrel thickness and length relative to the soldier's head/body. B's current muzzle projects too far left. Shorten the overall visible rifle approximately20percent around its rear-hand/stock anchor and make it approximately15percent thinner, using A's actual proportions as final authority. Keep pointing down-left, preserve rifle details and natural two-hand hold; adjust fingers/handgrip only if needed for the compact same weapon. Do not alter elbows/body/legs to accommodate it. At matched soldier height, the muzzle should project the SAME distance from torso as in A, not an extra-long rifle.
+> Keep1536×1024 canvas,2×2 figure positions, all bodies/gear fully visible with transparent gutters. Preserve genuine original alpha cutout and no new shadow/halo. Empty background remains alpha0, figure interiors opaque, no background painting, glow, ground, panels, text, numbering, UI, weapons effects or watermark. DO NOT spend the edit recreating the transparent RGB outside the figures.
+
 ## 005-I4 — Arte lateral (2026-10-20)
 
 `enemigo_lateral_atlas.png` se generó con OpenAI `image_gen`, usando el

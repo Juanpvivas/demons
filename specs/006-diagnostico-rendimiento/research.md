@@ -60,3 +60,13 @@ T008/SC-001 nativos, US2/T010–T012, T039/T071 y publicación siguen pendientes
 Issue #30 permanece abierto. El siguiente experimento propuesto es material
 completo ON/OFF con media GPU como métrica principal, incluyendo batching;
 requiere nueva autorización y no forma parte del alcance ejecutado de I2.
+
+## Prioridad posterior al merge de I2 — 2026-10-23
+
+La persona fusionó el [PR #35](https://github.com/Juanpvivas/demons/pull/35) y dejó
+el trabajo de rendimiento hasta aquí por ahora, sin continuar pruebas o
+validaciones de ese ámbito. La prioridad pasa a la [marcha enemiga de 008](../008-marcha-enemiga/spec.md).
+El experimento de material completo queda propuesto, sin ejecución prevista en
+esta etapa. Se conservan la evidencia histórica, el Issue #30 abierto y los
+pendientes nativos/US2 y de publicación; esta decisión no los certifica ni
+modifica la constitución.
