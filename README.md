@@ -89,10 +89,13 @@ software mantienen unos 150–151 ms por frame, sin causa confirmada. Las bases
 nativas y la estabilización siguen pendientes en el
 [seguimiento de 006](specs/006-diagnostico-rendimiento/tasks.md).
 
-006-I2 añade en su rama un diagnóstico de componente GPU Web, sin modificar
-el juego. Hay una señal favorable de cola, pero no ahorro medio general ni
-ganancia de FPS acreditados; QA no autoriza un parche. Bases nativas,
-estabilización y publicación siguen pendientes en ese seguimiento.
+006-I2, integrado mediante el [PR #35](https://github.com/Juanpvivas/demons/pull/35),
+añade un diagnóstico de componente GPU Web sin modificar el juego. Hay una
+señal favorable de cola, pero no ahorro medio general ni ganancia de FPS
+acreditados; QA no autoriza un parche. El 2026-10-23 la persona dejó este trabajo
+hasta aquí por ahora y priorizó la marcha enemiga de [008](specs/008-marcha-enemiga/spec.md).
+No se continúan pruebas o validaciones de rendimiento; bases nativas,
+estabilización y publicación conservan sus pendientes, sin certificación nueva.
 
 [007 — Menú de inicio y nueva partida](specs/007-menu-inicio-reinicio/spec.md)
 implementa el ciclo completo en su rama funcional:
