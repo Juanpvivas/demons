@@ -380,6 +380,12 @@ históricas. Las bases nativas de T008/SC-001, US2 y T039/T071 siguen pendientes
 el [protocolo](../specs/006-diagnostico-rendimiento/contracts/profiling-protocol.md)
 delimita las próximas mediciones, sin acreditar hardware o paquete final.
 
+I2, sobre `2272aa2`, añade perfilado de componente GPU Web separado del probe
+global. T009-I2 aprueba diagnóstico sin parche: la señal favorable de cola no
+demuestra ahorro medio general ni ganancia de FPS. Observador, colas wall y
+variación de memoria conservan sus límites en la [decisión](../specs/006-diagnostico-rendimiento/research.md#decisión-de-t009-i2-diagnóstico-gpu-limitado-sin-t010).
+Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicación.
+
 ## 9. Alcance del MVP (primera versión jugable)
 
 - [ ] 1 nivel (ej. defensa de Monte Calvo)
@@ -462,3 +468,4 @@ delimita las próximas mediciones, sin acreditar hardware o paquete final.
 | 2026-10-21 | 007/T016 tras QA T015: repetición desde victoria/derrota, cierre y reinicio aprobados funcionalmente con fixture reducido; producción 1+99 intacta, regreso al menú, matriz final y publicación pendientes. |
 | 2026-10-21 | 007/T022 tras QA T021: regreso al menú y nuevo inicio completan el ciclo lógico aprobado; guía de usuario actualizada, con verificación final por plataforma y publicación pendientes. |
 | 2026-10-22 | 007/T027 tras QA T026: ciclo completo, Theme y matriz local aprobados; mediciones descriptivas conservan límites de software/paquete, con revisión exacta en PR y publicación pendiente. |
+| 2026-10-22 | 006/T013-I2 tras QA T009-I2: diagnóstico de componente GPU sin ahorro medio general ni parche autorizado; bases nativas, estabilización y publicación pendientes. |

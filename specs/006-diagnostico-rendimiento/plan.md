@@ -1,11 +1,20 @@
 # Implementation Plan: Diagnóstico y estabilización del rendimiento
 
-**Feature ID**: `006-diagnostico-rendimiento` · **Planned Branch**: `codex/006-i1-rendimiento` · **Date**: 2026-10-21 · **Spec**: [spec.md](spec.md)
-**Issue**: [#30](https://github.com/Juanpvivas/demons/issues/30). I1 usa `Refs #30`; el Issue sigue abierto para seguimiento posterior.
+**Feature ID**: `006-diagnostico-rendimiento` · **Branch**: `codex/006-i2-estabilizacion` · **Date**: 2026-10-21 · **Spec**: [spec.md](spec.md)
+**Issue**: [#30](https://github.com/Juanpvivas/demons/issues/30). I1 integrado por PR #31; I2 conserva `Refs #30` y el Issue abierto.
 
 ## Summary
 
 El alcance previsto de I1 es medición reproducible y la primera corrección de presentación cuyo coste se confirme. T009 aprueba para integración sólo el instrumento y el diagnóstico limitado: Web no distingue ganancia; Android tiene deriva y observabilidad insuficiente de foco/vsync; tres ventanas posteriores de iPad Simulator/software rondan 150–151 ms por frame y siguen siendo descriptivas por la misma limitación de observación efectiva. La hipótesis del shader no queda confirmada y no se aplica un parche. Bases nativas T008/SC-001 y US2 siguen pendientes, sin declarar US1 completa. El [protocolo](contracts/profiling-protocol.md) es la fuente única de condiciones, API y aceptación.
+
+I2 usa `main` `2272aa2` y una intervención temporal sobre esa misma fuente.
+La [adenda I2](contracts/profiling-protocol.md#adenda-i2-componente-gpu-web)
+separó timer queries GPU WebGL2 del probe/FPS, con cobertura de dibujo y control
+del observador. T009-I2 aprobó el [diagnóstico limitado](research.md#decisión-de-t009-i2-diagnóstico-gpu-limitado-sin-t010),
+sin T010: señal favorable de cola, medias con dispersión/rangos solapados y
+perturbación no acotada por completo. No se entrega un parche ni se completan
+las bases nativas, US2 o publicación. Material completo ON/OFF es una propuesta
+posterior, todavía no autorizada; no amplía el alcance de esta entrega.
 
 ## Technical Context
 

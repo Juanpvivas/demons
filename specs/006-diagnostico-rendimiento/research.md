@@ -1,6 +1,6 @@
-# Research: Decisiones para I1
+# Research: Decisiones de diagnóstico
 
-La preparación partió de `5d50cb0`, sin pruebas ni mediciones en esa etapa. Las hipótesis de la tabla proceden de la revisión de sólo lectura de dev-godot y el protocolo de godot-tester. Se consultaron `using-godot-prompter` y `godot-optimization`; cada ejecutor consulta además sus skills específicas.
+La preparación de I1 partió de `5d50cb0`, sin pruebas ni mediciones en esa etapa. Las hipótesis de la tabla proceden de la revisión de sólo lectura de dev-godot y el protocolo de godot-tester. Se consultaron `using-godot-prompter` y `godot-optimization`; cada ejecutor consulta además sus skills específicas.
 
 | Decisión | Motivo y alternativa descartada |
 |---|---|
@@ -22,3 +22,41 @@ Las nuevas comparaciones Web no distinguen ganancia al retirar el material ni co
 En el motor exacto `a13da4feb8d8aefc283c3763d33a2f170a18d541`, `window_is_focused()` devuelve `true` fijo en Android y AppleEmbedded; sin contexto RenderingDevice, el getter de vsync devuelve `VSYNC_ENABLED` y su setter no actúa. Fuentes primarias: [Android](https://github.com/godotengine/godot/blob/a13da4feb8d8aefc283c3763d33a2f170a18d541/platform/android/display_server_android.cpp#L581) y [AppleEmbedded](https://github.com/godotengine/godot/blob/a13da4feb8d8aefc283c3763d33a2f170a18d541/drivers/apple_embedded/display_server_apple_embedded.mm#L607). Por ello, un informe mecánicamente válido no acredita foco/vsync efectivos ni comparabilidad causal nativa. La siguiente medición requiere una observación independiente que resuelva esa limitación; no se cambia renderer o motor para ocultarla.
 
 El instrumento permanece optativo y aprobado para integración; la estabilización del producto no está acreditada. Resultados, dispersión, picos, intentos inválidos y límites se resumen en el PR, con registros fuera de Git. La corrección de una espera arbitraria en una prueba histórica estabiliza el test, no el rendimiento del juego.
+
+## Decisión de T009-I2: diagnóstico GPU limitado sin T010
+
+I2 partió de `2272aa2`. El carril de componente midió GPU elapsed del tramo GL
+de render mediante queries reales en el contexto WebGL2 de Godot, separado de
+comparabilidad global/FPS. B conservó el shader autorado; A retiró vecinos y
+cálculo de borde sólo en la copia experimental, cambiando el aspecto. A no es
+una candidata visualmente equivalente ni un ahorro entregado.
+
+El perfil completo aceptado usó override CSS/backing 2182×1276, lógica 1152×673,
+DPR y scale 1. No equivale al default con DPR 2: intentos incompletos bajo otras
+políticas permanecen separados y no aportan tiempos a esta conclusión.
+El control de geometría y su restitución siguen la [adenda](contracts/profiling-protocol.md#adenda-i2-componente-gpu-web).
+
+La mediana de las medias GPU por corrida fue aproximadamente 4,239 ms en B y
+4,173 ms en A; la diferencia de 0,066 ms queda dentro de la dispersión y los
+rangos se solapan. El p95 GPU favoreció A en las tres repeticiones: esa señal
+de cola se conserva, pero no acredita ahorro medio general, ganancia de FPS
+o un cuello dominante. El tramo incluye render y trabajo compartido del
+observador; no aísla cuatro lecturas frente al cálculo de borde ni cubre todas
+las poses, caída o combate de producción.
+
+Se conservaron peores colas de reloj wall al final, también en el control mínimo,
+y una variación de unos 4,02 MiB en el monitor de memoria de render. No se infiere
+causa, fuga o crecimiento sostenido; ese monitor no es RSS ni VRAM física.
+La comparación detallado/mínimo no demuestra un observador gratuito ni fija
+una cota completa de perturbación. El probe sigue inválido por pacing efectivo
+no disponible; las series externas no rellenan su informe ni relajan sus ocho
+condiciones. DOM y RAF tampoco acreditan presentación o VSync físicos.
+
+QA aprobó este diagnóstico limitado, sin autorizar T010. Producto, probe,
+pruebas y presets permanecen intactos; no corresponde fabricar RED de una
+optimización inexistente. Se restituyó el default de viewport y se retiraron
+los recursos propios; apps/datos normales se conservaron, sin instalación nativa.
+T008/SC-001 nativos, US2/T010–T012, T039/T071 y publicación siguen pendientes;
+Issue #30 permanece abierto. El siguiente experimento propuesto es material
+completo ON/OFF con media GPU como métrica principal, incluyendo batching;
+requiere nueva autorización y no forma parte del alcance ejecutado de I2.

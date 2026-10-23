@@ -1,4 +1,9 @@
-# Contrato de diagnóstico de I1
+# Contrato de diagnóstico de 006
+
+I1 quedó integrado mediante PR #31 (`d86543f`), con base histórica `5d50cb0`.
+Su contrato e invalidaciones se conservan. I2 parte de `2272aa2` y añade al final
+un carril específico de componente GPU Web. Su [dictamen limitado sin T010](../research.md#decisión-de-t009-i2-diagnóstico-gpu-limitado-sin-t010)
+no modifica este contrato ni acredita comparabilidad global o bases nativas.
 
 ## Escenarios y comparabilidad
 
@@ -62,3 +67,75 @@ Comparar medianas y rango de las tres repeticiones para cada métrica relevante.
 Para el shader, la candidata sólo puede evitar lecturas vecinas con alfa central cero, conservando salida RGBA, antialias, bordes, poses, tintes, flips y caída. Sin `discard`, cambio de material/arte, brillo, hitbox, resolución, cadencia o física de producción. Verificar compilación/exportación y equivalencia visual con la base; presentación equivalente no necesita RED artificial.
 
 Publicar exige sus gates separados: estos experimentos no aprueban T039/T071, Mobile, GPU física, firma/paquete final ni 60 FPS físicos. Las fuentes, comandos, resultados y límites nuevos se resumen en el PR; no se añaden evidencias a Git.
+
+## Adenda I2: componente GPU Web
+
+### Base, alcance y preflight
+
+- Rama `codex/006-i2-estabilizacion`, Issue #30. B es `main` `2272aa2`;
+  C es esa misma fuente con una sola intervención temporal identificada.
+  No sustituir B por I1, `5d50cb0` o un paquete anterior al menú de 007.
+- Separar producción, render constante y ablación. Congelar lógica sólo en el
+  montaje de render constante, sin cambiar el significado del inventario.
+  Usar manifiesto independiente, misma carga, geometría, artefactos identificados,
+  collector y flags comunes. Reiniciar entre runs.
+- El tester realiza primero un preflight de cobertura y perturbación. Aprobar
+  preparación o disponer de la extensión no autoriza un lote; el orquestador
+  debe confirmar su alcance tras revisar el preflight con QA.
+- Conservar 10 s de calentamiento y 30 s de reloj monotónico medidos, y el orden
+  B,C,C,B,B,C con tres repeticiones por condición, también en el carril GPU.
+  Mantener observador mínimo/detallado como control de perturbación y conservar
+  ventanas inválidas y métricas contrarias a la hipótesis, sin elegir la mejor.
+- Un cambio de geometría invalida comparabilidad: conservar cada intento, sin
+  recalibrar ni mezclar ventanas. Navegar en el mismo tab reinicia el escenario.
+- Si deriva la geometría por defecto, se admite control CUA `viewport.set/reset`
+  documentado, declarando su política potencialmente global. Verificar lecturas
+  reales de superficie/viewport y un guard de geometría antes del calentamiento.
+  Restablecer el default al finalizar o abortar. El cambio de política exige una
+  cohorte nueva completa B,C,C,B,B,C, sin mezclar default y override.
+
+### Medición real del componente
+
+- Sólo aceptar timer queries reales `EXT_disjoint_timer_query_webgl2` sobre el
+  mismo contexto WebGL2 que usa Godot para dibujar dentro de cada run. Registrar
+  identidad/procedencia del contexto, extensión, fuente y modo del instrumento.
+  Un contexto independiente o un temporizador CPU no mide ese componente GPU.
+- Demostrar en el export single-thread que el bracket pre/post draw engloba
+  los comandos de dibujo pertinentes: no basta nombrar `frame_pre_draw` y
+  `frame_post_draw`, ni rodear un callback RAF sin comprobar esa cobertura.
+  El preflight debe detectar brackets vacíos, fuera de orden o de otro contexto.
+- Abrir/cerrar la consulta alrededor de ese tramo y recuperar resultados sólo
+  de forma asíncrona cuando estén disponibles y sin disjoint. Conservar unidad
+  original en ns, conversión a ms, asociación al run/frame y estado de cada query.
+  No usar `gl.finish`, espera activa, valores cero sustitutivos o tiempo por resta.
+- Ausencia de soporte/cobertura, fallo de consulta, resultado ausente o disjoint
+  invalida este carril y se declara como tal; no rellenar con una medida CPU ni
+  presentar el subconjunto favorable como una ventana completa válida.
+- DOM `hasFocus` y `visibilityState` describen literalmente el documento y sus
+  eventos observados. RAF describe la entrega de callbacks; ninguno certifica
+  foreground efectivo del SO, presentación de frames o VSync físico.
+
+### Relación con el probe y nueva decisión
+
+El carril de componente GPU se evalúa por separado de tiempos globales/FPS y de
+`probe.compare_runs`. No modifica el probe: siguen siendo obligatorias sus ocho
+condiciones, procedencias, cohortes e invalidaciones. No forzar `valid=true`,
+copiar expected o convertir foco/vsync desconocidos en observaciones efectivas.
+Una medición GPU válida no completa comparabilidad global, T008/SC-001 nativos
+ni certificación de hardware/paquete; sus límites permanecen explícitos.
+
+El nuevo dictamen **T009-I2** sólo puede autorizar una candidata con señal
+repetible pertinente, distinguible de la dispersión y del coste del observador.
+Quitar el material completo puede aislar coste de esa ruta, pero no demuestra
+ahorro de las cuatro lecturas vecinas ni neutralidad visual. La candidata real
+necesita después su propia comparación y equivalencia funcional/visual.
+Sin señal o cobertura válidas, no se autoriza T010 y T010–T012 siguen pendientes.
+El dictamen histórico de I1 sin parche no se convierte en autorización de I2.
+
+T009-I2 aprobó diagnóstico sin candidata: señal favorable de cola GPU, sin ahorro
+medio general acreditado. La intervención experimental no equivale a neutralidad
+visual ni autoriza el siguiente experimento material completo ON/OFF.
+
+Collectors, copias, consultas y resultados de este carril permanecen temporales;
+el PR resume fuentes, comandos, resultado y límites. No añadir registros a Git
+ni activar el instrumento en el producto normal. Publicación sigue pendiente.

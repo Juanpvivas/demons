@@ -89,6 +89,11 @@ software mantienen unos 150–151 ms por frame, sin causa confirmada. Las bases
 nativas y la estabilización siguen pendientes en el
 [seguimiento de 006](specs/006-diagnostico-rendimiento/tasks.md).
 
+006-I2 añade en su rama un diagnóstico de componente GPU Web, sin modificar
+el juego. Hay una señal favorable de cola, pero no ahorro medio general ni
+ganancia de FPS acreditados; QA no autoriza un parche. Bases nativas,
+estabilización y publicación siguen pendientes en ese seguimiento.
+
 [007 — Menú de inicio y nueva partida](specs/007-menu-inicio-reinicio/spec.md)
 implementa el ciclo completo en su rama funcional:
 
