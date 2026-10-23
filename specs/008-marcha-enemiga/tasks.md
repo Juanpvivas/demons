@@ -1,7 +1,7 @@
 # Tasks: Marcha enemiga
 
 **Input**: [spec](spec.md), [plan](plan.md), [contrato](contracts/advance-visual.md) y [quickstart](quickstart.md).
-**Incremento**: I1 visual en `codex/008-marcha-enemiga`, base `90cc824`. Issue [#36](https://github.com/Juanpvivas/demons/issues/36); [PR #37 en borrador](https://github.com/Juanpvivas/demons/pull/37). T001–T009 conservan su aprobación histórica en `f05d9e6`. Corrección de continuidad y documentación T010–T015 APROBADAS por QA; CI y cierre de integración actual pendientes de T016. Publicación pendiente.
+**Incremento**: I1 visual en `codex/008-marcha-enemiga`, base `90cc824`. Issue [#36](https://github.com/Juanpvivas/demons/issues/36); [PR #37 en borrador](https://github.com/Juanpvivas/demons/pull/37). T001–T009 conservan su aprobación histórica en `f05d9e6`. Corrección de continuidad T010–T016 APROBADA PARA INTEGRACIÓN por QA; resultados, CI exacta y límites en el PR en borrador. Publicación pendiente.
 
 Flujo: [desarrollo](../../docs/DEVELOPMENT_WORKFLOW.md). Arte/recursos sin lógica nueva usan importación y criterios visuales, no RED artificial. Si cambia comportamiento, volver al orquestador para una secuencia tester RED → dev → GREEN → QA. Sólo el orquestador registra `[X]` tras aprobación independiente; no añadir evidencias nuevas a Git.
 
@@ -41,6 +41,6 @@ La persona observa un leve brinco al completar los dos apoyos y aporta dos refer
 - [X] T013 qa-validator: revisar T010–T012 de forma independiente contra FR-001–008/SC-001–004, especialmente continuidad del cuerpo, transferencia de apoyo y última→primera pose. No sustituir movimiento real por una imagen estática ni extrapolar destinos.
 - [X] T014 docs-writer: documentar la corrección aprobada, las referencias adicionales y el encaje final útil en documentos de 008/SOURCES; mantener historia, pausa de 006 y publicación pendiente. Sin registros nuevos de QA en Git.
 - [X] T015 qa-validator: revisar T014 y la vigencia del estado probado antes de actualizar el PR; aprobar sólo el alcance documentado real.
-- [ ] T016 project-orchestrator, godot-tester y qa-validator: guardar el resultado aprobado, actualizar el mismo PR en borrador y el Issue, verificar CI/paquete de la revisión exacta y obtener APROBADO PARA INTEGRACIÓN final. Marcar sólo después del veredicto independiente; sin promoción, merge o publicación.
+- [X] T016 project-orchestrator, godot-tester y qa-validator: guardar el resultado aprobado, actualizar el mismo PR en borrador y el Issue, verificar CI/paquete de la revisión exacta y obtener APROBADO PARA INTEGRACIÓN final. Marcar sólo después del veredicto independiente; sin promoción, merge o publicación.
 
 Orden de corrección: T010 → T011 → T012 → T013 → T014 → T015 → T016. Los criterios visuales e importación son proporcionales; cualquier cambio de comportamiento requiere su ciclo TDD antes de desarrollo.
