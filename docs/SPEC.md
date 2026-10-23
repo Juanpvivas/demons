@@ -226,6 +226,19 @@ volver al hogar restaura el fusil. La caída conserva la orientación real,
 incluido el retorno, sin seguir al cuerpo retirado. Estos cambios no otorgan
 protección ni alteran combate, economía o velocidades.
 
+[008-I1](../specs/008-marcha-enemiga/spec.md) renueva sólo la marcha enemiga
+con ocho poses de apoyos alternados en un ciclo de 0,60 s, conservando el acabado
+pictórico gris/marrón, la escala y el apoyo sobre el suelo. La referencia de
+Metal Slug orienta el movimiento; no se incorpora su personaje o pixel art.
+Contacto y caída siguen usando el atlas anterior; la animación observa el mismo
+desplazamiento real y no altera velocidad, colisiones, daño o reutilización.
+La validación local funcional/visual de T004 tiene [límites por destino](../specs/008-marcha-enemiga/research.md#alcance-funcional-y-visual-de-i1):
+Chrome incluye contacto/derrota natural/Retry; Android e iPad acreditan sus
+recorridos propios, con variantes internas de QA. No certifica el paquete
+original nativo, Mobile, hardware o victoria manual de producción completa.
+El cierre de integración y CI exacta se registra en el seguimiento/PR; 006
+permanece pausado por decisión de la persona y la publicación sigue pendiente.
+
 La [procedencia del soldado](../assets/sprites/units/monte_calvo/SOURCES.md)
 y [del entorno](../assets/sprites/levels/monte_calvo/SOURCES.md) documentan los
 nuevos atlas y conservan los anteriores. 004-I3, aprobado funcionalmente para
@@ -248,8 +261,9 @@ audio sigue pendiente. I5 consolida el alcance funcional integrado mediante
 [tareas de 005](../specs/005-cinco-carriles/tasks.md) mantienen el estado de
 entrega y PR. La publicación, las features 004/005 y el MVP siguen abiertos.
 
-[007 — Menú de inicio y nueva partida](../specs/007-menu-inicio-reinicio/spec.md)
-implementa US1–US3 en su rama funcional: la entrada muestra el menú con arte
+[007 — Menú de inicio y nueva partida](../specs/007-menu-inicio-reinicio/spec.md),
+integrado mediante el [PR #34](https://github.com/Juanpvivas/demons/pull/34),
+implementa US1–US3: la entrada muestra el menú con arte
 estático de Monte Calvo, sin un nivel activo detrás. «Jugar» inicia una única
 partida con las condiciones vigentes, sin propagar el gesto al tablero.
 US2 añade «Volver a jugar» desde victoria o derrota: retira el intento anterior
@@ -469,3 +483,4 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 | 2026-10-21 | 007/T022 tras QA T021: regreso al menú y nuevo inicio completan el ciclo lógico aprobado; guía de usuario actualizada, con verificación final por plataforma y publicación pendientes. |
 | 2026-10-22 | 007/T027 tras QA T026: ciclo completo, Theme y matriz local aprobados; mediciones descriptivas conservan límites de software/paquete, con revisión exacta en PR y publicación pendiente. |
 | 2026-10-22 | 006/T013-I2 tras QA T009-I2: diagnóstico de componente GPU sin ahorro medio general ni parche autorizado; bases nativas, estabilización y publicación pendientes. |
+| 2026-10-23 | 008/T005 tras QA T004: marcha enemiga de ocho poses con identidad pictórica, contacto/caída y reglas conservados; alcance local por destino y variantes nativas acotados, sin nueva campaña de rendimiento ni publicación. Se actualiza la referencia de 007 integrado por PR #34 en la guía de usuario. |

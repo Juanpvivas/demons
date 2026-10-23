@@ -10,6 +10,6 @@ Sólo se sustituye `advance` de `enemigo_lateral_frames.tres`.
 | Baja y efecto independiente | `defeat` y snapshot vigentes, sin seguir una instancia reciclada |
 | Nuevo acquire o nuevo intento | Reset vigente: transitorios y progreso anterior no contaminan el siguiente uso |
 
-Las ocho poses comparten identidad, orientación, lienzo y apoyo. En el encaje inicial se conserva el ciclo de 0,60 s; la revisión visual debe comprobar también la unión de la última pose con la primera y la lectura a altura aproximada de 72 unidades. Rifle y equipo completos, transparencia limpia y sin figuras vecinas. Contacto/caída y valores de escena permanecen intactos.
+Las ocho poses, aunque procedan de dos texturas con tamaños importados distintos, deben compartir identidad, orientación, altura de encaje, lienzo y apoyo. El ajuste se resuelve en importación/regiones y márgenes; no mediante edición de píxeles ni cambios de escala/offset de escena. En el encaje inicial se conserva el ciclo de 0,60 s; la revisión visual debe comprobar también la unión de la última pose con la primera y la lectura a altura aproximada de 72 unidades. Rifle y equipo completos, transparencia limpia y sin figuras vecinas. Contacto/caída y valores de escena permanecen intactos.
 
 Si resulta necesario modificar código, stats, colisiones o ese contrato de estados, detener esa parte y devolver el alcance al orquestador antes de implementarla; no eludir TDD mediante una tarea de arte.

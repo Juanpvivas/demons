@@ -97,8 +97,9 @@ hasta aquí por ahora y priorizó la marcha enemiga de [008](specs/008-marcha-en
 No se continúan pruebas o validaciones de rendimiento; bases nativas,
 estabilización y publicación conservan sus pendientes, sin certificación nueva.
 
-[007 — Menú de inicio y nueva partida](specs/007-menu-inicio-reinicio/spec.md)
-implementa el ciclo completo en su rama funcional:
+[007 — Menú de inicio y nueva partida](specs/007-menu-inicio-reinicio/spec.md),
+integrado en `main` mediante el [PR #34](https://github.com/Juanpvivas/demons/pull/34),
+implementa el ciclo completo:
 
 - Al abrir, el menú espera a que pulses «Jugar» para iniciar Monte Calvo.
 - Tras ganar o perder, «Volver a jugar» empieza un intento nuevo sin refrescar.
@@ -115,6 +116,14 @@ causa o fuga demostradas. El
 identifican el veredicto y CI de su revisión exacta. Los
 [límites de las variantes nativas](docs/SPEC.md#8-arte-y-estilo-visual),
 los pendientes de 006 y la publicación se conservan.
+
+[008 — Marcha enemiga](specs/008-marcha-enemiga/spec.md) renueva el avance con
+ocho poses de apoyos alternados y balanceo del cuerpo/equipo, conservando el
+estilo pictórico, contacto/caída y las reglas actuales. I1 tiene validación
+funcional/visual local en su rama; el [seguimiento](specs/008-marcha-enemiga/tasks.md)
+y el PR registran el cierre de integración. La [matriz acotada](specs/008-marcha-enemiga/research.md#alcance-funcional-y-visual-de-i1)
+distingue Chrome de computador de las variantes nativas internas; no acredita
+victoria manual con los 100 enemigos, rendimiento ni publicación.
 
 La feature `001-soldado-defensor-oleadas` (`specs/001-soldado-defensor-oleadas/`)
 está completa: un soldado defensor automático que dispara con fusil mientras

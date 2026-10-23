@@ -1,21 +1,21 @@
 # Implementation Plan: Marcha enemiga
 
 **Feature ID**: `008-marcha-enemiga` | **Planned Branch**: `codex/008-marcha-enemiga` | **Date**: 2026-10-23 | **Spec**: [spec.md](spec.md)
-**Base**: `main` `90cc824`, PR #35 integrado. Un I1 visual; preparación APROBADA por QA. Spec Kit sólo prepara; los agentes ejecutan según el [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
+**Base**: `main` `90cc824`, PR #35 integrado. Un I1 visual con validación técnica, funcional y visual local APROBADA por QA en T004; cierre de integración en [tareas](tasks.md) y PR. Spec Kit sólo prepara; los agentes ejecutan según el [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
 
 ## Summary
 
-Crear un ciclo completo de ocho fases de avance, conservando el personaje pictórico actual. El [estudio de referencia](references/visual-reference.md) guía apoyos opuestos, pasos intermedios y balanceo. Cambiar sólo `advance` en el recurso compartido; mantener `contact`, `defeat`, encaje y lógica existentes. Arte y recursos usan inspección visual/importación, sin RED artificial.
+I1 incorpora un ciclo completo de ocho fases de avance, conservando el personaje pictórico actual. El [estudio de referencia](references/visual-reference.md) guía apoyos opuestos, pasos intermedios y balanceo. Cambiar sólo `advance` en el recurso compartido; mantener `contact`, `defeat`, encaje y lógica existentes. Arte y recursos usan inspección visual/importación, sin RED artificial.
 
 ## Technical Context
 
 | Aspecto | Decisión |
 |---|---|
 | Motor y lenguaje | Godot 4.7.1; recursos `.tres` existentes, sin cambios previstos de GDScript |
-| Dependencias/almacenamiento | Ninguna dependencia, API o persistencia nueva; PNG RGBA generado y metadatos de importación locales |
+| Dependencias/almacenamiento | Ninguna dependencia, API o persistencia nueva; dos PNG RGBA originales de imagegen y metadatos de importación locales |
 | Presentación | `AnimatedSprite2D` y `EnemigoVisual` actuales; clips compartidos de sólo lectura |
 | Encaje inicial | Ocho fases en `advance`, ciclo vigente de 0,60 s; lienzo lógico 384×288 y apoyo (192,264), escala/offset de escena intactos |
-| Arte | Atlas nuevo sólo para marcha, con transparencia; conservar atlas antiguo para contacto/caída |
+| Arte | Dos atlas nuevos para marcha, con transparencia: cuatro poses seleccionadas de la fila superior del primero y cuatro opuestas del segundo; conservar atlas antiguo para contacto/caída |
 | Testing | Importación/carga y revisión visual real, regresión existente dirigida y CI completa de la revisión exacta |
 | Destinos | Web sólo en computador; apps Android/iOS instaladas cuando estén disponibles, identificando variantes y límites |
 | Restricciones | Sin cambios jugables, renderer, presets, versiones o publicación; sin probes, benchmarks o nuevos lotes de rendimiento |
@@ -26,8 +26,8 @@ I: datos, lógica y visuales separados; stats intactos. II: no cambia comportami
 
 ## Project Structure
 
-- `assets/sprites/enemies/monte_calvo/enemigo_marcha_atlas.png` y `.import`: arte nuevo, sin sobrescribir los atlas anteriores.
-- `assets/sprites/enemies/monte_calvo/enemigo_lateral_frames.tres`: sustituir sólo el clip `advance`; regiones medidas sobre la textura importada, no una grilla supuesta.
+- `assets/sprites/enemies/monte_calvo/enemigo_marcha_atlas.png`, `enemigo_marcha_opuesta_atlas.png` y sus `.import`: conservar los dos PNG originales completos, sin edición de píxeles ni sobrescribir atlas anteriores. Sus límites de importación son 1024 y 720, respectivamente: texturas 1024×512 y 720×480 para igualar el encaje, sin modificar escala/offset de escena.
+- `assets/sprites/enemies/monte_calvo/enemigo_lateral_frames.tres`: sustituir sólo el clip `advance`; regiones medidas sobre cada textura importada, no una grilla supuesta. Sólo se referencian las cuatro poses elegidas del primer atlas; su fila inferior queda sin uso.
 - `assets/sprites/enemies/monte_calvo/SOURCES.md`: procedencia, prompt final y encaje realmente aprobado.
 - `scenes/enemies/EnemigoBase.tscn`, `enemigo.gd`, `enemigo_visual.gd`, stats y pruebas existentes: conservar; son referencias de integración/regresión.
 - Esta carpeta: [decisiones](research.md), [datos existentes](data-model.md), [contrato](contracts/advance-visual.md), [validación](quickstart.md) y [tareas](tasks.md).
