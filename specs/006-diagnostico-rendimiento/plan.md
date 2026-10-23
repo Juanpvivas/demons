@@ -7,14 +7,14 @@
 
 El alcance previsto de I1 es medición reproducible y la primera corrección de presentación cuyo coste se confirme. T009 aprueba para integración sólo el instrumento y el diagnóstico limitado: Web no distingue ganancia; Android tiene deriva y observabilidad insuficiente de foco/vsync; tres ventanas posteriores de iPad Simulator/software rondan 150–151 ms por frame y siguen siendo descriptivas por la misma limitación de observación efectiva. La hipótesis del shader no queda confirmada y no se aplica un parche. Bases nativas T008/SC-001 y US2 siguen pendientes, sin declarar US1 completa. El [protocolo](contracts/profiling-protocol.md) es la fuente única de condiciones, API y aceptación.
 
-I2 continúa sobre `main` `2272aa2`: B es esa revisión y C la misma fuente más
-una intervención temporal. La [adenda I2](contracts/profiling-protocol.md#adenda-i2-componente-gpu-web)
-añade un preflight acotado de timer queries GPU WebGL2 en el contexto de Godot,
-con cobertura pre/post draw demostrada y control del observador. Ese carril no
-sustituye al probe ni acredita FPS físicos. El lote requiere autorización tras
-preflight; T009-I2 deberá emitir un nuevo dictamen antes de cualquier T010.
-Preparación, preflight, medición y candidata son etapas distintas; no se afirma
-un ahorro ni se completan los pendientes nativos o de publicación.
+I2 usa `main` `2272aa2` y una intervención temporal sobre esa misma fuente.
+La [adenda I2](contracts/profiling-protocol.md#adenda-i2-componente-gpu-web)
+separó timer queries GPU WebGL2 del probe/FPS, con cobertura de dibujo y control
+del observador. T009-I2 aprobó el [diagnóstico limitado](research.md#decisión-de-t009-i2-diagnóstico-gpu-limitado-sin-t010),
+sin T010: señal favorable de cola, medias con dispersión/rangos solapados y
+perturbación no acotada por completo. No se entrega un parche ni se completan
+las bases nativas, US2 o publicación. Material completo ON/OFF es una propuesta
+posterior, todavía no autorizada; no amplía el alcance de esta entrega.
 
 ## Technical Context
 

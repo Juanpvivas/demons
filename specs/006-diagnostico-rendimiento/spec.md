@@ -1,7 +1,7 @@
 # Feature Specification: Diagnóstico y estabilización del rendimiento
 
 **Feature ID**: `006-diagnostico-rendimiento` · **Branch**: `codex/006-i2-estabilizacion` · **Created**: 2026-10-21
-**Status**: I1 integrado por PR #31, sin parche. I2 prepara preflight sobre `2272aa2`; lote, nuevo T009-I2 y optimización aún no autorizados. T008/SC-001 nativos y T010–T012/US2 pendientes; publicación pendiente.
+**Status**: I1 integrado por PR #31, sin parche. T009-I2 aprueba diagnóstico GPU limitado sobre `2272aa2`, sin autorizar T010. T008/SC-001 nativos y T010–T012/US2 pendientes; Issue #30 abierto y publicación pendiente.
 **Input**: «Continúa con el diagnóstico y estabilización del rendimiento desde main actualizado, siguiendo el flujo de agentes y QA. Actualiza la documentación y prepara el PR en borrador, manteniendo la publicación pendiente».
 
 ## Contexto y alcance
@@ -12,9 +12,10 @@ Ese contexto corresponde a I1 y conserva `5d50cb0` como base histórica.
 I2 usa B=`2272aa2`, con el menú de 007 integrado, y C sobre esa misma base con
 una intervención. La [adenda I2](contracts/profiling-protocol.md#adenda-i2-componente-gpu-web)
 define perfilado de componente GPU Web separado de comparabilidad global/FPS,
-sin relajar el probe. Sólo un nuevo T009-I2 con señal repetible y control del
-observador podrá autorizar una candidata; no hay resultados nuevos acreditados
-por esta preparación.
+sin relajar el probe. El [dictamen T009-I2](research.md#decisión-de-t009-i2-diagnóstico-gpu-limitado-sin-t010)
+conserva una señal favorable de cola GPU, pero no acredita ahorro medio general
+ni un cuello dominante. Se entrega diagnóstico, sin candidata ni cambio del
+producto; los experimentos siguientes requieren autorización nueva.
 
 ## User Scenarios & Testing
 

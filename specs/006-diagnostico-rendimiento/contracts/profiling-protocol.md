@@ -2,7 +2,8 @@
 
 I1 quedó integrado mediante PR #31 (`d86543f`), con base histórica `5d50cb0`.
 Su contrato e invalidaciones se conservan. I2 parte de `2272aa2` y añade al final
-un carril específico de componente GPU Web; no acredita resultados de I2.
+un carril específico de componente GPU Web. Su [dictamen limitado sin T010](../research.md#decisión-de-t009-i2-diagnóstico-gpu-limitado-sin-t010)
+no modifica este contrato ni acredita comparabilidad global o bases nativas.
 
 ## Escenarios y comparabilidad
 
@@ -85,6 +86,13 @@ Publicar exige sus gates separados: estos experimentos no aprueban T039/T071, Mo
   B,C,C,B,B,C con tres repeticiones por condición, también en el carril GPU.
   Mantener observador mínimo/detallado como control de perturbación y conservar
   ventanas inválidas y métricas contrarias a la hipótesis, sin elegir la mejor.
+- Un cambio de geometría invalida comparabilidad: conservar cada intento, sin
+  recalibrar ni mezclar ventanas. Navegar en el mismo tab reinicia el escenario.
+- Si deriva la geometría por defecto, se admite control CUA `viewport.set/reset`
+  documentado, declarando su política potencialmente global. Verificar lecturas
+  reales de superficie/viewport y un guard de geometría antes del calentamiento.
+  Restablecer el default al finalizar o abortar. El cambio de política exige una
+  cohorte nueva completa B,C,C,B,B,C, sin mezclar default y override.
 
 ### Medición real del componente
 
@@ -123,6 +131,10 @@ ahorro de las cuatro lecturas vecinas ni neutralidad visual. La candidata real
 necesita después su propia comparación y equivalencia funcional/visual.
 Sin señal o cobertura válidas, no se autoriza T010 y T010–T012 siguen pendientes.
 El dictamen histórico de I1 sin parche no se convierte en autorización de I2.
+
+T009-I2 aprobó diagnóstico sin candidata: señal favorable de cola GPU, sin ahorro
+medio general acreditado. La intervención experimental no equivale a neutralidad
+visual ni autoriza el siguiente experimento material completo ON/OFF.
 
 Collectors, copias, consultas y resultados de este carril permanecen temporales;
 el PR resume fuentes, comandos, resultado y límites. No añadir registros a Git
