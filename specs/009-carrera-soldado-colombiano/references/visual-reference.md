@@ -8,4 +8,4 @@ La petición actual aplica al colombiano el tratamiento de continuidad ya acepta
 | `Soldado Corriendo lateral y de frente.gif` | Continuidad del torso y transferencia del peso entre piernas |
 | `running-soldier.gif` | Apoyos opuestos y cierre sin intercambio brusco de piernas |
 
-Las referencias permanecen fuera del paquete del juego. El original de identidad es `assets/sprites/units/monte_calvo/soldado_lateral_atlas.png`: casco, uniforme oliva, botas marrones, fusil de madera y machete. La salida conserva fusil guardado; el regreso conserva fusil bajo. Registrar los prompts y fuentes definitivos en `SOURCES.md` después de aprobar el arte.
+Las referencias permanecen fuera del paquete del juego. El original de identidad es `assets/sprites/units/monte_calvo/soldado_lateral_atlas.png`: casco, uniforme oliva, botas marrones, fusil de madera y machete. La salida conserva fusil guardado; el regreso conserva fusil bajo. La guía de apoyo opuesto de 008 se usa sólo para anatomía; las hojas nuevas mantienen identidad y equipo colombianos. Los prompts finales, selección de poses e importaciones están en [SOURCES.md](../../../assets/sprites/units/monte_calvo/SOURCES.md).

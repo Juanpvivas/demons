@@ -3,7 +3,7 @@
 **Feature ID**: `009-carrera-soldado-colombiano`
 **Planned Branch**: `codex/009-carrera-soldado-colombiano`, desde `main` `a88e7c5` (PR #37 integrado).
 **Created**: 2026-10-23
-**Status**: Preparación; implementación y QA de integración pendientes. Publicación pendiente.
+**Status**: Implementada y validada funcional/visualmente de forma local en T004. El cierre de integración y la CI de la revisión exacta se registran en [tareas](tasks.md) e Issue [#38](https://github.com/Juanpvivas/demons/issues/38). Publicación pendiente.
 **Input**: La persona probó y aceptó la marcha enemiga, integró el PR #37 y pide hacer lo mismo para mejorar cómo corre el soldado colombiano.
 
 ## User Scenarios & Testing

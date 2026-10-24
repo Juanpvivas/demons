@@ -1,7 +1,7 @@
 # Implementation Plan: Carrera del soldado colombiano
 
 **Feature ID**: `009-carrera-soldado-colombiano` | **Planned Branch**: `codex/009-carrera-soldado-colombiano` | **Date**: 2026-10-23 | **Spec**: [spec.md](spec.md)
-**Base**: `main` `a88e7c5`, PR #37 integrado. Issue [#38](https://github.com/Juanpvivas/demons/issues/38). Preparación según `demons-preparation`; implementación y QA corresponden a los agentes del [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
+**Base**: `main` `a88e7c5`, PR #37 integrado. Issue [#38](https://github.com/Juanpvivas/demons/issues/38). Preparación según `demons-preparation` y ejecución por agentes del [flujo](../../docs/DEVELOPMENT_WORKFLOW.md). Alcance local aprobado en T004; cierre de integración y revisión exacta en [tareas](tasks.md).
 
 ## Summary
 
@@ -11,8 +11,8 @@ I1 renueva únicamente `melee_march` y `returning`: ocho fases por ciclo con apo
 
 | Aspecto | Decisión |
 |---|---|
-| Motor/lenguaje | Godot 4.7.1, `SpriteFrames` y `AnimatedSprite2D` existentes; sin GDScript nuevo previsto |
-| Arte | Dos atlas RGBA dedicados, uno con machete/fusil guardado y otro con fusil bajo; ocho fases completas por clip, importaciones versionadas |
+| Motor/lenguaje | Godot 4.7.1, `SpriteFrames` y `AnimatedSprite2D` existentes; sin cambios de GDScript |
+| Arte | Cuatro atlas RGBA: base y apoyo opuesto de machete/fusil guardado; base y apoyo opuesto de regreso con fusil bajo. Cada clip usa cuatro figuras de cada hoja y ocho fases completas |
 | Encaje | Lienzo lógico 384×288, apoyo (192,264); conservar escala 0,3936942 y offset (0,−59,038979) del hijo visual, pies raíz+y24 |
 | Reproducción | Ciclo 0,60 s; regiones/márgenes medidos sobre texturas importadas, orientación original derecha y espejo vigente sólo en regreso |
 | Dependencias/datos | Sin dependencia, API, persistencia, autoload, rig, shader o autoridad nuevos |
@@ -22,16 +22,16 @@ I1 renueva únicamente `melee_march` y `returning`: ocho fases por ciclo con apo
 
 ## Constitution Check
 
-I: conservar separación visual/lógica y stats. II: arte sin RED artificial; cualquier cambio de selector, movimiento o estado vuelve al orquestador para TDD. III: mismo arte y significado de estados entre destinos. IV: conservar pooling y requisitos físicos históricos; 006 sigue pausado, sin certificar 60 FPS. V: revisar integración con QA independiente y CI; publicación pendiente. La propuesta no introduce excepciones constitucionales antes ni después del diseño.
+I: conservar separación visual/lógica y stats. II: arte sin RED artificial; cualquier cambio de selector, movimiento o estado vuelve al orquestador para TDD. III: mismo arte y significado de estados entre destinos. IV: conservar pooling y requisitos físicos históricos; 006 sigue pausado, sin certificar 60 FPS. V: revisar integración con QA independiente y CI; publicación pendiente. El diseño y el alcance local aprobado no introducen excepciones constitucionales.
 
 ## Project Structure
 
-- `assets/sprites/units/monte_calvo/soldado_carrera_machete_atlas.png`, `soldado_carrera_regreso_atlas.png` y sus `.import`: nuevos originales transparentes, sin sobrescribir el atlas anterior.
-- `assets/sprites/units/monte_calvo/soldado_lateral_frames.tres`: sustituir sólo referencias de los dos ciclos móviles; conservar el resto de clips, incluido `returning_idle`.
-- `assets/sprites/units/monte_calvo/SOURCES.md`: consolidar procedencia, prompts y encaje final después de QA.
-- `scenes/units/Soldado.tscn`, `soldado.gd`, `soldado_visual.gd`, stats y enemigo 008: referencias de integración, sin cambios previstos.
+- `assets/sprites/units/monte_calvo/`: `soldado_carrera_machete_atlas.png` y `soldado_carrera_regreso_atlas.png` usan sólo las cuatro figuras superiores; `soldado_carrera_machete_opuesta_atlas.png` y `soldado_carrera_regreso_opuesta_atlas.png` usan sus cuatro figuras. Importaciones respectivas: 848×424, 832×416, 588×392 y 588×392, sin sobrescribir el atlas anterior.
+- `assets/sprites/units/monte_calvo/soldado_lateral_frames.tres`: sólo cambian las referencias de los dos ciclos móviles; conservar el resto de clips, incluido `returning_idle`.
+- `assets/sprites/units/monte_calvo/SOURCES.md`: [procedencia, prompts y encaje final](../../assets/sprites/units/monte_calvo/SOURCES.md).
+- `scenes/units/Soldado.tscn`, `soldado.gd`, `soldado_visual.gd`, stats y enemigo 008: referencias de integración, sin cambios.
 - Esta carpeta contiene [datos](data-model.md), [quickstart](quickstart.md), preparación y tareas. La fuente de plantillas sigue en el preset propio, sin reinstalarlo.
 
 ## Complexity Tracking
 
-Un único I1 permite revisar la identidad de los dos recorridos y su encaje conjunto. Arte binario e importaciones se declaran aparte del tamaño manual del PR; no se crea una capa nueva ni se suben evidencias nuevas a Git.
+Un único I1 permite revisar la identidad de los dos recorridos y su encaje conjunto. Se conserva la salida completa de cada atlas aunque sólo se use la mitad superior de las hojas base; las hojas opuestas completan la alternancia sin edición raster por código. Arte binario e importaciones se declaran aparte del tamaño manual del PR; no se crea una capa nueva ni se suben evidencias nuevas a Git.

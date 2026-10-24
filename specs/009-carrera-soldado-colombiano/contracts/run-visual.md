@@ -1,6 +1,7 @@
 # Contrato visual: Corrida del soldado colombiano
 
 - `melee_march`: ocho fases de salida hacia la derecha, machete en mano y fusil guardado; `returning`: ocho fases con fusil bajo, autoradas hacia la derecha y reflejadas por el comportamiento vigente de regreso.
+- Cada recorrido combina las cuatro figuras superiores de su atlas base A y las cuatro de su hoja opuesta B en orden A0,A1,B2,B3,B0,B1,A2,A3 (IDs 0,1,6,7,4,5,2,3). A3→A0 y B3→B0 continúan el alcance/apoyo de la misma pierna.
 - Cada clip conserva bucle de 0,60 s: ocho exposiciones de 75 ms. No cambiar velocidad de desplazamiento ni multiplicadores de reproducción del actor.
 - Cada mitad enlaza contacto, compresión/paso, impulso y alcance de la pierna opuesta; el pie que alcanza continúa en su propio apoyo. Comprobar ambas transferencias y el cierre, sin suponer que el orden de una grilla ya es anatómicamente continuo.
 - Mantener altura/proporciones, casco, rostro, uniforme oliva, botas, mochila y armas entre poses; sólo la oscilación natural acompaña los pasos.

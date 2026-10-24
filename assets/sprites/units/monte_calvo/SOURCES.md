@@ -1,11 +1,76 @@
 # Soldado de Monte Calvo — procedencia y uso
 
-## 005-I4 — Arte lateral (2026-10-20)
+## 009-I1 — Corrida de salida y regreso
+
+Los cuatro atlas nuevos se generaron y editaron con la herramienta nativa OpenAI `image_gen`, conservando la identidad y el acabado pictórico del atlas lateral de 005-I4. Las referencias animadas guían el movimiento y el apoyo opuesto de 008 guía la anatomía; no se incorpora el personaje de otra referencia. El alcance funcional/visual local está aprobado en T004; el cierre de integración y la revisión exacta se mantienen en las [tareas de 009](../../../../specs/009-carrera-soldado-colombiano/tasks.md) e Issue [#38](https://github.com/Juanpvivas/demons/issues/38). Publicación pendiente.
+
+| Original | Dimensiones originales → importadas | Poses utilizadas |
+|---|---|---|
+| `soldado_carrera_machete_atlas.png` | 1774×887 → 848×424 | Cuatro de la fila superior; fila inferior sin referencias |
+| `soldado_carrera_machete_opuesta_atlas.png` | 1536×1024 → 588×392 | Las cuatro figuras |
+| `soldado_carrera_regreso_atlas.png` | 1774×887 → 832×416 | Cuatro de la fila superior; fila inferior sin referencias |
+| `soldado_carrera_regreso_opuesta_atlas.png` | 1536×1024 → 588×392 | Las cuatro figuras |
+
+Cada recorrido combina su hoja base A y su hoja opuesta B: **A0,A1,B2,B3,B0,B1,A2,A3** (IDs 0,1,6,7,4,5,2,3), ocho exposiciones iguales de 75 ms y ciclo de 0,60 s. Los IDs indican procedencia, no orden temporal. B3→B0 y A3→A0 enlazan alcance y apoyo de la misma pierna. La salida conserva machete en mano y fusil guardado; el regreso conserva sólo fusil bajo, reflejado hacia −X por el presentador vigente.
+
+`soldado_lateral_frames.tres` reconstruye un lienzo lógico de 384×288 con apoyo (192,264). Las regiones y márgenes se miden por figura sobre la textura importada, sin suponer una grilla exacta; la referencia de casco queda en x225 y el suelo en y264 para estabilizar el ciclo. Se conservan escala 0,3936942, offset (0,−59,038979), altura corporal cercana a 72 unidades y pies raíz+y24. Los otros seis clips, el atlas anterior, escena, material, lógica y stats no cambian.
+
+Los PNG son copias byte exactas de las salidas seleccionadas. Generación, ajustes de identidad/equipo y extracción de transparencia se realizaron con `image_gen`; no hubo recorte, repintado, escalado, montaje o extracción alfa por código. La importación nativa es lossless, con límite de lado 848/588/832/588, corrección de borde alfa y sin mipmaps. El filtro lineal y repetición desactivada del hijo visual se conservan. Los originales RGBA tienen transparencia real (alfa 0–254); el RGB de los píxeles alfa cero no es un fondo visible.
+
+La hoja opuesta del machete deriva de poses anatómicas guiadas, adaptadas al colombiano y su identidad pictórica. Las hojas de regreso derivan de la misma identidad con cambio a fusil bajo; se retiró el fusil dorsal duplicado mediante edición nativa y se extrajeron los restos externos del alfa antes de seleccionar la salida. Las cuatro hojas completas se conservan para no alterar los originales seleccionados.
+
+### Prompts finales de las salidas seleccionadas
+
+Los prompts describen lo solicitado a la herramienta; el número de figuras realmente usado es el de la tabla anterior. No se emplean sus filas descartadas para fingir alternancia.
+
+#### `soldado_carrera_machete_atlas.png`
+
+> Use case: historical-scene.
+> Asset type: production transparent 2D sprite atlas for Demonios de las Trincheras.
+> Input image 1 is CHARACTER IDENTITY, CLOTHING, EQUIPMENT, WEAPONS AND PAINTERLY STYLE REFERENCE ONLY. Create new motion drawings of the same Colombian infantryman, matching especially the second row of Image 1. Do not reproduce the other rows.
+> Primary request: exactly EIGHT distinct anatomically connected phases of a restrained running/jogging cycle toward RIGHT (+X), machete held LOW in the same near hand throughout, wooden-stock rifle slung securely on the back, small brown pack, matte olive fatigues, worn dark olive steel helmet and brown boots. Same face, body proportions, helmet silhouette, pack, straps, rifle length and machete length in every frame.
+> Layout: transparent wide landscape image, exactly FOUR columns by TWO rows of eight isolated complete figures, read chronologically left-to-right top row then left-to-right bottom row. Each figure must occupy its own generous cell, full head, boots and entire weapons visible. Ample empty transparent gutters and outer margins. No overlap. All figures face right with the same slight elevated side perspective as Image 1.
+> Running anatomy, fixed camera and stable body center: one continuous eight-phase cycle showing BOTH legs taking turns as the support leg. Distinguish foreground near leg from background far leg by overlap and subtly darker far cloth. TOP ROW: 1 near/foreground leg reaches FORWARD and heel makes contact while far leg trails behind; 2 same near leg supports the weight with slight knee compression while far heel lifts; 3 near foot passes UNDER the hip toward the rear as the far knee swings FORWARD, knee flexed; 4 far leg reaches FORWARD toward its imminent contact, near leg pushes off behind. BOTTOM ROW: 5 far/background leg makes FORWARD contact while near leg trails; 6 same far leg supports the weight with slight knee compression while near heel lifts; 7 far foot passes UNDER hip toward rear while near knee swings FORWARD, knee flexed; 8 near leg reaches FORWARD toward its imminent contact as far leg pushes off behind. Frame 8 must naturally close into frame1 with the SAME near leg making contact. Frame4 closes into frame5 with the SAME far leg making contact. Do NOT repeat the same leading-leg stride eight times. Do NOT use reflected duplicate poses.
+> Torso leans slightly forward and remains coherent with a small natural double compression, no exaggerated bob, jump, squash/stretch or hovering. Machete and rifle stay attached coherently to the same hands/straps, machete low/non-striking, restrained shoulder/pack movement. Running in place drawings, stable ground baseline, no motion trails.
+> Style: crisp readable matte hand-painted textured 2D sprite, exactly match Image1's subdued olive/brown military palette and painterly finish; legible at roughly72 pixels tall, not pixel art, not glossy3D, not cartoon redesign.
+> Genuine transparent alpha in ALL empty areas. No ground, shadows, backdrop, labels, numbering, text, lines, grid, insignia, flags, blood, muzzle flashes, projectiles, extra characters or watermark. Preserve complete boots and weapons without cropping. Output only this eight-pose atlas.
+
+#### `soldado_carrera_machete_opuesta_atlas.png`
+
+> Use case: identity-preserve.
+> Asset: normalize FOUR existing sprites to match another sheet's character identity, not a new pose sheet.
+> IMAGE1 is the EDIT TARGET B, four figures2×2. IMAGE2 is the exact appearance reference A: its TOP ROW. These sheets must alternate as one eight-frame animation of ONE Colombian infantryman.
+> Keep B's exact four poses and ALL lower-body anatomy unchanged: every hip/knee/ankle/boot position and silhouette, foreground thigh overlap, far-leg-forward contacts/pass/reach, ground baselines, directionRIGHT, figure placement and scale. Never replace B's far-leg-forward anatomy with A's near-leg-forward gait. Do not mirror.
+> Correct ONLY B's appearance differences relative to A. Copy A's same adult face/nose/chin/eye proportions, slightly more compact facial features, plain darker olive worn helmet with restrained highlights, flatter matte painterly finish, same olive fatigues and small brown pack/belt pouches/straps/boots. B currently has extra cargo/side pouches and a more realistic, cooler gray-green fabric look; normalize to A's simpler identical equipment, warmer muted olive cloth and matching edge/brush texture. Preserve leg shapes/overlap even if their cloth shading or pocket details are normalized. Same face/helmet/clothing/equipment among all four B figures.
+> Weapons: use exactly A's slung wooden rifle (same wood/metal tones, length and placement on back relative to helmet/body) and A's LOW broad curved machete (same blade curve/width/length relative to soldier height, dark handle, smooth matte steel). Keep near-hand anchor and existing arm/leg poses. Do not enlarge or shrink body to compensate; adjust weapons only as necessary to match A.
+> Keep2×2 layout, complete bodies/boots/full weapons and transparent gutters. Preserve genuine alpha: empty pixels remain alpha0, soldier interiors opaque, no added halo/shadow/ground/background. No text/labels/grid/insignia/flags/blood/effects/watermark. Output the complete normalized four-pose B sheet.
+
+#### `soldado_carrera_regreso_atlas.png`
+
+> Use case: precise-object-edit.
+> Edit target: the attached EIGHT-pose Colombian soldier atlas, four columns by two rows.
+> Keep the complete atlas layout, body scale, faces, helmets, olive fatigues, packs, ALL eight exact lower-body poses, anatomical overlaps, hip/knee/ankle/boot positions and direction RIGHT unchanged. Do not swap legs or redesign the gait.
+> Correct ONLY the arm/weapon integration in every figure:
+> - Each soldier has exactly ONE rifle: the wooden rifle held LOW across his lower torso with muzzle angled down-right. REMOVE any second rifle or orphaned rifle barrel/stock remaining on his BACK behind the pack/head/hips. Keep the small brown backpack/straps, no long gun on back.
+> - Exactly TWO ARMS and TWO HANDS per figure. The NEAR hand grips the rear trigger/stock area of the lowered rifle. The FAR forearm connects naturally from far shoulder down to ONE supporting hand wrapping the fore-end. Ensure there is no separate third free/clenched hand left above the gun in addition to the support grip below. Keep one coherent wrist and anatomically natural wraparound fingers for the far support hand.
+> - The machete is stowed unobtrusively, no blade in hands. Rifle design, length, wood/metal color and low nonoffensive angle remain the same. No aiming, firing or strike.
+> Preserve the same matte painterly style, clothing and body proportions, eight figure positions, complete boots and full rifles, generous transparent gutters. Genuine alpha0 empty background and opaque characters, no added shadows/aura/ground/text/grid/labels/othercontent. Change no leg anatomy or pose.
+
+#### `soldado_carrera_regreso_opuesta_atlas.png`
+
+> Use case: background-extraction.
+> Edit target: this exact FOUR-figure transparent sprite sheet. Preserve every existing soldier and pose. Do not redraw or alter any body, arm, hand, rifle, head, helmet, boot, clothing, color or position.
+> The current PNG has unwanted semi-opaque BROWN BACKGROUND PATCHES, including along the LEFT OUTER EDGE, ABOVE/BETWEEN the two TOP figures, in the CENTRAL GUTTER between figures, along the RIGHT OUTER EDGE and BELOW the figures. Remove ALL these background islands completely. Set all empty background pixels to alpha0, including brown/gray areas outside the precise soldier silhouettes, inside leg gaps, gutters and margins. Keep each soldier cut out as its own isolated fully opaque figure with clean antialiased silhouette edges only. No retained soft halo or alpha blobs.
+> There must be exactly FOUR isolated soldier silhouettes in2×2, no other visible or semi-transparent components. Preserve all figures, entire lowered rifles, backpacks and boots fully visible. No repainting, color changes, body reconstruction, shadows, ground, added content, text or watermark. Return only the cleaned alpha cutout sheet.
+
+
+## Antecedente de 005-I4 — Arte lateral (2026-10-20)
 
 `soldado_lateral_atlas.png` se generó con OpenAI `image_gen`, usando el
 [concepto horizontal aprobado](../../../../specs/005-cinco-carriles/references/visual-reference.md)
-como referencia de estilo. Contiene 16 poses nuevas hacia +X. El regreso
-refleja sus cuatro pasos de fusil bajo hacia −X durante la partida.
+como referencia de estilo. Contiene 16 poses nuevas hacia +X. En esa entrega, el regreso
+reflejaba cuatro pasos de fusil bajo hacia −X; 009 sustituye sólo los dos
+ciclos móviles descritos arriba. El resto de estas poses permanece vigente.
 
 | Recurso/encaje | Valor |
 |---|---|
@@ -13,7 +78,7 @@ refleja sus cuatro pasos de fusil bajo hacia −X durante la partida.
 | Frames | `soldado_lateral_frames.tres`; lienzo lógico 384×288, apoyo (192,264) |
 | Hijo visual | Escala 0,3936942; offset (0,−59,038979); altura neutra ≈72; pies raíz+y24 |
 | Poses quietas/ataques | `rifle_idle`, `rifle_shot` (0,16 s), `melee_idle`, `melee_attack` (0,24 s) |
-| Desplazamiento | `melee_march` y `returning`, 4 pasos/0,60 s cada uno; `returning_idle`, 1 pose |
+| Desplazamiento de 005-I4 | `melee_march` y `returning`, 4 pasos/0,60 s originales, sustituidos por 009; `returning_idle`, 1 pose conservada |
 | Caída | `defeat`, 4 poses/0,40 s |
 
 Los cambios de escala/offset afectan sólo al hijo visual; el cuerpo conserva

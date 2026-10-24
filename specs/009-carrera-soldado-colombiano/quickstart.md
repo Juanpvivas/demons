@@ -1,6 +1,6 @@
 # Validación: Carrera del soldado colombiano
 
-Usar la rama/revisión declarada en el PR y Godot 4.7.1. Preservar cambios locales, apps y datos; preparar variantes de QA en copias aisladas. Esta guía define comprobaciones pendientes, no resultados.
+Usar la rama/revisión declarada en el PR y Godot 4.7.1. Preservar cambios locales, apps y datos; preparar variantes de QA en copias aisladas. Esta guía define los recorridos de comprobación; el [alcance local aprobado y sus límites](research.md#alcance-funcional-y-visual-de-i1) distinguen lo observado en cada destino. El cierre exacto se mantiene en [tareas](tasks.md) y el PR.
 
 1. Importar/cargar recursos y exportar con las rutas existentes (`tools/web/export.sh` para Web); confirmar ambos clips nuevos y los demás intactos. No certificar otro renderer o destino desde esa carga.
 2. Reproducir realmente cada clip durante al menos tres vueltas, ampliado y a tamaño de juego; comparar contra el arte previo. Inspeccionar ambas transferencias alcance → apoyo y última → primera, anclaje, escala, alfa, identidad y armas.
