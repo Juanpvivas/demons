@@ -8,7 +8,7 @@
 
 **Antecedente**: el perfil inicial aprobado en T001–T012 usó dibujo code-native cálido mate de 0,16 s, máximo 0,20 s, con ancla del cañón resuelta por `SoldadoVisual`. No se alteraron atlas ni color del soldado.
 
-**Revisión autorizada del 2026-10-24, pendiente de implementar/validar**: duplicar destello y trazadora, conservar intensidad durante 0,30 s de avance hasta el destino capturado y desvanecer sólo durante los 0,10 s finales. **Razón**: la persona comprobó que el perfil inicial se percibía demasiado pequeño en Web, iOS y Android. Mantener paleta y dibujo local conserva el acabado pictórico sin luces sobre el actor ni recursos raster nuevos.
+**Revisión autorizada del 2026-10-24, aprobada funcionalmente en T018**: duplicar destello y trazadora, conservar intensidad durante 0,30 s de avance hasta el destino capturado y desvanecer sólo durante los 0,10 s finales. **Razón**: la persona comprobó que el perfil inicial se percibía demasiado pequeño en Web, iOS y Android. Mantener paleta y dibujo local conserva el acabado pictórico sin luces sobre el actor ni recursos raster nuevos.
 
 ## Alcance frontal configurable
 
@@ -27,3 +27,5 @@
 El esqueleto anterior pertenece al perfil inicial. La revisión usa las APIs existentes para RED de alcance ampliado y duración; recorrido y tamaño se validan visualmente, sin interfaces de introspección artificiales. El daño sigue siendo inmediato, aunque la trazadora cosmética tarde en alcanzar la posición capturada.
 
 **Decisión**: un I1 funcional con QA/documentación/draft PR, sin publicación ni mediciones de rendimiento nuevas. **Razón**: alcance autorizado, gates separados y pausa explícita de #30. La falta de hardware final queda declarada, sin convertir simulación ni smoke en certificación física.
+
+La revisión funcional de T018 acredita el recorrido completo y playtesting en Chrome; Android acredita destello/combate/derrota/Retry, e iPad sólo inicio por teclado/combate/machete, sin captura inequívoca del efecto ni Retry/recogida/retorno manuales. No se extrapola visibilidad entre destinos ni se atribuye a 010 la franja gris observada en iPad. Compatibility/software y la shell de simulador no certifican Mobile, hardware, IPA final ni 60 FPS. El cierre de integración y CI de la revisión exacta se verifica en el [PR #41](https://github.com/Juanpvivas/demons/pull/41); publicación pendiente.

@@ -239,8 +239,9 @@ resolvió.
 se mueven físicamente. `Soldado` consulta `intersect_shape()` en el tick
 físico, filtra candidatos por frente/fila y contrasta el solape de las formas
 reales para fusil y machete. Repite la consulta tras avanzar antes de resolver
-el contacto. `DeteccionRango` y `RangoMelee` conservan sus formas autoradas,
-con monitoring desactivado; ya no aportan listas almacenadas ni señales de
+el contacto. `DeteccionRango` y `RangoMelee` aportan geometría de alcance,
+con monitoring desactivado; desde 010 el extremo del fusil se deriva de stats
+en una forma propia (§4.3). Ya no aportan listas almacenadas ni señales de
 overlap al combate. El daño entrante sigue bajo autoridad del soldado: cada
 enemigo elegible aporta su daño al pulso de 1 s, sin una segunda ruta de ataque
 en `Enemigo`. Esta alternativa para dos cuerpos móviles conserva el hallazgo
@@ -311,6 +312,14 @@ ambas 40 en `soldado_base_stats.tres`, independientes de `EnemyStats.move_speed`
 I2 usa `advance_speed`; I3 activa `return_speed` para el regreso físico al
 hogar. Hogar, fila, estado de movimiento y blancos siguen siendo estado
 por actor, no datos mutables del Resource.
+
+`UnitStats.rifle_range` fija el extremo longitudinal de detección desde la
+raíz del soldado. Su default de 264 conserva Resources anteriores;
+`soldado_base_stats.tres` lo configura en 396 desde la revisión de 010.
+`Soldado` duplica la forma de fusil por actor y deriva su ancho/posición desde
+ese extremo, manteniendo el borde cercano y la altura autorados. Ni la forma
+compartida de la escena ni los stats se mutan; cambiar el alcance de una
+configuración no altera otros actores.
 
 ### 4.4 Modo fusil / modo machete como estado simple
 
@@ -510,8 +519,12 @@ y su cadencia, sin depender del listener visual.
 `CombatVisualEffects` registra también esa señal de forma opcional e idempotente
 y posee un segundo pool precalentado con diez `RifleShotVisualEffect`, capaz de
 crecer; los conteos históricos siguen describiendo sólo bajas. La escena es un
-`Node2D` con dibujo 2D de destello/trazadora y reloj propio de 0,16 s activo,
-sin física, input, audio ni daño. Cada activación copia sus endpoints y limpia
+`Node2D` con dibujo 2D de destello/trazadora y reloj propio de 0,40 s activo,
+sin física, input, audio ni daño. La revisión de 010 duplica el tamaño del
+destello y el trazo; la cabeza recorre cañón→destino en 0,30 s con intensidad
+conservada y el segmento se desvanece en los 0,10 s finales. Cola/origen y
+cabeza/destino delimitan el trazo, sin seguir actores ni retardar el daño.
+Cada activación copia sus endpoints y limpia
 geometría, alpha, transformación y reloj al reset; su identidad evita que un
 final obsoleto retire otro uso. Los hooks son seguros antes de `_ready()`.
 
@@ -612,8 +625,10 @@ La aceptación y CI de cada revisión exacta se registran en el PR del increment
 - **Combate horizontal:** el fusil permanece en el hogar. Su broadphase se
   orienta hacia +X y el filtro exige
   frente, misma fila o celda diagonal directamente contigua, solape real de
-  formas y generación activa. El tramo longitudinal autorado es [24,264]; no
-  es una distancia al centro del enemigo. Conserva blanco elegible y, al perderlo,
+  formas y generación activa. El tramo longitudinal es [24,396] para el soldado
+  base, con altura 192: su extremo procede de `stats.rifle_range` y la forma
+  propia conserva el borde cercano autorado; no es una distancia al centro
+  del enemigo. Conserva blanco elegible y, al perderlo,
   elige el más avanzado hacia −X. Con carga cero, el mismo actor busca un
   frontal de su fila, avanza a `stats.advance_speed` y se detiene en alcance
   para golpear; sin frontal espera en su posición, sin perseguir detrás o en
@@ -965,3 +980,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-21 | 007/T022 tras QA T021: destino menú mediante el cierre compartido, sin nivel activo y con foco de inicio restaurado; ciclo lógico aprobado, validación final y publicación pendientes. |
 | 2026-10-22 | 007/T027 tras QA T026: Theme compartido y alcance local aprobado; variantes internas y cadencia software limitada documentadas, con revisión exacta en PR y publicación pendiente. |
 | 2026-10-23 | 010/T009 tras QA funcional T008: §2/§4.7/§4.8 amplían la presentación observadora con snapshot de tiro anterior al daño, pool cosmético separado y cierre por intento; se distinguen poses y efectos de última bala. Comportamiento aprobado en rama, con publicación pendiente y sin nueva campaña de rendimiento. |
+| 2026-10-24 | 010/T019 tras QA funcional T018: §4.3/§5 incorporan alcance frontal desde UnitStats con forma propia por actor; §4.7 describe recorrido cosmético de 0,30 s más fade de 0,10 s, conservando snapshot, pooling y autoridad de daño inmediata. |

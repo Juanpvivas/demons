@@ -2,7 +2,7 @@
 
 Usar la revisión declarada de `codex/010-disparos-visibles` y Godot 4.7.1. Preservar el `project.godot` local de la persona; generar importaciones/builds y variantes QA en copia aislada. Esta guía define comprobaciones, no acredita resultados.
 
-La revisión del 2026-10-24 usa el perfil confirmado por la persona. T001–T012 conservan el resultado anterior; los pasos siguientes no acreditan aún la revisión.
+La revisión del 2026-10-24 usa el perfil confirmado por la persona y tiene aprobación funcional T018. T001–T012 conservan el resultado anterior. Los pasos siguientes definen el procedimiento; el cierre de integración/CI y los límites por destino se verifican en el PR #41, sin certificar publicación.
 
 1. **RED de la revisión**: usar las interfaces existentes, sin recrear el setup histórico ni retirar código. Tester cubre un enemigo frontal dentro del alcance ampliado pero fuera del anterior, límites de solape e independencia entre Resources/formas; exige que el efecto siga activo después de 0,20 s y termine a los 0,40 s. Las aserciones deben ejecutarse y fallar por el requisito ausente, no por propiedad inexistente, parser o importación. QA revisa ese RED antes de desarrollo.
 2. **GREEN**: repetir las mismas pruebas tras implementar. Cubrir frente/diagonal, tiro sin listener, última bala, falta de blanco, machete/regreso, snapshot anterior a daño/recycle y tiro ganador. Cubrir pool reutilizado, finalización obsoleta, simultáneos, pausa, terminal y cierre/Retry sin residuos.

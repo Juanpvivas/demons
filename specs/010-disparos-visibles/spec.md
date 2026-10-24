@@ -3,11 +3,11 @@
 **Feature ID**: `010-disparos-visibles`
 **Planned Branch**: `codex/010-disparos-visibles`
 **Created**: 2026-10-23
-**Status**: Draft
+**Status**: Aprobación funcional T018; cierre de integración en PR #41
 **Tracking**: [Issue #40](https://github.com/Juanpvivas/demons/issues/40)
 **Input**: «Implementa el destello y la trazadora desde main, conservando el estilo pictórico y las mecánicas actuales. Sigue el flujo de agentes y QA, actualiza documentación y prepara un PR en borrador, manteniendo la publicación pendiente».
 
-**Revisión autorizada — 2026-10-24**: tras probar Web, iOS y Android, la persona eligió destello/trazadora al doble de tamaño, alcance frontal un 50 % mayor y recorrido visual de 0,30 s más 0,10 s de desvanecido, conservando diagonales contiguas y daño inmediato. Esta revisión actualiza el mismo [PR #41 en borrador](https://github.com/Juanpvivas/demons/pull/41); su implementación y QA están pendientes. T001–T012 conservan la aprobación del perfil inicial de 0,16 s, máximo 0,20 s y alcance anterior; no acreditan el perfil revisado.
+**Revisión autorizada — 2026-10-24**: tras probar Web, iOS y Android, la persona eligió destello/trazadora al doble de tamaño, alcance frontal un 50 % mayor y recorrido visual de 0,30 s más 0,10 s de desvanecido, conservando diagonales contiguas y daño inmediato. El comportamiento revisado tiene aprobación funcional T018; el cierre de integración y CI se verifican en el mismo [PR #41 en borrador](https://github.com/Juanpvivas/demons/pull/41). T001–T012 conservan la aprobación del perfil inicial de 0,16 s, máximo 0,20 s y alcance anterior; no acreditan el perfil revisado.
 
 ## User Scenarios & Testing
 

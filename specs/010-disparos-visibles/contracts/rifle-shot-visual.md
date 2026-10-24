@@ -1,10 +1,10 @@
 # Contrato de presentación de disparo
 
-Perfil revisado autorizado el 2026-10-24, pendiente de implementación y QA. El perfil inicial aprobado en T001–T012 se conserva como antecedente; las reglas siguientes gobiernan la revisión del PR #41.
+Perfil revisado autorizado el 2026-10-24 y aprobado funcionalmente en T018. El perfil inicial aprobado en T001–T012 se conserva como antecedente; las reglas siguientes gobiernan la revisión del PR #41, donde se verifica el cierre final de integración y CI.
 
 ## Alcance de fusil
 
-- `UnitStats.rifle_range: float` expresa el extremo longitudinal del alcance desde la raíz del soldado, en unidades de mundo; `resources/units/soldado_base_stats.tres` lo fija en 396 frente al extremo inicial de 264 (+50 %).
+- `UnitStats.rifle_range: float` expresa el extremo longitudinal del alcance desde la raíz del soldado, en unidades de mundo; `resources/units/soldado_base_stats.tres` lo fija en 396 frente al extremo inicial de 264 (+50 %). El default 264 del esquema conserva Resources anteriores.
 - `Soldado` conserva el límite cercano de 24, altura de 192 y prueba de solape real de cuerpos. Deriva el rectángulo y la consulta física desde el dato, con forma independiente por actor; no muta stats ni formas compartidas.
 - Se mantienen frente de la misma fila, diagonales sólo en las celdas directamente contiguas, prioridad y retención de blanco elegible. No amplía el machete, diagonales profundas ni ataques hacia atrás. Daño, cadencia y consumo siguen bajo autoridad de combate.
 

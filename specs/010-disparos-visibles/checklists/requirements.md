@@ -30,4 +30,4 @@
 
 ## Notes
 
-Los 16 criterios de calidad documental conservan sus IDs/estado y se contrastan con el perfil confirmado el 2026-10-24: tamaño doble, alcance frontal +50 %, recorrido de 0,30 s y fade de 0,10 s. Esta autoría T013 queda pendiente de revisión QA; ninguna casilla acredita implementación, tests ni publicación. T001–T012 conservan su aprobación histórica del perfil inicial; las tareas de la revisión permanecen pendientes hasta sus aprobaciones independientes.
+Los 16 criterios de calidad documental conservan sus IDs/estado y se contrastan con el perfil confirmado el 2026-10-24: tamaño doble, alcance frontal +50 %, recorrido de 0,30 s y fade de 0,10 s. La preparación T013 y el comportamiento revisado T018 tienen sus aprobaciones independientes; ninguna casilla de este checklist acredita implementación, tests ni publicación. T001–T012 conservan su aprobación histórica del perfil inicial; el cierre de integración/CI se verifica en el PR #41.
