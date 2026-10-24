@@ -1,7 +1,7 @@
 # Tasks: Carrera del soldado colombiano
 
 **Input**: [spec](spec.md), [plan](plan.md), [contrato](contracts/run-visual.md) y [quickstart](quickstart.md).
-**Incremento**: I1 visual desde `main` `a88e7c5`, rama `codex/009-carrera-soldado-colombiano`. Issue [#38](https://github.com/Juanpvivas/demons/issues/38). Arte y validación visual/funcional local de `29ab480` aprobados por QA en T004; documentación aprobada en T006. CI y gate final de integración pendientes. Publicación pendiente.
+**Incremento**: I1 visual desde `main` `a88e7c5`, rama `codex/009-carrera-soldado-colombiano`. Issue [#38](https://github.com/Juanpvivas/demons/issues/38), PR [#39](https://github.com/Juanpvivas/demons/pull/39) en borrador. T001–T009 **APROBADO PARA INTEGRACIÓN** por QA independiente en `193217a`, con los límites por destino declarados en el PR. Publicación pendiente.
 
 Flujo: [desarrollo](../../docs/DEVELOPMENT_WORKFLOW.md). Arte/recursos sin lógica nueva usan verificación visual, importación y regresión existente; no RED artificial. Si cambia comportamiento, volver al orquestador para tester RED → dev → GREEN → QA. Sólo el orquestador marca `[X]` tras QA. Sin nuevos archivos de evidencias en Git.
 
@@ -22,9 +22,9 @@ Flujo: [desarrollo](../../docs/DEVELOPMENT_WORKFLOW.md). Arte/recursos sin lógi
 
 - [X] T005 docs-writer: consolidar sólo lo aprobado en `assets/sprites/units/monte_calvo/SOURCES.md`, documentos009 y notas útiles de `README.md`/`docs/SPEC.md`; registrar procedencia/prompts/encaje definitivos y mantener publicación pendiente. No editar tareas ni volcar registros. Depende de T004 aprobado.
 - [X] T006 qa-validator: revisar T005, enlaces/coherencia y vigencia de la evidencia del estado final, sin abrir rendimiento o publicación. Depende de T005.
-- [ ] T007 project-orchestrator: revisar diff/base/tamaño y commits, publicar rama y preparar PR en borrador a `main`, vinculado al Issue009; sin promoción, merge o distribución. Depende de T006 aprobado.
-- [ ] T008 godot-tester: confirmar CI terminal de la revisión exacta del PR, suite completa `tests/unit/` mediante `tools/ci/run_gut.py`, import/build y artefacto Web de `tools/web/export.sh`; verificar correspondencia fuente/paquete normal y repetir sólo comprobaciones invalidadas. Depende de T007.
-- [ ] T009 qa-validator: revisar T008, alcance funcional/visual, documentación y estado final; emitir APROBADO PARA INTEGRACIÓN sólo si se cumple el alcance de009, con límites por destino y publicación pendiente. Depende de T008.
+- [X] T007 project-orchestrator: revisar diff/base/tamaño y commits, publicar rama y preparar PR en borrador a `main`, vinculado al Issue009; sin promoción, merge o distribución. Depende de T006 aprobado.
+- [X] T008 godot-tester: confirmar CI terminal de la revisión exacta del PR, suite completa `tests/unit/` mediante `tools/ci/run_gut.py`, import/build y artefacto Web de `tools/web/export.sh`; verificar correspondencia fuente/paquete normal y repetir sólo comprobaciones invalidadas. Depende de T007.
+- [X] T009 qa-validator: revisar T008, alcance funcional/visual, documentación y estado final; emitir APROBADO PARA INTEGRACIÓN sólo si se cumple el alcance de009, con límites por destino y publicación pendiente. Depende de T008.
 
 ## Dependencias y estrategia
 
