@@ -1,6 +1,10 @@
-[gd_resource type="SpriteFrames" load_steps=18 format=3]
+[gd_resource type="SpriteFrames" load_steps=38 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/units/monte_calvo/soldado_lateral_atlas.png" id="1_atlas"]
+[ext_resource type="Texture2D" path="res://assets/sprites/units/monte_calvo/soldado_carrera_machete_atlas.png" id="2_machete"]
+[ext_resource type="Texture2D" path="res://assets/sprites/units/monte_calvo/soldado_carrera_machete_opuesta_atlas.png" id="3_machete_opuesta"]
+[ext_resource type="Texture2D" path="res://assets/sprites/units/monte_calvo/soldado_carrera_regreso_atlas.png" id="4_regreso"]
+[ext_resource type="Texture2D" path="res://assets/sprites/units/monte_calvo/soldado_carrera_regreso_opuesta_atlas.png" id="5_regreso_opuesta"]
 
 [sub_resource type="AtlasTexture" id="Pose_0"]
 atlas = ExtResource("1_atlas")
@@ -98,6 +102,102 @@ region = Rect2(746, 715, 267, 70)
 margin = Rect2(59.871013, 196.666903, 117, 218)
 filter_clip = true
 
+[sub_resource type="AtlasTexture" id="CarreraMachete_0"]
+atlas = ExtResource("2_machete")
+region = Rect2(17, 17, 184, 188)
+margin = Rect2(105.048478, 79.277339, 200, 100)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="CarreraMachete_1"]
+atlas = ExtResource("2_machete")
+region = Rect2(252, 17, 163, 187)
+margin = Rect2(124.224352, 80.233371, 221, 101)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="CarreraMachete_2"]
+atlas = ExtResource("2_machete")
+region = Rect2(457, 17, 156, 187)
+margin = Rect2(124.633596, 80.233371, 228, 101)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="CarreraMachete_3"]
+atlas = ExtResource("2_machete")
+region = Rect2(654, 18, 187, 186)
+margin = Rect2(91.708005, 80.755355, 197, 102)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="CarreraMachete_4"]
+atlas = ExtResource("3_machete_opuesta")
+region = Rect2(39, 1, 221, 194)
+margin = Rect2(72.785156, 72.828125, 163, 94)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="CarreraMachete_5"]
+atlas = ExtResource("3_machete_opuesta")
+region = Rect2(372, 1, 181, 197)
+margin = Rect2(112.359375, 69.382812, 203, 91)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="CarreraMachete_6"]
+atlas = ExtResource("3_machete_opuesta")
+region = Rect2(49, 197, 208, 190)
+margin = Rect2(80.105469, 76.65625, 176, 98)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="CarreraMachete_7"]
+atlas = ExtResource("3_machete_opuesta")
+region = Rect2(341, 197, 214, 191)
+margin = Rect2(81.933594, 75.507812, 170, 97)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="CarreraRegreso_0"]
+atlas = ExtResource("4_regreso")
+region = Rect2(13, 13, 182, 189)
+margin = Rect2(113.715896, 78.145434, 202, 99)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="CarreraRegreso_1"]
+atlas = ExtResource("4_regreso")
+region = Rect2(253, 13, 158, 191)
+margin = Rect2(137.977452, 76.269448, 226, 97)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="CarreraRegreso_2"]
+atlas = ExtResource("4_regreso")
+region = Rect2(474, 11, 150, 193)
+margin = Rect2(146.756483, 74.269448, 234, 95)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="CarreraRegreso_3"]
+atlas = ExtResource("4_regreso")
+region = Rect2(649, 15, 182, 185)
+margin = Rect2(105.549042, 81.552424, 202, 103)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="CarreraRegreso_4"]
+atlas = ExtResource("5_regreso_opuesta")
+region = Rect2(39, 6, 224, 190)
+margin = Rect2(72.210938, 77.0625, 160, 98)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="CarreraRegreso_5"]
+atlas = ExtResource("5_regreso_opuesta")
+region = Rect2(373, 6, 183, 192)
+margin = Rect2(113.167969, 74.382812, 201, 96)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="CarreraRegreso_6"]
+atlas = ExtResource("5_regreso_opuesta")
+region = Rect2(48, 201, 217, 187)
+margin = Rect2(78.722656, 79.890625, 167, 101)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="CarreraRegreso_7"]
+atlas = ExtResource("5_regreso_opuesta")
+region = Rect2(341, 201, 215, 187)
+margin = Rect2(81.167969, 79.507812, 169, 101)
+filter_clip = true
+
 [resource]
 animations = [
 {
@@ -125,16 +225,16 @@ animations = [
 "speed": 1.0
 },
 {
-"frames": [{"duration": 1.0, "texture": SubResource("Pose_4")}, {"duration": 1.0, "texture": SubResource("Pose_5")}, {"duration": 1.0, "texture": SubResource("Pose_6")}, {"duration": 1.0, "texture": SubResource("Pose_7")}],
+"frames": [{"duration": 1.0, "texture": SubResource("CarreraMachete_0")}, {"duration": 1.0, "texture": SubResource("CarreraMachete_1")}, {"duration": 1.0, "texture": SubResource("CarreraMachete_6")}, {"duration": 1.0, "texture": SubResource("CarreraMachete_7")}, {"duration": 1.0, "texture": SubResource("CarreraMachete_4")}, {"duration": 1.0, "texture": SubResource("CarreraMachete_5")}, {"duration": 1.0, "texture": SubResource("CarreraMachete_2")}, {"duration": 1.0, "texture": SubResource("CarreraMachete_3")}],
 "loop": true,
 "name": &"melee_march",
-"speed": 6.666667
+"speed": 13.3333333333333
 },
 {
-"frames": [{"duration": 1.0, "texture": SubResource("Pose_8")}, {"duration": 1.0, "texture": SubResource("Pose_9")}, {"duration": 1.0, "texture": SubResource("Pose_10")}, {"duration": 1.0, "texture": SubResource("Pose_11")}],
+"frames": [{"duration": 1.0, "texture": SubResource("CarreraRegreso_0")}, {"duration": 1.0, "texture": SubResource("CarreraRegreso_1")}, {"duration": 1.0, "texture": SubResource("CarreraRegreso_6")}, {"duration": 1.0, "texture": SubResource("CarreraRegreso_7")}, {"duration": 1.0, "texture": SubResource("CarreraRegreso_4")}, {"duration": 1.0, "texture": SubResource("CarreraRegreso_5")}, {"duration": 1.0, "texture": SubResource("CarreraRegreso_2")}, {"duration": 1.0, "texture": SubResource("CarreraRegreso_3")}],
 "loop": true,
 "name": &"returning",
-"speed": 6.666667
+"speed": 13.3333333333333
 },
 {
 "frames": [{"duration": 1.0, "texture": SubResource("Pose_8")}],

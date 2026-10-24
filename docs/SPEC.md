@@ -239,6 +239,18 @@ original nativo, Mobile, hardware o victoria manual de producción completa.
 El cierre de integración y CI exacta se registra en el seguimiento/PR; 006
 permanece pausado por decisión de la persona y la publicación sigue pendiente.
 
+[009-I1](../specs/009-carrera-soldado-colombiano/spec.md) renueva sólo las
+corridas colombianas de salida con machete y regreso con fusil bajo: ocho
+fases de apoyos alternados por clip, sin salto involuntario al cerrar el ciclo
+de 0,60 s. Conserva el personaje pictórico, encaje, velocidad y reglas; las
+seis animaciones restantes siguen usando sus poses anteriores. El alcance local
+está aprobado en T004 y sus [límites por destino](../specs/009-carrera-soldado-colombiano/research.md#alcance-funcional-y-visual-de-i1)
+distinguen regreso/HOME observados en Chrome, regreso sin HOME en iPad y salida
+sin regreso/HOME manuales en Android. La regresión común no sustituye esos
+recorridos manuales; las variantes internas no certifican Mobile, hardware,
+IPA final ni victoria manual de producción completa. Seguimiento y PR conservan
+el cierre exacto de integración, con 006 pausado y publicación pendiente.
+
 La [procedencia del soldado](../assets/sprites/units/monte_calvo/SOURCES.md)
 y [del entorno](../assets/sprites/levels/monte_calvo/SOURCES.md) documentan los
 nuevos atlas y conservan los anteriores. 004-I3, aprobado funcionalmente para
@@ -484,3 +496,4 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 | 2026-10-22 | 007/T027 tras QA T026: ciclo completo, Theme y matriz local aprobados; mediciones descriptivas conservan límites de software/paquete, con revisión exacta en PR y publicación pendiente. |
 | 2026-10-22 | 006/T013-I2 tras QA T009-I2: diagnóstico de componente GPU sin ahorro medio general ni parche autorizado; bases nativas, estabilización y publicación pendientes. |
 | 2026-10-23 | 008/T005 tras QA T004: marcha enemiga de ocho poses con identidad pictórica, contacto/caída y reglas conservados; alcance local por destino y variantes nativas acotados, sin nueva campaña de rendimiento ni publicación. Se actualiza la referencia de 007 integrado por PR #34 en la guía de usuario. |
+| 2026-10-23 | 009/T005 tras QA local T004: corridas colombianas de ocho fases para salida y regreso, cuatro atlas con identidad/encaje y reglas conservados; límites de regreso/HOME por destino, sin campaña de rendimiento ni publicación. Sin patrón arquitectónico nuevo. |

@@ -125,6 +125,15 @@ y el PR registran el cierre de integración. La [matriz acotada](specs/008-march
 distingue Chrome de computador de las variantes nativas internas; no acredita
 victoria manual con los 100 enemigos, rendimiento ni publicación.
 
+[009 — Carrera del soldado colombiano](specs/009-carrera-soldado-colombiano/spec.md)
+renueva salida con machete y regreso con fusil bajo: ocho fases de apoyos
+alternados por recorrido, con cierre continuo y ciclo de 0,60 s. Conserva
+personaje pictórico, velocidad, combate y recarga. T004 valida el alcance local;
+el [seguimiento](specs/009-carrera-soldado-colombiano/tasks.md) y el PR registran
+la integración de la revisión exacta. Sus [límites por destino](specs/009-carrera-soldado-colombiano/research.md#alcance-funcional-y-visual-de-i1)
+distinguen regreso/HOME comprobados de los no observados manualmente.
+Rendimiento de 006 pausado y publicación pendiente.
+
 La feature `001-soldado-defensor-oleadas` (`specs/001-soldado-defensor-oleadas/`)
 está completa: un soldado defensor automático que dispara con fusil mientras
 tiene munición y pasa a machete al quedarse sin ella (con daño escalado por
