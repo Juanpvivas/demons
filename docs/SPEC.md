@@ -122,6 +122,16 @@ La plaza permanece reservada mientras viva, aunque se aleje. Ambos actores
 reciben daño real y pueden morir; al morir, el soldado deja de combatir,
 pierde su moral y libera su plaza de origen sin esperar la caída visual.
 
+**Vida visible de ambos bandos (011-I1, aprobado funcionalmente en T008):**
+colombianos y enemigos vivos muestran siempre una barra sobre el casco, sin
+números, con borde oscuro y relleno mate proporcional a su vida restante.
+El relleno baja inmediatamente: oliva por encima del 50 %, ocre por encima
+del 25 % hasta el 50 % inclusive, y rojo apagado al 25 % o menos. La barra
+desaparece al morir o retirarse, sin acompañar la caída; cada nueva aparición
+restaura su propio estado. Recargar conserva la vida y no cura. El indicador
+mantiene corrida, color del soldado y reglas de combate vigentes. El
+[alcance de 011](../specs/011-barras-de-vida/spec.md) conserva la publicación pendiente.
+
 **005-I3, integrado en `main` mediante [PR #26](https://github.com/Juanpvivas/demons/pull/26):** seleccionar
 una trinchera muestra fila, carga/capacidad y moral de su dueño vivo, también
 cuando está fuera; no despliega otro soldado ni cobra. «Recargar» sólo acepta
@@ -149,6 +159,7 @@ orienta la composición lateral y no fija costos, estadísticas ni HUD final.
 
 - Oleadas crecientes en dificultad, representando el avance de tropas chinas/norcoreanas.
 - Definición de enemigos vía `Resource` personalizados (stats: vida, velocidad, daño, tipo).
+- Comparten la barra de vida descrita en §6.3; cada enemigo conserva su proporción y color independientes, también al reutilizarse.
 - Sistema de spawn controlado por `Timer` + cola de oleadas.
 - Monte Calvo conserva un atacante inicial inmediato en la fila central 3 y
   99 enemigos autorados en diez oleadas: 100 en total, sin cambiar cantidades
@@ -522,3 +533,4 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 | 2026-10-23 | 009/T005 tras QA local T004: corridas colombianas de ocho fases para salida y regreso, cuatro atlas con identidad/encaje y reglas conservados; límites de regreso/HOME por destino, sin campaña de rendimiento ni publicación. Sin patrón arquitectónico nuevo. |
 | 2026-10-23 | 010/T009 tras QA funcional T008: destello y trazadora pictóricos independientes, última bala distinguida de su pose y ciclo de pausa/terminal/cierre conservando las mecánicas; alcance aprobado en rama con límites visuales por destino, publicación pendiente y 006 pausado. |
 | 2026-10-24 | 010/T019 tras QA funcional T018: tamaño doble y recorrido cosmético de 0,40 s; alcance frontal 396 desde stats como único cambio de balance, con límites visuales por destino y cierre de integración/publicación separados. |
+| 2026-10-24 | 011/T009 tras QA funcional T008: §6.3/§6.4 incorporan barras de vida siempre visibles y sin números para ambos bandos, proporción inmediata y tonos mates por umbral; sin cambios de balance, con cierre de integración y publicación pendientes. |

@@ -2,7 +2,7 @@
 
 **Feature ID**: `011-barras-de-vida` | **Planned Branch**: `codex/011-barras-de-vida` | **Date**: 2026-10-24 | **Spec**: [spec.md](spec.md)
 **Input**: perfil confirmado, un incremento `011-I1` para ambos bandos.
-**Note**: preparación Spec Kit; ejecución posterior por agentes según `docs/DEVELOPMENT_WORKFLOW.md`. Pendiente de QA.
+**Note**: diseño preparado con Spec Kit y ejecutado por agentes según `docs/DEVELOPMENT_WORKFLOW.md`. Comportamiento aprobado funcionalmente en T008; cierre documental, CI y QA final de integración pendientes. Publicación pendiente.
 
 ## Summary
 
@@ -27,14 +27,14 @@ Añadir una `WorldHealthBar` compartida, hija directa `HealthBar` del root de ca
 - III: mismo significado en Web de computador y apps nativas; tonos mates y entrada intacta.
 - IV/V: conservar pooling; declarar caídas observadas y límites de cada entorno, sin certificar hardware/60 FPS con smoke o emulación. Publicación pendiente.
 - Integración requiere fuente/build funcionales, documentación, CI y QA independiente; pendiente físico/renderer/paquete final se declara sin inventar aprobación.
-- Revisión previa y posterior al diseño: el plan no requiere excepciones; los resultados y veredictos aún no se han ejecutado.
+- Revisión previa y posterior al diseño: sin excepciones nuevas; QA funcional T008 confirma el comportamiento. Documentación, CI y QA final de integración conservan su gate independiente.
 
 ## Project Structure
 
 - `scenes/ui/WorldHealthBar.tscn`, `scenes/ui/world_health_bar.gd`: ProgressBar sin porcentajes, input ni foco; [contrato](contracts/world-health-bar.md).
 - `scenes/units/Soldado.tscn`, `scenes/units/soldado.gd`, `scenes/enemies/EnemigoBase.tscn`, `scenes/enemies/enemigo.gd`: hijo HealthBar, inicialización/daño/retirada/reuso.
 - `tests/unit/ui/test_world_health_bar.gd`, `tests/unit/units/test_soldado_health_bar.gd`, `tests/unit/enemies/test_enemigo_health_bar.gd`: componente y actores con estado UI real; sin getters geométricos.
-- Esta carpeta: spec, plan, research, data-model, contrato, quickstart, checklist y tasks; `docs/SPEC.md`/`docs/ARCHITECTURE.md` se actualizarán tras QA funcional.
+- Esta carpeta: spec, plan, research, data-model, contrato, quickstart, checklist y tasks; T009 consolida el comportamiento aprobado en `docs/SPEC.md`/`docs/ARCHITECTURE.md` para revisión documental.
 
 ## Execution Design
 

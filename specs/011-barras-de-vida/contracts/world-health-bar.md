@@ -1,6 +1,6 @@
 # Contrato de presentación — WorldHealthBar
 
-**Estado**: diseño de `011-I1`, pendiente de QA; [FR-001–007](../spec.md).
+**Estado**: comportamiento de `011-I1` aprobado funcionalmente en T008; revisión documental, CI y QA final de integración pendientes. Publicación pendiente; [FR-001–007](../spec.md).
 
 ## Composición e interfaz
 
@@ -19,9 +19,9 @@
 - Inicializar/activar un actor vivo llama `set_health`; un enemigo inactivo sigue oculto al entrar al árbol. Daño actualiza inmediatamente. Recargar, regresar o cambiar de arma no cura ni reinicializa.
 - Daño letal limpia la barra antes de callbacks/señales de derrota que puedan reciclar o reactivar síncronamente al enemigo; no limpiar después una activación nueva.
 - `Enemigo.on_pool_released()` limpia incluso en prewarm anterior a `_ready()`; resolver el hijo sin depender exclusivamente de `@onready`.
-- `prepare_for_spawn()` restaura barra completa con los stats de esa activación, incluido un máximo distinto; ninguna llamada anterior puede ocultar la nueva activación.
+- Tras `_ready()`, `prepare_for_spawn()` restaura barra completa con los stats de esa activación, incluido un máximo distinto; ninguna llamada anterior puede ocultar la nueva activación. Su uso antes de `_ready()` no forma parte de este contrato.
 - La caída cosmética sólo usa su sprite actual: no copiar barra. Retirada, cierre del nivel y Retry no conservan indicadores del intento anterior.
 
-## Verificación prevista
+## Alcance de verificación
 
-Componente: carga neutral antes de RED, proporciones/límites exactos/invalidación/clear repetido y dos instancias independientes. Actores: 30/30 y 15/15 iniciales, daño, recarga sin cura, baja oculta antes de callbacks, release/prepare antes de ready, máximo distinto, reuso síncrono y Retry. Inspeccionar estado UI real y estilos; anclaje/lectura se revisan visualmente.
+Componente: carga neutral antes de RED, proporciones/límites exactos/invalidación/clear repetido y dos instancias independientes. Actores: 30/30 y 15/15 iniciales, daño, recarga sin cura, baja oculta antes de callbacks, release de prewarm antes de ready → ready inactivo → prepare después de ready, máximo distinto, reuso síncrono y Retry. Estado UI real y estilos se comprueban funcionalmente; anclaje/lectura se revisan visualmente, con alcance propio de cada entorno ejecutado.
