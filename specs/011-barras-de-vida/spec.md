@@ -1,7 +1,7 @@
 # Feature Specification: Barras de vida
 
 **Feature ID**: `011-barras-de-vida` | **Planned Branch**: `codex/011-barras-de-vida`
-**Created**: 2026-10-24 | **Status**: Comportamiento aprobado funcionalmente en T008; documentación, CI y QA final de integración pendientes. Publicación pendiente.
+**Created**: 2026-10-24 | **Status**: `011-I1` APROBADO PARA INTEGRACIÓN (T011); [PR #43 en borrador](https://github.com/Juanpvivas/demons/pull/43), con revisión humana y publicación pendientes.
 **Tracking**: [Issue #42](https://github.com/Juanpvivas/demons/issues/42).
 **Input**: «Vamos a trabajar con una barra de vida tanto para los soldados enemigos como para los colombianos».
 **Perfil confirmado**: siempre visibles mientras viven, sin números, sobre la cabeza; borde oscuro y relleno mate oliva (>50 %), ocre (>25–50 %) y rojo apagado (≤25 %). Baja inmediata y retirada al caer.

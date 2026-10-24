@@ -1,6 +1,6 @@
 # Contrato de presentación — WorldHealthBar
 
-**Estado**: comportamiento de `011-I1` aprobado funcionalmente en T008; revisión documental, CI y QA final de integración pendientes. Publicación pendiente; [FR-001–007](../spec.md).
+**Estado**: `011-I1` APROBADO PARA INTEGRACIÓN (T011); [PR #43 en borrador](https://github.com/Juanpvivas/demons/pull/43), con revisión humana y publicación pendientes; [FR-001–007](../spec.md).
 
 ## Composición e interfaz
 
