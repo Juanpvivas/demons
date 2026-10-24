@@ -4,4 +4,5 @@
 
 [node name="RifleShotVisualEffect" type="Node2D"]
 visible = false
+z_index = 1
 script = ExtResource("1_effect")

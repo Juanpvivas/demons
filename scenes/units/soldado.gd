@@ -69,6 +69,7 @@ signal soldier_defeated(grid_cell: Vector2i)
 ## Snapshot visual anterior al retiro; ningún listener es necesario para morir.
 signal defeat_visual_requested(snapshot: Dictionary)
 
+## Hecho cosmético capturado antes de las consecuencias síncronas del daño.
 signal rifle_shot_visual_requested(snapshot: Dictionary)
 
 ## Cambió el estado individual observado por el panel, sin autoridad de UI.
@@ -303,6 +304,7 @@ func _process_rifle(delta: float) -> void:
 func _fire_at_current_target() -> void:
 	var target := _current_target
 	_current_ammo -= 1
+	rifle_shot_visual_requested.emit(_sprite.capture_rifle_shot_snapshot(target.global_position))
 	# TODO (T047): `.call()` en vez de `target.take_damage(...)` directo —
 	# ver TODO en la cabecera del archivo. `_current_target` sigue tipado
 	# como `Node2D` aunque `Enemigo` ya existe (T025/T026); GDScript con

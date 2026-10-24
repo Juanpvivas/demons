@@ -217,3 +217,45 @@ func test_visual_snapshot_follows_authored_transform_without_mutating_pose_or_sh
 	assert_eq(second.target_world, target_at, "El destino no hereda el transform del arma")
 	first.target_world = Vector2.ZERO
 	assert_eq(second.target_world, target_at, "Cada snapshot es independiente por valor")
+
+
+func test_visual_snapshot_reflection_preserves_the_frame_rect_center(
+		is_centered = use_parameters([true, false])) -> void:
+	var soldier := _soldier()
+	var visual := soldier.get_node("AnimatedSprite2D") as SoldadoVisual
+	visual.animation = &"rifle_shot"
+	visual.frame = 0
+	visual.centered = is_centered
+	visual.offset = Vector2(13, -29)
+	visual.position = Vector2(21, -15)
+	visual.rotation = 0.27
+	visual.scale = Vector2(0.6, 0.45)
+	visual.flip_h = false
+	visual.flip_v = false
+	var target_at := Vector2(360, 240)
+	var normal := visual.capture_rifle_shot_snapshot(target_at)
+	if not _check_snapshot(normal):
+		return
+	var normal_local := visual.to_local(normal.origin_world)
+	var rect_center := visual.offset
+	if not visual.centered:
+		var texture := visual.sprite_frames.get_frame_texture(visual.animation, visual.frame)
+		rect_center += texture.get_size() * 0.5
+	for axes: Vector2i in [Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)]:
+		visual.flip_h = axes.x == 1
+		visual.flip_v = axes.y == 1
+		var reflected := visual.capture_rifle_shot_snapshot(target_at)
+		if not _check_snapshot(reflected):
+			continue
+		var local_point := visual.to_local(reflected.origin_world)
+		if visual.flip_h:
+			assert_almost_eq((normal_local.x + local_point.x) * 0.5, rect_center.x, 0.001,
+				"Reflejar la textura conserva el centro horizontal del rect, incluido offset")
+		else:
+			assert_almost_eq(local_point.x, normal_local.x, 0.001, "El eje horizontal intacto no se desplaza")
+		if visual.flip_v:
+			assert_almost_eq((normal_local.y + local_point.y) * 0.5, rect_center.y, 0.001,
+				"Reflejar la textura conserva el centro vertical del rect, incluido offset")
+		else:
+			assert_almost_eq(local_point.y, normal_local.y, 0.001, "El eje vertical intacto no se desplaza")
+		assert_eq(reflected.target_world, target_at)
