@@ -1,11 +1,11 @@
 # Tasks: Barras de vida
 
-**Input**: [spec.md](spec.md), [plan.md](plan.md), [contrato](contracts/world-health-bar.md). **Entrega**: `011-I1`, ambos bandos; Issue pendiente.
+**Input**: [spec.md](spec.md), [plan.md](plan.md), [contrato](contracts/world-health-bar.md). **Entrega**: `011-I1`, ambos bandos; Issue [#42](https://github.com/Juanpvivas/demons/issues/42).
 **Flujo**: `docs/DEVELOPMENT_WORKFLOW.md`. Sólo orquestador marca [X] tras QA; RED aprobado no entrega gameplay. Resultados al PR/temporales, sin archivos de evidencias nuevos en Git. Publicación pendiente.
 
 ## Fase 1: Preparación y contrato neutral
 
-- [ ] T001 project-orchestrator + qa-validator: revisar `specs/011-barras-de-vida/`, checklist, cobertura FR/SC y dependencias; registrar QA de preparación antes de ejecutar.
+- [X] T001 project-orchestrator + qa-validator: revisar `specs/011-barras-de-vida/`, checklist, cobertura FR/SC y dependencias; registrar QA de preparación antes de ejecutar.
 - [ ] T002 dev-godot: crear sólo interfaz neutral importable `scenes/ui/world_health_bar.gd`, `scenes/ui/WorldHealthBar.tscn` e hijos HealthBar ocultos en `scenes/units/Soldado.tscn`/`scenes/enemies/EnemigoBase.tscn`, con métodos vacíos set_health/clear, sin comportamiento ni cableado de actores; godot-tester confirma carga y qa-validator neutralidad; depende de T001 aprobada.
 
 ## Fase 2: US1 — Vida visible de ambos bandos (P1)
