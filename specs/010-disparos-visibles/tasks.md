@@ -39,3 +39,23 @@ Un solo incremento funcional: no separar RED de su implementación GREEN al entr
 T001 → T002 → T003 → T004 → T005 → T006 → T007 → T008 → T009 → T010 → T011 → T012. T008 requiere además T006; T011 requiere además T009. No hay tareas paralelas porque el contrato y los archivos se comparten.
 
 RED aprobado completa únicamente su tarea de pruebas; T005 permanece pendiente hasta GREEN y QA. TDD no se fabrica para documentos/setup, ni se atribuye retroactivamente a la corrida u otros sistemas existentes. El orquestador registra las aprobaciones proporcionales; Spec Kit no ejecuta estas tareas. Un límite de publicación no se convierte en prueba aprobada ni en obligación nueva de medición dentro de 010.
+
+## Revisión de 010-I1 — legibilidad y alcance (2026-10-24)
+
+La persona probó Web y apps Android/iOS y confirmó este ajuste para el mismo
+PR #41: tamaño doble de destello/trazadora, extremo frontal 264→396 (+50 %),
+recorrido visual de 0,30 s y desvanecido final de 0,10 s. Se mantienen el daño
+inmediato, las diagonales contiguas y las demás reglas. T001–T012 conservan
+su aprobación histórica del perfil anterior; no acreditan esta revisión.
+
+- [X] T013 docs-writer en autoría, con project-orchestrator y qa-validator: alinear spec, plan, contrato, modelo, quickstart y checklist de 010 con el perfil autorizado, alcance en Resource y geometría propia por actor; revisar coherencia antes de RED. Sin gameplay ni evidencia retroactiva.
+- [ ] T014 godot-tester en RED: ampliar las pruebas de alcance frontal y vida visual mediante las interfaces existentes; demostrar fallo por tiro ausente dentro del nuevo rango y por desaparición anterior al nuevo recorrido. Cubrir límites, aislamiento del Resource, pausa y cierre pertinentes; actualizar fronteras del perfil anterior sin alterar su historia. Depende de T013.
+- [ ] T015 qa-validator: auditar T014 y sus fallos por aserción contra el contrato revisado; aprobar sólo la tarea RED, dejando implementación pendiente. Depende de T014.
+- [ ] T016 dev-godot: implementar el alcance frontal desde UnitStats/.tres sin mutar formas compartidas; duplicar tamaño visual, recorrer boca→destino capturado durante 0,30 s y desvanecer en otros 0,10 s, con flash de 0,14 s y acabado pictórico. Conservar daño inmediato, cadencia, munición, diagonales, prioridades, corrida y ciclo del pool. Sin pruebas, cambios a project.godot ni alcance adicional. Depende de T015; aprobación requiere T017–T018.
+- [ ] T017 godot-tester en GREEN: repetir RED y regresión pertinente de combate horizontal, efectos y ciclo; verificar importación/exportación, visual y entrada en Chrome de computador y apps Android/iOS disponibles, y una sesión manual de balance por el nuevo alcance. Preservar datos y una app normal por destino; declarar variantes y límites, sin mediciones nuevas de rendimiento. Depende de T016 implementada.
+- [ ] T018 qa-validator: revisar código, pruebas, RED/GREEN y secuencia visual real de T016–T017, incluidos destino visible, estilo, límites de rango y limpieza. Aprobar sólo con evidencia suficiente, sin certificar publicación. Depende de T017.
+- [ ] T019 docs-writer en consolidación: actualizar docs/SPEC.md, docs/ARCHITECTURE.md y documentación 010 con el comportamiento aprobado, distinguiendo el ajuste de alcance de las reglas conservadas; sin registros de ejecución ni cambios a tareas. Depende de T018.
+- [ ] T020 project-orchestrator con godot-tester y qa-validator: publicar la rama existente, confirmar suite GUT completa y CI/build/export de la revisión exacta tras documentación; QA revisa el estado final y emite APROBADO PARA INTEGRACIÓN con publicación pendiente. Depende de T019; reutilizar evidencia aún válida sin repetir por rutina.
+- [ ] T021 project-orchestrator: actualizar el PR #41 en borrador y el Issue #40 con el comportamiento final, pruebas/QA y límites; marcar sólo el alcance aprobado. Depende de T020. Sin promoción, merge ni distribución; publicación pendiente e Issue #30 pausado.
+
+Orden de revisión: T013 → T014 → T015 → T016 → T017 → T018 → T019 → T020 → T021.
