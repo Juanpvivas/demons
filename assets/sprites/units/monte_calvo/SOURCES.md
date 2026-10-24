@@ -2,7 +2,7 @@
 
 ## 009-I1 — Corrida de salida y regreso
 
-Los cuatro atlas nuevos se generaron y editaron con la herramienta nativa OpenAI `image_gen`, conservando la identidad y el acabado pictórico del atlas lateral de 005-I4. Las referencias animadas guían el movimiento y el apoyo opuesto de 008 guía la anatomía; no se incorpora el personaje de otra referencia. El alcance funcional/visual local está aprobado en T004; el cierre de integración y la revisión exacta se mantienen en las [tareas de 009](../../../../specs/009-carrera-soldado-colombiano/tasks.md) e Issue [#38](https://github.com/Juanpvivas/demons/issues/38). Publicación pendiente.
+Los cuatro atlas nuevos se generaron y editaron con la herramienta nativa OpenAI `image_gen`, conservando la identidad y el acabado pictórico del atlas lateral de 005-I4. Las referencias animadas guían el movimiento y el apoyo opuesto de 008 guía la anatomía; no se incorpora el personaje de otra referencia. La corrida original conserva la aprobación de T004/T009 y la corrección de color tiene validación local en T012; el cierre de integración y la revisión exacta se mantienen en las [tareas de 009](../../../../specs/009-carrera-soldado-colombiano/tasks.md) e Issue [#38](https://github.com/Juanpvivas/demons/issues/38). Publicación pendiente.
 
 | Original | Dimensiones originales → importadas | Poses utilizadas |
 |---|---|---|
@@ -15,13 +15,13 @@ Cada recorrido combina su hoja base A y su hoja opuesta B: **A0,A1,B2,B3,B0,B1,A
 
 `soldado_lateral_frames.tres` reconstruye un lienzo lógico de 384×288 con apoyo (192,264). Las regiones y márgenes se miden por figura sobre la textura importada, sin suponer una grilla exacta; la referencia de casco queda en x225 y el suelo en y264 para estabilizar el ciclo. Se conservan escala 0,3936942, offset (0,−59,038979), altura corporal cercana a 72 unidades y pies raíz+y24. Los otros seis clips, el atlas anterior, escena, material, lógica y stats no cambian.
 
-Los PNG son copias byte exactas de las salidas seleccionadas. Generación, ajustes de identidad/equipo y extracción de transparencia se realizaron con `image_gen`; no hubo recorte, repintado, escalado, montaje o extracción alfa por código. La importación nativa es lossless, con límite de lado 848/588/832/588, corrección de borde alfa y sin mipmaps. El filtro lineal y repetición desactivada del hijo visual se conservan. Los originales RGBA tienen transparencia real (alfa 0–254); el RGB de los píxeles alfa cero no es un fondo visible.
+Los PNG son copias byte exactas de las salidas seleccionadas. Generación, ajustes de identidad/equipo y extracción de transparencia se realizaron con `image_gen`; no hubo recorte, repintado, escalado, montaje o extracción alfa por código. La importación nativa es lossless, con límite de lado 848/588/832/588, corrección de borde alfa y sin mipmaps. El filtro lineal y repetición desactivada del hijo visual se conservan. Los originales RGBA tienen transparencia real; el RGB de los píxeles alfa cero no es un fondo visible.
 
 La hoja opuesta del machete deriva de poses anatómicas guiadas, adaptadas al colombiano y su identidad pictórica. Las hojas de regreso derivan de la misma identidad con cambio a fusil bajo; se retiró el fusil dorsal duplicado mediante edición nativa y se extrajeron los restos externos del alfa antes de seleccionar la salida. Las cuatro hojas completas se conservan para no alterar los originales seleccionados.
 
-### Prompts finales de las salidas seleccionadas
+### Prompts de la generación original
 
-Los prompts describen lo solicitado a la herramienta; el número de figuras realmente usado es el de la tabla anterior. No se emplean sus filas descartadas para fingir alternancia.
+Los prompts describen lo solicitado a la herramienta; el número de figuras realmente usado es el de la tabla anterior. Los prompts de las dos hojas B siguientes son antecedentes: sus archivos vigentes incorporan la corrección de color documentada más abajo. Los originales A permanecen intactos.
 
 #### `soldado_carrera_machete_atlas.png`
 
@@ -62,6 +62,35 @@ Los prompts describen lo solicitado a la herramienta; el número de figuras real
 > Edit target: this exact FOUR-figure transparent sprite sheet. Preserve every existing soldier and pose. Do not redraw or alter any body, arm, hand, rifle, head, helmet, boot, clothing, color or position.
 > The current PNG has unwanted semi-opaque BROWN BACKGROUND PATCHES, including along the LEFT OUTER EDGE, ABOVE/BETWEEN the two TOP figures, in the CENTRAL GUTTER between figures, along the RIGHT OUTER EDGE and BELOW the figures. Remove ALL these background islands completely. Set all empty background pixels to alpha0, including brown/gray areas outside the precise soldier silhouettes, inside leg gaps, gutters and margins. Keep each soldier cut out as its own isolated fully opaque figure with clean antialiased silhouette edges only. No retained soft halo or alpha blobs.
 > There must be exactly FOUR isolated soldier silhouettes in2×2, no other visible or semi-transparent components. Preserve all figures, entire lowered rifles, backpacks and boots fully visible. No repainting, color changes, body reconstruction, shadows, ground, added content, text or watermark. Return only the cleaned alpha cutout sheet.
+
+
+### Corrección de color de las hojas opuestas
+
+Las dos hojas B se reemplazaron mediante edición nativa `image_gen` para igualar el tono oliva y la iluminación mate de sus respectivas hojas A. En cada edición, Image1 es la hoja B anterior y Image2 es la hoja A del mismo recorrido, sólo como referencia de color/luz. Los dos originales seleccionados conservan 1536×1024, cuatro figuras y la importación vigente de 588×392. Las hojas A, `SpriteFrames`, importaciones, encaje, shader, material, escenas y lógica permanecen intactos.
+
+El alfa también cambia, incluidos valores interiores; la edición no es exclusivamente RGB ni conserva el alfa bit a bit. La reproducción real con el material vigente, ampliada y a tamaño de juego, y la revisión en Chrome no muestran el destello A↔B anterior ni un nuevo desvanecimiento o recorte. Se conserva la silueta perceptual y la corrida. T012 aprueba ese alcance local; no se observó el color nuevo en las apps Android/iPad. Sus comprobaciones funcionales previas se reutilizan sólo en su alcance original.
+
+Los archivos del proyecto son copias byte exactas de las dos salidas finales de la herramienta, sin procesamiento raster por código. Los prompts siguientes conservan la petición original de la edición; la descripción anterior declara las variaciones reales del alfa.
+
+#### `soldado_carrera_machete_opuesta_atlas.png` — edición de color
+
+> Use case: lighting-weather.
+> Asset type: color/lighting correction of an EXISTING transparent 2D sprite sheet; a color-grading pass, NOT a redraw or new animation.
+> IMAGE1 is the EDIT TARGET B: exactly four existing figures in2columns×2rows on a1536×1024 canvas. IMAGE2 is COLOR, EXPOSURE AND MATTE LIGHTING REFERENCE A ONLY: use its TOP ROW. Do not copy any pose, anatomy, figure layout, silhouette or equipment geometry from Image2.
+> PRIMARY CHANGE: make B have the same subdued darker olive/brown color values and diffuse matte illumination as A, so switching between these two sheets in one animation does not create a bright flash. B is currently visibly lighter/brighter and more golden, especially face, helmet highlights, olive cloth, leather pack/pouches/boots and weapon highlights. Reduce B's overly bright midtones/highlights to A's levels and match A's muted olive cloth, restrained brown leather and subdued natural skin. Keep the original detail/shading structure while adjusting only existing pixel colors; no new brush strokes or texture. All four figures receive the same coherent tonal correction. Avoid overdarkening or blackening; A's actual color/lighting is the authority.
+> ABSOLUTE INVARIANTS: preserve Image1's1536×1024 dimensions, four-figure placement/layout, every silhouette/edge, exact pose and leg overlap, every hip/knee/ankle/boot position, body proportions, head/face features and expression, helmet shape, equipment/weapon design, all hands/fingers, whole weapons, ground baselines, scale, orientationRIGHT and transparency. Do not move, crop, mirror, resize, replace, add or remove any pixel geometry. Do not change poses or copy A's leading-leg gait. The far-leg-forward support family and all anatomical crossings stay EXACTLY as B.
+> ALPHA: preserve Image1's alpha channel and clean antialiased edges exactly; all existing empty space stays transparent. No background/alpha reconstruction or new islands/halo. Do not spend the edit recreating invisible RGB outside the silhouettes. No ground, cast shadow, glow, bloom, rim light, gradients, labels, text, grid, blood, insignia, effects or watermark. Output only the SAME four-sprite sheet with its RGB color/lighting corrected to A.
+> WEAPON INVARIANT for this sheet: low broad machete in the near hand and rifle securely slung on the back, unchanged shapes/positions. Adjust only their existing steel/wood/leather color and highlight intensity to match A; no weapon redesign or relocation.
+
+#### `soldado_carrera_regreso_opuesta_atlas.png` — edición de color
+
+> Use case: lighting-weather.
+> Asset type: color/lighting correction of an EXISTING transparent 2D sprite sheet; a color-grading pass, NOT a redraw or new animation.
+> IMAGE1 is the EDIT TARGET B: exactly four existing figures in2columns×2rows on a1536×1024 canvas. IMAGE2 is COLOR, EXPOSURE AND MATTE LIGHTING REFERENCE A ONLY: use its TOP ROW. Do not copy any pose, anatomy, figure layout, silhouette or equipment geometry from Image2.
+> PRIMARY CHANGE: make B have the same subdued darker olive/brown color values and diffuse matte illumination as A, so switching between these two sheets in one animation does not create a bright flash. B is currently visibly lighter/brighter and more golden, especially face, helmet highlights, olive cloth, leather pack/pouches/boots and weapon highlights. Reduce B's overly bright midtones/highlights to A's levels and match A's muted olive cloth, restrained brown leather and subdued natural skin. Keep the original detail/shading structure while adjusting only existing pixel colors; no new brush strokes or texture. All four figures receive the same coherent tonal correction. Avoid overdarkening or blackening; A's actual color/lighting is the authority.
+> ABSOLUTE INVARIANTS: preserve Image1's1536×1024 dimensions, four-figure placement/layout, every silhouette/edge, exact pose and leg overlap, every hip/knee/ankle/boot position, body proportions, head/face features and expression, helmet shape, equipment/weapon design, all hands/fingers, whole weapons, ground baselines, scale, orientationRIGHT and transparency. Do not move, crop, mirror, resize, replace, add or remove any pixel geometry. Do not change poses or copy A's leading-leg gait. The far-leg-forward support family and all anatomical crossings stay EXACTLY as B.
+> ALPHA: preserve Image1's alpha channel and clean antialiased edges exactly; all existing empty space stays transparent. No background/alpha reconstruction or new islands/halo. Do not spend the edit recreating invisible RGB outside the silhouettes. No ground, cast shadow, glow, bloom, rim light, gradients, labels, text, grid, blood, insignia, effects or watermark. Output only the SAME four-sprite sheet with its RGB color/lighting corrected to A.
+> WEAPON INVARIANT for this sheet: exactly ONE wooden rifle held LOW diagonally down-right in both hands, machete stowed, NO rifle on back; all existing shapes/positions and two handgrips remain identical. Adjust only the existing steel/wood color and highlight intensity to match A; no weapon or arm changes.
 
 
 ## Antecedente de 005-I4 — Arte lateral (2026-10-20)

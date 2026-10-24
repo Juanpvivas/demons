@@ -1,7 +1,7 @@
 # Implementation Plan: Carrera del soldado colombiano
 
 **Feature ID**: `009-carrera-soldado-colombiano` | **Planned Branch**: `codex/009-carrera-soldado-colombiano` | **Date**: 2026-10-23 | **Spec**: [spec.md](spec.md)
-**Base**: `main` `a88e7c5`, PR #37 integrado. Issue [#38](https://github.com/Juanpvivas/demons/issues/38). Preparación según `demons-preparation` y ejecución por agentes del [flujo](../../docs/DEVELOPMENT_WORKFLOW.md). Alcance local aprobado en T004; cierre de integración y revisión exacta en [tareas](tasks.md).
+**Base**: `main` `a88e7c5`, PR #37 integrado. Issue [#38](https://github.com/Juanpvivas/demons/issues/38). Preparación según `demons-preparation` y ejecución por agentes del [flujo](../../docs/DEVELOPMENT_WORKFLOW.md). Alcance original aprobado en T004 y corrección de color validada localmente en T012; cierre de integración y revisión exacta en [tareas](tasks.md) y el mismo [PR #39](https://github.com/Juanpvivas/demons/pull/39).
 
 ## Summary
 
@@ -13,6 +13,7 @@ I1 renueva únicamente `melee_march` y `returning`: ocho fases por ciclo con apo
 |---|---|
 | Motor/lenguaje | Godot 4.7.1, `SpriteFrames` y `AnimatedSprite2D` existentes; sin cambios de GDScript |
 | Arte | Cuatro atlas RGBA: base y apoyo opuesto de machete/fusil guardado; base y apoyo opuesto de regreso con fusil bajo. Cada clip usa cuatro figuras de cada hoja y ocho fases completas |
+| Color | Las dos hojas B igualan tono oliva y luz mate de sus hojas A mediante edición nativa de imagen. Conservan dimensiones y encaje; cambian también valores alfa, con composición real aprobada |
 | Encaje | Lienzo lógico 384×288, apoyo (192,264); conservar escala 0,3936942 y offset (0,−59,038979) del hijo visual, pies raíz+y24 |
 | Reproducción | Ciclo 0,60 s; regiones/márgenes medidos sobre texturas importadas, orientación original derecha y espejo vigente sólo en regreso |
 | Dependencias/datos | Sin dependencia, API, persistencia, autoload, rig, shader o autoridad nuevos |
@@ -27,7 +28,7 @@ I: conservar separación visual/lógica y stats. II: arte sin RED artificial; cu
 ## Project Structure
 
 - `assets/sprites/units/monte_calvo/`: `soldado_carrera_machete_atlas.png` y `soldado_carrera_regreso_atlas.png` usan sólo las cuatro figuras superiores; `soldado_carrera_machete_opuesta_atlas.png` y `soldado_carrera_regreso_opuesta_atlas.png` usan sus cuatro figuras. Importaciones respectivas: 848×424, 832×416, 588×392 y 588×392, sin sobrescribir el atlas anterior.
-- `assets/sprites/units/monte_calvo/soldado_lateral_frames.tres`: sólo cambian las referencias de los dos ciclos móviles; conservar el resto de clips, incluido `returning_idle`.
+- `assets/sprites/units/monte_calvo/soldado_lateral_frames.tres`: I1 cambia sólo las referencias de los dos ciclos móviles; conserva el resto, incluido `returning_idle`. La corrección de color posterior cambia únicamente los dos PNG opuestos, sin modificar este recurso ni sus importaciones.
 - `assets/sprites/units/monte_calvo/SOURCES.md`: [procedencia, prompts y encaje final](../../assets/sprites/units/monte_calvo/SOURCES.md).
 - `scenes/units/Soldado.tscn`, `soldado.gd`, `soldado_visual.gd`, stats y enemigo 008: referencias de integración, sin cambios.
 - Esta carpeta contiene [datos](data-model.md), [quickstart](quickstart.md), preparación y tareas. La fuente de plantillas sigue en el preset propio, sin reinstalarlo.

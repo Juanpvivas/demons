@@ -18,6 +18,14 @@ Sólo arte/recursos: verificación visual, importación y regresión existente, 
 
 ## Alcance funcional y visual de I1
 
-T004 valida localmente ambos ciclos reales y sus transiciones con las reglas vigentes. Chrome en macOS acredita salida y regreso hasta HOME, derrota y nuevo intento. Android API36 ARM64 acredita salida, baja, derrota y nuevo intento; no se observó manualmente regreso/HOME. iPad Pro13 M5/iOS27 Simulator acredita ambos recorridos, recarga, derrota y nuevo intento; no completó HOME antes del terminal. La regresión comprueba la semántica común sin convertirla en recorrido manual de otro destino.
+La revisión original T004 valida localmente ambos ciclos reales y sus transiciones con las reglas vigentes. Chrome en macOS acredita salida y regreso hasta HOME, derrota y nuevo intento. Android API36 ARM64 acredita salida, baja, derrota y nuevo intento; no se observó manualmente regreso/HOME. iPad Pro13 M5/iOS27 Simulator acredita ambos recorridos, recarga, derrota y nuevo intento; no completó HOME antes del terminal. La regresión comprueba la semántica común sin convertirla en recorrido manual de otro destino.
 
 Las apps internas usan Compatibility y exclusión temporal del loader GUT heredado; iPad conserva una shell ARM64 de Simulator con PCK actualizado. No certifican Mobile, hardware, IPA final o victoria manual de producción completa. La revisión independiente contrasta recursos, renders y capturas runtime; el cierre de integración y la CI exacta se registran en [tareas](tasks.md) y el PR. Los datos y apps normales se conservan; publicación pendiente.
+
+## Corrección de color e iluminación
+
+La diferencia moderada entre hojas admitida en la revisión original producía un aclarado intermitente señalado por la persona. Se editaron nativamente sólo las dos hojas opuestas B, usando el tono oliva y la luz mate de sus hojas base A como referencia. T012 valida la corrección durante ciclos reales ampliados/a tamaño de juego y en Chrome: sin destello A↔B ni nuevo desvanecimiento o recorte observado. Se conservan apoyos, suelo, encaje, ocho fases y ciclo de 0,60 s, así como recursos, importaciones, material y lógica.
+
+La edición generativa cambia también valores alfa, incluidos interiores; no es una transformación exclusivamente RGB ni conserva el alfa bit a bit. Su aceptación corresponde a la composición real comprobada. Los prompts expresan lo solicitado y la procedencia describe el resultado observado.
+
+El color corregido no se observó en las apps Android/iPad. La regresión y los recorridos funcionales anteriores no afectados siguen acreditando sólo su alcance original; no representan una nueva comprobación visual nativa. La revisión actual de Chrome acredita salida con machete, orden de recarga, regreso y llegada HOME; derrota/Retry conservan su comprobación anterior. El cierre de integración y la CI exacta se mantienen en [tareas](tasks.md) y el mismo [PR #39 en borrador](https://github.com/Juanpvivas/demons/pull/39). Publicación pendiente y 006 pausado.
