@@ -4,9 +4,12 @@ extends Node2D
 
 signal finished(effect: Node2D, activation: int)
 
-const _LIFE_SECONDS: float = 0.16
-const _FLASH_SECONDS: float = 0.09
-const _TRACER_LENGTH: float = 46.0
+const _TRAVEL_SECONDS: float = 0.30
+const _FADE_SECONDS: float = 0.10
+const _LIFE_SECONDS: float = _TRAVEL_SECONDS + _FADE_SECONDS
+const _FLASH_SECONDS: float = 0.14
+const _FLASH_SCALE: float = 2.0
+const _TRACER_LENGTH: float = 92.0
 
 var _activation: int = 0
 var _active: bool = false
@@ -70,15 +73,16 @@ func _draw() -> void:
 	var displacement := _target_world - _origin_world
 	var distance := displacement.length()
 	var direction := displacement.normalized() if distance > 0.0 else Vector2.RIGHT
-	var progress := _elapsed / _LIFE_SECONDS
-	var fade := 1.0 - progress
-	# Un segmento corto se disuelve en la dirección del tiro, sin haz sostenido.
-	var length := minf(_TRACER_LENGTH, distance)
-	var start := lerpf(minf(10.0, distance), maxf(0.0, distance - length), progress)
-	var from := to_local(_origin_world + direction * start)
-	var to := to_local(_origin_world + direction * minf(start + length, distance))
-	draw_line(from, to, Color(0.68, 0.49, 0.28, 0.18 * fade), 3.0, true)
-	draw_line(from, to, Color(0.89, 0.76, 0.49, 0.65 * fade), 1.2, true)
+	var progress := clampf(_elapsed / _TRAVEL_SECONDS, 0.0, 1.0)
+	var fade := 1.0 - clampf((_elapsed - _TRAVEL_SECONDS) / _FADE_SECONDS, 0.0, 1.0)
+	# La cabeza recorre todo el destino antes del fade; la cola no extiende
+	# el trazo detrás del cañón ni convierte la trayectoria en un haz completo.
+	var head := distance * progress
+	var tail := maxf(0.0, head - _TRACER_LENGTH)
+	var from := to_local(_origin_world + direction * tail)
+	var to := to_local(_origin_world + direction * head)
+	draw_line(from, to, Color(0.68, 0.49, 0.28, 0.18 * fade), 6.0, true)
+	draw_line(from, to, Color(0.89, 0.76, 0.49, 0.65 * fade), 2.4, true)
 	var flash_fade := maxf(0.0, 1.0 - _elapsed / _FLASH_SECONDS)
 	if flash_fade > 0.0:
 		_draw_flash(direction, flash_fade)
@@ -93,12 +97,12 @@ func _draw_flash(direction: Vector2, fade: float) -> void:
 	])
 	var points := PackedVector2Array()
 	for point: Vector2 in silhouette:
-		points.append(to_local(_origin_world + direction * point.x + across * point.y))
+		points.append(to_local(_origin_world + (direction * point.x + across * point.y) * _FLASH_SCALE))
 	draw_colored_polygon(points, Color(0.81, 0.61, 0.32, 0.36 * fade))
 	points.append(points[0])
-	draw_polyline(points, Color(0.74, 0.54, 0.28, 0.18 * fade), 1.5, true)
-	draw_line(to_local(_origin_world), to_local(_origin_world + direction * 8.0),
-		Color(0.96, 0.85, 0.60, 0.88 * fade), 2.0, true)
+	draw_polyline(points, Color(0.74, 0.54, 0.28, 0.18 * fade), 3.0, true)
+	draw_line(to_local(_origin_world), to_local(_origin_world + direction * 16.0),
+		Color(0.96, 0.85, 0.60, 0.88 * fade), 4.0, true)
 
 
 func _reset_presentation() -> void:

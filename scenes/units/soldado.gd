@@ -171,6 +171,7 @@ func _ready() -> void:
 	_home_position = global_position
 	_current_ammo = stats.max_ammo
 	_current_health = stats.max_health
+	_configure_rifle_range()
 
 	_search_query.shape = _search_shape
 	_search_query.collide_with_areas = false
@@ -181,6 +182,17 @@ func _ready() -> void:
 	mode_changed.connect(_sprite.observe_mode)
 	moral_changed.connect(_on_moral_changed_visual)
 	_sprite.reset_visual(_mode)
+
+
+## La forma autorada aporta el borde cercano y la altura; el Resource fija
+## el extremo frontal. Cada actor posee su forma, sin mutar la escena compartida.
+func _configure_rifle_range() -> void:
+	var shape := _rifle_shape.shape.duplicate() as RectangleShape2D
+	var near_edge := _rifle_shape.position.x - shape.size.x * 0.5
+	assert(stats.rifle_range > near_edge, "El alcance de fusil debe superar su borde cercano")
+	shape.size = Vector2(stats.rifle_range - near_edge, shape.size.y)
+	_rifle_shape.position.x = (near_edge + stats.rifle_range) * 0.5
+	_rifle_shape.shape = shape
 
 
 func _physics_process(delta: float) -> void:
