@@ -89,9 +89,12 @@ func test_effect_finishes_once_within_two_tenths_active_time() -> void:
 	effect.play_snapshot(_snapshot())
 	var activation := effect.get_activation_id()
 	assert_true(effect.visible)
-	await wait_seconds(0.04)
+	# El reloj visual usa idle; una espera física no controla su avance en CI.
+	effect.set_process(false)
+	effect._process(0.04)
 	assert_true(effect.visible, "El flash no es una activación vacía del mismo tick")
-	await wait_seconds(0.16)
+	assert_eq(effect.get_shot_snapshot(), _snapshot(), "El modelo permanece activo durante el destello")
+	effect._process(0.16)
 	assert_false(effect.visible, "No supera0.20s activo ni deja un haz fijo")
 	assert_true(effect.get_shot_snapshot().is_empty())
 	assert_signal_emit_count(effect, "finished", 1)
@@ -113,16 +116,20 @@ func test_pool_prewarm_and_double_actor_registration_do_not_duplicate_one_reques
 	assert_eq(service.get_active_effect_count(), 0, "Getter histórico sigue describiendo sólo bajas")
 
 
-func test_rifle_and_death_pools_keep_independent_lifetimes() -> void:
+func test_completing_rifle_effect_keeps_death_pool_active() -> void:
 	var service := _service(1)
 	service.request_defeat(DeathFixtures.snapshot())
 	service.request_rifle_shot(_snapshot())
 	assert_eq(service.get_active_effect_count(), 1)
 	assert_eq(service.get_active_rifle_effect_count(), 1)
-	await wait_seconds(0.20)
+	var effects := _active(service)
+	assert_eq(effects.size(), 1)
+	if effects.size() != 1:
+		return
+	effects[0].complete_activation(effects[0].get_activation_id())
 	assert_eq(service.get_active_rifle_effect_count(), 0)
 	assert_eq(service.get_available_rifle_effect_count(), 1)
-	assert_eq(service.get_active_effect_count(), 1, "El tiro no adelanta la caída de0.40s")
+	assert_eq(service.get_active_effect_count(), 1, "Terminar el tiro no libera el efecto de baja")
 
 
 func test_reuse_resets_presentation_and_stale_completion_cannot_finish_next_activation() -> void:
@@ -206,29 +213,34 @@ func test_simultaneous_shots_preserve_distinct_models_and_finish_independently()
 func test_paused_state_freezes_remaining_life_and_playing_resumes_it() -> void:
 	var service := _service()
 	service.request_rifle_shot(_snapshot())
-	await wait_seconds(0.04)
+	var effects := _active(service)
+	assert_eq(effects.size(), 1)
+	if effects.size() != 1:
+		return
+	var effect := effects[0]
+	effect.set_process(false)
+	effect._process(0.04)
 	_state(GameStateManager.GameState.PAUSED)
-	await wait_seconds(0.24)
+	effect._process(0.24)
 	assert_eq(service.get_active_rifle_effect_count(), 1, "Tiempo pausado no consume la vida del flash")
 	assert_eq(_active(service).size(), 1)
 	service.request_rifle_shot(_snapshot())
 	assert_eq(service.get_active_rifle_effect_count(), 1, "No acepta tiros nuevos en pausa")
 	_state(GameStateManager.GameState.PLAYING)
-	await wait_seconds(0.04)
+	effect._process(0.04)
 	assert_eq(service.get_active_rifle_effect_count(), 1, "Reanuda con el tiempo restante")
-	await wait_seconds(0.16)
+	effect._process(0.16)
 	assert_eq(service.get_active_rifle_effect_count(), 0)
 
 
 func test_tree_pause_freezes_effect_and_resumes_without_an_extra_completion() -> void:
 	var service := _service()
 	service.request_rifle_shot(_snapshot())
-	await wait_seconds(0.04)
 	get_tree().paused = true
 	await get_tree().create_timer(0.24, true).timeout
 	assert_eq(service.get_active_rifle_effect_count(), 1)
 	get_tree().paused = false
-	await wait_seconds(0.20)
+	await get_tree().create_timer(0.20, true).timeout
 	assert_eq(service.get_active_rifle_effect_count(), 0)
 	assert_eq(service.get_available_rifle_effect_count(), 1)
 
