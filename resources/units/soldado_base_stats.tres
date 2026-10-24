@@ -8,6 +8,7 @@ max_health = 30
 max_ammo = 10
 damage_per_shot = 5
 fire_rate = 1.5
+rifle_range = 396.0
 machete_base_damage = 3
 machete_moral_multiplier = 1.0
 moral_per_kill = 1.0

@@ -69,6 +69,9 @@ signal soldier_defeated(grid_cell: Vector2i)
 ## Snapshot visual anterior al retiro; ningún listener es necesario para morir.
 signal defeat_visual_requested(snapshot: Dictionary)
 
+## Hecho cosmético capturado antes de las consecuencias síncronas del daño.
+signal rifle_shot_visual_requested(snapshot: Dictionary)
+
 ## Cambió el estado individual observado por el panel, sin autoridad de UI.
 signal reload_state_changed
 
@@ -168,6 +171,7 @@ func _ready() -> void:
 	_home_position = global_position
 	_current_ammo = stats.max_ammo
 	_current_health = stats.max_health
+	_configure_rifle_range()
 
 	_search_query.shape = _search_shape
 	_search_query.collide_with_areas = false
@@ -178,6 +182,17 @@ func _ready() -> void:
 	mode_changed.connect(_sprite.observe_mode)
 	moral_changed.connect(_on_moral_changed_visual)
 	_sprite.reset_visual(_mode)
+
+
+## La forma autorada aporta el borde cercano y la altura; el Resource fija
+## el extremo frontal. Cada actor posee su forma, sin mutar la escena compartida.
+func _configure_rifle_range() -> void:
+	var shape := _rifle_shape.shape.duplicate() as RectangleShape2D
+	var near_edge := _rifle_shape.position.x - shape.size.x * 0.5
+	assert(stats.rifle_range > near_edge, "El alcance de fusil debe superar su borde cercano")
+	shape.size = Vector2(stats.rifle_range - near_edge, shape.size.y)
+	_rifle_shape.position.x = (near_edge + stats.rifle_range) * 0.5
+	_rifle_shape.shape = shape
 
 
 func _physics_process(delta: float) -> void:
@@ -301,6 +316,7 @@ func _process_rifle(delta: float) -> void:
 func _fire_at_current_target() -> void:
 	var target := _current_target
 	_current_ammo -= 1
+	rifle_shot_visual_requested.emit(_sprite.capture_rifle_shot_snapshot(target.global_position))
 	# TODO (T047): `.call()` en vez de `target.take_damage(...)` directo —
 	# ver TODO en la cabecera del archivo. `_current_target` sigue tipado
 	# como `Node2D` aunque `Enemigo` ya existe (T025/T026); GDScript con

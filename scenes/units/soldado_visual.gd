@@ -9,6 +9,7 @@ const _HIT_SECONDS: float = 0.12
 const _MORALE_SECONDS: float = 0.16
 const _RETURNING: int = 4 # MovementState.RETURNING; dato observado, no autoridad.
 const _MOVEMENT_THRESHOLD: float = 0.01
+const _RIFLE_MUZZLE_PIXEL := Vector2(320, 115) # Pose rifle_shot, lienzo con margen.
 
 var _mode: int = _RIFLE_MODE
 var _alive: bool = false
@@ -128,6 +129,19 @@ func deactivate_visual() -> void:
 	rotation = _authored_rotation
 	speed_scale = _authored_speed_scale
 	modulate = Color.WHITE
+
+
+func capture_rifle_shot_snapshot(target_world: Vector2) -> Dictionary:
+	var frame_size := sprite_frames.get_frame_texture(&"rifle_shot", 0).get_size()
+	var muzzle := _RIFLE_MUZZLE_PIXEL
+	if flip_h:
+		muzzle.x = frame_size.x - muzzle.x
+	if flip_v:
+		muzzle.y = frame_size.y - muzzle.y
+	if centered:
+		muzzle -= frame_size * 0.5
+	muzzle += offset
+	return {"origin_world": to_global(muzzle), "target_world": target_world}
 
 
 func capture_defeat_snapshot(world_position: Vector2) -> Dictionary:

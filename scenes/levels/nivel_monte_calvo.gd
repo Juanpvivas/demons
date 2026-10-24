@@ -120,6 +120,7 @@ func close_match() -> void:
 	if _closing:
 		return
 	_closing = true
+	_combat_visual_effects.close_match()
 	set_process_unhandled_input(false)
 	_wave_spawner.close_match()
 	_hud.close_match()

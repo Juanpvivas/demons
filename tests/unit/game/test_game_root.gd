@@ -588,3 +588,145 @@ func test_callbacks_retired_via_menu_cannot_navigate_a_new_terminal_attempt() ->
 	assert_eq(GameStateManager._current_state, GameStateManager.GameState.LOST)
 	assert_eq(_wave_events.size(), waves_before)
 	assert_false(_button("Jugar").is_visible_in_tree())
+
+
+## 010/T003: fixture reducido real; no acredita una victoria manual de producción.
+func _rifle_effect_nodes_010(node: Node) -> Array[RifleShotVisualEffect]:
+	var result: Array[RifleShotVisualEffect] = []
+	for child: Node in node.get_children():
+		if child is RifleShotVisualEffect:
+			result.append(child as RifleShotVisualEffect)
+		result.append_array(_rifle_effect_nodes_010(child))
+	return result
+
+
+func test_rifle_effects_winning_real_shot_is_requested_before_won_and_finishes_its_fade() -> void:
+	var level: Node = await _start_retry_fixture()
+	if level == null:
+		return
+	for frame in 60:
+		if not _active_wave_enemies(level).is_empty():
+			break
+		await wait_physics_frames(1)
+	var enemies := _active_wave_enemies(level)
+	assert_eq(enemies.size(), 1, "Control: el spawner real produjo su único WAVE")
+	if enemies.size() != 1:
+		return
+	var board: BoardManager = level.get("_board_manager")
+	var soldier := board.get_occupant(BOARD.home_cells[0]) as Soldado
+	var enemy := enemies[0]
+	var stats := enemy.stats.duplicate() as EnemyStats
+	stats.max_health = soldier.stats.damage_per_shot
+	stats.move_speed = 0.0
+	var target_at := soldier.global_position + Vector2(150, 0)
+	# Reubicar el WAVE existente sólo acorta el fixture; muerte/resultado son reales.
+	enemy.prepare_for_spawn(stats, target_at, 0, Enemigo.SpawnOrigin.WAVE)
+	var ammo_before: int = soldier.get_reload_state().ammo
+	var shots: Array[Dictionary] = []
+	var states_at_request: Array[int] = []
+	soldier.rifle_shot_visual_requested.connect(func(snapshot: Dictionary):
+		shots.append(snapshot.duplicate(true))
+		states_at_request.append(GameStateManager._current_state))
+	for frame in 45:
+		if GameStateManager._current_state == GameStateManager.GameState.WON:
+			break
+		await wait_physics_frames(1)
+	assert_eq(GameStateManager._current_state, GameStateManager.GameState.WON)
+	assert_eq(WaveManager._defeated_in_current_wave, 1)
+	assert_eq(soldier.get_reload_state().ammo, ammo_before - 1)
+	assert_eq(soldier.get_reload_state().morale, soldier.stats.moral_per_kill)
+	assert_eq(shots.size(), 1, "El tiro ganador conserva una solicitud única")
+	assert_eq(states_at_request, [GameStateManager.GameState.PLAYING], "La solicitud precede al daño que causa WON")
+	if shots.size() == 1:
+		assert_eq(shots[0].get("target_world"), target_at)
+	var service: CombatVisualEffects = level.get("_combat_visual_effects")
+	assert_eq(service.get_active_rifle_effect_count(), 1, "El terminal deja completar la ráfaga confirmada")
+	service.request_rifle_shot({"origin_world": Vector2(200, 100), "target_world": Vector2(300, 100)})
+	assert_eq(service.get_active_rifle_effect_count(), 1, "No acepta una segunda ráfaga después de WON")
+	await get_tree().create_timer(0.40, true).timeout
+	assert_eq(service.get_active_rifle_effect_count(), 0)
+	assert_eq(GameStateManager._current_state, GameStateManager.GameState.WON)
+
+
+func test_rifle_effects_retry_and_menu_clear_before_retiring_attempt(
+		destination = use_parameters(["retry", "menu"])) -> void:
+	var level: Node = await _start_retry_fixture()
+	if level == null:
+		return
+	var service: CombatVisualEffects = level.get("_combat_visual_effects")
+	service.request_rifle_shot({"origin_world": Vector2(194, 301), "target_world": Vector2(294, 336)})
+	assert_eq(service.get_active_rifle_effect_count(), 1, "Control: el intento tiene un tiro activo")
+	var effects := _rifle_effect_nodes_010(service)
+	assert_gt(effects.size(), 0)
+	var old_refs: Array[WeakRef] = [weakref(service)]
+	for effect: RifleShotVisualEffect in effects:
+		old_refs.append(weakref(effect))
+	# Reporte público terminal; los recorridos de resultado por física se conservan arriba.
+	GameStateManager.report_reached_defended_position()
+	if destination == "retry":
+		_app.request_retry()
+	else:
+		_app.request_menu()
+	assert_eq(service.get_active_rifle_effect_count(), 0, "Limpia antes de retirar/deshabilitar el nivel")
+	for effect: RifleShotVisualEffect in effects:
+		assert_false(effect.visible)
+		assert_true(effect.get_shot_snapshot().is_empty())
+	service.request_rifle_shot({"origin_world": Vector2.ZERO, "target_world": Vector2.ONE})
+	assert_eq(service.get_active_rifle_effect_count(), 0, "La solicitud tardía del intento anterior se rechaza")
+	if destination == "retry":
+		var replacement: Node = await _replacement(level)
+		assert_not_null(replacement)
+		if replacement != null:
+			var current: CombatVisualEffects = replacement.get("_combat_visual_effects")
+			assert_eq(current.get_active_rifle_effect_count(), 0)
+			assert_eq(EconomyManager.collected_ammo, 0)
+	else:
+		assert_true(await _wait_menu())
+	for reference: WeakRef in old_refs:
+		assert_null(reference.get_ref(), "No se conservan pool, efectos ni callbacks del intento anterior")
+
+
+func test_rifle_effects_level_close_cleans_even_without_menu_state_change() -> void:
+	var level: Node = await _start_retry_fixture()
+	if level == null:
+		return
+	var service: CombatVisualEffects = level.get("_combat_visual_effects")
+	service.request_rifle_shot({"origin_world": Vector2(194, 301), "target_world": Vector2(294, 336)})
+	assert_eq(service.get_active_rifle_effect_count(), 1)
+	var effects := _rifle_effect_nodes_010(service)
+	level.close_match()
+	assert_eq(GameStateManager._current_state, GameStateManager.GameState.PLAYING, "No depende del aviso MENU para limpiar")
+	assert_eq(service.get_active_rifle_effect_count(), 0)
+	for effect: RifleShotVisualEffect in effects:
+		assert_false(effect.visible, "No se deshabilita un flash todavía visible")
+	service.request_rifle_shot({"origin_world": Vector2.ZERO, "target_world": Vector2.ONE})
+	assert_eq(service.get_active_rifle_effect_count(), 0)
+
+
+func test_rifle_effects_new_deployment_uses_existing_level_registration_for_real_shot() -> void:
+	var level: Node = await _start_retry_fixture()
+	if level == null:
+		return
+	var board: BoardManager = level.get("_board_manager")
+	var home: Vector2i = BOARD.home_cells[4]
+	var previous := board.get_occupant(home) as Soldado
+	previous.take_damage(previous.stats.max_health)
+	assert_true(board.is_cell_free(home))
+	EconomyManager.collected_ammo = previous.stats.deploy_ammo_cost
+	# Misma entrada de despliegue que los fixtures headless existentes.
+	level._try_deploy_soldado(home)
+	var soldier := board.get_occupant(home) as Soldado
+	assert_not_null(soldier)
+	if soldier == null:
+		return
+	var enemy: Node2D = load("res://tests/unit/units/enemigo_double.gd").new()
+	enemy.position = level.to_local(soldier.global_position + Vector2(150, 0))
+	level.add_child(enemy)
+	for frame in 30:
+		if soldier.get_reload_state().ammo < soldier.stats.max_ammo:
+			break
+		await wait_physics_frames(1)
+	assert_eq(soldier.get_reload_state().ammo, soldier.stats.max_ammo - 1)
+	assert_eq(enemy.get("damage_received"), [soldier.stats.damage_per_shot], "Control: el nuevo defensor disparó realmente")
+	var service: CombatVisualEffects = level.get("_combat_visual_effects")
+	assert_eq(service.get_active_rifle_effect_count(), 1, "La ruta de despliegue conecta también la petición de fusil")

@@ -29,6 +29,11 @@ extends Resource
 ## Disparos por segundo mientras hay objetivo y munición disponible.
 @export_range(0.1, 10.0, 0.1) var fire_rate: float = 1.5
 
+## Extremo longitudinal de la detección frontal, desde la raíz del soldado.
+## El solape se decide con el cuerpo enemigo, no con la distancia a su centro.
+## El valor por defecto conserva recursos anteriores; cada tipo fija su alcance.
+@export_range(25.0, 2000.0, 1.0) var rifle_range: float = 264.0
+
 @export_group("Machete")
 
 ## Daño mínimo de machete con moral acumulada en cero (spec.md Edge Case:
