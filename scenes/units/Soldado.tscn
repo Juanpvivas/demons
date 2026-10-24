@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scenes/units/soldado.gd" id="1_soldado"]
 [ext_resource type="Resource" path="res://resources/units/soldado_base_stats.tres" id="2_stats"]
 [ext_resource type="Script" path="res://scenes/units/soldado_visual.gd" id="3_visual"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/units/monte_calvo/soldado_lateral_frames.tres" id="4_frames"]
 [ext_resource type="Material" path="res://assets/sprites/units/monte_calvo/soldado_readability.tres" id="5_readability"]
+[ext_resource type="PackedScene" path="res://scenes/ui/WorldHealthBar.tscn" id="6_health_bar"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(48, 48)
@@ -29,6 +30,8 @@ offset = Vector2(0, -59.038979)
 script = ExtResource("3_visual")
 sprite_frames = ExtResource("4_frames")
 animation = &"rifle_idle"
+
+[node name="HealthBar" parent="." instance=ExtResource("6_health_bar")]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_body")
