@@ -17,8 +17,8 @@ Un solo incremento funcional: no separar RED de su implementación GREEN al entr
 
 ### RED
 
-- [ ] T003 [US1] godot-tester: escribir/ejecutar `tests/unit/units/test_soldado_rifle_effects.gd` y `tests/unit/systems/test_rifle_visual_effects.gd`; extender proporcionalmente `tests/unit/game/test_game_root.gd`. Cubrir tiro real/cadencia/ausencia de listener, frente/diagonal, última bala, no tiro en estados excluidos, snapshot anterior a daño/reciclado, registro idempotente, vida ≤0,20 s, simultáneos/reset/callback obsoleto, PAUSED y WON/LOST con fade previo, menú/cierre/Retry sin residuos. Depende de T002 aprobada; entregar RED por aserciones del comportamiento ausente, con entorno/acción válidos, y distinguir regresión ya GREEN.
-- [ ] T004 [US1] qa-validator: auditar sólo lectura T003 y el contrato de `specs/010-disparos-visibles/contracts/rifle-shot-visual.md`; confirmar que no es fallo de parser/importación ni prueba vacía y que T003 no depende de implementación. Depende de T003; veredicto «APROBADO — tarea de pruebas en RED; implementación pendiente» cuando corresponda.
+- [X] T003 [US1] godot-tester: escribir/ejecutar `tests/unit/units/test_soldado_rifle_effects.gd` y `tests/unit/systems/test_rifle_visual_effects.gd`; extender proporcionalmente `tests/unit/game/test_game_root.gd`. Cubrir tiro real/cadencia/ausencia de listener, frente/diagonal, última bala, no tiro en estados excluidos, snapshot anterior a daño/reciclado, registro idempotente, vida ≤0,20 s, simultáneos/reset/callback obsoleto, PAUSED y WON/LOST con fade previo, menú/cierre/Retry sin residuos. Depende de T002 aprobada; entregar RED por aserciones del comportamiento ausente, con entorno/acción válidos, y distinguir regresión ya GREEN.
+- [X] T004 [US1] qa-validator: auditar sólo lectura T003 y el contrato de `specs/010-disparos-visibles/contracts/rifle-shot-visual.md`; confirmar que no es fallo de parser/importación ni prueba vacía y que T003 no depende de implementación. Depende de T003; veredicto «APROBADO — tarea de pruebas en RED; implementación pendiente» cuando corresponda.
 
 ### Desarrollo y GREEN
 
