@@ -1,5 +1,13 @@
 # Contrato de presentación de disparo
 
+Perfil revisado autorizado el 2026-10-24, pendiente de implementación y QA. El perfil inicial aprobado en T001–T012 se conserva como antecedente; las reglas siguientes gobiernan la revisión del PR #41.
+
+## Alcance de fusil
+
+- `UnitStats.rifle_range: float` expresa el extremo longitudinal del alcance desde la raíz del soldado, en unidades de mundo; `resources/units/soldado_base_stats.tres` lo fija en 396 frente al extremo inicial de 264 (+50 %).
+- `Soldado` conserva el límite cercano de 24, altura de 192 y prueba de solape real de cuerpos. Deriva el rectángulo y la consulta física desde el dato, con forma independiente por actor; no muta stats ni formas compartidas.
+- Se mantienen frente de la misma fila, diagonales sólo en las celdas directamente contiguas, prioridad y retención de blanco elegible. No amplía el machete, diagonales profundas ni ataques hacia atrás. Daño, cadencia y consumo siguen bajo autoridad de combate.
+
 ## Productor y snapshot
 
 - `Soldado.rifle_shot_visual_requested(snapshot: Dictionary)` comunica un tiro ya aceptado por las reglas existentes. Una emisión por bala consumida, después del consumo y antes de `target.take_damage`; sin emisión en machete, regreso, falta de blanco o fuera de PLAYING.
@@ -20,7 +28,11 @@ Escena `scenes/visuals/RifleShotVisualEffect.tscn`, clase `RifleShotVisualEffect
 | `complete_activation(activation: int) -> void` | Sólo termina el uso activo coincidente, una vez; una identidad obsoleta no tiene efecto. |
 | `finished(effect: Node2D, activation: int)` | Solicita al dueño devolver únicamente ese uso al pool; no toca actores ni combate. |
 
-Flash y trazo se dibujan en coordenadas locales derivadas de los endpoints de mundo, con alpha decreciente, tonos cálidos moderados y sin iluminar el sprite. Duración inicial 0,16 s, siempre ≤0,20 s activo. Sin daño/collision/audio/tiempo de vuelo; la línea indica el disparo instantáneo y no sigue a un blanco. Pausa de árbol o PAUSED congela progreso; WON/LOST permite completar activaciones existentes.
+Flash y trazo se dibujan en coordenadas locales derivadas de los endpoints de mundo, con tonos cálidos moderados y sin iluminar el sprite. La silueta del destello pasa de 13×6 a 26×12 unidades y dura 0,14 s. La longitud máxima de la trazadora pasa de 46 a 92, su núcleo de 1,2 a 2,4 y su halo de 3 a 6; conserva la paleta mate.
+
+La cabeza del trazo parte del cañón y avanza linealmente hasta `target_world` en 0,30 s de juego activo, manteniendo intensidad durante el recorrido. La cola se limita a 92 unidades y queda recortada en el origen; ninguna parte sobrepasa el destino. Tras llegar, el segmento se desvanece durante 0,10 s; a los 0,40 s termina la activación y se devuelve al pool. No muestra toda la trayectoria como un haz continuo, ni se desvanece antes de alcanzar el destino.
+
+El recorrido es sólo visual: sin daño, colisión, audio ni tiempo de vuelo jugable. No sigue al blanco ni demora su retiro; un tiro letal avanza hacia el destino anterior al daño. Pausa de árbol o PAUSED congela progreso; WON/LOST permite completar activaciones existentes.
 
 ## Servicio e integración
 
@@ -31,6 +43,8 @@ Flash y trazo se dibujan en coordenadas locales derivadas de los endpoints de mu
 - `close_match() -> void` es idempotente: invalida/cancela y devuelve tiros activos, desconecta lo necesario y rechaza registros/peticiones posteriores del intento. `nivel_monte_calvo.gd.close_match()` lo invoca antes de deshabilitar hijos.
 - Observar `GameStateManager.game_state_changed`: WON/LOST rechazan nuevas peticiones sin congelar las confirmadas; MENU cierra. PAUSED congela y PLAYING reanuda las activaciones válidas; un servicio cerrado nunca se reabre por otra partida. No se crea UI ni API de pausa.
 
-## Frontera de setup anterior a RED
+## Frontera histórica de setup anterior a RED (T002)
 
 Dev puede declarar señal, clase/escena y firmas anteriores con retornos neutros para que GUT cargue: helpers de snapshot devuelven `{}`, conteos/identidad devuelven `0` y métodos `void` no hacen nada. No emite, conecta tiros, dibuja, activa, avanza el reloj ni finaliza efectos. Tester debe alcanzar la acción real y fallar en una aserción del comportamiento ausente; validar presencia/tipos de claves antes de indexar evita que un Dictionary vacío produzca sólo un error. Parser/import/preload no acreditan RED. El ancla y cualquier lógica de snapshot se implementan después del RED aprobado.
+
+La revisión actual usa las interfaces ya implementadas: su RED acredita el alcance ampliado y la duración posterior a 0,20 s sin retirar funcionalidad, reconstruir RED histórico ni añadir getters artificiales del dibujo. Tamaño, posición de la cabeza y continuidad hasta el destino se revisan visualmente.
