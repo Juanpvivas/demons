@@ -1,0 +1,52 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/world_health_bar.gd" id="1_health_bar"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_background"]
+bg_color = Color(0.20, 0.20, 0.16, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.12, 0.12, 0.09, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_healthy"]
+bg_color = Color(0.43, 0.47, 0.27, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.12, 0.12, 0.09, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wounded"]
+bg_color = Color(0.65, 0.49, 0.25, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.12, 0.12, 0.09, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_critical"]
+bg_color = Color(0.59, 0.30, 0.25, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.12, 0.12, 0.09, 1)
+
+[node name="WorldHealthBar" type="ProgressBar"]
+visible = false
+z_index = 2
+offset_left = -24.0
+offset_top = -66.0
+offset_right = 24.0
+offset_bottom = -60.0
+focus_mode = 0
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_background")
+theme_override_styles/fill = SubResource("StyleBoxFlat_healthy")
+show_percentage = false
+script = ExtResource("1_health_bar")
+healthy_fill = SubResource("StyleBoxFlat_healthy")
+wounded_fill = SubResource("StyleBoxFlat_wounded")
+critical_fill = SubResource("StyleBoxFlat_critical")

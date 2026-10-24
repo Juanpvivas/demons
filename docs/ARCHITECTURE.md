@@ -537,6 +537,26 @@ intento. El nivel siguiente posee su propio servicio. El
 detalla el snapshot y las APIs, sin introducir un proyectil jugable ni cambiar
 `ObjectPool`.
 
+011-I1 aplica la misma separación a `WorldHealthBar`, un `ProgressBar`
+compartido como hijo directo `HealthBar` del root de `Soldado` y `Enemigo`.
+Queda fuera de `AnimatedSprite2D`: sigue al cuerpo sin heredar sus flips,
+tintes o pulsos. El actor conserva `_current_health` y obtiene el máximo de
+sus stats; llama directamente a `set_health(current, maximum)` al iniciar,
+recibir daño o reaparecer. La barra sólo presenta `value`/`max_value`, con
+proporción limitada, sin porcentajes, input, foco, polling ni tween.
+
+Los tres `StyleBoxFlat` mates son recursos compartidos inmutables: cada barra
+selecciona su override `fill` local sin modificar el estilo de las demás.
+`clear()` oculta y pone valor cero; el actor lo aplica antes de callbacks de
+baja que puedan reciclar y reactivar síncronamente al enemigo, sin limpiar
+después la nueva activación. El prewarm permite `on_pool_released()` antes
+de `_ready()` resolviendo el hijo directamente; al entrar al árbol el enemigo
+inactivo mantiene su barra oculta. Después de `_ready()`, `prepare_for_spawn()`
+restaura valor, máximo y color de su uso actual. El snapshot de caída sigue
+conteniendo sólo la presentación del sprite. El
+[contrato de 011](../specs/011-barras-de-vida/contracts/world-health-bar.md)
+detalla ese ciclo sin introducir otra autoridad de salud ni cambiar el pool.
+
 ### 4.8 Entrada común y composición local
 
 `GameRoot.tscn` es la entrada del producto y compone menú y nivel sin un
@@ -981,3 +1001,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-22 | 007/T027 tras QA T026: Theme compartido y alcance local aprobado; variantes internas y cadencia software limitada documentadas, con revisión exacta en PR y publicación pendiente. |
 | 2026-10-23 | 010/T009 tras QA funcional T008: §2/§4.7/§4.8 amplían la presentación observadora con snapshot de tiro anterior al daño, pool cosmético separado y cierre por intento; se distinguen poses y efectos de última bala. Comportamiento aprobado en rama, con publicación pendiente y sin nueva campaña de rendimiento. |
 | 2026-10-24 | 010/T019 tras QA funcional T018: §4.3/§5 incorporan alcance frontal desde UnitStats con forma propia por actor; §4.7 describe recorrido cosmético de 0,30 s más fade de 0,10 s, conservando snapshot, pooling y autoridad de daño inmediata. |
+| 2026-10-24 | 011/T009 tras QA funcional T008: §4.7 incorpora WorldHealthBar compartida fuera del sprite, salud autoritaria del actor, estilos inmutables y limpieza anterior a callbacks de baja; precisa prewarm anterior a ready y activación posterior, sin nueva arquitectura ni publicación. |

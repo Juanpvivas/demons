@@ -149,6 +149,7 @@ var _melee_cooldown: float = 0.0
 var _incoming_melee_cooldown: float = 0.0
 
 @onready var _sprite: SoldadoVisual = $AnimatedSprite2D
+@onready var _health_bar: WorldHealthBar = $HealthBar
 @onready var _rifle_shape: CollisionShape2D = $DeteccionRango/CollisionShape2D
 @onready var _melee_shape: CollisionShape2D = $RangoMelee/CollisionShape2D
 
@@ -171,6 +172,7 @@ func _ready() -> void:
 	_home_position = global_position
 	_current_ammo = stats.max_ammo
 	_current_health = stats.max_health
+	_health_bar.set_health(_current_health, stats.max_health)
 	_configure_rifle_range()
 
 	_search_query.shape = _search_shape
@@ -622,6 +624,7 @@ func take_damage(amount: int) -> bool:
 	if _current_health <= 0:
 		return false
 	_current_health -= amount
+	_health_bar.set_health(_current_health, stats.max_health)
 	reload_state_changed.emit()
 	if _current_health <= 0:
 		_die()
@@ -632,6 +635,7 @@ func take_damage(amount: int) -> bool:
 
 
 func _die() -> void:
+	_health_bar.clear()
 	_movement_state = MovementState.DEAD
 	velocity = Vector2.ZERO
 	_clear_combat_targets()

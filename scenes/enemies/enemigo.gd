@@ -103,11 +103,16 @@ var _current_health: int = 0
 var _pool: ObjectPool = null
 
 @onready var _sprite: EnemigoVisual = $AnimatedSprite2D
+@onready var _health_bar: WorldHealthBar = $HealthBar
 
 
 func _ready() -> void:
 	assert(stats != null, "Enemigo requiere un EnemyStats asignado en 'stats'")
 	_current_health = stats.max_health
+	if _activation_active:
+		_health_bar.set_health(_current_health, stats.max_health)
+	else:
+		_health_bar.clear()
 	add_to_group(ENEMY_GROUP)
 	_sprite.reset_visual()
 
@@ -135,6 +140,7 @@ func take_damage(amount: int) -> bool:
 	if not is_targetable():
 		return false
 	_current_health -= amount
+	_health_bar.set_health(_current_health, stats.max_health)
 	if _current_health <= 0:
 		_die()
 		return true
@@ -190,12 +196,16 @@ func prepare_for_spawn(new_stats: EnemyStats, spawn_position: Vector2,
 	global_position = spawn_position
 	_set_body_disabled(false)
 	_sprite.reset_visual()
+	_health_bar.set_health(_current_health, stats.max_health)
 
 
 ## Puede ocurrir antes de `_ready()` al precalentar un pool fuera del árbol.
 ## No necesita stats nuevos; el reset de aparición sigue en prepare_for_spawn.
 func on_pool_released() -> void:
 	_activation_active = false
+	var health_bar := get_node_or_null("HealthBar") as WorldHealthBar
+	if health_bar != null:
+		health_bar.clear()
 	velocity = Vector2.ZERO
 	_set_body_disabled(true)
 	var visual := get_node_or_null("AnimatedSprite2D") as EnemigoVisual
@@ -245,6 +255,7 @@ func _die() -> void:
 	var pool := _pool
 	_last_defeat_origin = spawn_origin
 	_activation_active = false
+	_health_bar.clear()
 	var snapshot := _sprite.capture_defeat_snapshot(global_position)
 	_sprite.deactivate_visual()
 	defeat_visual_requested.emit(snapshot)
