@@ -9,7 +9,7 @@ Un solo incremento funcional: no separar RED de su implementación GREEN al entr
 ## Fase 1 — Preparación e interfaz mínima
 
 - [X] T001 project-orchestrator con qa-validator: revisar consistencia de `specs/010-disparos-visibles/spec.md`, `plan.md`, `tasks.md`, `contracts/rifle-shot-visual.md` y `checklists/requirements.md`; confirmar alcance 010-I1/Issue #40 y separar integración/publicación. Sin dependencias; verificación documental.
-- [ ] T002 dev-godot: preparar sólo la señal y helper neutro de `scenes/units/soldado.gd`/`soldado_visual.gd`, la clase/escena `scenes/visuals/rifle_shot_visual_effect.gd` y `RifleShotVisualEffect.tscn`, y las firmas nuevas neutras de `scenes/visuals/combat_visual_effects.gd` según contrato. Sin emisión, ancla calculada, conexión, adquisición, dibujo, reloj o finalización funcional. Conservar APIs de bajas. Depende de T001; tester verifica carga/importación y qa-validator comprueba neutralidad antes de aprobar setup.
+- [X] T002 dev-godot: preparar sólo la señal y helper neutro de `scenes/units/soldado.gd`/`soldado_visual.gd`, la clase/escena `scenes/visuals/rifle_shot_visual_effect.gd` y `RifleShotVisualEffect.tscn`, y las firmas nuevas neutras de `scenes/visuals/combat_visual_effects.gd` según contrato. Sin emisión, ancla calculada, conexión, adquisición, dibujo, reloj o finalización funcional. Conservar APIs de bajas. Depende de T001; tester verifica carga/importación y qa-validator comprueba neutralidad antes de aprobar setup.
 
 ## Fase 2 — US1: reconocer cada disparo (P1)
 

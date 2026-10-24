@@ -130,6 +130,10 @@ func deactivate_visual() -> void:
 	modulate = Color.WHITE
 
 
+func capture_rifle_shot_snapshot(_target_world: Vector2) -> Dictionary:
+	return {}
+
+
 func capture_defeat_snapshot(world_position: Vector2) -> Dictionary:
 	_capture_authored()
 	return {

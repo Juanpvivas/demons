@@ -69,6 +69,8 @@ signal soldier_defeated(grid_cell: Vector2i)
 ## Snapshot visual anterior al retiro; ningún listener es necesario para morir.
 signal defeat_visual_requested(snapshot: Dictionary)
 
+signal rifle_shot_visual_requested(snapshot: Dictionary)
+
 ## Cambió el estado individual observado por el panel, sin autoridad de UI.
 signal reload_state_changed
 

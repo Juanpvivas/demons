@@ -33,6 +33,22 @@ func request_defeat(snapshot: Dictionary) -> void:
 	effect.play_snapshot(snapshot)
 
 
+func request_rifle_shot(_snapshot: Dictionary) -> void:
+	pass
+
+
+func get_active_rifle_effect_count() -> int:
+	return 0
+
+
+func get_available_rifle_effect_count() -> int:
+	return 0
+
+
+func close_match() -> void:
+	pass
+
+
 func get_active_effect_count() -> int:
 	return _pool.in_use_count() if _pool != null else 0
 
