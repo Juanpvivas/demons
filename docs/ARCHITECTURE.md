@@ -24,7 +24,7 @@ res://
 │   ├── units/                # Soldado.tscn y futuras variantes de unidades
 │   ├── enemies/               # EnemigoBase.tscn y variantes
 │   ├── levels/                 # Nivel_MonteCalvo.tscn, MonteCalvoVisual.tscn, futuros niveles
-│   ├── visuals/                # CombatVisualEffects y DeathVisualEffect: efectos sin gameplay
+│   ├── visuals/                # CombatVisualEffects, DeathVisualEffect y RifleShotVisualEffect sin gameplay
 │   └── ui/                     # HUD.tscn, menús, pantallas de victoria/derrota
 ├── resources/
 │   ├── schemas/                # Scripts base de Resource (class_name UnitStats,
@@ -435,8 +435,8 @@ funcionalmente en T011: el actor conserva la autoridad jugable y su presentador
 solo observa modos y hechos confirmados. `SoldadoVisual`, sobre el hijo
 `AnimatedSprite2D`, representa espera, ataques reales, impacto y moral sin
 aplicar daño, consumir recursos o cambiar cadencias. El modo actual interrumpe
-acciones incompatibles, incluida la última bala; la muerte cancela toda pose
-viva. `reset_visual(mode)` restaura la presentación desde el estado real y los
+poses incompatibles, incluida la de fusil al agotar la última bala; la muerte
+cancela toda pose viva. `reset_visual(mode)` restaura la presentación desde el estado real y los
 valores autorados. Frames de arte compartidos son de solo lectura; progreso,
 tinte, escala y callbacks pertenecen a cada instancia.
 
@@ -457,7 +457,7 @@ en la presentación de cada instancia. Así la caída conserva el estilo neutro
 sin filtrar tintes transitorios ni recursos de una activación anterior.
 
 `CombatVisualEffects` es un servicio del nivel, sin autoload, que registra una
-vez cada actor integrado y posee un `ObjectPool` precalentado con diez efectos;
+vez cada actor integrado y posee un `ObjectPool` precalentado con diez efectos de baja;
 el tamaño inicial no es un límite. `DeathVisualEffect.tscn` contiene solamente
 `Node2D` y `AnimatedSprite2D`: reproduce la caída durante 0,40 s en la posición
 capturada, sin física, input, ocupación ni objetivos. Su final devuelve esa
@@ -498,6 +498,32 @@ añadir un presentador ni lógica nueva.
 El [contrato de 004](../specs/004-personajes-municion-monte-calvo/contracts/visual-presentation.md)
 delimita los tiempos y la frontera jugable.
 
+010-I1 extiende este patrón con `rifle_shot_visual_requested(snapshot)`:
+después de consumir la bala y antes del daño/callbacks síncronos, el soldado
+captura y emite una vez `origin_world` y `target_world` por valor. El helper de
+`SoldadoVisual` ubica el cañón de la pose autorada respetando centrado, offset,
+flips y transformación actual. El efecto no conserva actores ni sigue al
+blanco retirado o reutilizado; la última bala puede seguir visible aunque la
+pose del soldado ya cambie a machete. El actor conserva la autoridad del daño
+y su cadencia, sin depender del listener visual.
+
+`CombatVisualEffects` registra también esa señal de forma opcional e idempotente
+y posee un segundo pool precalentado con diez `RifleShotVisualEffect`, capaz de
+crecer; los conteos históricos siguen describiendo sólo bajas. La escena es un
+`Node2D` con dibujo 2D de destello/trazadora y reloj propio de 0,16 s activo,
+sin física, input, audio ni daño. Cada activación copia sus endpoints y limpia
+geometría, alpha, transformación y reloj al reset; su identidad evita que un
+final obsoleto retire otro uso. Los hooks son seguros antes de `_ready()`.
+
+La pausa de árbol o `PAUSED` congela ese reloj. `WON/LOST` rechazan tiros nuevos
+y permiten completar los ya confirmados, incluido el ganador; no prolongan el
+combate. `MENU` y `close_match()` cancelan y devuelven de inmediato los tiros
+activos, cierran ese servicio de forma idempotente y evitan reabrirlo en otro
+intento. El nivel siguiente posee su propio servicio. El
+[contrato de 010](../specs/010-disparos-visibles/contracts/rifle-shot-visual.md)
+detalla el snapshot y las APIs, sin introducir un proyectil jugable ni cambiar
+`ObjectPool`.
+
 ### 4.8 Entrada común y composición local
 
 `GameRoot.tscn` es la entrada del producto y compone menú y nivel sin un
@@ -514,7 +540,8 @@ emite una intención, propagada por el nivel y aceptada por la raíz sólo para
 el intento actual.
 El cierre bloquea reentrada, invalida la generación anterior, entra en `MENU`
 y cancela oleadas sin emitir progreso o victoria. Nivel y spawner detienen
-actividad y desconectan consumidores antes de retirar su árbol; el siguiente
+actividad y desconectan consumidores antes de retirar su árbol. El servicio
+visual de §4.7 se cierra antes de deshabilitar los hijos del nivel; el siguiente
 nivel se monta sólo tras su liberación efectiva y conserva su inicialización
 vigente. El destino menú usa el mismo cierre, deja cero niveles y restituye
 «Jugar» habilitado y enfocado; sólo un nuevo inicio monta otra partida.
@@ -937,3 +964,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-21 | 007/T016 tras QA T015: cierre previo a repetir, cancelación silenciosa y aislamiento por intento; aprobación funcional con fixture reducido, sin entregar aún regreso al menú o validación final. |
 | 2026-10-21 | 007/T022 tras QA T021: destino menú mediante el cierre compartido, sin nivel activo y con foco de inicio restaurado; ciclo lógico aprobado, validación final y publicación pendientes. |
 | 2026-10-22 | 007/T027 tras QA T026: Theme compartido y alcance local aprobado; variantes internas y cadencia software limitada documentadas, con revisión exacta en PR y publicación pendiente. |
+| 2026-10-23 | 010/T009 tras QA funcional T008: §2/§4.7/§4.8 amplían la presentación observadora con snapshot de tiro anterior al daño, pool cosmético separado y cierre por intento; se distinguen poses y efectos de última bala. Comportamiento aprobado en rama, con publicación pendiente y sin nueva campaña de rendimiento. |

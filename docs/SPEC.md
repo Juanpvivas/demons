@@ -191,9 +191,9 @@ obstáculos, carriles, casillas o límites de despliegue. El primer incremento d
 aprobado funcionalmente en T011, sustituye el bloque del soldado inicial y de
 los nuevos despliegues por un colombiano de uniforme oliva, casco y armas
 legibles. Sus poses distinguen espera/disparo de fusil y espera/golpe de machete
-según el modo y los ataques reales. La última bala da prioridad al cambio a
-machete; la recarga existente restaura el fusil conservando la moral. Impacto y
-moral ganada tienen respuestas breves, y la derrota prevalece sobre ellas.
+según el modo y los ataques reales. La última bala da prioridad al cambio de
+pose a machete; la recarga existente restaura el fusil conservando la moral.
+Impacto y moral ganada tienen respuestas breves, y la derrota prevalece sobre ellas.
 
 La corrección de I1, aprobada funcionalmente en T036, aumenta solo el hijo
 visual del soldado a una altura opaca neutra aproximada de 72 unidades,
@@ -221,8 +221,8 @@ animación no gobierna daño, recompensas ni retiro. La procedencia está en
 hacia la derecha y enemigo gris/marrón hacia la izquierda. La marcha con
 machete sólo se muestra tras desplazamiento real; sin movimiento hay espera
 o golpe confirmado. El regreso muestra fusil bajo hacia la izquierda, con
-pose quieta si está bloqueado. La última bala cancela el disparo incompatible;
-volver al hogar restaura el fusil. La caída conserva la orientación real,
+pose quieta si está bloqueado. La última bala cancela la pose de disparo
+incompatible; volver al hogar restaura el fusil. La caída conserva la orientación real,
 incluido el retorno, sin seguir al cuerpo retirado. Estos cambios no otorgan
 protección ni alteran combate, economía o velocidades.
 
@@ -250,6 +250,21 @@ sin regreso/HOME manuales en Android. La regresión común no sustituye esos
 recorridos manuales; las variantes internas no certifican Mobile, hardware,
 IPA final ni victoria manual de producción completa. Seguimiento y PR conservan
 el cierre exacto de integración, con 006 pausado y publicación pendiente.
+
+[010-I1](../specs/010-disparos-visibles/spec.md), aprobado funcionalmente en
+T008, añade a cada disparo real un destello cálido mate en el cañón y una
+trazadora corta hacia la posición capturada del blanco frontal o diagonal.
+El efecto se desvanece en un máximo de 0,20 s activo, sin iluminar al colombiano
+ni cambiar sus corridas, daño instantáneo, munición o cadencia. La última bala
+puede completar este efecto independiente aunque la pose ya cambie a machete.
+Pausa congela su progreso; victoria/derrota dejan terminar sólo los tiros ya
+confirmados, y menú/cierre/otra partida los retiran de inmediato.
+La lectura frontal se comprobó en Chrome de computador y la app Android en
+emulador; el smoke de iPad Simulator no aisló inequívocamente el efecto.
+Diagonales, simultáneos y demás
+casos de ciclo tienen su comprobación automatizada, sin atribuirles recorridos
+visuales no ejecutados. El PR conserva los límites por destino y el cierre
+exacto de integración; publicación pendiente y diagnóstico 006 pausado.
 
 La [procedencia del soldado](../assets/sprites/units/monte_calvo/SOURCES.md)
 y [del entorno](../assets/sprites/levels/monte_calvo/SOURCES.md) documentan los
@@ -497,3 +512,4 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 | 2026-10-22 | 006/T013-I2 tras QA T009-I2: diagnóstico de componente GPU sin ahorro medio general ni parche autorizado; bases nativas, estabilización y publicación pendientes. |
 | 2026-10-23 | 008/T005 tras QA T004: marcha enemiga de ocho poses con identidad pictórica, contacto/caída y reglas conservados; alcance local por destino y variantes nativas acotados, sin nueva campaña de rendimiento ni publicación. Se actualiza la referencia de 007 integrado por PR #34 en la guía de usuario. |
 | 2026-10-23 | 009/T005 tras QA local T004: corridas colombianas de ocho fases para salida y regreso, cuatro atlas con identidad/encaje y reglas conservados; límites de regreso/HOME por destino, sin campaña de rendimiento ni publicación. Sin patrón arquitectónico nuevo. |
+| 2026-10-23 | 010/T009 tras QA funcional T008: destello y trazadora pictóricos independientes, última bala distinguida de su pose y ciclo de pausa/terminal/cierre conservando las mecánicas; alcance aprobado en rama con límites visuales por destino, publicación pendiente y 006 pausado. |
