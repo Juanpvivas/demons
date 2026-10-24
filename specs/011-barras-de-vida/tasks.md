@@ -1,6 +1,6 @@
 # Tasks: Barras de vida
 
-**Input**: [spec.md](spec.md), [plan.md](plan.md), [contrato](contracts/world-health-bar.md). **Entrega**: `011-I1`, ambos bandos; Issue [#42](https://github.com/Juanpvivas/demons/issues/42).
+**Input**: [spec.md](spec.md), [plan.md](plan.md), [contrato](contracts/world-health-bar.md). **Entrega**: `011-I1`, ambos bandos; Issue [#42](https://github.com/Juanpvivas/demons/issues/42); [PR #43 en borrador](https://github.com/Juanpvivas/demons/pull/43).
 **Flujo**: `docs/DEVELOPMENT_WORKFLOW.md`. Sólo orquestador marca [X] tras QA; RED aprobado no entrega gameplay. Resultados al PR/temporales, sin archivos de evidencias nuevos en Git. Publicación pendiente.
 
 ## Fase 1: Preparación y contrato neutral
@@ -21,9 +21,9 @@
 ## Fase final: Documentación, CI y entrega
 
 - [X] T009 docs-writer: documentar comportamiento aprobado y composición compartida en `docs/SPEC.md` y `docs/ARCHITECTURE.md`, mantener `specs/011-barras-de-vida/` coherente sin marcar tareas; depende de T008 aprobada.
-- [ ] T010 project-orchestrator: publicar rama y verificar CI de `.github/workflows/ci.yml` y build aplicable `.github/workflows/export-web.yml` sin distribución; entregar resultados a QA; depende de T009.
-- [ ] T011 qa-validator: revisar documentación, CI y alcance `specs/011-barras-de-vida/`; emitir APROBADO PARA INTEGRACIÓN sólo si cumple fuente/GREEN/build/docs/CI, declarando publicación pendiente; depende de T010.
-- [ ] T012 project-orchestrator: consolidar trazabilidad/veredictos en `specs/011-barras-de-vida/tasks.md` y PR en borrador vinculado al Issue; cerrar Issue sólo si alcance funcional completo, conservar gates de publicación, sin merge automático; depende de T011 aprobada.
+- [X] T010 project-orchestrator: publicar rama y verificar CI de `.github/workflows/ci.yml` y build aplicable `.github/workflows/export-web.yml` sin distribución; entregar resultados a QA; depende de T009.
+- [X] T011 qa-validator: revisar documentación, CI y alcance `specs/011-barras-de-vida/`; emitir APROBADO PARA INTEGRACIÓN sólo si cumple fuente/GREEN/build/docs/CI, declarando publicación pendiente; depende de T010.
+- [X] T012 project-orchestrator: consolidar trazabilidad/veredictos en `specs/011-barras-de-vida/tasks.md` y PR en borrador vinculado al Issue; cerrar Issue sólo si alcance funcional completo, conservar gates de publicación, sin merge automático; depende de T011 aprobada.
 
 **Dependencias**: T001→T002→T003→T004→T005→T006→T007→T008→T009→T010→T011→T012. Sin [P] en esta cadena; lecturas independientes pueden prepararse sin alterar el orden ni archivos del rol activo.
 **Estrategia**: MVP = US1 completa; un único PR funcional con RED/GREEN/QA/documentación/CI, sin fusionar setup o RED solos. Sólo el orquestador registra las aprobaciones; integración no autoriza publicación.
