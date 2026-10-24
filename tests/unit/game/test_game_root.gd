@@ -643,7 +643,7 @@ func test_rifle_effects_winning_real_shot_is_requested_before_won_and_finishes_i
 	assert_eq(service.get_active_rifle_effect_count(), 1, "El terminal deja completar la ráfaga confirmada")
 	service.request_rifle_shot({"origin_world": Vector2(200, 100), "target_world": Vector2(300, 100)})
 	assert_eq(service.get_active_rifle_effect_count(), 1, "No acepta una segunda ráfaga después de WON")
-	await wait_seconds(0.20)
+	await get_tree().create_timer(0.40, true).timeout
 	assert_eq(service.get_active_rifle_effect_count(), 0)
 	assert_eq(GameStateManager._current_state, GameStateManager.GameState.WON)
 

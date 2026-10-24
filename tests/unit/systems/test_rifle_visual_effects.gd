@@ -1,5 +1,5 @@
 extends GutTest
-## 010/T003: modelo visual público, vida breve y pool independiente del combate.
+## 010/T003/T014: modelo público, vida revisada y pool independiente del combate.
 const EffectScene := preload("res://scenes/visuals/RifleShotVisualEffect.tscn")
 const DeathFixtures := preload("res://tests/unit/units/visual_test_fixtures.gd")
 var _world: Node2D
@@ -83,7 +83,7 @@ func test_effect_copies_endpoints_and_exposes_no_mutable_actor_state() -> void:
 	assert_false(effect.is_processing_unhandled_input())
 
 
-func test_effect_finishes_once_within_two_tenths_active_time() -> void:
+func test_effect_remains_active_for_revised_presentation_and_finishes_once_at_four_tenths() -> void:
 	var effect := _effect()
 	watch_signals(effect)
 	effect.play_snapshot(_snapshot())
@@ -95,7 +95,14 @@ func test_effect_finishes_once_within_two_tenths_active_time() -> void:
 	assert_true(effect.visible, "El flash no es una activación vacía del mismo tick")
 	assert_eq(effect.get_shot_snapshot(), _snapshot(), "El modelo permanece activo durante el destello")
 	effect._process(0.16)
-	assert_false(effect.visible, "No supera0.20s activo ni deja un haz fijo")
+	assert_true(effect.visible, "A0.20s aún se presenta el recorrido, no el perfil anterior de0.16")
+	assert_eq(effect.get_shot_snapshot(), _snapshot(), "El destino capturado sigue activo durante el recorrido")
+	effect._process(0.10)
+	assert_true(effect.visible, "Llegar al destino en0.30s inicia el fade, no retira el efecto")
+	effect._process(0.09)
+	assert_true(effect.visible, "Conserva el fade hasta antes de0.40s")
+	effect._process(0.01)
+	assert_false(effect.visible, "A0.40s activo no queda un haz fijo")
 	assert_true(effect.get_shot_snapshot().is_empty())
 	assert_signal_emit_count(effect, "finished", 1)
 	effect.complete_activation(activation)
@@ -164,7 +171,7 @@ func test_reuse_resets_presentation_and_stale_completion_cannot_finish_next_acti
 	assert_eq(service.get_active_rifle_effect_count(), 1)
 	assert_true(effect.visible, "Callback obsoleto no oculta el nuevo uso")
 	assert_signal_emit_count(effect, "finished", 1)
-	await wait_seconds(0.20)
+	await get_tree().create_timer(0.40, true).timeout
 	assert_eq(service.get_active_rifle_effect_count(), 0)
 	assert_signal_emit_count(effect, "finished", 2)
 
@@ -229,7 +236,7 @@ func test_paused_state_freezes_remaining_life_and_playing_resumes_it() -> void:
 	_state(GameStateManager.GameState.PLAYING)
 	effect._process(0.04)
 	assert_eq(service.get_active_rifle_effect_count(), 1, "Reanuda con el tiempo restante")
-	effect._process(0.16)
+	effect._process(0.32)
 	assert_eq(service.get_active_rifle_effect_count(), 0)
 
 
@@ -240,7 +247,7 @@ func test_tree_pause_freezes_effect_and_resumes_without_an_extra_completion() ->
 	await get_tree().create_timer(0.24, true).timeout
 	assert_eq(service.get_active_rifle_effect_count(), 1)
 	get_tree().paused = false
-	await get_tree().create_timer(0.20, true).timeout
+	await get_tree().create_timer(0.40, true).timeout
 	assert_eq(service.get_active_rifle_effect_count(), 0)
 	assert_eq(service.get_available_rifle_effect_count(), 1)
 
@@ -258,7 +265,7 @@ func test_terminal_state_rejects_new_requests_but_confirmed_shot_finishes(
 	assert_eq(service.get_active_rifle_effect_count(), 1, "El resultado conserva el tiro ya confirmado")
 	service.request_rifle_shot(_snapshot(Vector2(400, 240), Vector2(500, 240)))
 	assert_eq(service.get_active_rifle_effect_count(), 1, "Terminal no acepta otra activación")
-	await wait_seconds(0.20)
+	await get_tree().create_timer(0.40, true).timeout
 	assert_eq(service.get_active_rifle_effect_count(), 0)
 	assert_eq(service.get_available_rifle_effect_count(), 1)
 	assert_eq(GameStateManager._current_state, expected, "El fade no gobierna la condición de victoria/derrota")

@@ -63,7 +63,7 @@ func _check_snapshot(snapshot: Dictionary) -> bool:
 
 
 func test_real_front_and_direct_diagonal_shots_request_once_with_immediate_damage(
-		offset = use_parameters([Vector2(150, 0), Vector2(96, -96), Vector2(96, 96)])) -> void:
+		offset = use_parameters([Vector2(150, 0), Vector2(380, 0), Vector2(96, -96), Vector2(96, 96)])) -> void:
 	var soldier := _soldier()
 	var enemy := _enemy(soldier, offset)
 	var target_at := enemy.global_position
@@ -115,12 +115,17 @@ func test_last_bullet_preserves_request_while_switching_weapon(
 
 
 func test_no_fictitious_rifle_request_when_rules_do_not_accept_a_shot(
-		scenario = use_parameters(["no_target", "invalid_diagonal", "no_ammo", "paused", "terminal"])) -> void:
+		scenario = use_parameters(["no_target", "invalid_diagonal", "distant_diagonal", "no_ammo", "paused", "terminal"])) -> void:
 	var soldier := _soldier(0 if scenario == "no_ammo" else 3)
 	var shots := _shots(soldier)
 	var enemy: EnemyDouble
 	if scenario != "no_target":
-		enemy = _enemy(soldier, Vector2(192, -96) if scenario == "invalid_diagonal" else Vector2(150, 0))
+		var offset := Vector2(150, 0)
+		if scenario == "invalid_diagonal":
+			offset = Vector2(192, -96)
+		elif scenario == "distant_diagonal":
+			offset = Vector2(380, -96)
+		enemy = _enemy(soldier, offset)
 	if scenario == "paused":
 		GameStateManager._current_state = GameStateManager.GameState.PAUSED
 	elif scenario == "terminal":

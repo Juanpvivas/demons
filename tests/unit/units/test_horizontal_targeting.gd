@@ -27,10 +27,15 @@ func after_each() -> void:
 	GameStateManager.set("_current_state", _saved_game_state)
 
 
-func _spawn_soldier(row: int = 2, ammo: int = UNIT_STATS.max_ammo) -> Soldado:
+func _spawn_soldier(row: int = 2, ammo: int = UNIT_STATS.max_ammo,
+		rifle_range: float = -1.0) -> Soldado:
 	_soldier = SOLDIER_SCENE.instantiate() as Soldado
 	_soldier.stats = UNIT_STATS.duplicate() as UnitStats
 	_soldier.stats.max_ammo = ammo
+	if rifle_range > 0.0:
+		# Object.set permite ejecutar RED sobre el Resource anterior sin
+		# convertir la ausencia del campo nuevo en un error de parser.
+		_soldier.stats.set("rifle_range", rifle_range)
 	_soldier.position = Vector2(144, 144 + 96 * row)
 	_soldier.set_grid_cell(Vector2i(1, row + 1))
 	_world.add_child(_soldier)
@@ -134,27 +139,58 @@ func test_rifle_rejects_the_old_vertical_front() -> void:
 	assert_eq(_ammo(), UNIT_STATS.max_ammo)
 
 
-func test_longitudinal_range_uses_body_overlap_beyond_center_distance_264() -> void:
+func test_longitudinal_range_uses_body_overlap_beyond_center_distance_396() -> void:
 	_spawn_soldier()
-	# Centro +287: borde izquierdo +263 solapa un píxel con [24,264].
-	var enemy := _enemy_at(Vector2(287, 0))
+	# 010/T014: centro +419, borde izquierdo +395 solapa [24,396].
+	var enemy := _enemy_at(Vector2(419, 0))
 	await wait_physics_frames(DETECTION_FRAMES)
 	assert_eq(_health(enemy), 500 - UNIT_STATS.damage_per_shot,
-		"264 limita la forma del fusil; el cuerpo enemigo puede solaparla con su centro a287")
+		"396 limita la forma, no el centro del cuerpo enemigo de48×48")
 
 
-func test_longitudinal_range_does_not_expand_past_the_authored_shape() -> void:
+func test_longitudinal_range_does_not_expand_past_the_configured_shape() -> void:
 	_spawn_soldier()
-	# Centro +289: borde izquierdo +265, fuera de [24,264].
-	var enemy := _enemy_at(Vector2(289, 0))
+	# Centro +421: borde izquierdo +397, fuera de [24,396].
+	var enemy := _enemy_at(Vector2(421, 0))
 	await wait_physics_frames(DETECTION_FRAMES)
-	assert_eq(_health(enemy), 500, "Ensanchar el broadphase transversal no aumenta el alcance longitudinal")
+	assert_eq(_health(enemy), 500, "La ampliación autorizada termina en396, incluso con solape de cuerpos")
 	assert_eq(_ammo(), UNIT_STATS.max_ammo)
+
+
+func test_custom_rifle_ranges_are_per_actor_and_do_not_mutate_shared_stats(
+		long_first = use_parameters([true, false])) -> void:
+	var original_range: Variant = UNIT_STATS.get("rifle_range")
+	var long_soldier: Soldado
+	var short_soldier: Soldado
+	var long_enemy: Enemigo
+	var short_enemy: Enemigo
+	if long_first:
+		long_soldier = _spawn_soldier(0, UNIT_STATS.max_ammo, 396.0)
+		long_enemy = _enemy_at(Vector2(380, 0), 0)
+		short_soldier = _spawn_soldier(4, UNIT_STATS.max_ammo, 264.0)
+		short_enemy = _enemy_at(Vector2(380, 0), 4)
+	else:
+		short_soldier = _spawn_soldier(4, UNIT_STATS.max_ammo, 264.0)
+		short_enemy = _enemy_at(Vector2(380, 0), 4)
+		long_soldier = _spawn_soldier(0, UNIT_STATS.max_ammo, 396.0)
+		long_enemy = _enemy_at(Vector2(380, 0), 0)
+	await wait_physics_frames(DETECTION_FRAMES)
+	assert_eq(_health(long_enemy), 500 - UNIT_STATS.damage_per_shot,
+		"El soldado de alcance396 dispara a380 aunque otro use264")
+	assert_eq(_health(short_enemy), 500,
+		"El soldado de alcance264 no hereda la forma larga de otro actor")
+	assert_eq(long_soldier.get_reload_state().ammo, UNIT_STATS.max_ammo - 1)
+	assert_eq(short_soldier.get_reload_state().ammo, UNIT_STATS.max_ammo)
+	assert_eq(long_soldier.stats.get("rifle_range"), 396.0,
+		"La geometría no modifica el dato configurado del soldado largo")
+	assert_eq(short_soldier.stats.get("rifle_range"), 264.0)
+	assert_eq(UNIT_STATS.get("rifle_range"), original_range,
+		"Configurar dos soldados no muta el Resource base compartido")
 
 
 func test_near_longitudinal_edge_uses_body_overlap_and_keeps_the_front_filter() -> void:
 	_spawn_soldier()
-	# Centro +1: borde derecho +25 solapa [24,264]; centro −1 termina en+23.
+	# Centro +1: borde derecho +25 solapa [24,396]; centro −1 termina en+23.
 	# Se conservan cuerpos reales48×48 y no se simulan callbacks de Area2D.
 	var frontal := _enemy_at(Vector2(1, 0))
 	var behind := _enemy_at(Vector2(-1, 0))
