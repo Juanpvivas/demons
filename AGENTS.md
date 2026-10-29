@@ -118,7 +118,7 @@ persona `Squash and merge` para dejar un commit por PR en `main`, conservando
 la trazabilidad RED/GREEN en el cuerpo del PR; no reescribas historial compartido o
 aprobado sin autorización.
 
-Según la constitución 4.1.0, **integración y publicación tienen gates distintos**.
+Según la constitución 4.1.1, **integración y publicación tienen gates distintos**.
 `main` recibe incrementos funcionales con TDD/GREEN, compilación, CI,
 documentación y `APROBADO PARA INTEGRACIÓN` independiente. Hardware físico,
 renderer o paquete final sin certificar permanecen pendientes de publicación;
@@ -206,3 +206,4 @@ no afirmes haberla aplicado ni sustituyas su consulta por conocimiento genérico
 | 2026-10-19 | Por decisión de la persona y constitución 3.0.0, Web solo en computador; Android/iOS solo apps instaladas, sin continuar pruebas de navegador móvil y conservando evidencias históricas y requisitos nativos |
 | 2026-10-19 | Constitución 4.0.0: gates separados de integración funcional y publicación; requisitos físicos conservados para publicar, sin distribución automática por merge |
 | 2026-10-29 | Constitución 4.1.0: referencia a la excepción autorizada y acotada de la beta 1.0.1/build 4, conservando pendientes físicos y verificaciones de publicación no eximidas |
+| 2026-10-29 | Constitución 4.1.1: trazabilidad de la corrección acotada de empaquetado de la misma beta, con nueva QA/CI antes de reintentar y sin ampliar la excepción |

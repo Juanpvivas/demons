@@ -1,5 +1,18 @@
 <!--
 Sync Impact Report
+- Version change: 4.1.0 → 4.1.1 (PATCH).
+- Aclarar la trazabilidad de la misma beta autorizada 1.0.1/build 4: preparación
+  en PR #47 y su corrección de filtros de exportación nativos en Issue #46.
+  La revisión corregida requiere QA y CI nuevos; no hereda el veredicto anterior.
+- Un intento que falla antes del upload no consume el envío excepcional.
+  Se mantiene un envío exitoso por destino y se identifica la SHA exacta de
+  main en cada veredicto/ejecución, con verificadores previos equivalentes.
+- Sin ampliar versión, canales, gameplay, renderer, diferimientos físicos,
+  reglas generales ni tareas 004/T039 y 005/T071 pendientes.
+-->
+
+<!--
+Sync Impact Report
 - Version change: 4.0.0 → 4.1.0 (MINOR).
 - Motivo: autorización explícita de la persona el 2026-10-29 para la beta
   excepcional 1.0.1/build 4, su integración por PR #47 y sus envíos a Firebase
@@ -195,10 +208,17 @@ Por decisión explícita de la persona del **2026-10-29**, se permite una beta
 excepcional **1.0.1 (build 4)** para **Android mediante Firebase App
 Distribution** e **iOS mediante TestFlight**, preparada en el
 [PR #47](https://github.com/Juanpvivas/demons/pull/47) y seguida en el
-[Issue #46](https://github.com/Juanpvivas/demons/issues/46). El alcance se limita
-a la revisión exacta de `main` resultante de ese PR, identificada en el
-veredicto de QA y en cada ejecución de distribución. La autorización incluye
-fusionar ese PR y ejecutar manualmente ambos envíos.
+[Issue #46](https://github.com/Juanpvivas/demons/issues/46). La autorización
+incluye fusionar ese PR y ejecutar manualmente ambos envíos de la beta.
+La preparación puede completarse con su PR correctivo de filtros de
+exportación nativos, identificado en el mismo Issue, exclusivamente para
+reutilizar las exclusiones Web de pruebas, addons de pruebas y archivos de
+desarrollo/documentación, sin modificar gameplay, renderer, versión o canales.
+La revisión exacta de `main` que incorpora esa preparación debe identificarse
+en cada veredicto de QA y ejecución de
+distribución. El veredicto anterior no se extiende automáticamente al PR
+correctivo: requiere nueva revisión independiente, CI y verificadores previos
+al upload equivalentes a los de la preparación inicial.
 
 Exclusivamente para esa beta, se **difieren** las verificaciones físicas
 completas de instalación y smoke de partida de II/V, y las mediciones de
@@ -223,10 +243,12 @@ Esto no equivale a certificar los requisitos físicos diferidos. Se conservan
 el despacho manual desde `main`, los guards de versión y las confirmaciones
 de QA/humanas; no se permite registrar un veredicto inexistente ni omitir gates.
 
-La excepción se agota con un envío exitoso por destino de esa revisión.
-Permite reintentar un envío fallido de la misma revisión mientras no se haya
-confirmado su subida. No autoriza futuros builds/revisiones, cambios de
-renderer, itch.io, publicación en tiendas ni cierre de las features 004/005.
+La excepción se agota con un envío exitoso por destino de esa beta. Un intento
+fallido antes del upload no la consume. Permite reintentar mientras no se haya
+confirmado la subida de ese destino, sobre la revisión exacta aprobada de la
+preparación o de la corrección acotada anterior. No autoriza otras revisiones
+fuera de ese alcance, futuros builds, cambios de renderer, itch.io,
+publicación en tiendas ni cierre de las features 004/005.
 La regla general de II/IV/V sigue vigente para cualquier otro alcance.
 
 ## Restricciones Técnicas
@@ -283,4 +305,4 @@ listo para implementar. Cualquier complejidad técnica que viole un principio
 DEBE justificarse explícitamente en el documento correspondiente (plan o spec)
 o rechazarse.
 
-**Version**: 4.1.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-29
+**Version**: 4.1.1 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-29
