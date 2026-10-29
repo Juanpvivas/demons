@@ -35,7 +35,7 @@ checklist de especificación no equivalen a validación de una implementación.
 Las consultas y correcciones documentales puntuales mantienen su alcance;
 no disparan por sí solas la implementación de una feature, Issues o un PR.
 
-La matriz vigente sigue la constitución 4.0.0: Web solo en navegador de
+La matriz vigente sigue la constitución 4.1.0: Web solo en navegador de
 computador; Android/iOS como apps instaladas. No continuar pruebas Web en
 navegadores móviles, tampoco en emulador/simulador. Conservar las evidencias
 históricas sin convertirlas en pruebas de apps ni reabrir features anteriores.
@@ -44,7 +44,7 @@ de rendimiento físico.
 
 ## Gate de integración y gate de publicación
 
-La constitución 4.0.0 distingue el código funcional integrado en `main` de un
+La constitución 4.1.0 distingue el código funcional integrado en `main` de un
 artefacto aprobado para distribuir. El orquestador declara qué gate se revisa.
 
 | Gate | Requisitos y resultado de QA |
@@ -63,6 +63,12 @@ Publicar incluye testers externos, Firebase, TestFlight, itch.io y tiendas.
 No hay envío automático por push/merge a `main`; los workflows de distribución
 exigen aprobación de publicación y autorización explícita para la revisión
 exacta. Los artefactos de CI para revisión interna no autorizan distribución.
+La beta 1.0.1/build 4 dispone únicamente de la
+[excepción autorizada de constitución V](../.specify/memory/constitution.md#excepción-autorizada-beta-101-build-4).
+QA declara ese alcance excepcional, la revisión exacta y las pruebas físicas
+diferidas; firma/empaquetado/versionado deben verificarse antes del upload.
+La excepción no marca aprobados los pendientes físicos ni se reutiliza en
+otra revisión, build o canal.
 No fabricar una prueba física, cerrar SC-007 ni completar una feature por haber
 integrado un incremento. Mantener IDs y pendientes de publicación identificados;
 si una tarea cubre ambos gates, una aprobación parcial no marca toda su casilla.
@@ -263,3 +269,4 @@ comprobar que sus comandos y plantillas siguen activos tras una actualización.
 | 2026-10-16 | Por decisión de la persona, futuros PR sin archivos nuevos de evidencias en Git ni archivo permanente obligatorio; resultados en el PR y comprobaciones reales para QA |
 | 2026-10-19 | Matriz vigente según constitución 3.0.0: Web solo en computador, Android/iOS como apps instaladas y conservación del historial y de los requisitos físicos nativos |
 | 2026-10-19 | Constitución 4.0.0: integración funcional separada de publicación, veredictos explícitos y transición conjunta 004-I2/005-I1; sin despliegue externo automático por merge |
+| 2026-10-29 | Referencia a constitución 4.1.0: excepción puntual de beta 1.0.1/build 4 con alcance QA explícito y verificaciones del paquete previas al upload; pendientes físicos conservados. |

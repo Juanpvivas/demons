@@ -135,10 +135,33 @@ jobs:
           include-templates: true
 
       - name: Crear directorio de salida
-        run: mkdir -p build/ios
+        run: |
+          mkdir -p build/ios
+          touch build/.gdignore
+
+      - name: Importar el proyecto antes de exportar iOS
+        run: |
+          set -euo pipefail
+          godot --headless --editor --import 2>&1 | tee build/ios/import.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          log = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", Path("build/ios/import.log").read_text(errors="replace"))
+          if re.search(r"^\s*(?:SCRIPT )?ERROR:", log, re.MULTILINE):
+              raise SystemExit("La importación iOS contiene errores; se bloquea el envío.")
+          PY
 
       - name: Exportar proyecto Xcode de iOS (Godot no firma; export_project_only=true)
-        run: godot --headless --export-release "iOS" build/ios/demons.ipa
+        run: |
+          set -euo pipefail
+          godot --headless --export-release "iOS" build/ios/demons.ipa 2>&1 | tee build/ios/export.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          log = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", Path("build/ios/export.log").read_text(errors="replace"))
+          if re.search(r"^\s*(?:SCRIPT )?ERROR:", log, re.MULTILINE):
+              raise SystemExit("La exportación iOS contiene errores; se bloquea el envío.")
+          PY
 
       - name: Forzar firma manual en el .pbxproj (Godot deja el perfil vacío)
         # Godot ya exporta con CODE_SIGN_STYLE=Manual (no hace falta
@@ -207,6 +230,10 @@ jobs:
             -archivePath "$RUNNER_TEMP/demons.xcarchive" \
             -exportPath "$RUNNER_TEMP/export" \
             -exportOptionsPlist "$RUNNER_TEMP/exportOptions.plist"
+
+      - name: Verificar firma, paquete y versión del IPA
+        run: >
+          python3 tools/ci/verify_native_artifact.py ios "$RUNNER_TEMP/export/demons.ipa"
 
       - name: Subir a TestFlight
         run: |

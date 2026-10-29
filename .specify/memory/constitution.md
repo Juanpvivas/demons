@@ -1,5 +1,23 @@
 <!--
 Sync Impact Report
+- Version change: 4.0.0 → 4.1.0 (MINOR).
+- Motivo: autorización explícita de la persona el 2026-10-29 para la beta
+  excepcional 1.0.1/build 4, su integración por PR #47 y sus envíos a Firebase
+  App Distribution y TestFlight, con seguimiento en Issue #46.
+- MINOR: se añade una excepción acotada y consumible al principio V; no se
+  sustituye el gate general ni se autoriza otro build, revisión o canal.
+- Sólo se difieren las verificaciones físicas completas de instalación/smoke,
+  rendimiento/60 FPS y referencia de 005; permanecen pendientes, sin ampliar
+  la excepción Xiaomi de 004 ni completar 004/T039 o 005/T071.
+- Se conservan fuente, pruebas/build/CI, renderer, firma/empaquetado/versionado,
+  QA independiente, revisión exacta de main y despacho manual autorizado.
+  La verificación de paquetes previa al upload sigue siendo obligatoria.
+- Alinear referencias breves en AGENTS, arquitectura y flujo. Sin cambios de
+  gameplay, balance, destinos Web, reglas generales ni evidencias históricas.
+-->
+
+<!--
+Sync Impact Report
 - Version change: 3.0.0 → 4.0.0 (MAJOR).
 - Motivo: decisión explícita de la persona del 2026-10-19 de separar
   integración de código y publicación, y preparar un único PR 004-I2 + 005-I1.
@@ -171,6 +189,46 @@ aprueba publicación ni autoriza promover/fusionar un PR automáticamente. Se
 conservan abiertos los Issues y criterios restantes hasta cumplir su alcance
 completo, incluidos los requisitos de publicación.
 
+#### Excepción autorizada: beta 1.0.1 (build 4)
+
+Por decisión explícita de la persona del **2026-10-29**, se permite una beta
+excepcional **1.0.1 (build 4)** para **Android mediante Firebase App
+Distribution** e **iOS mediante TestFlight**, preparada en el
+[PR #47](https://github.com/Juanpvivas/demons/pull/47) y seguida en el
+[Issue #46](https://github.com/Juanpvivas/demons/issues/46). El alcance se limita
+a la revisión exacta de `main` resultante de ese PR, identificada en el
+veredicto de QA y en cada ejecución de distribución. La autorización incluye
+fusionar ese PR y ejecutar manualmente ambos envíos.
+
+Exclusivamente para esa beta, se **difieren** las verificaciones físicas
+completas de instalación y smoke de partida de II/V, y las mediciones de
+rendimiento/60 FPS y referencia aplicable de IV/005. No se dan por aprobadas:
+**004/T039 y 005/T071 conservan sus pendientes**, y la excepción provisional
+del Xiaomi para 004 no se extiende a 005 ni a otros dispositivos. Se mantienen
+las limitaciones y anomalías observadas, sin certificar hardware desde CI,
+emulación, simuladores o un arranque parcial.
+
+Siguen siendo obligatorios fuente funcional, pruebas/GREEN y regresión
+pertinentes, compilación/CI, configuración y renderer de destino, y
+**firma, empaquetado y versión exactos del APK/IPA**. Estos últimos DEBEN
+verificarse en el proceso de distribución **antes de cada upload**; un fallo
+de verificación bloquea el envío. La excepción no dispensa errores reales de
+fuente, build o funcionamiento conocido.
+
+QA independiente puede emitir **APROBADO PARA PUBLICACIÓN — beta excepcional
+1.0.1 (build 4)** con ese alcance y sus pendientes explícitos. El veredicto
+puede condicionar el envío a las verificaciones de firma/empaquetado/versionado
+previas al upload; su incumplimiento invalida la autorización de ese envío.
+Esto no equivale a certificar los requisitos físicos diferidos. Se conservan
+el despacho manual desde `main`, los guards de versión y las confirmaciones
+de QA/humanas; no se permite registrar un veredicto inexistente ni omitir gates.
+
+La excepción se agota con un envío exitoso por destino de esa revisión.
+Permite reintentar un envío fallido de la misma revisión mientras no se haya
+confirmado su subida. No autoriza futuros builds/revisiones, cambios de
+renderer, itch.io, publicación en tiendas ni cierre de las features 004/005.
+La regla general de II/IV/V sigue vigente para cualquier otro alcance.
+
 ## Restricciones Técnicas
 
 - Motor: Godot 4.x, licencia MIT — no se introduce dependencia de pago
@@ -225,4 +283,4 @@ listo para implementar. Cualquier complejidad técnica que viole un principio
 DEBE justificarse explícitamente en el documento correspondiente (plan o spec)
 o rechazarse.
 
-**Version**: 4.0.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-19
+**Version**: 4.1.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-29

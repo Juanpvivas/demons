@@ -123,11 +123,38 @@ jobs:
           packages: "platform-tools build-tools;34.0.0"
 
       - name: Crear directorio de salida
-        run: mkdir -p build/android
+        run: |
+          mkdir -p build/android
+          touch build/.gdignore
+
+      - name: Importar el proyecto antes de exportar Android
+        run: |
+          set -euo pipefail
+          godot --headless --editor --import 2>&1 | tee build/android/import.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          log = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", Path("build/android/import.log").read_text(errors="replace"))
+          if re.search(r"^\s*(?:SCRIPT )?ERROR:", log, re.MULTILINE):
+              raise SystemExit("La importación Android contiene errores; se bloquea el envío.")
+          PY
 
       - name: Exportar APK de Android (debug, para testing interno)
+        run: |
+          set -euo pipefail
+          godot --headless --export-debug "Android" build/android/demons.apk 2>&1 | tee build/android/export.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          log = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", Path("build/android/export.log").read_text(errors="replace"))
+          if re.search(r"^\s*(?:SCRIPT )?ERROR:", log, re.MULTILINE):
+              raise SystemExit("La exportación Android contiene errores; se bloquea el envío.")
+          PY
+
+      - name: Verificar firma, paquete y versión del APK
         run: >
-          godot --headless --export-debug "Android" build/android/demons.apk
+          python3 tools/ci/verify_native_artifact.py android build/android/demons.apk
+          --build-tools "$ANDROID_HOME/build-tools/34.0.0"
 
       - name: Notas de release desde git
         id: notes
