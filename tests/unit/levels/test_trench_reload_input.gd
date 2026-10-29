@@ -350,6 +350,48 @@ func test_close_invalidates_direct_orders_and_previous_button_callbacks() -> voi
 	assert_true(not is_instance_valid(button) or not button.is_visible_in_tree())
 
 
+## Cobertura suplementaria en GREEN; no forma parte del RED histórico de T003.
+func test_visible_wave_and_rejection_information_stays_inside_without_covering_home_controls() -> void:
+	for home: Vector2i in _level.board_config.home_cells:
+		_empty(_owner(home))
+	var hud := _level.get_node("HUD")
+	for size: Vector2i in [Vector2i(960, 540), Vector2i(1440, 648), Vector2i(1152, 864), Vector2i(1152, 648)]:
+		_viewport.size = size
+		WaveManager.wave_started.emit(9)
+		EconomyManager.deploy_or_reload_rejected.emit("Munición insuficiente")
+		await wait_process_frames(3)
+		var bounds := Rect2(Vector2.ZERO, Vector2(size))
+		var labels: Array[Label] = [hud.get("_ammo_label"), hud.get("_rejection_label"), hud.get("_wave_label")]
+		for label: Label in labels:
+			assert_true(label.is_visible_in_tree(), "CONTROL: aviso/contador realmente visible")
+			assert_true(bounds.encloses(label.get_global_rect()), "Información dentro de viewport " + str(size))
+			for home: Vector2i in _level.board_config.home_cells:
+				var button := _button(home)
+				if button == null:
+					return
+				assert_true(bounds.encloses(button.get_global_rect()))
+				assert_false(label.get_global_rect().intersects(button.get_global_rect()),
+					"Avisos visibles no tapan controles de hogar " + str(size))
+
+
+## Suplementaria: distingue queue_free pendiente de controles filtrados por cierre.
+func test_supplemental_all_home_controls_are_freed_after_close_or_tree_teardown(
+		mode = use_parameters(["explicit_close", "tree_teardown"])) -> void:
+	var controls: Array[WeakRef] = []
+	for home: Vector2i in _level.board_config.home_cells:
+		var button := _button(home)
+		if button == null:
+			return
+		controls.append(weakref(button))
+	if mode == "explicit_close":
+		_level.close_match()
+	else:
+		_level.queue_free()
+	await wait_process_frames(3)
+	for reference: WeakRef in controls:
+		assert_null(reference.get_ref(), "Cero controles del intento después del flush de borrado")
+
+
 func test_retry_or_menu_releases_old_controls_and_new_attempt_has_fresh_bindings(
 		destination = use_parameters(["retry", "menu"])) -> void:
 	_level.close_match()

@@ -176,7 +176,7 @@ func test_gui_reload_gesture_is_consumed_and_emits_one_order_without_board_actio
 	_level.select_trench(HOME)
 	var hud: Node
 	for node: Node in _level.get_children():
-		if node is CanvasLayer and node.has_signal("reload_requested"):
+		if node is CanvasLayer and node.has_signal("trench_reload_requested"):
 			hud = node
 	assert_not_null(hud, "HUD observador integrado")
 	if hud == null:

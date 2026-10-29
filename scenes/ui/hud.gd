@@ -49,18 +49,18 @@
 ## instanciarse muchas veces en runtime.
 extends CanvasLayer
 
-## Intención con identidad capturada: el nivel revalidará dueño y selección.
-signal reload_requested(soldier_instance_id: int)
-
-## 012/T002: interfaz neutral; todavía no emite órdenes por hogar.
+## El nivel revalida el hogar y la identidad capturados por cada control.
 signal trench_reload_requested(home_cell: Vector2i, soldier_instance_id: int)
 
 ## La UI sólo emite intenciones; no cambia escenas ni reinicia Managers.
 signal retry_requested
 signal menu_requested
 
+const _RELOAD_BUTTON_SIZE := Vector2(112, 48)
+
 var _selected_soldier: Soldado
 var _closing: bool = false
+var _trench_reload_bindings: Dictionary[Vector2i, Dictionary] = {}
 
 
 @onready var _ammo_label: Label = $Root/Info/AmmoLabel
@@ -74,22 +74,140 @@ var _closing: bool = false
 @onready var _selection_label: Label = $SelectionPanel/Contents/Details/SelectionLabel
 @onready var _individual_ammo_label: Label = $SelectionPanel/Contents/Details/IndividualAmmoLabel
 @onready var _morale_label: Label = $SelectionPanel/Contents/Details/MoraleLabel
-@onready var _reload_button: Button = $SelectionPanel/Contents/ReloadButton
+@onready var _trench_reload_controls: Control = $TrenchReloadControls
 @onready var _retry_button: Button = $GameOverScreen/Actions/RetryButton
 @onready var _menu_button: Button = $GameOverScreen/Actions/MenuButton
 
 
-## Firmas neutrales de 012/T002; comportamiento pendiente del ciclo RED.
 func get_trench_reload_button(home_cell: Vector2i) -> Button:
+	if _trench_reload_bindings.has(home_cell):
+		return _trench_reload_bindings[home_cell].button as Button
 	return null
 
 
 func register_trench_reload(home_cell: Vector2i, soldier: Soldado, world_anchor: Vector2) -> void:
-	pass
+	if _closing or not is_instance_valid(soldier):
+		return
+	var identity := soldier.get_instance_id()
+	if _trench_reload_bindings.has(home_cell):
+		if _trench_reload_bindings[home_cell].instance_id == identity:
+			_trench_reload_bindings[home_cell].world_anchor = world_anchor
+			_refresh_trench_reload(home_cell, identity)
+			return
+		unregister_trench_reload(home_cell)
+	if _trench_reload_bindings.size() >= 5:
+		return
+	var button := Button.new()
+	button.name = "ReloadHome%d_%d" % [home_cell.x, home_cell.y]
+	button.text = "Recargar"
+	button.custom_minimum_size = _RELOAD_BUTTON_SIZE
+	button.size = _RELOAD_BUTTON_SIZE
+	button.mouse_filter = Control.MOUSE_FILTER_STOP
+	button.pressed.connect(_on_trench_reload_pressed.bind(home_cell, identity))
+	var changed := _refresh_trench_reload.bind(home_cell, identity)
+	var exiting := _on_trench_owner_exiting.bind(home_cell, identity)
+	_trench_reload_bindings[home_cell] = {
+		"soldier": soldier, "instance_id": identity, "world_anchor": world_anchor,
+		"button": button, "changed": changed, "exiting": exiting,
+	}
+	_trench_reload_controls.add_child(button)
+	soldier.reload_state_changed.connect(changed)
+	soldier.tree_exiting.connect(exiting)
+	_refresh_trench_reload(home_cell, identity)
 
 
 func unregister_trench_reload(home_cell: Vector2i) -> void:
-	pass
+	if not _trench_reload_bindings.has(home_cell):
+		return
+	var binding: Dictionary = _trench_reload_bindings[home_cell]
+	_trench_reload_bindings.erase(home_cell)
+	var soldier := binding.soldier as Soldado
+	if is_instance_valid(soldier):
+		_disconnect_signal(soldier.reload_state_changed, binding.changed)
+		_disconnect_signal(soldier.tree_exiting, binding.exiting)
+	var button := binding.button as Button
+	button.disabled = true
+	button.hide()
+	# Retirar el control cancela el foco del gesto del dueño anterior.
+	_trench_reload_controls.remove_child(button)
+	button.queue_free()
+	update_trench_reload_layout()
+
+
+func _on_trench_owner_exiting(home_cell: Vector2i, identity: int) -> void:
+	if _trench_reload_bindings.has(home_cell) \
+			and _trench_reload_bindings[home_cell].instance_id == identity:
+		unregister_trench_reload(home_cell)
+
+
+func _refresh_trench_reload(home_cell: Vector2i, identity: int) -> void:
+	if not _trench_reload_bindings.has(home_cell) \
+			or _trench_reload_bindings[home_cell].instance_id != identity:
+		return
+	var binding: Dictionary = _trench_reload_bindings[home_cell]
+	var soldier := binding.soldier as Soldado
+	var button := binding.button as Button
+	var show_action := false
+	if not _closing and is_instance_valid(soldier):
+		var state := soldier.get_reload_state()
+		show_action = state.alive and state.ammo == 0 and state.home_cell == home_cell
+	button.visible = show_action
+	button.disabled = not show_action or not soldier.can_reload()
+	update_trench_reload_layout()
+
+
+func _refresh_trench_reloads() -> void:
+	for home: Vector2i in _trench_reload_bindings.keys():
+		_refresh_trench_reload(home, _trench_reload_bindings[home].instance_id)
+
+
+func _on_trench_reload_pressed(home_cell: Vector2i, identity: int) -> void:
+	if _closing or not _trench_reload_bindings.has(home_cell):
+		return
+	var binding: Dictionary = _trench_reload_bindings[home_cell]
+	var soldier := binding.soldier as Soldado
+	var button := binding.button as Button
+	if binding.instance_id != identity or not is_instance_valid(soldier) \
+			or not button.is_visible_in_tree() or not soldier.can_reload():
+		return
+	get_viewport().set_input_as_handled()
+	trench_reload_requested.emit(home_cell, identity)
+
+
+## La cámara notifica después de aplicar su canvas; el ancla nunca sigue al actor.
+func update_trench_reload_layout() -> void:
+	if _closing or not is_instance_valid(_trench_reload_controls):
+		return
+	var safe := _safe_view_rect()
+	var to_controls := _trench_reload_controls.get_global_transform_with_canvas().affine_inverse()
+	var bounds: Rect2 = to_controls * safe
+	for binding: Dictionary in _trench_reload_bindings.values():
+		var button := binding.button as Button
+		var anchor: Vector2 = to_controls * (get_viewport().canvas_transform * binding.world_anchor)
+		button.position = Vector2(
+			clampf(anchor.x - button.size.x * 0.5, bounds.position.x, bounds.end.x - button.size.x),
+			clampf(anchor.y - button.size.y - 2.0, bounds.position.y, bounds.end.y - button.size.y))
+	_layout_info_around_trenches(safe)
+
+
+func _layout_info_around_trenches(safe: Rect2) -> void:
+	var info_size := Vector2.ZERO
+	var visible_count := 0
+	for label: Label in [_ammo_label, _rejection_label, _wave_label]:
+		if label.visible:
+			var minimum := label.get_combined_minimum_size()
+			info_size.x = maxf(info_size.x, minimum.x)
+			info_size.y += minimum.y
+			visible_count += 1
+	info_size.y += maxi(0, visible_count - 1) * $Root/Info.get_theme_constant("separation")
+	var base_rect := Rect2(safe.position, info_size)
+	var left := safe.position.x
+	for binding: Dictionary in _trench_reload_bindings.values():
+		var button := binding.button as Button
+		if button.visible and base_rect.intersects(button.get_global_rect()):
+			left = maxf(left, button.get_global_rect().end.x + 12.0)
+	left = minf(left, maxf(safe.position.x, safe.end.x - info_size.x))
+	$Root.add_theme_constant_override("margin_left", ceili(left))
 
 
 func set_selected_soldier(soldier: Soldado) -> void:
@@ -107,17 +225,8 @@ func get_selected_soldier() -> Soldado:
 	return null
 
 
-func request_selected_reload() -> void:
-	if _closing:
-		return
-	var soldier := get_selected_soldier()
-	if soldier != null and soldier.can_reload():
-		reload_requested.emit(soldier.get_instance_id())
-
-
 func _refresh_selection() -> void:
 	var soldier := get_selected_soldier()
-	_reload_button.disabled = soldier == null or not soldier.can_reload()
 	_selection_panel.visible = soldier != null
 	if soldier == null:
 		return
@@ -131,6 +240,7 @@ func _refresh_selection() -> void:
 func _on_game_state_changed(_state: int) -> void:
 	if not _closing:
 		_refresh_selection()
+		_refresh_trench_reloads()
 
 
 func _can_request_result_action() -> bool:
@@ -157,7 +267,8 @@ func close_match() -> void:
 		return
 	_closing = true
 	set_selected_soldier(null)
-	_reload_button.disabled = true
+	for home: Vector2i in _trench_reload_bindings.keys():
+		unregister_trench_reload(home)
 	_retry_button.disabled = true
 	_menu_button.disabled = true
 	_rejection_message_timer.stop()
@@ -180,23 +291,31 @@ func _exit_tree() -> void:
 	close_match()
 
 
+func _safe_view_rect() -> Rect2:
+	var viewport_size := get_viewport().get_visible_rect().size
+	var insets := Vector4(16, 16, 16, 16)
+	if OS.has_feature("android") or OS.has_feature("ios"):
+		var safe := DisplayServer.get_display_safe_area()
+		var screen := DisplayServer.screen_get_size()
+		if safe.size.x > 0 and safe.size.y > 0 and screen.x > 0 and screen.y > 0:
+			var ratio := viewport_size / Vector2(screen)
+			insets = Vector4(maxf(16, safe.position.x * ratio.x),
+				maxf(16, safe.position.y * ratio.y),
+				maxf(16, (screen.x - safe.end.x) * ratio.x),
+				maxf(16, (screen.y - safe.end.y) * ratio.y))
+	return Rect2(Vector2(insets.x, insets.y), viewport_size - Vector2(insets.x + insets.z, insets.y + insets.w))
+
+
 func _apply_safe_area() -> void:
-	if not (OS.has_feature("android") or OS.has_feature("ios")):
-		return
-	var safe := DisplayServer.get_display_safe_area()
-	var screen := DisplayServer.screen_get_size()
-	if safe.size.x <= 0 or safe.size.y <= 0 or screen.x <= 0 or screen.y <= 0:
-		return
-	var ratio := get_viewport().get_visible_rect().size / Vector2(screen)
-	var left := maxi(16, ceili(safe.position.x * ratio.x))
-	var top := maxi(16, ceili(safe.position.y * ratio.y))
-	var right := maxi(16, ceili((screen.x - safe.end.x) * ratio.x))
-	$Root.add_theme_constant_override("margin_left", left)
+	var safe := _safe_view_rect()
+	var right := ceili(get_viewport().get_visible_rect().size.x - safe.end.x)
+	var top := ceili(safe.position.y)
 	$Root.add_theme_constant_override("margin_top", top)
 	_selection_panel.offset_right = -right
 	_selection_panel.offset_left = -right - 324
 	_selection_panel.offset_top = top
 	_selection_panel.offset_bottom = top + 70
+	update_trench_reload_layout()
 
 
 func _ready() -> void:
@@ -212,7 +331,6 @@ func _ready() -> void:
 	GameStateManager.game_won.connect(_on_game_won)
 	GameStateManager.game_lost.connect(_on_game_lost)
 	GameStateManager.game_state_changed.connect(_on_game_state_changed)
-	_reload_button.pressed.connect(request_selected_reload)
 	_retry_button.pressed.connect(_on_retry_pressed)
 	_menu_button.pressed.connect(_on_menu_pressed)
 	get_viewport().size_changed.connect(_apply_safe_area)
@@ -234,6 +352,7 @@ func _on_ammo_pool_changed(new_amount: int) -> void:
 		return
 	_update_ammo_label(new_amount)
 	_refresh_selection()
+	_refresh_trench_reloads()
 
 
 func _update_ammo_label(amount: int) -> void:
@@ -248,10 +367,12 @@ func _on_deploy_or_reload_rejected(reason: String) -> void:
 	_rejection_label.text = reason
 	_rejection_label.visible = true
 	_rejection_message_timer.start()
+	update_trench_reload_layout()
 
 
 func _on_rejection_message_timer_timeout() -> void:
 	_rejection_label.visible = false
+	update_trench_reload_layout()
 
 
 ## `contracts/signals.md` fila `WaveManager.wave_started` — Principio III
@@ -266,10 +387,12 @@ func _on_wave_started(wave_number: int) -> void:
 	_wave_label.text = "Oleada %d por llegar" % wave_number
 	_wave_label.visible = true
 	_wave_message_timer.start()
+	update_trench_reload_layout()
 
 
 func _on_wave_message_timer_timeout() -> void:
 	_wave_label.visible = false
+	update_trench_reload_layout()
 
 
 ## `contracts/signals.md` fila `GameStateManager.game_won`. Ver cabecera
