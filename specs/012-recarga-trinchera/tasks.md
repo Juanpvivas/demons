@@ -22,7 +22,7 @@
 
 ## Fase final: Documentación y entrega
 
-- [ ] T009 docs-writer: consolidar el comportamiento aprobado en `docs/SPEC.md`, `docs/ARCHITECTURE.md` y documentos de `specs/012-recarga-trinchera/`, sin marcar tareas ni añadir registros de ejecución. Depende de T008.
+- [X] T009 docs-writer: consolidar el comportamiento aprobado en `docs/SPEC.md`, `docs/ARCHITECTURE.md` y documentos de `specs/012-recarga-trinchera/`, sin marcar tareas ni añadir registros de ejecución. Depende de T008.
 - [ ] T010 project-orchestrator con godot-tester: publicar la rama y verificar CI de la revisión exacta, suite GUT completa mediante `tools/ci/run_gut.py`, importación y exportación Web existentes. Se permite abrir el PR provisional en borrador para ejecutar CI; reutilizar evidencia válida sin repeticiones rutinarias. Depende de T009.
 - [ ] T011 qa-validator: revisar documentación y resultados exactos de T010; emitir APROBADO PARA INTEGRACIÓN sólo con fuente, GREEN/regresión, build/export y CI conformes. Publicación y pendientes físicos conservan su gate independiente. Depende de T010.
 - [ ] T012 project-orchestrator: consolidar alcance, RED/GREEN, QA y límites en PR en borrador vinculado a #49; marcar sólo tareas aprobadas y usar Closes #49 únicamente con aceptación funcional completa de 012. Sin promover, fusionar ni distribuir automáticamente; la excepción de beta 1.0.1/build 4 no se aplica. Depende de T011.
