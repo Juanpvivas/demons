@@ -1,7 +1,7 @@
 # Feature Specification: Recarga directa sobre la trinchera
 
 **Feature ID**: `012-recarga-trinchera` | **Planned Branch**: `codex/012-recarga-trinchera`
-**Created**: 2026-10-29 | **Status**: revisión visual de `012-I1` en preparación; seguimiento en [tasks.md](tasks.md) y [PR #50](https://github.com/Juanpvivas/demons/pull/50).
+**Created**: 2026-10-29 | **Status**: revisión visual de `012-I1` aprobada funcionalmente en T018 sobre `87eedb3`; seguimiento de integración en [tasks.md](tasks.md) y [PR #50](https://github.com/Juanpvivas/demons/pull/50).
 **Tracking**: [Issue #49](https://github.com/Juanpvivas/demons/issues/49).
 **Input vigente**: sustituir «Recargar» por brillo rojo en la trinchera y tocarla para recargar. Confirmación: «Rojo tenue sin titilar; el pulso aparece cuando ya puedes recargar».
 
@@ -75,4 +75,4 @@ Como jugador, quiero que la trinchera de un soldado sin balas llame mi atención
 
 ## Alcance de la aprobación funcional
 
-T008 aprobó el botón anterior sobre `ba122ef`; el seguimiento posterior llegó a `994b176`. Chrome aportó revisión con canvas/DOM 960 y DPR 1; resize lógico GUT es evidencia separada. El smoke iOS previo usó bootstrap Compatibility y sólo mostró menú, sin acreditar gesto, paquete o renderer final. La prueba humana posterior del Xiaomi confirma aquella copia, sin certificar el efecto ahora solicitado. El cruce preexistente entre aviso de oleada y primera barra de vida conserva su límite. La revisión vigente debe declarar sus propios entornos/variantes; no se certifican FPS ni publicación desde estas observaciones.
+T008 y la observación humana del Xiaomi corresponden al botón anterior; no certifican el brillo. T018 aprueba la revisión roja de `87eedb3` con fuente `6e7b65b`, según el alcance observado; seguimiento final en [tareas](tasks.md) y [PR #50](https://github.com/Juanpvivas/demons/pull/50). Chrome comprobó aspecto/acción con un fixture declarado; sus dimensiones DOM/canvas960 y DPR1 no equivalen al viewport lógico probado por GUT. El APK normal de QA Mobile fue verificado, sin instalación: la confirmación USB Android rechazó el preview (`USER_RESTRICTED`), por lo que el gesto nativo nuevo no quedó observado. iOS usó bootstrap anterior Compatibility y fixture de autoarranque: aspecto de dos hogares pulsantes/tres tenues, sin certificar período, gestos, IPA final, hardware o FPS; su franja gris superior tiene antecedente en 010 y no se atribuye al efecto. Se conservan el cruce previo aviso de oleada/primera barra de vida y avisos transitorios de `queue_free` examinados en casos acotados, sin concluir ausencia general de fugas. La publicación y certificación física conservan su gate separado.

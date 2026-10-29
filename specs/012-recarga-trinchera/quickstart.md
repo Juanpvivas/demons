@@ -1,6 +1,6 @@
 # Verificación prevista — 012-I1, revisión visual
 
-Guía del [spec vigente](spec.md) y [contrato](contracts/trench-reload.md), no registro de pruebas ejecutadas. Rama `codex/012-recarga-trinchera`, [Issue #49](https://github.com/Juanpvivas/demons/issues/49), [PR #50](https://github.com/Juanpvivas/demons/pull/50). T001–T012 y la prueba humana Xiaomi corresponden al botón anterior; la revisión T013+ requiere evidencia propia. Resultados/variantes en temporales y PR, sin archivos nuevos de evidencias en Git.
+Guía del [spec vigente](spec.md) y [contrato](contracts/trench-reload.md), no registro de pruebas ejecutadas. Rama `codex/012-recarga-trinchera`, [Issue #49](https://github.com/Juanpvivas/demons/issues/49), [PR #50](https://github.com/Juanpvivas/demons/pull/50). T001–T012 y la prueba humana Xiaomi corresponden al botón anterior; T018 delimita el [alcance propio de la revisión roja](spec.md#alcance-de-la-aprobación-funcional). Resultados/variantes en temporales y PR, sin archivos nuevos de evidencias en Git.
 
 ## 1. Preparación y TDD
 

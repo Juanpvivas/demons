@@ -663,19 +663,28 @@ La aceptación y CI de cada revisión exacta se registran en el PR del increment
   No depende de la selección. La baja limpia selección/vínculo; retirar el
   control anterior impide que un gesto antiguo recargue al reemplazo.
 - **Presentación de recarga por hogar (012):** `HUD.tscn`, como CanvasLayer,
-  aloja hasta cinco Buttons vinculados a dueño/ID y ancla global del hogar.
-  Observa `reload_state_changed`, economía y partida, sin polling; visible con
-  dueño vivo/carga cero, habilitado según `can_reload()`. Registro repetido
-  no duplica conexiones; baja/salida del árbol y cierre desconectan y retiran
-  controles de forma idempotente. Mundo→canvas vigente sitúa el botón sobre
-  el hogar con área segura; `Camera2D.framing_changed` notifica después de
-  `force_update_scroll()` para recalcular tras resize sin alterar encuadre/zoom.
-  El HUD aparta sus avisos de los controles visibles. Buttons con
-  `MOUSE_FILTER_STOP` consumen ratón/toque incluso deshabilitados; decoración
-  deja pasar entrada y fuera de la UI la pickup conserva prioridad. El
-  [contrato de 012](../specs/012-recarga-trinchera/contracts/trench-reload.md)
-  detalla identidad, ciclo y alcance de verificación; la aprobación funcional
-  en rama no acredita entrada nativa ni renderer/paquete final de publicación.
+  aloja hasta cinco `TrenchReloadControl` sin texto ni decoración de botón,
+  vinculados a dueño/ID. Observa `reload_state_changed`, economía y partida,
+  sin polling: `NORMAL` oculta la zona y retira rojo; `DIM` deja rojo tenue
+  estático/deshabilitado con dueño vacío no elegible; `PULSING` sólo permite
+  recargar mientras `can_reload()` y PLAYING. La pausa detiene el pulso por
+  señal aunque no se pause SceneTree. El panel queda informativo.
+  El nivel proporciona las piezas `PosteriorN`/`ParapetoN` del hogar; el
+  control añade dos copias locales de su textura con material aditivo sin
+  iluminación y expansión leve, conservando originales, z efectivo −4/+1 y
+  oclusión del actor. La fuerza real pinta ambas copias mediante un único
+  Tween suave por hogar, sin shader, `TIME` ni asignaciones por frame/ciclo.
+  Repetir estado no reinicia ni acumula animaciones; cargar/baja, desregistro,
+  reemplazo, salida del árbol y cierre normalizan y retiran efectos locales.
+  La unión mundial del arte se proyecta a la zona GUI sobre la trinchera,
+  con mínimo táctil 112×48 y área segura, sin mover arte o cámara.
+  `Camera2D.framing_changed`, tras `force_update_scroll()`, actualiza resize;
+  el control no sigue al soldado y el pulso no mueve su zona. Las seis
+  variantes de estilo, incluido `hover_pressed`, quedan vacías.
+  `MOUSE_FILTER_STOP` consume ratón/toque incluso deshabilitado; fuera de
+  la zona se conserva pickup→selección/despliegue. El [contrato de 012](../specs/012-recarga-trinchera/contracts/trench-reload.md)
+  detalla geometría, ciclo e identidad; el [alcance observado](../specs/012-recarga-trinchera/spec.md#alcance-de-la-aprobación-funcional)
+  no acredita entrada nativa o renderer/paquete final de publicación.
 - **Autoridad del actor:** `can_reload()`/`request_reload()` exigen vivo,
   PLAYING, carga cero, fondos y ausencia de aceptación/retorno activo. El guard
   se instala antes de emitir señales o gastar, pues sus callbacks son síncronos.
@@ -1024,3 +1033,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-29 | §7 referencia la excepción constitucional 4.1.0 para la beta 1.0.1/build 4; conserva QA, revisión exacta y verificación del paquete antes del upload, sin acreditar pendientes físicos. |
 | 2026-10-29 | Constitución 4.1.1 aclara la revisión exacta de la corrección de filtros nativos de la misma beta: nueva QA/CI y verificaciones previas al upload, sin ampliar los pendientes diferidos. |
 | 2026-10-29 | 012/T009 tras QA funcional T008: §5 incorpora intención de recarga por hogar/ID, panel informativo, controles por señales y notificación de encuadre aplicado; fuente económica del actor y gates de publicación conservados. |
+| 2026-10-29 | 012/T019 tras QA funcional T018: §5 describe TrenchReloadControl transparente sobre el arte, brillo aditivo local por hogar y Tween idempotente/limpiado; autoridad y gates conservados, sin patrón global nuevo. |

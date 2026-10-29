@@ -2,7 +2,7 @@
 
 **Feature ID**: `012-recarga-trinchera` | **Branch**: `codex/012-recarga-trinchera` | **Date**: 2026-10-29 | **Spec**: [spec.md](spec.md)
 **Tracking**: [Issue #49](https://github.com/Juanpvivas/demons/issues/49), [PR #50](https://github.com/Juanpvivas/demons/pull/50) | **Entrega**: revisión visual de `012-I1`.
-**Estado**: preparación del cambio de presentación solicitado tras T001–T012. Esa entrega y sus aprobaciones permanecen históricas; el estado vigente y sus veredictos se mantienen en [tasks.md](tasks.md). Spec Kit prepara; los agentes ejecutan `docs/DEVELOPMENT_WORKFLOW.md`.
+**Estado**: diseño aplicado en T016 y alcance funcional aprobado en T018. T001–T012 y sus aprobaciones permanecen históricos; el estado de integración y sus veredictos se mantienen en [tasks.md](tasks.md). Spec Kit prepara; los agentes ejecutan `docs/DEVELOPMENT_WORKFLOW.md`.
 
 ## Summary
 

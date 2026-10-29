@@ -1,6 +1,6 @@
 # Contrato — Recarga por hogar
 
-**Estado**: revisión visual en preparación T013 en adelante. T001–T012 aprobaron el botón anterior; no aprueban este efecto. [Requisitos vigentes](../spec.md), [tareas](../tasks.md), [Issue #49](https://github.com/Juanpvivas/demons/issues/49), [PR #50](https://github.com/Juanpvivas/demons/pull/50). Publicación conserva gate separado.
+**Estado**: revisión visual aprobada funcionalmente en T018 sobre `87eedb3`, con fuente `6e7b65b`; integración/CI se mantienen en el seguimiento enlazado. T001–T012 corresponden al botón anterior. [Requisitos vigentes](../spec.md), [tareas](../tasks.md), [Issue #49](https://github.com/Juanpvivas/demons/issues/49), [PR #50](https://github.com/Juanpvivas/demons/pull/50). Publicación conserva gate separado.
 
 ## Interfaces y compatibilidad
 
@@ -27,7 +27,7 @@ El HUD deriva `needs_reload` de dueño vivo/carga cero/hogar vigente/no cierre y
 
 ## Presentación local y ciclo
 
-El Button tiene texto vacío y `StyleBoxEmpty` en normal, hover, pressed, disabled y focus: nunca aparece rectángulo, borde, cartel ni palabra «Recargar». Se conserva control GUI real y mínimo táctil 112×48.
+El Button tiene texto vacío y `StyleBoxEmpty` en normal, hover, pressed, hover_pressed, disabled y focus: nunca aparece rectángulo, borde, cartel ni palabra «Recargar». Se conserva control GUI real y mínimo táctil 112×48.
 
 Cada control enlaza las dos piezas existentes y crea una sola vez dos copias Sprite2D aditivas como hijas locales, con las mismas texturas/alpha y expansión leve 1.03. No hay bitmap nuevo, shader, bloom ni iluminación global. Las piezas originales conservan su modulate/material, transforms y z efectivo −4/+1; la oclusión actor/parapeto y las barras no se alteran. El brillo no es una capa de HUD sobre el soldado.
 

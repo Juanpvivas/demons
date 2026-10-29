@@ -2,7 +2,7 @@
 
 **Purpose**: calidad de preparación; no acredita implementación o QA de entrega.
 **Created**: 2026-10-29 | **Feature**: [spec.md](../spec.md) | [Issue #49](https://github.com/Juanpvivas/demons/issues/49).
-**Estado**: autoría de revisión visual T013+ contrastada con la solicitud confirmada; QA de preparación pendiente. T001–T012 y sus veredictos permanecen históricos para el botón anterior. Las casillas evalúan el spec vigente, no el gate de integración/publicación.
+**Estado**: preparación de revisión visual aprobada en T013 y comportamiento aprobado funcionalmente en T018 con [alcance observado](../spec.md#alcance-de-la-aprobación-funcional). T001–T012 y sus veredictos permanecen históricos para el botón anterior. Las casillas evalúan el spec vigente, no el gate de integración/publicación.
 
 ## Content Quality
 
