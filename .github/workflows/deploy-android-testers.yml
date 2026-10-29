@@ -1,8 +1,8 @@
 name: Deploy Android test build
 
-# Exporta un APK de Android (debug, apto para testing interno — no requiere
-# keystore de release) y lo sube a Firebase App Distribution para que los
-# testers lo instalen en su celular. Ver godot-prompter:export-pipeline
+# Exporta un APK de Android debug con firma beta estable y lo sube a Firebase
+# App Distribution para que los testers lo instalen en su celular.
+# Ver godot-prompter:export-pipeline
 # (sección Android) para la referencia del preset usado.
 # Solo se distribuye manualmente desde main, con aprobación de publicación
 # y autorización explícita para esa revisión; integrar código no distribuye.
@@ -16,6 +16,10 @@ name: Deploy Android test build
 #                                    cuenta de servicio (Firebase Console →
 #                                    Configuración del proyecto → Cuentas de
 #                                    servicio → Generar nueva clave privada)
+#   ANDROID_BETA_KEYSTORE_BASE64 -> keystore beta fijo codificado en base64
+#   ANDROID_BETA_KEYSTORE_PASSWORD -> contraseña del keystore y su clave
+#   ANDROID_BETA_KEYSTORE_ALIAS  -> alias de la clave beta
+# Variable requerida: ANDROID_BETA_CERT_SHA256 -> huella SHA-256 del certificado.
 #
 # Variable opcional (Settings → Secrets and variables → Actions → Variables):
 #   FIREBASE_TESTER_GROUP        -> nombre del grupo de testers en Firebase
@@ -122,6 +126,49 @@ jobs:
         with:
           packages: "platform-tools build-tools;34.0.0"
 
+      - name: Restaurar firma beta estable de Android
+        env:
+          ANDROID_BETA_KEYSTORE_BASE64: ${{ secrets.ANDROID_BETA_KEYSTORE_BASE64 }}
+          ANDROID_BETA_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_BETA_KEYSTORE_PASSWORD }}
+          ANDROID_BETA_KEYSTORE_ALIAS: ${{ secrets.ANDROID_BETA_KEYSTORE_ALIAS }}
+          DEMONS_ANDROID_CERT_SHA256: ${{ vars.ANDROID_BETA_CERT_SHA256 }}
+        run: |
+          set -euo pipefail
+          umask 077
+          for SETTING in ANDROID_BETA_KEYSTORE_BASE64 ANDROID_BETA_KEYSTORE_PASSWORD ANDROID_BETA_KEYSTORE_ALIAS DEMONS_ANDROID_CERT_SHA256; do
+            if [ -z "${!SETTING:-}" ]; then
+              echo "::error::Falta la configuración requerida de firma Android: $SETTING."
+              exit 1
+            fi
+          done
+          python3 - <<'PY'
+          import os
+          import re
+          certificate = os.environ["DEMONS_ANDROID_CERT_SHA256"].replace(":", "").strip()
+          if re.fullmatch(r"[0-9a-fA-F]{64}", certificate) is None:
+              raise SystemExit("La huella esperada de Android debe ser SHA-256 válida.")
+          for name in ("ANDROID_BETA_KEYSTORE_PASSWORD", "ANDROID_BETA_KEYSTORE_ALIAS"):
+              if any(character in os.environ[name] for character in "\r\n"):
+                  raise SystemExit("La configuración de firma no admite saltos de línea.")
+          PY
+          BETA_KEYSTORE_PATH="$RUNNER_TEMP/demons-android-beta.p12"
+          if [ -e "$BETA_KEYSTORE_PATH" ] || [ -L "$BETA_KEYSTORE_PATH" ]; then
+            echo "::error::La ruta temporal de firma ya existe; se bloquea la exportación."
+            exit 1
+          fi
+          set -o noclobber
+          : > "$BETA_KEYSTORE_PATH"
+          trap 'rm -f -- "$BETA_KEYSTORE_PATH"' EXIT
+          printf '%s' "$ANDROID_BETA_KEYSTORE_BASE64" | base64 --decode >| "$BETA_KEYSTORE_PATH"
+          test -s "$BETA_KEYSTORE_PATH"
+          keytool -list -keystore "$BETA_KEYSTORE_PATH" -alias "$ANDROID_BETA_KEYSTORE_ALIAS" -storepass:env ANDROID_BETA_KEYSTORE_PASSWORD > /dev/null
+          {
+            printf 'GODOT_ANDROID_KEYSTORE_DEBUG_PATH=%s\n' "$BETA_KEYSTORE_PATH"
+            printf 'GODOT_ANDROID_KEYSTORE_DEBUG_USER=%s\n' "$ANDROID_BETA_KEYSTORE_ALIAS"
+            printf 'GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD=%s\n' "$ANDROID_BETA_KEYSTORE_PASSWORD"
+          } >> "$GITHUB_ENV"
+          trap - EXIT
+
       - name: Crear directorio de salida
         run: |
           mkdir -p build/android
@@ -152,6 +199,8 @@ jobs:
           PY
 
       - name: Verificar firma, paquete y versión del APK
+        env:
+          DEMONS_ANDROID_CERT_SHA256: ${{ vars.ANDROID_BETA_CERT_SHA256 }}
         run: >
           python3 tools/ci/verify_native_artifact.py android build/android/demons.apk
           --build-tools "$ANDROID_HOME/build-tools/34.0.0"
@@ -169,3 +218,10 @@ jobs:
           groups: ${{ vars.FIREBASE_TESTER_GROUP }}
           file: build/android/demons.apk
           releaseNotes: ${{ steps.notes.outputs.text }}
+
+      - name: Eliminar la copia temporal de la firma Android
+        if: always()
+        run: |
+          if [ "${GODOT_ANDROID_KEYSTORE_DEBUG_PATH:-}" = "$RUNNER_TEMP/demons-android-beta.p12" ]; then
+            rm -f -- "$RUNNER_TEMP/demons-android-beta.p12"
+          fi

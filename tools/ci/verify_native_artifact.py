@@ -4,6 +4,7 @@
 import argparse
 import configparser
 import json
+import os
 from pathlib import Path, PurePosixPath
 import plistlib
 import re
@@ -46,7 +47,24 @@ def run_tool(command: list[str]) -> str:
 
 
 def verify_android(artifact: Path, options: dict, build_tools: Path) -> None:
-    run_tool([str(build_tools / "apksigner"), "verify", str(artifact)])
+    expected_certificate = os.environ.get("DEMONS_ANDROID_CERT_SHA256")
+    if expected_certificate is not None:
+        expected_certificate = expected_certificate.replace(":", "").strip().lower()
+        if re.fullmatch(r"[0-9a-f]{64}", expected_certificate) is None:
+            raise ValueError("DEMONS_ANDROID_CERT_SHA256 debe contener una huella SHA-256 válida.")
+    certificates = run_tool([
+        str(build_tools / "apksigner"), "verify", "--print-certs", str(artifact)])
+    if expected_certificate is not None:
+        # Count every leaf digest line before validating it, including malformed values.
+        signers = re.findall(
+            r"^Signer #\d+ certificate SHA-256 digest:([^\r\n]*)",
+            certificates, re.MULTILINE)
+        if len(signers) != 1:
+            raise ValueError("El APK debe contener exactamente un certificado firmante SHA-256.")
+        actual_certificate = signers[0].replace(":", "").strip().lower()
+        if (re.fullmatch(r"[0-9a-f]{64}", actual_certificate) is None
+                or actual_certificate != expected_certificate):
+            raise ValueError("El certificado firmante del APK no coincide con la firma Android esperada.")
     badging = run_tool([str(build_tools / "aapt2"), "dump", "badging", str(artifact)])
     package = re.search(r"^package:\s+(.+)$", badging, re.MULTILINE)
     if package is None:
