@@ -1,7 +1,7 @@
 # Tasks: Recarga directa sobre la trinchera
 
 **Input**: [spec.md](spec.md), [plan.md](plan.md), [contrato](contracts/trench-reload.md) y [quickstart.md](quickstart.md).
-**Entrega**: `012-I1`; [Issue #49](https://github.com/Juanpvivas/demons/issues/49); rama `codex/012-recarga-trinchera`.
+**Entrega**: `012-I1`; [Issue #49](https://github.com/Juanpvivas/demons/issues/49); rama `codex/012-recarga-trinchera`; [PR #50 en borrador](https://github.com/Juanpvivas/demons/pull/50).
 **Flujo**: `docs/DEVELOPMENT_WORKFLOW.md`. Spec Kit prepara; ejecución por roles. Sólo el orquestador marca `[X]` tras QA. Un RED aprobado no entrega la implementación. Resultados y límites al PR/temporales, sin nuevos archivos de evidencias en Git.
 
 ## Fase 1: Preparación e interfaz neutral
@@ -23,9 +23,9 @@
 ## Fase final: Documentación y entrega
 
 - [X] T009 docs-writer: consolidar el comportamiento aprobado en `docs/SPEC.md`, `docs/ARCHITECTURE.md` y documentos de `specs/012-recarga-trinchera/`, sin marcar tareas ni añadir registros de ejecución. Depende de T008.
-- [ ] T010 project-orchestrator con godot-tester: publicar la rama y verificar CI de la revisión exacta, suite GUT completa mediante `tools/ci/run_gut.py`, importación y exportación Web existentes. Se permite abrir el PR provisional en borrador para ejecutar CI; reutilizar evidencia válida sin repeticiones rutinarias. Depende de T009.
-- [ ] T011 qa-validator: revisar documentación y resultados exactos de T010; emitir APROBADO PARA INTEGRACIÓN sólo con fuente, GREEN/regresión, build/export y CI conformes. Publicación y pendientes físicos conservan su gate independiente. Depende de T010.
-- [ ] T012 project-orchestrator: consolidar alcance, RED/GREEN, QA y límites en PR en borrador vinculado a #49; marcar sólo tareas aprobadas y usar Closes #49 únicamente con aceptación funcional completa de 012. Sin promover, fusionar ni distribuir automáticamente; la excepción de beta 1.0.1/build 4 no se aplica. Depende de T011.
+- [X] T010 project-orchestrator con godot-tester: publicar la rama y verificar CI de la revisión exacta, suite GUT completa mediante `tools/ci/run_gut.py`, importación y exportación Web existentes. Se permite abrir el PR provisional en borrador para ejecutar CI; reutilizar evidencia válida sin repeticiones rutinarias. Depende de T009.
+- [X] T011 qa-validator: revisar documentación y resultados exactos de T010; emitir APROBADO PARA INTEGRACIÓN sólo con fuente, GREEN/regresión, build/export y CI conformes. Publicación y pendientes físicos conservan su gate independiente. Depende de T010.
+- [X] T012 project-orchestrator: consolidar alcance, RED/GREEN, QA y límites en PR en borrador vinculado a #49; marcar sólo tareas aprobadas y usar Closes #49 únicamente con aceptación funcional completa de 012. Sin promover, fusionar ni distribuir automáticamente; la excepción de beta 1.0.1/build 4 no se aplica. Depende de T011.
 
 **Dependencias**: T001→T002→T003→T004→T005→T006→T007→T008→T009→T010→T011→T012. No hay tareas `[P]` en esta cadena.
 **Estrategia**: un incremento funcional completo, con RED/GREEN, QA independiente, documentación y CI; no entregar setup o RED como feature terminada. Mantener pendientes de publicación de 004/005 y la pausa de rendimiento 006.
