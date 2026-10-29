@@ -673,7 +673,7 @@ La aceptación y CI de cada revisión exacta se registran en el PR del increment
   control añade dos copias locales de su textura con material aditivo sin
   iluminación y expansión leve, conservando originales, z efectivo −4/+1 y
   oclusión del actor. La fuerza real pinta ambas copias mediante un único
-  Tween suave por hogar, sin shader, `TIME` ni asignaciones por frame/ciclo.
+  Tween suave por hogar, sin shader, `TIME` ni creación de nodos o Tweens por frame/ciclo.
   Repetir estado no reinicia ni acumula animaciones; cargar/baja, desregistro,
   reemplazo, salida del árbol y cierre normalizan y retiran efectos locales.
   La unión mundial del arte se proyecta a la zona GUI sobre la trinchera,
