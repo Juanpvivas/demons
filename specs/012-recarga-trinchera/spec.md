@@ -1,72 +1,78 @@
 # Feature Specification: Recarga directa sobre la trinchera
 
 **Feature ID**: `012-recarga-trinchera` | **Planned Branch**: `codex/012-recarga-trinchera`
-**Created**: 2026-10-29 | **Status**: `012-I1` aprobado funcionalmente en T008 sobre `ba122ef`; seguimiento de integración/documentación/CI en [tasks.md](tasks.md) y [PR #50](https://github.com/Juanpvivas/demons/pull/50). Publicación con gate separado.
+**Created**: 2026-10-29 | **Status**: revisión visual de `012-I1` en preparación; seguimiento en [tasks.md](tasks.md) y [PR #50](https://github.com/Juanpvivas/demons/pull/50).
 **Tracking**: [Issue #49](https://github.com/Juanpvivas/demons/issues/49).
-**Input**: mover «Recargar» sobre la trinchera; confirmación «Sí, botón directo en cada trinchera».
-**Perfil confirmado**: cada trinchera muestra automáticamente su botón cuando su dueño vivo se queda sin balas, sin selección previa. Sustituye la acción del panel; conserva sus reglas, texto, estilo y tamaño mínimo actuales.
+**Input vigente**: sustituir «Recargar» por brillo rojo en la trinchera y tocarla para recargar. Confirmación: «Rojo tenue sin titilar; el pulso aparece cuando ya puedes recargar».
+
+## Decisiones e historia conservada
+
+La entrega anterior trasladó «Recargar» del panel a un botón sobre cada hogar. T001–T012 y sus aprobaciones describen esa revisión hasta `994b176`; no se reconstruye su TDD ni se cambian sus casillas. La persona probó aquella copia en el Xiaomi y confirmó que funciona, pero solicitó reemplazar su presentación. Esa observación no certifica el efecto nuevo, FPS ni publicación. T013 en adelante mantiene la acción directa y sustituye texto, decoración de botón y área flotante por la señal roja y el toque sobre la propia trinchera.
 
 ## User Scenarios & Testing
 
-### User Story 1 — Recargar directamente desde el hogar (Priority: P1)
+### User Story 1 — Reconocer y recargar desde la propia trinchera (Priority: P1)
 
-Como jugador, quiero pulsar «Recargar» sobre la trinchera del soldado sin balas para darle la orden en una sola acción, aunque esté combatiendo fuera.
+Como jugador, quiero que la trinchera de un soldado sin balas llame mi atención mediante brillo rojo y poder tocarla para recargarlo en una sola acción, incluso si está fuera, sin rótulos que alteren el estilo del juego.
 
-**Why this priority**: evita buscar la orden en el panel y vincula cada recarga con su trinchera.
-**Independent Test**: agotar la carga de dos soldados sin seleccionarlos, activar el botón de uno y comprobar que sólo su dueño se recarga/regresa con un único cobro.
+**Why this priority**: vincula la orden con el hogar y conserva el arte como parte de la interacción.
+**Independent Test**: agotar la carga de dos dueños sin seleccionarlos; con fondos, observar el pulso y tocar una trinchera. Sólo su dueño se recarga/regresa con un cobro y su trinchera vuelve inmediatamente al aspecto normal.
 
 **Acceptance Scenarios**:
 
-1. **Given** un dueño vivo con carga, **When** agota sus balas dentro o fuera de su trinchera, **Then** aparece «Recargar» sobre su hogar, sin seleccionar antes al soldado.
-2. **Given** un dueño vivo sin balas y fondos suficientes en partida activa, **When** se pulsa su botón una vez, **Then** se cobra una recarga, se repone su carga y se oculta el botón; conserva salud/moral y, si está fuera, regresa físicamente con las reglas actuales.
-3. **Given** dos dueños sin balas, **When** se activa el botón de uno sin selección o con otro seleccionado, **Then** sólo se ordena la recarga del dueño de esa trinchera; la selección informativa no determina el destinatario.
-4. **Given** un dueño sin balas pero sin fondos, **When** se observa o pulsa el botón, **Then** permanece visible y deshabilitado, sin gasto; vuelve a habilitarse al disponer de fondos si sigue siendo elegible.
-5. **Given** pausa, fin de partida, aceptación de una orden o regreso activo, **When** llega una nueva pulsación, **Then** no acepta otra recarga ni otro cobro; al morir el dueño o cerrar el intento no queda una acción utilizable suya.
-6. **Given** una intención capturada para un dueño que muere o es reemplazado, **When** se procesa, **Then** no cobra ni recarga a su sucesor, aunque comparta la trinchera.
-7. **Given** varios botones, un cambio de tamaño y una nueva partida, **When** se interactúa con ratón o toque, **Then** cada botón sigue sobre su hogar, conserva legibilidad y una acción por gesto; no produce recogida/despliegue debajo ni deja controles del intento anterior.
+1. **Given** un dueño vivo con carga, **When** agota sus balas y puede recargar, **Then** su propia trinchera pulsa con brillo rojo sin selección previa, texto, cartel ni botón visible, aunque el soldado esté fuera.
+2. **Given** un dueño vivo vacío y fondos suficientes en partida activa, **When** se toca su trinchera una vez, **Then** se cobra una recarga, se repone su carga y cesa la señal roja sin espera añadida; conserva salud/moral y regreso físico actuales.
+3. **Given** dos dueños vacíos, **When** se toca la trinchera de uno sin selección o con otro seleccionado, **Then** sólo se ordena la recarga del dueño de esa trinchera.
+4. **Given** un dueño vivo vacío sin fondos, **When** se observa o toca su trinchera, **Then** aparece rojo tenue estático, sin pulso ni gasto; al disponer de fondos pulsa sólo si es elegible.
+5. **Given** pausa, terminal, aceptación de orden o regreso activo, **When** llega otra pulsación, **Then** no acepta otra orden/cobro y no mantiene un pulso de disponibilidad. Muerte, retirada o cierre normalizan la trinchera y retiran su acción.
+6. **Given** una intención capturada para un dueño que muere o es reemplazado, **When** se procesa, **Then** no cobra ni recarga a su sucesor; su presentación refleja únicamente el estado nuevo.
+7. **Given** varias trincheras señaladas, resize y una nueva partida, **When** se interactúa con ratón/toque, **Then** cada zona activa sigue sobre su trinchera sin seguir al actor, invadir vecinos, activar tablero debajo o conservar controles/animaciones antiguos.
 
 ### Edge Cases
 
-- Pulsaciones repetidas, toque con ratón emulado y callbacks síncronos durante el gasto: un cobro como máximo por orden aceptada.
-- Baja/reemplazo entre pulsación y ejecución; órdenes de otro intento o de una celda sin dueño válido: sin efectos.
-- Cinco dueños sin munición a la vez; al recargar uno no se ocultan ni redirigen los demás botones, aunque el saldo restante deshabilite alguno.
-- Pausa y reanudación, derrota/victoria, regreso al menú y Retry: estado coherente sin acciones obsoletas.
-- Pickup sobre el área de un botón: el gesto pertenece a la UI; fuera de botones se conserva la precedencia de recogida sobre selección/despliegue.
+- Pulsaciones repetidas, toque con ratón emulado y callbacks síncronos del gasto: un cobro como máximo por orden aceptada.
+- Baja/reemplazo entre press y release; otro intento o celda sin dueño válido: sin efectos económicos ni visuales sobre el sucesor.
+- Cinco dueños vacíos: recargar uno normaliza sólo su trinchera; el saldo compartido puede pasar las demás de pulso a tenue.
+- Pausa sin retirar escena: detener explícitamente el pulso por estado de partida; reanudar sólo si sigue elegible. Victoria/derrota, menú/Retry no dejan efectos antiguos.
+- La zona de una trinchera vacía, incluso deshabilitada, consume el gesto. Fuera se conserva pickup→selección/despliegue. Un hogar cargado no mantiene zona de recarga activa.
 
 ## Requirements
 
 ### Functional Requirements
 
-- **FR-001**: Cada trinchera DEBE mostrar automáticamente un único botón «Recargar» cuando su dueño esté vivo y tenga carga cero, sin requerir selección; con carga positiva o sin dueño vivo NO DEBE mostrar esa acción.
-- **FR-002**: El botón DEBE anclarse sobre la trinchera de origen, incluso mientras el soldado está fuera; DEBE conservar el texto, estilo y tamaño mínimo actuales de 112×48, adaptarse al área visible y evitar tapar barras de vida, HUD u otros botones.
-- **FR-003**: Una pulsación válida DEBE ordenar la recarga del dueño actual de esa trinchera, independientemente de la selección informativa y sin exigir un segundo gesto.
-- **FR-004**: La recarga DEBE conservar elegibilidad, coste, cobro único, reposición de carga, salud/moral y regreso físico actuales; sin fondos, el botón permanece visible y deshabilitado. Pausa, estado terminal, orden en aceptación o regreso activo NO DEBEN permitir otra orden.
-- **FR-005**: Aceptar la recarga DEBE retirar el botón al reponerse la carga, sin demora visual añadida. La muerte, retirada o cierre del intento DEBEN invalidar su acción; ninguna intención antigua DEBE actuar sobre otro dueño o intento.
-- **FR-006**: El panel de selección DEBE conservar fila, carga/capacidad, moral y aviso de regreso como información; DEBE eliminar su antiguo botón de recarga, sin duplicar la acción visible.
-- **FR-007**: Ratón y toque DEBEN producir la misma orden una sola vez; el área de los botones, incluidos los deshabilitados, DEBE consumir el gesto sin recoger, seleccionar o desplegar debajo. Fuera de ellos se conserva el enrutamiento actual de entrada.
-- **FR-008**: La UI DEBE reflejar altas, bajas, cambios de carga/fondos/partida y redimensionamiento; menú/Retry NO DEBEN conservar botones o intenciones de la partida anterior. No cambian combate, economía, oleadas, victoria/derrota ni destinos del producto.
+- **FR-001**: Cada hogar DEBE señalar automáticamente a su dueño vivo con carga cero, sin selección, incluso fuera. Carga positiva, ausencia/muerte o cierre DEBEN dejar aspecto normal y ninguna acción de recarga activa.
+- **FR-002**: La señal DEBE ser brillo rojo sobre el arte de la propia trinchera, sin texto/cartel/decoración de botón. DEBE preservar textura, tamaño, posición y orden visual; no teñir actor, barra de vida, HUD o vecinos. Su zona táctil DEBE corresponder a esa trinchera tras resize y no seguir al actor.
+- **FR-003**: Un clic/toque válido sobre la propia trinchera DEBE recargar a su dueño actual en un gesto, independiente de selección y sin área flotante que deba pulsarse encima del hogar.
+- **FR-004**: Sin fondos, la trinchera vacía DEBE mostrarse roja tenue y estática, sin aceptar gasto. El pulso rojo DEBE existir sólo mientras el dueño pueda recargar en partida activa; pausa, terminal, aceptación o regreso DEBEN impedir otra orden y detener el pulso. Se conservan coste, cobro único, carga, salud/moral y regreso actuales.
+- **FR-005**: Al reponer la carga, el rojo DEBE desaparecer sin demora añadida. Muerte, retirada, reemplazo/cierre DEBEN invalidar la acción previa y restaurar la presentación; ninguna intención o animación antigua DEBE afectar al sucesor ni a otro hogar.
+- **FR-006**: El panel DEBE conservar fila, carga/capacidad, moral y regreso como información, sin botón ni segunda acción visible de recarga.
+- **FR-007**: Ratón y toque DEBEN realizar la misma orden una sola vez. La zona, incluso deshabilitada, DEBE consumir el gesto sin recoger, seleccionar o desplegar debajo; fuera se conserva el enrutamiento actual. Los hogares cargados conservan entrada/selección normales.
+- **FR-008**: Acción y efecto DEBEN reflejar altas/bajas, carga/fondos/partida y resize; menú/Retry NO DEBEN conservar controles, conexiones o animaciones útiles del intento previo. No cambian combate, economía, oleadas, terminales, cámara ni destinos.
+- **FR-009**: Los cinco hogares DEBEN tener estado visual independiente. Repetir un estado no duplica pulsos; detener uno no modifica otros salvo por fondos/partida compartidos. El pulso no oculta la trinchera completa ni produce saltos de posición/tamaño.
 
 ### Key Entities
 
-- **Trinchera de origen**: hogar estable cuyo ocupante vivo determina a quién pertenece la orden.
-- **Acción de recarga**: botón individual que refleja la elegibilidad actual y expresa una intención para ese dueño concreto.
-- **Selección informativa**: lectura de fila, carga y moral, independiente del destinatario de una recarga directa.
+- **Trinchera de origen**: hogar estable cuyo dueño vivo determina el destinatario.
+- **Señal de recarga**: normal, rojo tenue estático o rojo pulsante según carga/elegibilidad actuales.
+- **Zona de recarga**: área sin decoración sobre la trinchera que acepta el gesto para ese dueño concreto.
+- **Selección informativa**: fila, carga y moral independientes del destinatario de la recarga.
 
 ## Success Criteria
 
 ### Measurable Outcomes
 
-- **SC-001**: En las cinco trincheras, al llegar la carga a cero aparece una sola acción sobre el hogar correcto; no aparece para dueños cargados, muertos o ausentes.
-- **SC-002**: Una pulsación válida realiza exactamente un cobro y una recarga del dueño indicado sin selección previa; los casos no elegibles y las intenciones obsoletas realizan cero cobros/recargas adicionales.
-- **SC-003**: En cada entorno probado, los botones permanecen legibles y utilizables tras redimensionar, sin superponerse a los elementos indicados, y el gesto sobre ellos no desencadena ninguna acción del tablero.
-- **SC-004**: El panel conserva su información con cero botones antiguos; tras menú/Retry no hay acciones del intento anterior y se conservan resultados de combate, salud/moral, economía y regreso.
+- **SC-001**: Los cinco hogares vacíos muestran la señal correcta; cero textos/carteles «Recargar». Dueños cargados, muertos/ausentes y cierre dejan cero efectos rojos o acciones antiguas.
+- **SC-002**: Un gesto válido sobre la trinchera realiza exactamente un cobro/recarga del dueño indicado sin selección; estados no elegibles e intenciones obsoletas realizan cero efectos económicos adicionales.
+- **SC-003**: En cada entorno observado, la zona coincide con la trinchera tras resize, es utilizable y no invade vecinos; el rojo preserva lectura de actores/barras/HUD y el gesto no activa el tablero debajo.
+- **SC-004**: El panel conserva su información y cero botones antiguos; menú/Retry deja cero controles, conexiones o animaciones útiles del intento anterior; combate, salud/moral, economía y regreso se conservan.
+- **SC-005**: Sin fondos o en pausa/terminal hay cero pulsos de disponibilidad. Añadir fondos/reanudar inicia un único pulso sólo donde sea elegible; modificar un hogar no altera los restantes salvo por fondos/partida compartidos.
 
 ## Dependencies & Scope
 
-- Reutiliza la recarga y la selección integradas por 005-I3 y la presentación actual de Monte Calvo; no introduce API remota, persistencia, permisos ni nuevos datos de balance.
-- Un único incremento funcional `012-I1`, con preparación Spec Kit y ejecución por roles/TDD/QA. La preparación no acredita implementación ni pruebas ejecutadas.
-- Web en navegador de computador y Android/iOS como apps instaladas; no pruebas Web móviles, campaña FPS de 006, cambio de versión ni distribución. La excepción de beta 1.0.1 no se extiende a 012.
+- Reutiliza recarga/selección de 005-I3 y autoridad por hogar/identidad de 012; no API remota, persistencia, permisos o balance nuevos.
+- Revisión visual del mismo `012-I1`, Issue #49 y PR #50 en borrador. TDD para estado/entrada y revisión visual para el acabado; no hereda aprobación del botón anterior.
+- Web en computador y Android/iOS como apps instaladas; sin Web móvil, campaña FPS de 006, nueva versión ni distribución. La excepción de beta 1.0.1 no se extiende a 012.
 
 ## Alcance de la aprobación funcional
 
-T008 aprueba el comportamiento de T005–T007 en su alcance observado; el seguimiento del gate final de integración está en [tasks.md](tasks.md) y [PR #50](https://github.com/Juanpvivas/demons/pull/50). Chrome aporta revisión visual con canvas/DOM 960 y DPR 1; la comprobación lógica de resize mediante GUT es evidencia separada. No se acredita interacción de recarga nativa: Android bloqueó la inyección de entrada e iOS Simulator no fue controlable; el bootstrap previo iOS Compatibility sólo mostró menú, sin certificar paquete/renderer final. El cruce preexistente entre aviso de oleada y primera barra de vida conserva su límite. No se certifican FPS ni publicación.
+T008 aprobó el botón anterior sobre `ba122ef`; el seguimiento posterior llegó a `994b176`. Chrome aportó revisión con canvas/DOM 960 y DPR 1; resize lógico GUT es evidencia separada. El smoke iOS previo usó bootstrap Compatibility y sólo mostró menú, sin acreditar gesto, paquete o renderer final. La prueba humana posterior del Xiaomi confirma aquella copia, sin certificar el efecto ahora solicitado. El cruce preexistente entre aviso de oleada y primera barra de vida conserva su límite. La revisión vigente debe declarar sus propios entornos/variantes; no se certifican FPS ni publicación desde estas observaciones.
