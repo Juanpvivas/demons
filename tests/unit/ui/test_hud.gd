@@ -481,7 +481,8 @@ func test_game_over_screen_shows_derrota_on_game_lost() -> void:
 
 ## 005/T035: panel observador, intención con identidad y controles visibles.
 func _reload_button() -> Button:
-	for node: Node in _hud.find_children("*", "Button", true, false):
+	# 012: sólo busca la acción antigua dentro del panel informativo.
+	for node: Node in _hud.get_node("SelectionPanel").find_children("*", "Button", true, false):
 		if "Recargar" in (node as Button).text:
 			return node as Button
 	return null
@@ -503,15 +504,10 @@ func test_i4_selected_hud_stays_contained_after_each_supported_resize() -> void:
 		await wait_process_frames(3)
 		var bounds := Rect2(Vector2.ZERO, Vector2(size))
 		var button := _reload_button()
-		assert_not_null(button)
-		if button == null:
-			continue
-		assert_true(bounds.encloses(button.get_global_rect()), "Recargar visible tras resize " + str(size))
-		assert_gte(button.size.y, 48.0, "Área de gesto conserva tamaño útil")
+		assert_null(button, "012: el panel informativo no conserva la acción sustituida")
 		for label: Label in [_hud._selection_label, _hud._individual_ammo_label, _hud._morale_label]:
 			assert_true(bounds.encloses(label.get_global_rect()), "Lectura individual dentro de vista")
-			assert_false(button.get_global_rect().intersects(label.get_global_rect()), "Botón no tapa datos individuales")
-		assert_false(button.get_global_rect().intersects(_hud._ammo_label.get_global_rect()), "Reserva y control independientes")
+			assert_false(label.get_global_rect().intersects(_hud._ammo_label.get_global_rect()), "Datos individuales y reserva independientes")
 
 
 func _individual_labels() -> String:
@@ -534,7 +530,7 @@ func _assert_panel_value(text: String, pattern: String, message: String) -> void
 	assert_not_null(regex.search(text), message + ": " + text)
 
 
-func test_i3_selected_panel_observes_individual_ammo_morale_and_reload_eligibility() -> void:
+func test_selected_panel_keeps_individual_ammo_morale_and_return_information_without_old_action() -> void:
 	var saved_state: int = GameStateManager._current_state
 	var saved_ammo: int = EconomyManager.collected_ammo
 	GameStateManager._current_state = GameStateManager.GameState.PLAYING
@@ -552,43 +548,31 @@ func test_i3_selected_panel_observes_individual_ammo_morale_and_reload_eligibili
 	_assert_panel_value(panel, "(?i)(munici.n|carga)[^0-9]*0[ ]*/[ ]*10(?:[^0-9]|$)", "Carga/capacidad individual 0/10")
 	_assert_panel_value(panel, "(?i)moral[^0-9]*7(?:[^0-9]|$)", "Moral individual 7")
 	var button := _reload_button()
-	assert_not_null(button, "Existe botón visible Recargar, sin depender de un nombre de nodo")
-	if button != null:
-		assert_true(button.is_visible_in_tree())
-		assert_true(button.disabled, "Sin fondos se deshabilita")
-		EconomyManager.add_ammo(soldier.stats.deploy_ammo_cost)
-		assert_false(button.disabled, "La señal económica actualiza elegibilidad sin nueva selección")
-
-		watch_signals(_hud)
-		_hud.request_selected_reload()
-		assert_signal_emitted_with_parameters(_hud, "reload_requested", [soldier.get_instance_id()])
-		assert_eq(EconomyManager.collected_ammo, soldier.stats.deploy_ammo_cost, "HUD solo emite intención, no cobra")
-		assert_eq(soldier.get_reload_state().ammo, 0)
-		assert_true(soldier.request_reload())
-		assert_true(button.disabled, "Aceptación deshabilita botón inmediatamente")
+	assert_null(button, "012: la acción se verifica en controles del hogar, no en el panel")
+	EconomyManager.add_ammo(soldier.stats.deploy_ammo_cost)
+	soldier.position.x += 120.0
+	assert_true(soldier.request_reload(), "CONTROL: recarga del actor vigente")
+	panel = _individual_labels()
+	_assert_panel_value(panel, "(?i)(munici.n|carga)[^0-9]*10[ ]*/[ ]*10(?:[^0-9]|$)", "El panel sigue observando carga repuesta")
+	_assert_panel_value(panel, "(?i)moral[^0-9]*7(?:[^0-9]|$)", "Moral conservada tras recarga")
+	assert_true("Regresando" in panel, "El aviso informativo de regreso se conserva")
 	GameStateManager._current_state = saved_state
 	EconomyManager.collected_ammo = saved_ammo
 
 
-func test_i3_empty_selection_and_dead_owner_do_not_emit_reload_intent() -> void:
+func test_empty_selection_and_dead_owner_hide_the_information_panel() -> void:
 	_spawn_hud()
-	watch_signals(_hud)
-	_hud.request_selected_reload()
-	assert_signal_not_emitted(_hud, "reload_requested")
+	assert_false(_hud._selection_panel.visible)
 	var soldier := preload("res://scenes/units/Soldado.tscn").instantiate() as Soldado
 	add_child_autofree(soldier)
 	_hud.set_selected_soldier(soldier)
 	soldier.take_damage(9999)
-	_hud.request_selected_reload()
 	assert_null(_hud.get_selected_soldier())
-	assert_signal_not_emitted(_hud, "reload_requested")
-	var button := _reload_button()
-	assert_not_null(button)
-	if button != null:
-		assert_true(button.disabled)
+	assert_false(_hud._selection_panel.visible)
+	assert_null(_reload_button(), "012 no deja una segunda acción en el panel")
 
 
-func test_i3_ineligible_selected_owner_disables_control_and_rejects_direct_intent(
+func test_ineligible_selected_owner_still_has_information_without_panel_action(
 		scenario = use_parameters(["partial", "full", "returning", "terminal"])) -> void:
 	var saved_state: int = GameStateManager._current_state
 	var saved_ammo: int = EconomyManager.collected_ammo
@@ -605,11 +589,9 @@ func test_i3_ineligible_selected_owner_disables_control_and_rejects_direct_inten
 	_hud.set_selected_soldier(soldier)
 	watch_signals(_hud)
 	var button := _reload_button()
-	assert_not_null(button)
-	if button != null:
-		assert_true(button.disabled)
-	_hud.request_selected_reload()
-	assert_signal_not_emitted(_hud, "reload_requested", "La invocación directa también revalida")
+	assert_null(button, "012 mantiene el panel sólo informativo")
+	assert_true(_hud._selection_panel.visible)
+	_assert_panel_value(_individual_labels(), "(?i)(munici.n|carga)[^0-9]*[0-9]+[ ]*/[ ]*10", "Carga individual sigue legible")
 	assert_eq(EconomyManager.collected_ammo, 100)
 	GameStateManager._current_state = saved_state
 	EconomyManager.collected_ammo = saved_ammo

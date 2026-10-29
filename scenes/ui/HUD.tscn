@@ -71,11 +71,13 @@ text = "Carga: 0/10"
 layout_mode = 2
 text = "Moral: 0"
 
-[node name="ReloadButton" type="Button" parent="SelectionPanel/Contents"]
-layout_mode = 2
-custom_minimum_size = Vector2(112, 48)
-disabled = true
-text = "Recargar"
+[node name="TrenchReloadControls" type="Control" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="RejectionMessageTimer" type="Timer" parent="."]
 wait_time = 2.5

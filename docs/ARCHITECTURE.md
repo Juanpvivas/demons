@@ -654,14 +654,37 @@ La aceptación y CI de cada revisión exacta se registran en el PR del increment
   para golpear; sin frontal espera en su posición, sin perseguir detrás o en
   otra fila. La colisión real conserva separación y cada actor puede morir.
   Terminal y muerte cancelan blancos e intención de movimiento.
-- **Selección y recarga de I3:** el nivel resuelve `home_cell` contra el dueño
-  vivo actual de `BoardManager`, aunque esté lejos. Conserva referencia y
-  hogar seleccionados; antes de ordenar revalida ocupante e identidad recibida
-  de `HUD.reload_requested(instance_id)`. La baja limpia la selección, de modo
-  que una intención antigua no actúa sobre un reemplazo. `HUD.tscn` está
-  instanciado en el nivel y muestra fila, carga/capacidad, moral y retorno;
-  observa `reload_state_changed`, economía y estado de partida. Sus controles
-  consumen entrada; la decoración la deja pasar y la pickup conserva prioridad.
+- **Selección y recarga de 005-I3/012-I1:** el nivel conserva referencia y
+  hogar seleccionados para información; el panel muestra fila, carga/capacidad,
+  moral y retorno, sin botón de recarga. La orden directa llega como
+  `HUD.trench_reload_requested(home_cell, instance_id)` y
+  `request_trench_reload()` revalida celda configurada, ocupante vivo de
+  `BoardManager`, hogar e identidad antes de delegar a `Soldado.request_reload()`.
+  No depende de la selección. La baja limpia selección/vínculo; retirar el
+  control anterior impide que un gesto antiguo recargue al reemplazo.
+- **Presentación de recarga por hogar (012):** `HUD.tscn`, como CanvasLayer,
+  aloja hasta cinco `TrenchReloadControl` sin texto ni decoración de botón,
+  vinculados a dueño/ID. Observa `reload_state_changed`, economía y partida,
+  sin polling: `NORMAL` oculta la zona y retira rojo; `DIM` deja rojo tenue
+  estático/deshabilitado con dueño vacío no elegible; `PULSING` sólo permite
+  recargar mientras `can_reload()` y PLAYING. La pausa detiene el pulso por
+  señal aunque no se pause SceneTree. El panel queda informativo.
+  El nivel proporciona las piezas `PosteriorN`/`ParapetoN` del hogar; el
+  control añade dos copias locales de su textura con material aditivo sin
+  iluminación y expansión leve, conservando originales, z efectivo −4/+1 y
+  oclusión del actor. La fuerza real pinta ambas copias mediante un único
+  Tween suave por hogar, sin shader, `TIME` ni creación de nodos o Tweens por frame/ciclo.
+  Repetir estado no reinicia ni acumula animaciones; cargar/baja, desregistro,
+  reemplazo, salida del árbol y cierre normalizan y retiran efectos locales.
+  La unión mundial del arte se proyecta a la zona GUI sobre la trinchera,
+  con mínimo táctil 112×48 y área segura, sin mover arte o cámara.
+  `Camera2D.framing_changed`, tras `force_update_scroll()`, actualiza resize;
+  el control no sigue al soldado y el pulso no mueve su zona. Las seis
+  variantes de estilo, incluido `hover_pressed`, quedan vacías.
+  `MOUSE_FILTER_STOP` consume ratón/toque incluso deshabilitado; fuera de
+  la zona se conserva pickup→selección/despliegue. El [contrato de 012](../specs/012-recarga-trinchera/contracts/trench-reload.md)
+  detalla geometría, ciclo e identidad; el [alcance observado](../specs/012-recarga-trinchera/spec.md#alcance-de-la-aprobación-funcional)
+  no acredita entrada nativa o renderer/paquete final de publicación.
 - **Autoridad del actor:** `can_reload()`/`request_reload()` exigen vivo,
   PLAYING, carga cero, fondos y ausencia de aceptación/retorno activo. El guard
   se instala antes de emitir señales o gastar, pues sus callbacks son síncronos.
@@ -1009,3 +1032,5 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-24 | 011/T009 tras QA funcional T008: §4.7 incorpora WorldHealthBar compartida fuera del sprite, salud autoritaria del actor, estilos inmutables y limpieza anterior a callbacks de baja; precisa prewarm anterior a ready y activación posterior, sin nueva arquitectura ni publicación. |
 | 2026-10-29 | §7 referencia la excepción constitucional 4.1.0 para la beta 1.0.1/build 4; conserva QA, revisión exacta y verificación del paquete antes del upload, sin acreditar pendientes físicos. |
 | 2026-10-29 | Constitución 4.1.1 aclara la revisión exacta de la corrección de filtros nativos de la misma beta: nueva QA/CI y verificaciones previas al upload, sin ampliar los pendientes diferidos. |
+| 2026-10-29 | 012/T009 tras QA funcional T008: §5 incorpora intención de recarga por hogar/ID, panel informativo, controles por señales y notificación de encuadre aplicado; fuente económica del actor y gates de publicación conservados. |
+| 2026-10-29 | 012/T019 tras QA funcional T018: §5 describe TrenchReloadControl transparente sobre el arte, brillo aditivo local por hogar y Tween idempotente/limpiado; autoridad y gates conservados, sin patrón global nuevo. |

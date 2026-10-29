@@ -46,6 +46,19 @@ var _closing: bool = false
 @onready var _hud = $HUD
 
 
+func request_trench_reload(home_cell: Vector2i, expected_instance_id: int) -> bool:
+	if _closing or GameStateManager._current_state != GameStateManager.GameState.PLAYING \
+			or not board_config.home_cells.has(home_cell):
+		return false
+	var soldier := _board_manager.get_occupant(home_cell) as Soldado
+	if not is_instance_valid(soldier) or soldier.get_instance_id() != expected_instance_id:
+		return false
+	var state := soldier.get_reload_state()
+	if not state.alive or state.home_cell != home_cell:
+		return false
+	return soldier.request_reload()
+
+
 func select_trench(cell: Vector2i) -> bool:
 	if _closing or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
 		return false
@@ -83,7 +96,8 @@ func _ready() -> void:
 	_legacy_trenches.visible = false
 	_board_visual.board_config = board_config
 	EconomyManager.reset_ammo_pool()
-	_hud.reload_requested.connect(request_selected_reload)
+	_hud.trench_reload_requested.connect(request_trench_reload)
+	$Camera2D.framing_changed.connect(_hud.update_trench_reload_layout)
 	_hud.retry_requested.connect(_on_retry_requested)
 	_hud.menu_requested.connect(_on_menu_requested)
 	add_child(_combat_visual_effects)
@@ -124,6 +138,8 @@ func close_match() -> void:
 	set_process_unhandled_input(false)
 	_wave_spawner.close_match()
 	_hud.close_match()
+	if $Camera2D.framing_changed.is_connected(_hud.update_trench_reload_layout):
+		$Camera2D.framing_changed.disconnect(_hud.update_trench_reload_layout)
 	_selected_soldier = null
 	_selected_home = Vector2i(-1, -1)
 	_deploying_cells.clear()
@@ -199,6 +215,12 @@ func _create_soldier(cell: Vector2i) -> void:
 	_board_manager.occupy_cell(cell, soldier)
 	add_child(soldier)
 	_combat_visual_effects.register_actor(soldier)
+	var lane := board_config.home_cells.find(cell) + 1
+	var pieces: Array[Sprite2D] = [
+		get_node("MonteCalvoVisual/TrincherasLaterales/Posterior%d" % lane) as Sprite2D,
+		get_node("MonteCalvoVisual/TrincherasLaterales/Parapeto%d" % lane) as Sprite2D,
+	]
+	_hud.register_trench_reload(cell, soldier, _tablero.to_global(_tablero.map_to_local(cell)), pieces)
 
 
 func _on_posicion_defendida_body_entered(body: Node2D) -> void:
@@ -215,6 +237,7 @@ func _on_soldado_defeated(grid_cell: Vector2i) -> void:
 	if _closing:
 		return
 	_board_manager.free_cell(grid_cell)
+	_hud.unregister_trench_reload(grid_cell)
 	if grid_cell == _selected_home:
 		_selected_soldier = null
 		_selected_home = Vector2i(-1, -1)

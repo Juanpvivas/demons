@@ -142,11 +142,29 @@ reemplazado no recarga a su sucesor.
 
 Fuera del hogar, regresa físicamente por su fila a 40 unidades/s, vulnerable
 y sin disparar ni golpear hasta llegar; dentro, recupera el fusil sin viaje.
-El panel indica «Regresando» y deshabilita el botón durante la orden/retorno,
-con carga parcial/llena, sin fondos o fuera de PLAYING. Morir libera su origen
+El panel indica «Regresando». Morir libera su origen
 y cancela la selección sin reembolso; el fin de partida detiene movimiento,
 combate y nuevas órdenes. La recogida conserva precedencia sobre selección y
 despliegue; los controles consumen su gesto sin activar el tablero.
+
+**Recarga directa por trinchera (012-I1, revisión funcional aprobada en T018):**
+La propia trinchera de cada dueño vivo sin balas señala la recarga, incluso
+si está fuera y sin selección previa: rojo tenue estático sin fondos y un
+pulso rojo suave sólo cuando puede recargar en PLAYING. No muestra texto,
+cartel ni botón visible. Un toque sobre la trinchera ordena la recarga de
+ese dueño, conservando coste, salud/moral y regreso, sin doble cobro ni
+actuar sobre reemplazos por intenciones antiguas. Reponer la carga, morir,
+retirar o cerrar restaura el aspecto normal; pausa y terminal detienen el
+pulso y no aceptan órdenes. El brillo conserva el arte y su oclusión, sin
+teñir actores, barras de vida, HUD ni hogares vecinos.
+
+El panel sigue informativo con fila, carga/capacidad, moral y regreso, sin
+su botón anterior. La zona táctil acompaña el arte fijo del hogar tras
+resize, nunca al soldado; consume el gesto incluso deshabilitada. Fuera de
+ella conserva prioridad la recogida y los hogares cargados mantienen su
+selección normal. El [alcance de 012](../specs/012-recarga-trinchera/spec.md#alcance-de-la-aprobación-funcional)
+detalla los límites de entrada nativa, renderer/paquete final y
+rendimiento aún sin certificar; la publicación conserva su gate separado.
 
 La [referencia aprobada](../specs/005-cinco-carriles/references/visual-reference.md)
 orienta la composición lateral y no fija costos, estadísticas ni HUD final.
@@ -534,3 +552,5 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 | 2026-10-23 | 010/T009 tras QA funcional T008: destello y trazadora pictóricos independientes, última bala distinguida de su pose y ciclo de pausa/terminal/cierre conservando las mecánicas; alcance aprobado en rama con límites visuales por destino, publicación pendiente y 006 pausado. |
 | 2026-10-24 | 010/T019 tras QA funcional T018: tamaño doble y recorrido cosmético de 0,40 s; alcance frontal 396 desde stats como único cambio de balance, con límites visuales por destino y cierre de integración/publicación separados. |
 | 2026-10-24 | 011/T009 tras QA funcional T008: §6.3/§6.4 incorporan barras de vida siempre visibles y sin números para ambos bandos, proporción inmediata y tonos mates por umbral; sin cambios de balance, con cierre de integración y publicación pendientes. |
+| 2026-10-29 | 012/T009 tras QA funcional T008: §6.3 presenta recarga directa sobre cada hogar sin selección previa, panel informativo y reglas conservadas; límites de input nativo, integración final y publicación explícitos. |
+| 2026-10-29 | 012/T019 tras QA funcional T018: §6.3 sustituye el rótulo por rojo tenue/pulsante y toque sobre el arte de la trinchera, conservando autoridad, panel y reglas; alcance de verificación y publicación separados. |

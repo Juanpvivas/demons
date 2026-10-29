@@ -1,5 +1,5 @@
 extends GutTest
-## 005/T035: origen/identidad e input por dispatch del Viewport; sin handlers directos.
+## 005/T035 y 012/T017: selección/pickup fuera de UI; dispatch real y frontera de trinchera.
 const LevelScene := preload("res://scenes/levels/Nivel_MonteCalvo.tscn")
 const PickupScene := preload("res://scenes/levels/AmmoPickup.tscn")
 const HOME := Vector2i(1, 1)
@@ -43,6 +43,7 @@ func _empty_owner() -> void:
 	_owner.set("_current_ammo", 0)
 	_owner.set("_mode", Soldado.SoldierMode.MELEE)
 	_owner.position.x += 120.0
+	_owner.reload_state_changed.emit() # 012: notifica el estado que este fixture altera.
 
 
 func _gesture(world: Vector2, kind: int) -> void:
@@ -91,8 +92,11 @@ func test_occupied_origin_selects_same_owner_outside_without_cost(
 		kind = use_parameters([0, 1, 2])) -> void:
 	_empty_owner()
 	await wait_physics_frames(3)
-	await _gesture(Vector2(144, 144), kind)
-	assert_same(_level.get_selected_soldier(), _owner, "Plaza reservada selecciona su dueño lejano")
+	var where := Vector2(144, 104) # Misma celda HOME, fuera del nuevo hotspot de recarga.
+	var zone: Button = _level.get_node("HUD").get_trench_reload_button(HOME)
+	assert_false(zone.get_global_rect().has_point(_viewport.canvas_transform * where))
+	await _gesture(where, kind)
+	assert_same(_level.get_selected_soldier(), _owner, "Fuera de UI la plaza reservada selecciona su dueño lejano")
 	assert_eq(EconomyManager.collected_ammo, 100, "Seleccionar no es despliegue ni recarga")
 	assert_same(_board.get_occupant(HOME), _owner)
 
@@ -144,6 +148,11 @@ func test_pickup_precedes_selection_or_deploy_on_free_occupied_and_actor(
 		await wait_physics_frames(2)
 	elif location == "actor":
 		where = _owner.position
+	else:
+		where = Vector2(144, 104) # 012: pickup conserva prioridad fuera de la zona GUI activa.
+	if location != "free":
+		var zone: Button = _level.get_node("HUD").get_trench_reload_button(HOME)
+		assert_false(zone.get_global_rect().has_point(_viewport.canvas_transform * where))
 	var first := _pickup(where)
 	var second: AmmoPickup = _pickup(where) if location == "overlap" else null
 	await wait_physics_frames(3)
@@ -175,23 +184,21 @@ func test_gui_reload_gesture_is_consumed_and_emits_one_order_without_board_actio
 	_level.select_trench(HOME)
 	var hud: Node
 	for node: Node in _level.get_children():
-		if node is CanvasLayer and node.has_signal("reload_requested"):
+		if node is CanvasLayer and node.has_signal("trench_reload_requested"):
 			hud = node
 	assert_not_null(hud, "HUD observador integrado")
 	if hud == null:
 		return
-	var button: Button
-	for node: Node in hud.find_children("*", "Button", true, false):
-		if "Recargar" in (node as Button).text:
-			button = node as Button
-	assert_not_null(button, "Control Recargar integrado para consumir el gesto")
+	# 012 sustituye la acción del panel por la del hogar, sin retirar selección.
+	var button: Button = hud.get_trench_reload_button(HOME)
+	assert_not_null(button, "Control Recargar del hogar integrado para consumir el gesto")
 	if button == null:
 		return
 	await wait_physics_frames(3)
 	watch_signals(hud)
 	var center := button.get_global_rect().get_center()
 	await _gesture(_viewport.canvas_transform.affine_inverse() * center, kind)
-	assert_signal_emit_count(hud, "reload_requested", 1, "Toque más mouse emulado no duplica intención")
+	assert_signal_emit_count(hud, "trench_reload_requested", 1, "Toque más mouse emulado no duplica intención")
 	assert_eq(EconomyManager.collected_ammo, 100 - _owner.stats.deploy_ammo_cost)
 	assert_eq(_owner.get_reload_state().ammo, _owner.stats.max_ammo)
 	assert_same(_level.get_selected_soldier(), _owner, "GUI no transmite acción al tablero")
