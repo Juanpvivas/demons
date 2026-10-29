@@ -118,7 +118,7 @@ persona `Squash and merge` para dejar un commit por PR en `main`, conservando
 la trazabilidad RED/GREEN en el cuerpo del PR; no reescribas historial compartido o
 aprobado sin autorización.
 
-Según la constitución 4.0.0, **integración y publicación tienen gates distintos**.
+Según la constitución 4.1.0, **integración y publicación tienen gates distintos**.
 `main` recibe incrementos funcionales con TDD/GREEN, compilación, CI,
 documentación y `APROBADO PARA INTEGRACIÓN` independiente. Hardware físico,
 renderer o paquete final sin certificar permanecen pendientes de publicación;
@@ -132,6 +132,11 @@ artefacto/renderer/versionado de destino y autorización explícita de la person
 Un merge no publica: los workflows de distribución requieren gate explícito.
 Solo el orquestador marca el alcance aprobado; una tarea que también contenga
 publicación mantiene pendiente esa parte y no se marca completa por integración.
+
+La única excepción autorizada para la beta 1.0.1 (build 4) está delimitada en
+la [constitución V](.specify/memory/constitution.md#excepción-autorizada-beta-101-build-4).
+No convierte las pruebas físicas diferidas en aprobadas ni dispensa QA o la
+verificación de firma/empaquetado/versionado previa al upload.
 
 Las consultas y correcciones documentales puntuales conservan su alcance;
 no disparan automáticamente la implementación de una feature.
@@ -200,3 +205,4 @@ no afirmes haberla aplicado ni sustituyas su consulta por conocimiento genérico
 | 2026-10-16 | Futuros PR sin archivos nuevos de evidencias en Git; resultados y QA en el PR, manteniendo pruebas y documentación útil |
 | 2026-10-19 | Por decisión de la persona y constitución 3.0.0, Web solo en computador; Android/iOS solo apps instaladas, sin continuar pruebas de navegador móvil y conservando evidencias históricas y requisitos nativos |
 | 2026-10-19 | Constitución 4.0.0: gates separados de integración funcional y publicación; requisitos físicos conservados para publicar, sin distribución automática por merge |
+| 2026-10-29 | Constitución 4.1.0: referencia a la excepción autorizada y acotada de la beta 1.0.1/build 4, conservando pendientes físicos y verificaciones de publicación no eximidas |

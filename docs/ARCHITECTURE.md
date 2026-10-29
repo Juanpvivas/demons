@@ -874,7 +874,7 @@ el instrumento y diagnóstico limitado, sin parche ni cierre de bases nativas.
   solo ese entorno; Compatibility temporal no certifica Mobile.
 - Presets de exportación por plataforma se versionan en
   `export_presets.cfg`, sin credenciales ni keystores/certificados dentro
-  del repositorio. Según constitución 4.0.0, merge/push a `main` integra
+  del repositorio. Según constitución 4.1.0, merge/push a `main` integra
   desarrollo y no dispara distribución externa. Los workflows
   **Android/Firebase App Distribution** (`.github/workflows/deploy-android-testers.yml`)
   e **iOS/TestFlight** (`.github/workflows/deploy-ios-testflight.yml`) se ejecutan
@@ -885,6 +885,11 @@ el instrumento y diagnóstico limitado, sin parche ni cierre de bases nativas.
   de checkout, acceso a secrets y build/envío; no certifica por sí mismo el contenido de la confirmación.
   QA y la persona deben revisar el artefacto y los pendientes de publicación
   antes de activar la distribución. Ver los workflows para secrets y controles.
+  Para la beta 1.0.1/build 4 se aplica exclusivamente la
+  [excepción autorizada de constitución V](../.specify/memory/constitution.md#excepción-autorizada-beta-101-build-4):
+  QA identifica la revisión exacta y los pendientes físicos diferidos; firma,
+  empaquetado y versión del APK/IPA siguen verificándose antes de cada upload.
+  No se modifica el renderer ni se extiende esta excepción a otra versión o canal.
 
 La [validación nativa de 002](../specs/002-monte-calvo-terreno-trincheras/evidence/native-validation-matrix.md)
 separa ratón PC, gestos de SO en Android Emulator, muestreo humano Xiaomi y
@@ -1002,3 +1007,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-23 | 010/T009 tras QA funcional T008: §2/§4.7/§4.8 amplían la presentación observadora con snapshot de tiro anterior al daño, pool cosmético separado y cierre por intento; se distinguen poses y efectos de última bala. Comportamiento aprobado en rama, con publicación pendiente y sin nueva campaña de rendimiento. |
 | 2026-10-24 | 010/T019 tras QA funcional T018: §4.3/§5 incorporan alcance frontal desde UnitStats con forma propia por actor; §4.7 describe recorrido cosmético de 0,30 s más fade de 0,10 s, conservando snapshot, pooling y autoridad de daño inmediata. |
 | 2026-10-24 | 011/T009 tras QA funcional T008: §4.7 incorpora WorldHealthBar compartida fuera del sprite, salud autoritaria del actor, estilos inmutables y limpieza anterior a callbacks de baja; precisa prewarm anterior a ready y activación posterior, sin nueva arquitectura ni publicación. |
+| 2026-10-29 | §7 referencia la excepción constitucional 4.1.0 para la beta 1.0.1/build 4; conserva QA, revisión exacta y verificación del paquete antes del upload, sin acreditar pendientes físicos. |
