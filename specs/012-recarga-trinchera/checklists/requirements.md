@@ -2,7 +2,7 @@
 
 **Purpose**: revisar requisitos de preparación; no acredita implementación o QA de entrega.
 **Created**: 2026-10-29 | **Feature**: [spec.md](../spec.md) | [Issue #49](https://github.com/Juanpvivas/demons/issues/49).
-**Estado**: revisión documental de autoría contra inputs confirmados y fuentes actuales; pendiente de revisión independiente de preparación. Las casillas siguientes evalúan calidad del spec, no tareas de implementación.
+**Estado**: preparación aprobada en T001; comportamiento aprobado en T008 con [límites de alcance](../spec.md#alcance-de-la-aprobación-funcional). Las casillas siguientes evalúan calidad del spec, no tareas de implementación ni gate final de integración/publicación.
 
 ## Content Quality
 
@@ -27,4 +27,4 @@
 - [X] Interfaz neutral antes de RED, autoridad actual y ciclo de señales previstos sin afirmar ejecución.
 - [X] No se requiere API, persistencia ni dato nuevo; no se heredan aprobaciones físicas o de beta.
 
-La revisión de autoría encontró los puntos anteriores cubiertos por el spec/plan/contrato y los inputs ya confirmados. El orquestador y QA revisarán coherencia y tareas antes de ejecutar `012-I1`.
+La revisión de autoría contrastó los puntos anteriores con spec/plan/contrato e inputs confirmados; QA revisó preparación y alcance funcional por sus etapas. La consolidación documental y CI exacto aún requieren revisión para el gate final de integración.

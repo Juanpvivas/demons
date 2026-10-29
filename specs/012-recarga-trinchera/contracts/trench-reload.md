@@ -1,6 +1,6 @@
 # Contrato — Recarga por hogar
 
-**Estado**: diseño de preparación de `012-I1`, pendiente de QA/implementación. [Requisitos](../spec.md), [Issue #49](https://github.com/Juanpvivas/demons/issues/49).
+**Estado**: comportamiento de `012-I1` aprobado funcionalmente en T008 sobre `ba122ef`; gate final de integración/documentación/CI pendiente. [Requisitos y límites](../spec.md), [Issue #49](https://github.com/Juanpvivas/demons/issues/49). Sin aprobación de publicación.
 
 ## Interfaz mínima y setup neutral
 
@@ -10,7 +10,7 @@
 - HUD: `signal trench_reload_requested(home_cell: Vector2i, soldier_instance_id: int)`.
 - Cámara de Monte Calvo: `signal framing_changed`, emitida después de aplicar el encuadre y `force_update_scroll()`; HUD actualiza su geometría tras ese cambio, además de leer el encuadre vigente al registrar hogares.
 
-T002 añade sólo esas firmas importables: petición `false`, getter `null`, registros vacíos; las señales nuevas no se emiten ni conectan. Conserva la recarga del panel y el resto del comportamiento hasta que tester haya demostrado RED válido. No introducir interfaz de prueba paralela al Button.
+T002 añadió sólo firmas importables: petición `false`, getter `null`, registros vacíos y señales nuevas sin emitir/conectar; conservó la recarga anterior para el RED posterior. Ese setup neutral es histórico y no describe el comportamiento entregado por T005. La consulta actual observa el Button real, sin una interfaz de prueba paralela.
 
 ## Estado observable de cada botón tras implementación
 
@@ -37,6 +37,6 @@ HUD CanvasLayer contiene la capa de botones; hogar global→canvas HUD usa trans
 
 Buttons consumen el gesto con GUI/`MOUSE_FILTER_STOP`, incluidos los deshabilitados; el contenedor decorativo deja pasar entrada fuera de los controles. Ratón/toque no deben duplicar intención o propagarse a `_unhandled_input`/picking. Sobre botón prevalece UI; fuera de su rectángulo se conserva el comportamiento pickup→selección/despliegue. Muerte/reemplazo y cierre invalidan callbacks capturados incluso si los controles son reutilizados.
 
-## Oráculos previstos
+## Oráculos de verificación
 
 GUT observa Buttons reales, estado del actor/ocupante, saldo, selección y señales; envía entrada por viewport para demostrar consumo, no sólo `pressed.emit()`. Cubrir cinco hogares, dos órdenes independientes, fondos, eventos repetidos/reentrantes, IDs antiguos, cierre/Retry y resize con transformación no identidad. Una pulsación aceptada implica un cobro; rechazos cero efectos adicionales. La colocación y lectura visual finales requieren además smoke real por destino, sin extrapolar headless a renderer/input nativo.

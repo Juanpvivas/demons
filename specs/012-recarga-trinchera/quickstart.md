@@ -1,6 +1,6 @@
 # Verificación prevista — 012-I1
 
-Este documento prepara la comprobación del [spec](spec.md) y [contrato](contracts/trench-reload.md); no acredita pruebas ejecutadas. Rama `codex/012-recarga-trinchera`, [Issue #49](https://github.com/Juanpvivas/demons/issues/49). El tester registra comandos/resultados y variantes en temporales/PR, sin nuevos archivos de evidencias en Git.
+Guía para comprobar el [spec](spec.md) y [contrato](contracts/trench-reload.md); los pasos no equivalen a resultados ejecutados. T008 tiene [alcance funcional y límites explícitos](spec.md#alcance-de-la-aprobación-funcional). Rama `codex/012-recarga-trinchera`, [Issue #49](https://github.com/Juanpvivas/demons/issues/49). El tester registra comandos/resultados y variantes en temporales/PR, sin nuevos archivos de evidencias en Git.
 
 ## 1. Preparación y TDD
 
