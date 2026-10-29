@@ -52,6 +52,9 @@ extends CanvasLayer
 ## Intención con identidad capturada: el nivel revalidará dueño y selección.
 signal reload_requested(soldier_instance_id: int)
 
+## 012/T002: interfaz neutral; todavía no emite órdenes por hogar.
+signal trench_reload_requested(home_cell: Vector2i, soldier_instance_id: int)
+
 ## La UI sólo emite intenciones; no cambia escenas ni reinicia Managers.
 signal retry_requested
 signal menu_requested
@@ -74,6 +77,19 @@ var _closing: bool = false
 @onready var _reload_button: Button = $SelectionPanel/Contents/ReloadButton
 @onready var _retry_button: Button = $GameOverScreen/Actions/RetryButton
 @onready var _menu_button: Button = $GameOverScreen/Actions/MenuButton
+
+
+## Firmas neutrales de 012/T002; comportamiento pendiente del ciclo RED.
+func get_trench_reload_button(home_cell: Vector2i) -> Button:
+	return null
+
+
+func register_trench_reload(home_cell: Vector2i, soldier: Soldado, world_anchor: Vector2) -> void:
+	pass
+
+
+func unregister_trench_reload(home_cell: Vector2i) -> void:
+	pass
 
 
 func set_selected_soldier(soldier: Soldado) -> void:

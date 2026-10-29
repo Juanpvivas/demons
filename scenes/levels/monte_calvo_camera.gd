@@ -1,6 +1,9 @@
 ## Centra el rectángulo completo sin mover actores, grid o geometría del nivel.
 extends Camera2D
 
+## 012/T002: declaración neutral, sin emisiones ni conexiones nuevas.
+signal framing_changed
+
 @export var board_config: LaneBoardConfig = preload("res://resources/levels/monte_calvo_board.tres")
 
 

@@ -7,7 +7,7 @@
 ## Fase 1: Preparación e interfaz neutral
 
 - [X] T001 project-orchestrator con qa-validator: revisar `specs/012-recarga-trinchera/`, checklist, criterios y contrato contra el flujo confirmado y las reglas vigentes; aprobar preparación antes de modificar código.
-- [ ] T002 dev-godot: añadir únicamente las firmas neutrales importables del contrato en `scenes/ui/hud.gd` y `scenes/levels/nivel_monte_calvo.gd`, y declarar `framing_changed` en `scenes/levels/monte_calvo_camera.gd`; sin controles nuevos, registro funcional, emisiones/conexiones nuevas, recarga directa ni retirada del botón anterior. Godot-tester confirma carga y qa-validator neutralidad. Depende de T001.
+- [X] T002 dev-godot: añadir únicamente las firmas neutrales importables del contrato en `scenes/ui/hud.gd` y `scenes/levels/nivel_monte_calvo.gd`, y declarar `framing_changed` en `scenes/levels/monte_calvo_camera.gd`; sin controles nuevos, registro funcional, emisiones/conexiones nuevas, recarga directa ni retirada del botón anterior. Godot-tester confirma carga y qa-validator neutralidad. Depende de T001.
 
 ## Fase 2: US1 — Recargar directamente desde cada hogar (P1)
 

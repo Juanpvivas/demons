@@ -46,6 +46,11 @@ var _closing: bool = false
 @onready var _hud = $HUD
 
 
+## 012/T002: petición neutral; no recarga hasta implementar tras RED aprobado.
+func request_trench_reload(home_cell: Vector2i, expected_instance_id: int) -> bool:
+	return false
+
+
 func select_trench(cell: Vector2i) -> bool:
 	if _closing or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
 		return false
