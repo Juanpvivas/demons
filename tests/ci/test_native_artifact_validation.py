@@ -206,6 +206,7 @@ class NativeArtifactValidationTests(unittest.TestCase):
             'Source Stamp Signer certificate SHA-256 digest: ' + EXPECTED_ANDROID_CERT,
             'Signer #1 certificate SHA-256 digest: ' + 'g' * 64,
             leaf + '\nSigner #2 certificate SHA-256 digest: ' + OTHER_ANDROID_CERT,
+            leaf + '\nSigner #2 certificate SHA-256 digest: malformed',
             leaf + '\n' + leaf,
         )
         for output in outputs:
@@ -349,8 +350,11 @@ class NativeArtifactValidationTests(unittest.TestCase):
                 self.assertTrue(any(call.get('tool') == 'keytool' for call in self.calls(root)))
                 env.update(persisted)
                 env['NATIVE_REQUIRE_FIXED_SIGNING'] = '1'
-                (root / 'build').mkdir()
-                (root / 'build/.gdignore').touch()
+                output_step = next(step for step in workflow.steps
+                                   if 'run' in step and 'touch build/.gdignore' in scalar(step['run']))
+                prepared = subprocess.run(['bash', '-euo', 'pipefail', '-c', run_command(output_step)],
+                                          cwd=root, env=env, capture_output=True, text=True, timeout=15)
+                self.assertEqual(prepared.returncode, 0, prepared.stdout + prepared.stderr)
                 exported = subprocess.run(['bash', '-euo', 'pipefail', '-c', run_command(export)],
                                           cwd=root, env=env, capture_output=True, text=True, timeout=15)
                 self.assertEqual(exported.returncode, 0, exported.stdout + exported.stderr)
