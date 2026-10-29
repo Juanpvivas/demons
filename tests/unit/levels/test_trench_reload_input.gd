@@ -607,3 +607,52 @@ func test_t014_death_replacement_and_close_remove_old_glows_and_restore_pieces()
 	await wait_process_frames(3)
 	for piece: Sprite2D in _trench_parts():
 		assert_eq(piece.get_child_count(), 0, "No quedan efectos fuera del control retirado")
+
+
+## Suplementaria GREEN: comportamiento heredado de HOME cargado, sin RED artificial.
+func test_t017_loaded_home_still_selects_without_reloading_or_spending() -> void:
+	var owner := _owner()
+	assert_gt(owner.get_reload_state().ammo, 0, "CONTROL: el hogar empieza cargado")
+	await wait_process_frames(2)
+	await _gesture(_viewport.canvas_transform * owner.get_home_position(), 2)
+	assert_same(_level.get_selected_soldier(), owner)
+	assert_eq(EconomyManager.collected_ammo, 100)
+	assert_eq(owner.get_reload_state().ammo, owner.stats.max_ammo)
+
+
+## Suplementaria GREEN: más de dos ciclos reales e idempotencia ante señales repetidas.
+func test_t017_repeated_state_reuses_one_tween_and_visuals_across_two_full_cycles() -> void:
+	var owner := _owner()
+	_empty(owner)
+	var button := _button()
+	var glows := _require_glows()
+	if button == null or glows.size() != 2:
+		return
+	var pulse := button.get("_pulse") as Tween
+	assert_not_null(pulse, "CONTROL: la animación real que pinta está activa")
+	if pulse == null:
+		return
+	var rect := button.get_global_rect()
+	var first_low := INF
+	var first_high := -INF
+	var second_low := INF
+	var second_high := -INF
+	for index in 14:
+		await wait_seconds(0.18)
+		owner.reload_state_changed.emit()
+		assert_same(button.get("_pulse"), pulse, "La misma señal no reinicia ni acumula la animación")
+		assert_eq(_trench_glows(), glows, "No se recrean sprites durante el pulso")
+		assert_almost_eq(button.get_global_rect().position, rect.position, Vector2(0.001, 0.001),
+			"El pulso no desplaza la zona; admite sólo precisión float subpíxel")
+		assert_almost_eq(button.get_global_rect().size, rect.size, Vector2(0.001, 0.001),
+			"El pulso no escala la zona")
+		var energy := _red_energy(glows)
+		if index < 7:
+			first_low = minf(first_low, energy)
+			first_high = maxf(first_high, energy)
+		else:
+			second_low = minf(second_low, energy)
+			second_high = maxf(second_high, energy)
+	assert_gt(first_high - first_low, 0.005, "El primer ciclo pinta intensidades distintas")
+	assert_gt(second_high - second_low, 0.005, "El siguiente ciclo sigue pulsando")
+	assert_gte(pulse.get_total_elapsed_time(), 2.4, "CONTROL: se observaron más de dos ciclos completos")

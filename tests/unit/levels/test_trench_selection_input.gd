@@ -1,5 +1,5 @@
 extends GutTest
-## 005/T035: origen/identidad e input por dispatch del Viewport; sin handlers directos.
+## 005/T035 y 012/T017: selección/pickup fuera de UI; dispatch real y frontera de trinchera.
 const LevelScene := preload("res://scenes/levels/Nivel_MonteCalvo.tscn")
 const PickupScene := preload("res://scenes/levels/AmmoPickup.tscn")
 const HOME := Vector2i(1, 1)
@@ -92,8 +92,11 @@ func test_occupied_origin_selects_same_owner_outside_without_cost(
 		kind = use_parameters([0, 1, 2])) -> void:
 	_empty_owner()
 	await wait_physics_frames(3)
-	await _gesture(Vector2(144, 144), kind)
-	assert_same(_level.get_selected_soldier(), _owner, "Plaza reservada selecciona su dueño lejano")
+	var where := Vector2(144, 104) # Misma celda HOME, fuera del nuevo hotspot de recarga.
+	var zone: Button = _level.get_node("HUD").get_trench_reload_button(HOME)
+	assert_false(zone.get_global_rect().has_point(_viewport.canvas_transform * where))
+	await _gesture(where, kind)
+	assert_same(_level.get_selected_soldier(), _owner, "Fuera de UI la plaza reservada selecciona su dueño lejano")
 	assert_eq(EconomyManager.collected_ammo, 100, "Seleccionar no es despliegue ni recarga")
 	assert_same(_board.get_occupant(HOME), _owner)
 
@@ -145,6 +148,11 @@ func test_pickup_precedes_selection_or_deploy_on_free_occupied_and_actor(
 		await wait_physics_frames(2)
 	elif location == "actor":
 		where = _owner.position
+	else:
+		where = Vector2(144, 104) # 012: pickup conserva prioridad fuera de la zona GUI activa.
+	if location != "free":
+		var zone: Button = _level.get_node("HUD").get_trench_reload_button(HOME)
+		assert_false(zone.get_global_rect().has_point(_viewport.canvas_transform * where))
 	var first := _pickup(where)
 	var second: AmmoPickup = _pickup(where) if location == "overlap" else null
 	await wait_physics_frames(3)

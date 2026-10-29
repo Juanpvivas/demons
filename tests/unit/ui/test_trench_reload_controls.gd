@@ -129,7 +129,7 @@ func test_last_confirmed_shot_shows_home_control_without_selection() -> void:
 	assert_true(button.is_visible_in_tree())
 	assert_false(button.disabled)
 	assert_eq(button.text, "", "T014: la acción no pinta el antiguo rótulo")
-	for state: String in ["normal", "hover", "pressed", "disabled", "focus"]:
+	for state: String in ["normal", "hover", "pressed", "hover_pressed", "disabled", "focus"]:
 		assert_true(button.get_theme_stylebox(state) is StyleBoxEmpty,
 			"T014: sin fondo/borde incluso en " + state)
 	await wait_process_frames(2)
