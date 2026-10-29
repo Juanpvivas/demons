@@ -43,6 +43,7 @@ func _empty_owner() -> void:
 	_owner.set("_current_ammo", 0)
 	_owner.set("_mode", Soldado.SoldierMode.MELEE)
 	_owner.position.x += 120.0
+	_owner.reload_state_changed.emit() # 012: notifica el estado que este fixture altera.
 
 
 func _gesture(world: Vector2, kind: int) -> void:
@@ -180,18 +181,16 @@ func test_gui_reload_gesture_is_consumed_and_emits_one_order_without_board_actio
 	assert_not_null(hud, "HUD observador integrado")
 	if hud == null:
 		return
-	var button: Button
-	for node: Node in hud.find_children("*", "Button", true, false):
-		if "Recargar" in (node as Button).text:
-			button = node as Button
-	assert_not_null(button, "Control Recargar integrado para consumir el gesto")
+	# 012 sustituye la acción del panel por la del hogar, sin retirar selección.
+	var button: Button = hud.get_trench_reload_button(HOME)
+	assert_not_null(button, "Control Recargar del hogar integrado para consumir el gesto")
 	if button == null:
 		return
 	await wait_physics_frames(3)
 	watch_signals(hud)
 	var center := button.get_global_rect().get_center()
 	await _gesture(_viewport.canvas_transform.affine_inverse() * center, kind)
-	assert_signal_emit_count(hud, "reload_requested", 1, "Toque más mouse emulado no duplica intención")
+	assert_signal_emit_count(hud, "trench_reload_requested", 1, "Toque más mouse emulado no duplica intención")
 	assert_eq(EconomyManager.collected_ammo, 100 - _owner.stats.deploy_ammo_cost)
 	assert_eq(_owner.get_reload_state().ammo, _owner.stats.max_ammo)
 	assert_same(_level.get_selected_soldier(), _owner, "GUI no transmite acción al tablero")
