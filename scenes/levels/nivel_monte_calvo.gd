@@ -215,7 +215,12 @@ func _create_soldier(cell: Vector2i) -> void:
 	_board_manager.occupy_cell(cell, soldier)
 	add_child(soldier)
 	_combat_visual_effects.register_actor(soldier)
-	_hud.register_trench_reload(cell, soldier, _tablero.to_global(_tablero.map_to_local(cell)))
+	var lane := board_config.home_cells.find(cell) + 1
+	var pieces: Array[Sprite2D] = [
+		get_node("MonteCalvoVisual/TrincherasLaterales/Posterior%d" % lane) as Sprite2D,
+		get_node("MonteCalvoVisual/TrincherasLaterales/Parapeto%d" % lane) as Sprite2D,
+	]
+	_hud.register_trench_reload(cell, soldier, _tablero.to_global(_tablero.map_to_local(cell)), pieces)
 
 
 func _on_posicion_defendida_body_entered(body: Node2D) -> void:

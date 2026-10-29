@@ -85,24 +85,23 @@ func get_trench_reload_button(home_cell: Vector2i) -> Button:
 	return null
 
 
-func register_trench_reload(home_cell: Vector2i, soldier: Soldado, world_anchor: Vector2) -> void:
+func register_trench_reload(home_cell: Vector2i, soldier: Soldado, world_anchor: Vector2,
+		parts: Array[Sprite2D] = []) -> void:
 	if _closing or not is_instance_valid(soldier):
 		return
 	var identity := soldier.get_instance_id()
 	if _trench_reload_bindings.has(home_cell):
 		if _trench_reload_bindings[home_cell].instance_id == identity:
 			_trench_reload_bindings[home_cell].world_anchor = world_anchor
+			if not parts.is_empty():
+				(_trench_reload_bindings[home_cell].button as TrenchReloadControl).bind_trench_parts(parts)
 			_refresh_trench_reload(home_cell, identity)
 			return
 		unregister_trench_reload(home_cell)
 	if _trench_reload_bindings.size() >= 5:
 		return
-	var button := Button.new()
+	var button := TrenchReloadControl.new()
 	button.name = "ReloadHome%d_%d" % [home_cell.x, home_cell.y]
-	button.text = "Recargar"
-	button.custom_minimum_size = _RELOAD_BUTTON_SIZE
-	button.size = _RELOAD_BUTTON_SIZE
-	button.mouse_filter = Control.MOUSE_FILTER_STOP
 	button.pressed.connect(_on_trench_reload_pressed.bind(home_cell, identity))
 	var changed := _refresh_trench_reload.bind(home_cell, identity)
 	var exiting := _on_trench_owner_exiting.bind(home_cell, identity)
@@ -111,6 +110,7 @@ func register_trench_reload(home_cell: Vector2i, soldier: Soldado, world_anchor:
 		"button": button, "changed": changed, "exiting": exiting,
 	}
 	_trench_reload_controls.add_child(button)
+	button.bind_trench_parts(parts)
 	soldier.reload_state_changed.connect(changed)
 	soldier.tree_exiting.connect(exiting)
 	_refresh_trench_reload(home_cell, identity)
@@ -125,9 +125,8 @@ func unregister_trench_reload(home_cell: Vector2i) -> void:
 	if is_instance_valid(soldier):
 		_disconnect_signal(soldier.reload_state_changed, binding.changed)
 		_disconnect_signal(soldier.tree_exiting, binding.exiting)
-	var button := binding.button as Button
-	button.disabled = true
-	button.hide()
+	var button := binding.button as TrenchReloadControl
+	button.set_reload_state(false, false)
 	# Retirar el control cancela el foco del gesto del dueño anterior.
 	_trench_reload_controls.remove_child(button)
 	button.queue_free()
@@ -146,13 +145,12 @@ func _refresh_trench_reload(home_cell: Vector2i, identity: int) -> void:
 		return
 	var binding: Dictionary = _trench_reload_bindings[home_cell]
 	var soldier := binding.soldier as Soldado
-	var button := binding.button as Button
+	var button := binding.button as TrenchReloadControl
 	var show_action := false
 	if not _closing and is_instance_valid(soldier):
 		var state := soldier.get_reload_state()
 		show_action = state.alive and state.ammo == 0 and state.home_cell == home_cell
-	button.visible = show_action
-	button.disabled = not show_action or not soldier.can_reload()
+	button.set_reload_state(show_action, show_action and soldier.can_reload())
 	update_trench_reload_layout()
 
 
@@ -181,12 +179,16 @@ func update_trench_reload_layout() -> void:
 	var safe := _safe_view_rect()
 	var to_controls := _trench_reload_controls.get_global_transform_with_canvas().affine_inverse()
 	var bounds: Rect2 = to_controls * safe
+	var world_to_controls := to_controls * get_viewport().canvas_transform
 	for binding: Dictionary in _trench_reload_bindings.values():
-		var button := binding.button as Button
-		var anchor: Vector2 = to_controls * (get_viewport().canvas_transform * binding.world_anchor)
+		var button := binding.button as TrenchReloadControl
+		var rect: Rect2 = world_to_controls * button.get_trench_world_rect(binding.world_anchor)
+		button.size = Vector2(maxf(_RELOAD_BUTTON_SIZE.x, rect.size.x),
+			maxf(_RELOAD_BUTTON_SIZE.y, rect.size.y))
+		var origin := rect.get_center() - button.size * 0.5
 		button.position = Vector2(
-			clampf(anchor.x - button.size.x * 0.5, bounds.position.x, bounds.end.x - button.size.x),
-			clampf(anchor.y - button.size.y - 2.0, bounds.position.y, bounds.end.y - button.size.y))
+			clampf(origin.x, bounds.position.x, bounds.end.x - button.size.x),
+			clampf(origin.y, bounds.position.y, bounds.end.y - button.size.y))
 	_layout_info_around_trenches(safe)
 
 
