@@ -1,6 +1,6 @@
 # Contrato de presentación — WorldHealthBar
 
-**Estado**: `011-I1` APROBADO PARA INTEGRACIÓN (T011); [PR #43 en borrador](https://github.com/Juanpvivas/demons/pull/43), con revisión humana y publicación pendientes; [FR-001–007](../spec.md).
+**Estado**: `011-I1` APROBADO PARA INTEGRACIÓN (T011), integrado en `main` mediante el [PR #43](https://github.com/Juanpvivas/demons/pull/43) (`c75ecb0`). Publicación pendiente; [FR-001–007](../spec.md).
 
 ## Composición e interfaz
 

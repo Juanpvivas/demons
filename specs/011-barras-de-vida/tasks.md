@@ -1,6 +1,6 @@
 # Tasks: Barras de vida
 
-**Input**: [spec.md](spec.md), [plan.md](plan.md), [contrato](contracts/world-health-bar.md). **Entrega**: `011-I1`, ambos bandos; Issue [#42](https://github.com/Juanpvivas/demons/issues/42); [PR #43 en borrador](https://github.com/Juanpvivas/demons/pull/43).
+**Input**: [spec.md](spec.md), [plan.md](plan.md), [contrato](contracts/world-health-bar.md). **Entrega**: `011-I1`, ambos bandos; Issue [#42](https://github.com/Juanpvivas/demons/issues/42); integrado en `main` mediante el [PR #43](https://github.com/Juanpvivas/demons/pull/43) (`c75ecb0`).
 **Flujo**: `docs/DEVELOPMENT_WORKFLOW.md`. Sólo orquestador marca [X] tras QA; RED aprobado no entrega gameplay. Resultados al PR/temporales, sin archivos de evidencias nuevos en Git. Publicación pendiente.
 
 ## Fase 1: Preparación y contrato neutral
