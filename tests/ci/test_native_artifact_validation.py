@@ -4,6 +4,7 @@ The actual workflow run steps and repository verifier run in temporary folders.
 No credential, Godot export, connected device or distribution service is used.
 """
 
+import base64
 import json
 import os
 from pathlib import Path
@@ -16,7 +17,12 @@ import textwrap
 import unittest
 import zipfile
 
-from test_publication_policy import ROOT, TARGETS, Workflow, scalar
+from test_publication_policy import ROOT, TARGETS, Workflow, mapping, scalar
+
+
+EXPECTED_ANDROID_CERT = '0123456789abcdef' * 4
+OTHER_ANDROID_CERT = 'fedcba9876543210' * 4
+UNSET = object()
 
 
 FAKE_TOOL = r'''import json, os, pathlib, sys
@@ -32,6 +38,17 @@ if tool in ('apksigner', 'codesign'):
         print('Invalid fixture signature', file=sys.stderr)
         sys.exit(8)
     print('Signature verified')
+    if tool == 'apksigner' and '--print-certs' in args:
+        print(os.environ.get('NATIVE_CERT_OUTPUT', ''))
+elif tool == 'keytool':
+    if '-list' not in args or '-keystore' not in args or '-alias' not in args:
+        print('Fixture requires verification of the provided keystore alias', file=sys.stderr)
+        sys.exit(14)
+    key = pathlib.Path(args[args.index('-keystore') + 1])
+    if (not key.is_file() or key.read_bytes() != b'fixture-private-keystore'
+            or args[args.index('-alias') + 1] != 'fixture-beta'):
+        print('Restored fixture keystore or alias does not match', file=sys.stderr)
+        sys.exit(15)
 elif tool == 'aapt2':
     if args[:2] != ['dump', 'badging']:
         print('Unsupported metadata query', file=sys.stderr)
@@ -43,6 +60,13 @@ elif tool == 'aapt2':
 
 FAKE_GODOT = r'''import json, os, pathlib, sys
 phase = 'import' if '--import' in sys.argv else 'export'
+if os.environ.get('NATIVE_REQUIRE_FIXED_SIGNING') == '1':
+    key = pathlib.Path(os.environ.get('GODOT_ANDROID_KEYSTORE_DEBUG_PATH', 'missing'))
+    if (not key.is_file() or key.read_bytes() != b'fixture-private-keystore'
+            or os.environ.get('GODOT_ANDROID_KEYSTORE_DEBUG_USER') != 'fixture-beta'
+            or os.environ.get('GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD') != 'fixture-password'):
+        print('Godot did not receive the fixed signing configuration', file=sys.stderr)
+        sys.exit(16)
 with pathlib.Path(os.environ['NATIVE_CALLS']).open('a') as stream:
     stream.write(json.dumps({'phase': phase, 'ignored_build': pathlib.Path('build/.gdignore').is_file()}) + '\n')
 if os.environ.get('NATIVE_ENGINE_ERROR_PHASE') == phase:
@@ -87,7 +111,7 @@ class NativeArtifactValidationTests(unittest.TestCase):
         tools = root / 'sdk/build-tools/34.0.0'
         tools.mkdir(parents=True)
         bindir.mkdir()
-        for directory, names in [(tools, ('aapt2', 'apksigner')), (bindir, ('codesign',))]:
+        for directory, names in [(tools, ('aapt2', 'apksigner')), (bindir, ('codesign', 'keytool'))]:
             for name in names:
                 path = directory / name
                 path.write_text(f'#!{sys.executable}\n' + FAKE_TOOL)
@@ -96,12 +120,14 @@ class NativeArtifactValidationTests(unittest.TestCase):
         godot.write_text(f'#!{sys.executable}\n' + FAKE_GODOT)
         godot.chmod(0o755)
         env = os.environ.copy()
+        env.pop('DEMONS_ANDROID_CERT_SHA256', None)
         env.update({
             'PATH': str(bindir) + os.pathsep + os.environ['PATH'],
             'ANDROID_HOME': str(root / 'sdk'),
             'ANDROID_SDK_ROOT': str(root / 'sdk'),
             'RUNNER_TEMP': str(root / 'runner'),
             'NATIVE_CALLS': str(root / 'calls.jsonl'),
+            'NATIVE_CERT_OUTPUT': 'Signer #1 certificate SHA-256 digest: ' + EXPECTED_ANDROID_CERT,
             'NATIVE_APK_METADATA': json.dumps({
                 'package': 'com.juanpvivas.demons', 'code': '4', 'name': '1.0.1'}),
         })
@@ -112,12 +138,17 @@ class NativeArtifactValidationTests(unittest.TestCase):
         return [json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
 
     def invoke_verifier(self, platform, *, apk_metadata=None, ios_metadata=None,
-                        bad_signature=False, additional_entries=None):
+                        bad_signature=False, additional_entries=None,
+                        expected_cert=UNSET, certificate_output=None):
         _, (_, step) = self.verifier_step(platform)
         with tempfile.TemporaryDirectory(prefix='demons-native-check-') as directory:
             root, env = self.workspace(directory)
             if apk_metadata is not None:
                 env['NATIVE_APK_METADATA'] = json.dumps(apk_metadata)
+            if expected_cert is not UNSET:
+                env['DEMONS_ANDROID_CERT_SHA256'] = expected_cert
+            if certificate_output is not None:
+                env['NATIVE_CERT_OUTPUT'] = certificate_output
             env['NATIVE_BAD_SIGNATURE'] = '1' if bad_signature else '0'
             apk = root / 'build/android/demons.apk'
             apk.parent.mkdir(parents=True)
@@ -146,6 +177,50 @@ class NativeArtifactValidationTests(unittest.TestCase):
         result, calls = self.invoke_verifier('android', bad_signature=True)
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertTrue(any(call['tool'] == 'apksigner' for call in calls))
+
+    def test_android_expected_certificate_queries_and_accepts_one_matching_leaf(self):
+        upper = EXPECTED_ANDROID_CERT.upper()
+        colon_separated = ':'.join(upper[index:index + 2] for index in range(0, 64, 2))
+        for expected in (EXPECTED_ANDROID_CERT, upper, colon_separated):
+            with self.subTest(expected=expected):
+                result, calls = self.invoke_verifier('android', expected_cert=expected)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertTrue(any(call['tool'] == 'apksigner' and '--print-certs' in call['args']
+                                    for call in calls), 'The verifier must inspect the actual APK signer')
+
+    def test_android_expected_certificate_mismatch_is_rejected(self):
+        result, _ = self.invoke_verifier('android', expected_cert=OTHER_ANDROID_CERT)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_android_present_but_invalid_expected_certificate_is_rejected(self):
+        for expected in ('', '0' * 63, '0' * 65, 'g' * 64, 'not-a-certificate'):
+            with self.subTest(expected=expected):
+                result, _ = self.invoke_verifier('android', expected_cert=expected)
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_android_missing_or_ambiguous_signer_digest_is_rejected(self):
+        leaf = 'Signer #1 certificate SHA-256 digest: ' + EXPECTED_ANDROID_CERT
+        outputs = (
+            'Signature verified without a certificate digest',
+            'Signer #1 certificate SHA-1 digest: ' + EXPECTED_ANDROID_CERT,
+            'Source Stamp Signer certificate SHA-256 digest: ' + EXPECTED_ANDROID_CERT,
+            'Signer #1 certificate SHA-256 digest: ' + 'g' * 64,
+            leaf + '\nSigner #2 certificate SHA-256 digest: ' + OTHER_ANDROID_CERT,
+            leaf + '\n' + leaf,
+        )
+        for output in outputs:
+            with self.subTest(output=output):
+                result, _ = self.invoke_verifier('android', expected_cert=EXPECTED_ANDROID_CERT,
+                                                 certificate_output=output)
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_android_without_expected_certificate_keeps_signature_only_compatibility(self):
+        result, _ = self.invoke_verifier('android', certificate_output='Signature verified')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_ios_ignores_the_android_expected_certificate_environment(self):
+        result, _ = self.invoke_verifier('ios', expected_cert='')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_android_identifier_version_or_build_mismatch_is_rejected(self):
         for field, invalid in [('package', 'com.other.game'), ('name', '1.0'), ('code', '3')]:
@@ -201,6 +276,92 @@ class NativeArtifactValidationTests(unittest.TestCase):
                 self.assertEqual(len(upload), 1)
                 self.assertLess(packaging[0], verification_index)
                 self.assertLess(verification_index, upload[0])
+
+    def test_android_workflow_restores_fixed_signing_before_export_and_cleans_up(self):
+        workflow, (verification_index, verifier) = self.verifier_step('android')
+        setups = [(index, step) for index, step in enumerate(workflow.steps)
+                  if 'run' in step and 'GODOT_ANDROID_KEYSTORE_DEBUG_PATH' in scalar(step['run'])
+                  and 'keytool' in scalar(step['run'])]
+        self.assertEqual(len(setups), 1, 'Android export needs one fixed-keystore preflight, not a random fallback')
+        setup_index, setup = setups[0]
+        export_index, export = next((index, step) for index, step in enumerate(workflow.steps)
+                                    if 'run' in step and '--export-debug' in scalar(step['run']))
+        upload_index, upload = next((index, step) for index, step in enumerate(workflow.steps)
+                                    if 'uses' in step and 'Firebase-Distribution' in scalar(step['uses']))
+        self.assertLess(setup_index, export_index)
+        self.assertLess(export_index, verification_index)
+        self.assertLess(verification_index, upload_index)
+
+        def declared_env(step):
+            result = {}
+            for entries, indent in [(mapping(workflow.text.splitlines(), 0), 2),
+                                    (workflow.job, 6), (step, 10)]:
+                result.update({name: scalar(value) for name, value in
+                               mapping(entries.get('env', ('', []))[1], indent).items()})
+            return result
+
+        expected_binding = declared_env(verifier).get('DEMONS_ANDROID_CERT_SHA256', '')
+        self.assertEqual(expected_binding.replace(' ', ''), '${{vars.ANDROID_BETA_CERT_SHA256}}',
+                         'An absent Actions variable must reach the verifier as an empty, present value')
+        for step in (setup, verifier, upload):
+            self.assertNotEqual(scalar(step.get('continue-on-error', ('false', []))), 'true',
+                                'Signing or certificate failures must not continue to distribution')
+        cleanups = [step for index, step in enumerate(workflow.steps)
+                    if index > upload_index and 'run' in step
+                    and scalar(step.get('if', ('', []))).replace('${{', '').replace('}}', '').strip() == 'always()']
+        self.assertEqual(len(cleanups), 1, 'The private signing file needs unconditional cleanup')
+
+        bindings = {
+            'secrets.ANDROID_BETA_KEYSTORE_BASE64': base64.b64encode(b'fixture-private-keystore').decode(),
+            'secrets.ANDROID_BETA_KEYSTORE_PASSWORD': 'fixture-password',
+            'secrets.ANDROID_BETA_KEYSTORE_ALIAS': 'fixture-beta',
+            'vars.ANDROID_BETA_CERT_SHA256': EXPECTED_ANDROID_CERT,
+        }
+        for missing in (*bindings, None):
+            with self.subTest(missing=missing), tempfile.TemporaryDirectory(prefix='demons-fixed-signing-') as directory:
+                root, env = self.workspace(directory)
+                runner = Path(env['RUNNER_TEMP'])
+                runner.mkdir()
+                environment_file = root / 'github-env'
+                env['GITHUB_ENV'] = str(environment_file)
+                environment_file.write_text('')
+                values = {key: '' if key == missing else value for key, value in bindings.items()}
+                for name, value in declared_env(setup).items():
+                    for reference, resolved in values.items():
+                        value = value.replace('${{ ' + reference + ' }}', resolved)
+                        value = value.replace('${{' + reference + '}}', resolved)
+                    self.assertNotIn('${{', value, 'Fixture does not accept an unreviewed Actions expression')
+                    env[name] = value
+                result = subprocess.run(['bash', '-euo', 'pipefail', '-c', run_command(setup)],
+                                        cwd=root, env=env, capture_output=True, text=True, timeout=15)
+                if missing is not None:
+                    self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                    continue
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                persisted = dict(line.split('=', 1) for line in environment_file.read_text().splitlines() if line)
+                for name in ('GODOT_ANDROID_KEYSTORE_DEBUG_PATH', 'GODOT_ANDROID_KEYSTORE_DEBUG_USER',
+                             'GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD'):
+                    self.assertIn(name, persisted)
+                private_key = Path(persisted['GODOT_ANDROID_KEYSTORE_DEBUG_PATH'])
+                self.assertTrue(private_key.resolve().is_relative_to(runner.resolve()))
+                self.assertEqual(private_key.read_bytes(), b'fixture-private-keystore')
+                self.assertEqual(private_key.stat().st_mode & 0o777, 0o600)
+                self.assertTrue(any(call.get('tool') == 'keytool' for call in self.calls(root)))
+                env.update(persisted)
+                env['NATIVE_REQUIRE_FIXED_SIGNING'] = '1'
+                (root / 'build').mkdir()
+                (root / 'build/.gdignore').touch()
+                exported = subprocess.run(['bash', '-euo', 'pipefail', '-c', run_command(export)],
+                                          cwd=root, env=env, capture_output=True, text=True, timeout=15)
+                self.assertEqual(exported.returncode, 0, exported.stdout + exported.stderr)
+                self.assertTrue(any(call.get('phase') == 'export' for call in self.calls(root)))
+                sentinel = runner / 'unrelated-file'
+                sentinel.write_text('preserve')
+                cleanup = subprocess.run(['bash', '-euo', 'pipefail', '-c', run_command(cleanups[0])],
+                                         cwd=root, env=env, capture_output=True, text=True, timeout=15)
+                self.assertEqual(cleanup.returncode, 0, cleanup.stdout + cleanup.stderr)
+                self.assertFalse(private_key.exists())
+                self.assertTrue(sentinel.is_file(), 'Cleanup must remove only its own signing material')
 
     def invoke_export(self, platform, *, error_phase='', engine_error='', engine_exit=0):
         workflow = self.workflow(platform)
