@@ -2,7 +2,7 @@
 
 **Feature ID**: `011-barras-de-vida` | **Planned Branch**: `codex/011-barras-de-vida` | **Date**: 2026-10-24 | **Spec**: [spec.md](spec.md)
 **Input**: perfil confirmado, un incremento `011-I1` para ambos bandos.
-**Note**: diseño preparado con Spec Kit y ejecutado por agentes según `docs/DEVELOPMENT_WORKFLOW.md`. `011-I1` APROBADO PARA INTEGRACIÓN (T011); [PR #43 en borrador](https://github.com/Juanpvivas/demons/pull/43), con revisión humana y publicación pendientes. Seguimiento en [tasks.md](tasks.md).
+**Note**: diseño preparado con Spec Kit y ejecutado por agentes según `docs/DEVELOPMENT_WORKFLOW.md`. `011-I1` APROBADO PARA INTEGRACIÓN (T011), integrado en `main` mediante el [PR #43](https://github.com/Juanpvivas/demons/pull/43) (`c75ecb0`). Publicación pendiente. Seguimiento en [tasks.md](tasks.md).
 
 ## Summary
 
