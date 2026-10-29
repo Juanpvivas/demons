@@ -1,5 +1,5 @@
 extends GutTest
-## 012/T003: controles reales y señales; fixtures de estado sin lógica paralela.
+## 012/T003 y T014: contrato GUI real; nueva presentación sobre la propia trinchera.
 const HUD_SCENE := preload("res://scenes/ui/HUD.tscn")
 const SOLDIER_SCENE := preload("res://scenes/units/Soldado.tscn")
 const ENEMY_SCENE := preload("res://scenes/enemies/EnemigoBase.tscn")
@@ -128,7 +128,10 @@ func test_last_confirmed_shot_shows_home_control_without_selection() -> void:
 		return
 	assert_true(button.is_visible_in_tree())
 	assert_false(button.disabled)
-	assert_eq(button.text, "Recargar")
+	assert_eq(button.text, "", "T014: la acción no pinta el antiguo rótulo")
+	for state: String in ["normal", "hover", "pressed", "disabled", "focus"]:
+		assert_true(button.get_theme_stylebox(state) is StyleBoxEmpty,
+			"T014: sin fondo/borde incluso en " + state)
 	await wait_process_frames(2)
 	assert_gte(button.size.x, 112.0)
 	assert_gte(button.size.y, 48.0)
@@ -149,8 +152,10 @@ func test_five_empty_owners_have_independent_idempotent_controls() -> void:
 		assert_same(_hud.get_trench_reload_button(_home(row)), button,
 			"Registrar de nuevo no duplica ni sustituye el control de ese dueño")
 	var buttons := _hud.find_children("*", "Button", true, false).filter(
-		func(node: Node) -> bool: return (node as Button).text == "Recargar")
-	assert_eq(buttons.size(), 5, "Cinco acciones y ningún botón antiguo adicional")
+		func(node: Node) -> bool: return node.name.begins_with("ReloadHome"))
+	assert_eq(buttons.size(), 5, "Cinco zonas individuales y ningún control antiguo adicional")
+	for button: Button in buttons:
+		assert_eq(button.text, "", "T014: ninguno de los hogares tiene cartel")
 
 
 func test_no_funds_is_visible_disabled_and_funding_refreshes_without_selection() -> void:

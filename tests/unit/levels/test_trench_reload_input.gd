@@ -1,5 +1,5 @@
 extends GutTest
-## 012/T003: GUI real, autoridad por hogar, identidad y ciclo de intento.
+## 012/T003 y T014: GUI real sobre HOME, autoridad, identidad, brillo y ciclo.
 const LEVEL_SCENE := preload("res://scenes/levels/Nivel_MonteCalvo.tscn")
 const PICKUP_SCENE := preload("res://scenes/levels/AmmoPickup.tscn")
 const ROOT_SCENE := preload("res://scenes/game/GameRoot.tscn")
@@ -166,7 +166,7 @@ func test_gui_reload_targets_home_owner_independently_of_selection_and_consumes_
 	if button == null:
 		return
 	await wait_process_frames(2)
-	var point := button.get_global_rect().get_center()
+	var point := _viewport.canvas_transform * owner.get_home_position()
 	var pickup := _pickup_under(point)
 	await wait_physics_frames(3)
 	watch_signals(EconomyManager)
@@ -194,7 +194,7 @@ func test_disabled_reload_consumes_click_and_touch_without_pickup_or_selection(
 		return
 	assert_true(button.disabled)
 	await wait_process_frames(2)
-	var point := button.get_global_rect().get_center()
+	var point := _viewport.canvas_transform * owner.get_home_position()
 	var pickup := _pickup_under(point)
 	await wait_physics_frames(3)
 	await _gesture(point, kind)
@@ -286,7 +286,7 @@ func test_press_owner_a_then_death_replacement_b_then_release_never_reloads_b() 
 	if button == null:
 		return
 	await wait_process_frames(2)
-	var point := button.get_global_rect().get_center()
+	var point := _viewport.canvas_transform * owner.get_home_position()
 	_press(point)
 	await wait_process_frames(1)
 	owner.take_damage(owner.stats.max_health)
@@ -321,10 +321,10 @@ func test_home_controls_follow_applied_canvas_after_each_resize_not_the_actor() 
 			assert_gte(rect.size.x, 112.0)
 			assert_gte(rect.size.y, 48.0)
 			var projected_home := _viewport.canvas_transform * owner.get_home_position()
-			assert_true(rect.position.x <= projected_home.x and projected_home.x <= rect.end.x,
-				"Anclada sobre hogar proyectado; admite ajuste al borde seguro")
-			assert_lte(rect.end.y, projected_home.y, "Encima del hogar; no sigue al actor lejano")
-			assert_gte(rect.end.y, projected_home.y - 96.0, "No se desplaza a otra fila")
+			assert_true(rect.has_point(projected_home),
+				"T014: la propia trinchera/HOME proyectado debe aceptar el gesto")
+			assert_gte(rect.position.y, projected_home.y - 48.0, "Zona situada sobre el arte, no cartel flotante")
+			assert_lte(rect.end.y, projected_home.y + 48.0, "Zona no invade otra fila")
 			for previous: Rect2 in rects:
 				assert_false(previous.intersects(rect), "Hogares vecinos no comparten área de gesto")
 			rects.append(rect)
@@ -448,3 +448,162 @@ func test_retry_or_menu_releases_old_controls_and_new_attempt_has_fresh_bindings
 	if fresh_button != null:
 		assert_true(fresh_button.is_visible_in_tree())
 		assert_eq(fresh_button.disabled, EconomyManager.collected_ammo < fresh.stats.deploy_ammo_cost)
+
+
+## T014: observa las copias que pintan en el mundo; no precarga la clase aún ausente.
+func _trench_parts(home := HOME) -> Array[Sprite2D]:
+	var pieces: Array[Sprite2D] = []
+	for prefix: String in ["Posterior", "Parapeto"]:
+		pieces.append(_level.get_node("MonteCalvoVisual/TrincherasLaterales/%s%d" % [prefix, home.y]) as Sprite2D)
+	return pieces
+
+
+func _trench_glows(home := HOME) -> Array[Sprite2D]:
+	var glows: Array[Sprite2D] = []
+	for piece: Sprite2D in _trench_parts(home):
+		for child: Node in piece.get_children():
+			if child is Sprite2D and (child as Sprite2D).texture == piece.texture:
+				glows.append(child as Sprite2D)
+	return glows
+
+
+func _require_glows(home := HOME) -> Array[Sprite2D]:
+	var glows := _trench_glows(home)
+	assert_eq(glows.size(), 2, "T014: rojo sobre las dos piezas reales del hogar " + str(home))
+	return glows
+
+
+func _red_energy(glows: Array[Sprite2D]) -> float:
+	var result := 0.0
+	for glow: Sprite2D in glows:
+		if is_instance_valid(glow) and glow.is_visible_in_tree():
+			var color := glow.modulate * glow.self_modulate
+			result += color.a * maxf(0.0, color.r - maxf(color.g, color.b))
+	return result
+
+
+func _red_range(glows: Array[Sprite2D]) -> Vector2:
+	var low := _red_energy(glows)
+	var high := low
+	for sample in 4:
+		await wait_seconds(0.18)
+		var energy := _red_energy(glows)
+		low = minf(low, energy)
+		high = maxf(high, energy)
+	return Vector2(low, high)
+
+
+func test_t014_available_home_pulses_only_trench_pieces_without_tinting_actor_or_health() -> void:
+	var owner := _owner()
+	var actor_color := owner.modulate
+	var health_color: Color = owner.get_node("HealthBar").modulate
+	var originals: Array = []
+	for piece: Sprite2D in _trench_parts():
+		originals.append([piece.position, piece.scale, piece.z_index, piece.modulate, piece.material])
+	_empty(owner, true)
+	var glows := _require_glows()
+	if glows.size() != 2:
+		return
+	for index in glows.size():
+		var glow := glows[index]
+		var piece := _trench_parts()[index]
+		assert_same(glow.get_parent(), piece, "No es una capa HUD encima del soldado")
+		assert_true(glow.material is CanvasItemMaterial)
+		if glow.material is CanvasItemMaterial:
+			assert_eq((glow.material as CanvasItemMaterial).blend_mode, CanvasItemMaterial.BLEND_MODE_ADD)
+		assert_eq(glow.z_index, 0, "El brillo conserva la capa de su pieza")
+		assert_eq([piece.position, piece.scale, piece.z_index, piece.modulate, piece.material], originals[index])
+	var observed := await _red_range(glows)
+	assert_gt(observed.y, 0.0, "Hay señal roja visible")
+	assert_gt(observed.y - observed.x, 0.005, "La señal disponible varía durante el tiempo, sin exigir fase o píxel")
+	assert_eq(owner.modulate, actor_color)
+	assert_eq(owner.get_node("HealthBar").modulate, health_color)
+
+
+func test_t014_no_funds_is_dim_static_and_funding_starts_pulse_without_selection() -> void:
+	EconomyManager.collected_ammo = 0
+	EconomyManager.ammo_pool_changed.emit(0)
+	_empty(_owner())
+	var glows := _require_glows()
+	if glows.size() != 2:
+		return
+	var dim := await _red_range(glows)
+	assert_gt(dim.x, 0.0, "Falta de fondos conserva una señal roja tenue")
+	assert_almost_eq(dim.x, dim.y, 0.0001, "Sin fondos no titila")
+	EconomyManager.collected_ammo = 100
+	EconomyManager.ammo_pool_changed.emit(100)
+	var pulsing := await _red_range(glows)
+	assert_gt(pulsing.y - pulsing.x, 0.005, "Fondos habilitan un pulso real sin seleccionar")
+	assert_null(_level.get_selected_soldier())
+
+
+func test_t014_nonplaying_stops_pulse_even_when_scene_tree_is_not_paused(
+		state = use_parameters([GameStateManager.GameState.PAUSED, GameStateManager.GameState.WON,
+		GameStateManager.GameState.LOST])) -> void:
+	_empty(_owner())
+	var glows := _require_glows()
+	if glows.size() != 2:
+		return
+	assert_false(get_tree().paused, "CONTROL: estado de partida no equivale a pausar SceneTree")
+	GameStateManager._current_state = state
+	GameStateManager.game_state_changed.emit(state)
+	var dim := await _red_range(glows)
+	assert_gt(dim.x, 0.0)
+	assert_almost_eq(dim.x, dim.y, 0.0001, "Pausa/terminal no siguen animando disponibilidad")
+	if state == GameStateManager.GameState.PAUSED:
+		GameStateManager._current_state = GameStateManager.GameState.PLAYING
+		GameStateManager.game_state_changed.emit(GameStateManager.GameState.PLAYING)
+		var resumed := await _red_range(glows)
+		assert_gt(resumed.y - resumed.x, 0.005, "Reanudar recupera pulso sólo con elegibilidad")
+
+
+func test_t014_reload_normalizes_only_its_home_and_repeated_state_reuses_visuals() -> void:
+	var owner := _owner()
+	var other_home := Vector2i(1, 2)
+	_empty(owner)
+	_empty(_owner(other_home))
+	var glows := _require_glows()
+	var others := _require_glows(other_home)
+	if glows.size() != 2 or others.size() != 2:
+		return
+	for repeat in 3:
+		owner.reload_state_changed.emit()
+	assert_eq(_trench_glows(), glows, "Estado repetido no acumula copias")
+	assert_true(_level.request_trench_reload(HOME, owner.get_instance_id()))
+	assert_eq(_red_energy(glows), 0.0, "La aceptación retira el rojo inmediatamente")
+	var remaining := await _red_range(others)
+	assert_gt(remaining.y - remaining.x, 0.005, "El hogar vecino conserva su pulso independiente")
+	assert_eq(_red_energy(glows), 0.0, "La animación vieja no reaparece")
+
+
+func test_t014_death_replacement_and_close_remove_old_glows_and_restore_pieces() -> void:
+	var owner := _owner()
+	_empty(owner)
+	var glows := _require_glows()
+	if glows.size() != 2:
+		return
+	var old_glows: Array[WeakRef] = []
+	for glow: Sprite2D in glows:
+		old_glows.append(weakref(glow))
+	owner.take_damage(owner.stats.max_health)
+	assert_eq(_red_energy(glows), 0.0, "La baja normaliza antes del borrado diferido")
+	_level.call("_try_deploy_soldado", HOME)
+	var replacement := _owner()
+	assert_not_null(replacement)
+	if replacement == null:
+		return
+	await wait_process_frames(3)
+	for reference: WeakRef in old_glows:
+		assert_null(reference.get_ref(), "El brillo viejo no sobrevive al sucesor")
+	var fresh := _require_glows()
+	if fresh.size() != 2:
+		return
+	assert_eq(_red_energy(fresh), 0.0, "El sucesor cargado parte con aspecto normal")
+	_empty(replacement)
+	await wait_seconds(0.18)
+	assert_gt(_red_energy(fresh), 0.0)
+	_level.close_match()
+	assert_eq(_red_energy(fresh), 0.0, "Cerrar cancela la señal sin esperar otro frame")
+	await wait_process_frames(3)
+	for piece: Sprite2D in _trench_parts():
+		assert_eq(piece.get_child_count(), 0, "No quedan efectos fuera del control retirado")
