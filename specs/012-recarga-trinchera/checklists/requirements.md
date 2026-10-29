@@ -27,4 +27,4 @@
 - [X] Interfaz neutral antes de RED, autoridad actual y ciclo de señales previstos sin afirmar ejecución.
 - [X] No se requiere API, persistencia ni dato nuevo; no se heredan aprobaciones físicas o de beta.
 
-La revisión de autoría contrastó los puntos anteriores con spec/plan/contrato e inputs confirmados; QA revisó preparación y alcance funcional por sus etapas. La consolidación documental y CI exacto aún requieren revisión para el gate final de integración.
+La revisión de autoría contrastó los puntos anteriores con spec/plan/contrato e inputs confirmados; QA revisó preparación y alcance funcional por sus etapas. El seguimiento de consolidación documental, CI exacto y gate final de integración se mantiene en [tasks.md](../tasks.md) y [PR #50](https://github.com/Juanpvivas/demons/pull/50); publicación con gate separado.

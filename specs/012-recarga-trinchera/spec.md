@@ -1,7 +1,7 @@
 # Feature Specification: Recarga directa sobre la trinchera
 
 **Feature ID**: `012-recarga-trinchera` | **Planned Branch**: `codex/012-recarga-trinchera`
-**Created**: 2026-10-29 | **Status**: `012-I1` aprobado funcionalmente en T008 sobre `ba122ef`; gate final de integración/documentación/CI y publicación pendientes.
+**Created**: 2026-10-29 | **Status**: `012-I1` aprobado funcionalmente en T008 sobre `ba122ef`; seguimiento de integración/documentación/CI en [tasks.md](tasks.md) y [PR #50](https://github.com/Juanpvivas/demons/pull/50). Publicación con gate separado.
 **Tracking**: [Issue #49](https://github.com/Juanpvivas/demons/issues/49).
 **Input**: mover «Recargar» sobre la trinchera; confirmación «Sí, botón directo en cada trinchera».
 **Perfil confirmado**: cada trinchera muestra automáticamente su botón cuando su dueño vivo se queda sin balas, sin selección previa. Sustituye la acción del panel; conserva sus reglas, texto, estilo y tamaño mínimo actuales.
@@ -69,4 +69,4 @@ Como jugador, quiero pulsar «Recargar» sobre la trinchera del soldado sin bala
 
 ## Alcance de la aprobación funcional
 
-T008 aprueba el comportamiento de T005–T007 en su alcance observado, sin cerrar el gate final de integración. Chrome aporta revisión visual con canvas/DOM 960 y DPR 1; la comprobación lógica de resize mediante GUT es evidencia separada. No se acredita interacción de recarga nativa: Android bloqueó la inyección de entrada e iOS Simulator no fue controlable; el bootstrap previo iOS Compatibility sólo mostró menú, sin certificar paquete/renderer final. El cruce preexistente entre aviso de oleada y primera barra de vida conserva su límite. No se certifican FPS ni publicación.
+T008 aprueba el comportamiento de T005–T007 en su alcance observado; el seguimiento del gate final de integración está en [tasks.md](tasks.md) y [PR #50](https://github.com/Juanpvivas/demons/pull/50). Chrome aporta revisión visual con canvas/DOM 960 y DPR 1; la comprobación lógica de resize mediante GUT es evidencia separada. No se acredita interacción de recarga nativa: Android bloqueó la inyección de entrada e iOS Simulator no fue controlable; el bootstrap previo iOS Compatibility sólo mostró menú, sin certificar paquete/renderer final. El cruce preexistente entre aviso de oleada y primera barra de vida conserva su límite. No se certifican FPS ni publicación.

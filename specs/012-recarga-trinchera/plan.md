@@ -2,7 +2,7 @@
 
 **Feature ID**: `012-recarga-trinchera` | **Planned Branch**: `codex/012-recarga-trinchera` | **Date**: 2026-10-29 | **Spec**: [spec.md](spec.md)
 **Tracking**: [Issue #49](https://github.com/Juanpvivas/demons/issues/49) | **Entrega**: `012-I1`.
-**Note**: preparación con Spec Kit y templates del preset `demons-agent-tdd`; `demons-preparation` termina al revisar tareas. Ejecución por agentes según `docs/DEVELOPMENT_WORKFLOW.md`; T008 aprobó funcionalmente `012-I1` sobre `ba122ef`. Documentación/CI exacto y gate final de integración pendientes; [límites de alcance](spec.md#alcance-de-la-aprobación-funcional), publicación separada.
+**Note**: preparación con Spec Kit y templates del preset `demons-agent-tdd`; `demons-preparation` termina al revisar tareas. Ejecución por agentes según `docs/DEVELOPMENT_WORKFLOW.md`; T008 aprobó funcionalmente `012-I1` sobre `ba122ef`. Seguimiento de documentación/CI y gate final de integración en [tasks.md](tasks.md) y [PR #50](https://github.com/Juanpvivas/demons/pull/50); [límites de alcance](spec.md#alcance-de-la-aprobación-funcional), publicación separada.
 
 ## Summary
 

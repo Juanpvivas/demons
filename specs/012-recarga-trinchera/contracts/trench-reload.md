@@ -1,6 +1,6 @@
 # Contrato — Recarga por hogar
 
-**Estado**: comportamiento de `012-I1` aprobado funcionalmente en T008 sobre `ba122ef`; gate final de integración/documentación/CI pendiente. [Requisitos y límites](../spec.md), [Issue #49](https://github.com/Juanpvivas/demons/issues/49). Sin aprobación de publicación.
+**Estado**: comportamiento de `012-I1` aprobado funcionalmente en T008 sobre `ba122ef`; seguimiento de integración/documentación/CI en [tasks.md](../tasks.md) y [PR #50](https://github.com/Juanpvivas/demons/pull/50). [Requisitos y límites](../spec.md), [Issue #49](https://github.com/Juanpvivas/demons/issues/49). Publicación con gate separado.
 
 ## Interfaz mínima y setup neutral
 
