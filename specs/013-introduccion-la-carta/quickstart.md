@@ -1,5 +1,11 @@
 # Verificación — La carta
 
+**Vigencia actual**: comportamiento R3, siete narraciones humanas toma3 y
+compañero sintético Qwen definitivo, aceptado expresamente por la persona
+según [SOURCES](../../assets/audio/narrative/la_carta/SOURCES.md). Las menciones
+Ald/candidata y sus pendientes en pasos de I1–R3 son historia de esos medios;
+no son el estado actual ni una nueva audición atribuida al agente.
+
 ## Escenarios históricos de I1
 
 Escenarios de comprobación reproducibles; su enumeración no afirma que todos
@@ -20,7 +26,7 @@ CI/gate final de integración T011–T012 y publicación T014 siguen separados.
 
 No añadir capturas/logs/manifiestos de evidencia a Git. Usar temporales/síntesis PR, mantener pausa006 y pendientes004/005. Distribuir sólo con gate/autorización futura.
 
-## Escenarios vigentes R2
+## Escenarios históricos R2
 
 T021 aprueba el alcance funcional disponible de cuatro correcciones y la
 integración técnica de Ald preview/ambiente, con [límites de R2](research.md#alcance-funcional-r2-y-límites).
@@ -54,7 +60,7 @@ audición perceptual final; T024, T026/SC-009 y T014 siguen separados.
    en R2 y conservar límites físicos/paquete/FPS y riesgos anteriores. Sin nueva
    campaña de rendimiento ni distribución; SC-008/T014 permanece pendiente.
 
-## Enmienda vigente R3
+## Enmienda R3 — comportamiento actual e historia de medios
 
 T032 aprueba función R3 y T026/SC-009 con narrador toma3 elegido por la persona
 y compañero Ald provisional; [alcance y límites](research.md#alcance-funcional-r3-y-límites).

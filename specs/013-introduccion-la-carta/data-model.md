@@ -1,6 +1,9 @@
 # Datos — La carta
 
-Contrato vigente de R2; las aprobaciones I1 mantienen su alcance histórico.
+El esquema introducido en R2 conserva su estructura; rige comportamiento R3,
+con narrador humano toma3 y compañero sintético Qwen definitivo aceptado por
+la persona según [SOURCES](../../assets/audio/narrative/la_carta/SOURCES.md).
+Las voces Ald y entregas parciales siguientes describen historia, no el medio actual.
 
 ## IntroSlide (Resource inmutable)
 
@@ -16,9 +19,10 @@ ninguno almacena posición de reproducción. La versión narrativa conserva el
 recuerdo existente al no cambiar el guion hablado. `caption` puede conservarse
 como dato histórico, pero nunca se presenta durante las imágenes en R2.
 
-Los AudioStream de narración admiten Ald provisional durante la entrega parcial
+Los AudioStream de narración admitían Ald provisional durante la entrega parcial
 y sustitución por las siete grabaciones humanas en T026 al recibirse el archivo,
-sin nuevo tipo de dato ni persistencia. El compañero humano es opcional.
+sin nuevo tipo de dato ni persistencia. La opción de compañero humano pertenece
+a esa preparación; el medio actual definitivo es sintético, separado del narrador.
 
 ## IntroPlayer (estado por instancia)
 

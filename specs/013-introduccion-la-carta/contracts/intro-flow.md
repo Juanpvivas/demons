@@ -4,6 +4,12 @@
 actualiza destino de replay, presentación/audio y salida de partida. La
 descripción de setup neutral es histórica y no requiere repetirlo.
 
+Actualmente rige comportamiento R3 con narrador humano toma3 y compañero
+sintético Qwen definitivo, aceptado expresamente por la persona según
+[SOURCES](../../../assets/audio/narrative/la_carta/SOURCES.md). Las referencias
+Ald/provisional y espera de archivo en enmiendas R2/R3 conservan su historia;
+no reabren la voz aceptada ni atribuyen audición al agente.
+
 T002 proporciona firmas neutrales que permiten ejecutar RED por aserción. No conectar flujo nuevo ni reproducir/guardar durante setup. Cambios de interfaz se comunican antes al tester.
 
 ## IntroPlayer (`Control`)
