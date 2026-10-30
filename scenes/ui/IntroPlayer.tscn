@@ -115,40 +115,11 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 52)
 text = "Omitir"
 
-[node name="StartPanel" type="CenterContainer" parent="SafeArea"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="StartButton" type="Button" parent="SafeArea/Layout/Footer/Contents/Actions"]
 unique_name_in_owner = true
 visible = false
-mouse_filter = 2
-
-[node name="Panel" type="PanelContainer" parent="SafeArea/StartPanel"]
 layout_mode = 2
-
-[node name="Contents" type="VBoxContainer" parent="SafeArea/StartPanel/Panel"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="Title" type="Label" parent="SafeArea/StartPanel/Panel/Contents"]
-layout_mode = 2
-text = "Demonios de las Trincheras"
-horizontal_alignment = 1
-autowrap_mode = 3
-
-[node name="Fiction" type="Label" parent="SafeArea/StartPanel/Panel/Contents"]
-layout_mode = 2
-text = "Una carta ficticia inspirada en el Batallón Colombia."
-horizontal_alignment = 1
-autowrap_mode = 3
-
-[node name="StartButton" type="Button" parent="SafeArea/StartPanel/Panel/Contents"]
-unique_name_in_owner = true
-layout_mode = 2
-custom_minimum_size = Vector2(0, 64)
+custom_minimum_size = Vector2(0, 52)
 text = "Comenzar"
 
 [node name="Voice" type="AudioStreamPlayer" parent="."]

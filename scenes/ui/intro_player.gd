@@ -15,6 +15,8 @@ var _closed: bool = true
 var _application_active: bool = true
 var _companion_started: bool = false
 var _prompting: bool = false
+var _playing_panel_style: StyleBox
+var _prompt_panel_style: StyleBoxEmpty
 
 @onready var _image: TextureRect = $Stage/Image
 @onready var _previous_image: TextureRect = $Stage/PreviousImage
@@ -23,13 +25,16 @@ var _prompting: bool = false
 @onready var _footer: PanelContainer = %Footer
 @onready var _pause_button: Button = %PauseButton
 @onready var _skip_button: Button = %SkipButton
-@onready var _start_panel: CenterContainer = %StartPanel
 @onready var _start_button: Button = %StartButton
 @onready var _voice: AudioStreamPlayer = $Voice
 @onready var _ambience: AudioStreamPlayer = $Ambience
 
 
 func _ready() -> void:
+	_playing_panel_style = _footer.get_theme_stylebox("panel")
+	_prompt_panel_style = StyleBoxEmpty.new()
+	for side: int in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
+		_prompt_panel_style.set_content_margin(side, _playing_panel_style.get_content_margin(side))
 	_pause_button.pressed.connect(_on_pause_pressed)
 	_skip_button.pressed.connect(skip_intro)
 	_start_button.pressed.connect(_on_start_pressed)
@@ -61,8 +66,13 @@ func play(sequence: Resource) -> void:
 	_closed = false
 	_paused = false
 	_prompting = false
-	_start_panel.hide()
+	_start_button.hide()
+	_start_button.disabled = true
 	_footer.show()
+	_footer.add_theme_stylebox_override("panel", _playing_panel_style)
+	_subtitle.show()
+	_pause_button.show()
+	_skip_button.show()
 	_pause_button.text = "Pausar"
 	_pause_button.disabled = false
 	_skip_button.disabled = false
@@ -159,9 +169,13 @@ func show_start_prompt() -> void:
 	if not _closed:
 		return
 	_prompting = true
-	_footer.hide()
+	_subtitle.hide()
+	_pause_button.hide()
+	_skip_button.hide()
+	_footer.add_theme_stylebox_override("panel", _prompt_panel_style)
 	_image.modulate.a = 1.0
-	_start_panel.show()
+	_previous_image.hide()
+	_start_button.show()
 	_start_button.disabled = false
 	_start_button.grab_focus()
 
@@ -258,7 +272,6 @@ func _apply_layout() -> void:
 	var usable_width := maxf(0.0, viewport_size.x - insets.x - insets.z)
 	var font_size := clampi(int(minf(usable_width * 0.028, viewport_size.y * 0.042)), 18, 28)
 	_subtitle.add_theme_font_size_override("font_size", font_size)
-	for button: Button in [_pause_button, _skip_button]:
+	for button: Button in [_pause_button, _skip_button, _start_button]:
 		button.add_theme_font_size_override("font_size", clampi(int(usable_width * 0.025), 18, 24))
-	_start_panel.get_node("Panel").custom_minimum_size.x = minf(600.0, usable_width)
 	_render_slide()
