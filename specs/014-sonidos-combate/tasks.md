@@ -7,8 +7,8 @@
 ## Fase 1: Preparación y contrato neutral
 
 - [X] T001 project-orchestrator con qa-validator: revisar preparación `specs/014-sonidos-combate/`, cinco cues, exclamación breve+caída autorizada, eventos reales/reciclado/resultado/limpieza y gates. Aprobar antes de modificar código.
-- [ ] T002 dev-godot: declarar únicamente `scenes/audio/combat_audio.gd` y `resources/schemas/combat_audio_profile.gd` importables según contrato, con firmas/arrays/configuración neutras; sin pool, señales conectadas, reproducción, recurso final o cambios de nivel/actores/Managers. Depende T001.
-- [ ] T003 godot-tester con qa-validator: comprobar carga/importación de T002 y neutralidad contra base; QA emite veredicto de setup sin aprobar comportamiento. Usar harness GUT vigente; error de entorno/parser no vale RED. Depende T002.
+- [X] T002 dev-godot: declarar únicamente `scenes/audio/combat_audio.gd` y `resources/schemas/combat_audio_profile.gd` importables según contrato, con firmas/arrays/configuración neutras; sin pool, señales conectadas, reproducción, recurso final o cambios de nivel/actores/Managers. Depende T001.
+- [X] T003 godot-tester con qa-validator: comprobar carga/importación de T002 y neutralidad contra base; QA emite veredicto de setup sin aprobar comportamiento. Usar harness GUT vigente; error de entorno/parser no vale RED. Depende T002.
 
 ## Fase 2: RED de hechos y ciclo de sesión
 
