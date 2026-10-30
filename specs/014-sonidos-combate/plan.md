@@ -4,6 +4,9 @@
 **Base**: main `77be629`, 013 integrado. Preparación Spec Kit `demons-preparation`; ejecución por roles, sin speckit-implement.
 **Tracking**: [Issue #55](https://github.com/Juanpvivas/demons/issues/55)
 
+**Estado**: T009 aprueba función disponible de014-I1; documentación se consolida
+en T010 antes de CI/head exacto y gate final T012. Publicación T014 pendiente.
+
 ## Summary
 
 Servicio CombatAudio hijo del nivel, configurado por Resource inmutable. Observa confirmaciones reales y mezcla cinco cues en voces precalentadas finitas; no es otro autoload ni autoridad de combate.
@@ -50,6 +53,7 @@ specs/014-sonidos-combate/contracts/combat-audio.md
 ## Diseño concreto
 
 - Soldado ya emite rifle_shot_visual_requested tras descontar munición, antes de daño, y defeat_visual_requested sólo al morir. Enemigo emite derrota antes de enemy_defeated y reciclado. Observar esas confirmaciones semánticas existentes sin depender de animación/píxeles; no introducir un segundo disparo o daño.
+- La integración aprobada verifica `Enemigo.has_confirmed_defeat()` de sólo lectura antes de admitir una baja: cleanup de un actor vivo no es muerte. Conservar dedupe por activación sin modificar emisores/stats.
 - Nivel registra soldados iniciales/reemplazos y el spawner registra cada enemigo físico una vez. Cada baja se distingue por instancia+activation_generation (enemigo) o identidad de soldado; no rechazar una muerte porque el actor ya se desactivó antes de emitir.
 - GameStateManager emite transición y game_won/game_lost: elegir una sola fuente terminal, con guard por intento. Aceptar baja final antes de resultado; las voces ya admitidas pueden terminar en capacidad acotada, sin nuevos ataques tras terminal.
 - Pool local precalentado de8 AudioStreamPlayers para disparos/bajas, con reemplazo del más antiguo si se satura, sin cola de espera; un reproductor reservado para resultado evita que ráfagas lo roben. Los9 players sólo usan GameplaySFX; variación mediante RNG local independiente, resultado sin variación.

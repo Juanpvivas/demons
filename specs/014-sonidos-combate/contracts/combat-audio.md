@@ -21,6 +21,7 @@ CombatAudioProfile declara cinco arrays tipados de AudioStream y configuración 
 - Soldados se registran al crearse; spawner recibe dependencia opcional al final de setup para preservar llamadas existentes y registra enemigos en instance_created una vez por nodo.
 - rifle_shot_visual_requested corresponde al tiro ya consumido; defeat_visual_requested corresponde a baja ya confirmada antes de deactivación/reciclado. Estos eventos pueden observarse aunque no haya efecto visible; no extraer sonido de un frame/animación.
 - Distinguir baja por identidad/activación del actor, snapshot de esa transacción y generación de sesión; un callback antiguo no afecta una voz reutilizada o intento nuevo.
+- Para enemigo, `has_confirmed_defeat() -> bool` es consulta de sólo lectura de muerte letal confirmada. La mera desactivación por cleanup no autoriza audio de baja, aunque llegue un callback viejo; no modifica señales, salud o stats.
 - No cambiar firmas/semántica jugables. Si una conexión adicional exige parámetro, hacerlo opcional y preservar fixtures existentes, notificando al tester.
 - Observar resultado por una sola fuente GameStateManager y guard terminal por sesión: exactamente victoria o derrota, nunca por enter_menu/close_match/retry. En la cadena de tiro letal final se aceptan tiro, baja y victoria una vez cada uno; resultado no corta los sonidos ya admitidos.
 

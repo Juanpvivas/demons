@@ -1,5 +1,10 @@
 # Verificación prevista — Sonidos de combate
 
+Escenarios reproducibles, no afirmación de observación completa en cada destino.
+T009 aprueba función disponible con [límites explícitos](research.md#alcance-funcional-aprobado-y-límites);
+suite completa/CI del head final y gate T012, audición y publicación T014 se
+mantienen diferenciados. Una captura software no certifica mezcla Web/hardware.
+
 1. Perfil/fixtures de audio aislados: soldado con munición/blanco válido dispara y se oye una petición; última bala incluida. Sin blanco/munición, recarga y animaciones no inventan tiros.
 2. Herir sin matar a cada bando no produce baja; matar produce una, repetir daño/cleanup no otra. Reciclar enemigo y volver a matarlo sí produce una nueva. Registrar actor dos veces no duplica.
 3. Provocar victoria/derrota reales por fixture declarado; una señal terminal por intento. Tiro letal final+baja+victoria una vez cada uno, sin que el resultado corte sonidos ya admitidos. Menú/retry nunca suenan como resultado.

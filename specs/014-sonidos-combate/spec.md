@@ -3,7 +3,7 @@
 **Feature ID**: `014-sonidos-combate`
 **Planned Branch**: `codex/014-sonidos-combate`
 **Created**: 2026-10-30
-**Status**: Preparación para QA, no implementación aprobada
+**Status**: Funcionalidad T007–T009 aprobada en rama; CI/suite completa del head final y gate T012 pendientes, publicación T014/SC-007 separada
 **Tracking**: [Issue #55](https://github.com/Juanpvivas/demons/issues/55)
 **Input**: Incorporar cinco sonidos offline: disparo de fusil confirmado, muerte enemiga, muerte del soldado colombiano, victoria y derrota. La persona eligió para ambas bajas una exclamación breve acompañada de caída; no voces largas ni narración nueva.
 

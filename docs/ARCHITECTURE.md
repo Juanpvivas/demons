@@ -628,6 +628,30 @@ del motor, no RSS/VRAM ni prueba de causa o fuga. La cadencia en renderers nativ
 software permanece muy por debajo de 60 FPS; no certifica dispositivos físicos.
 La aceptación y CI de cada revisión exacta se registran en el PR del incremento.
 
+### 4.9 Audio de combate local a la sesión
+
+014-I1/T007–T009 añade `CombatAudio` como hijo del nivel y
+`CombatAudioProfile` inmutable con cinco arrays de cues/nueve variantes. Nivel
+y spawner registran actores una sola vez. Observa las señales confirmadas de
+disparo/baja existentes, sin depender de animación visible o alterar emisores.
+Las bajas se deduplican por identidad/activación; `Enemigo.has_confirmed_defeat()`
+es consulta de sólo lectura que distingue muerte letal de desactivación por
+cleanup, sin cambiar stats o señales. El resultado tiene guard de sesión;
+tiro/baja final ya admitidos terminan aunque llegue victoria.
+
+Ocho reproductores de combate y uno reservado a resultado se precalientan y
+reutilizan sin cola ilimitada. RNG propio sólo varía presentación. Todos usan
+Stream y GameplaySFX en layout estático, con HardLimiter de techo −3 dB;
+Sample Web eludiría los efectos de bus. Master/intro no se modifican. Pausa/foco
+detienen one-shots sin reanudarlos atrasados; cierre invalida generaciones,
+desconecta actores y para sólo voces propias, sin mutear/borrar bus compartido
+o afectar otra sesión/intro. Los getters cuentan combate más resultado.
+
+La captura software de mezcla no certifica techo/latencia Web o hardware.
+Stream Web puede añadir latencia, especialmente con un hilo; no hay medición
+acreditada en esta entrega. Los [límites de014](../specs/014-sonidos-combate/research.md#alcance-funcional-aprobado-y-límites)
+conservan gate final/CI pendiente y publicación separada.
+
 ## 5. Composición de escenas (ejemplo concreto)
 
 - **`Soldado.tscn`**: desde 005-I2, raíz `CharacterBody2D` en modo flotante y
@@ -1100,3 +1124,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-30 | 013/T022 tras QA funcional T021: §4.8 unifica destino Comenzar, audio de ambiente separado y retorno activo mediante intención HUD/nivel/raíz con cierre común; guards terminales y límites de publicación conservados. |
 | 2026-10-30 | 013/T033 tras QA funcional T032: §4.8 documenta prompt inferior aislado por API pública, imagen estable en espera/resize y narrador humano con compañero provisional separado; audio/recuerdo/cierre y gates conservados. |
 | 2026-10-30 | Corrección documental 013: aceptación humana definitiva del clip sintético del compañero, sin cambios de recursos de audio ni lógica y con publicación pendiente. |
+| 2026-10-30 | 014/T010 tras QA funcional T009: §4.9 documenta audio local, pool8+1, señales confirmadas/consulta letal de sólo lectura y routing Stream/GameplaySFX aislado; CI/integración final, audición y publicación mantienen límites. |
