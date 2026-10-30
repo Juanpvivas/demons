@@ -1,6 +1,14 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/intro_player.gd" id="1_intro"]
+[ext_resource type="Theme" path="res://resources/ui/monte_calvo_theme.tres" id="2_theme"]
+
+[sub_resource type="StyleBoxFlat" id="SubtitlePanel"]
+content_margin_left = 20.0
+content_margin_top = 12.0
+content_margin_right = 20.0
+content_margin_bottom = 12.0
+bg_color = Color(0.045, 0.055, 0.045, 0.88)
 
 [node name="IntroPlayer" type="Control"]
 layout_mode = 3
@@ -9,4 +17,164 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_theme")
 script = ExtResource("1_intro")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.025, 0.03, 0.03, 1)
+
+[node name="Stage" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+clip_contents = true
+
+[node name="PreviousImage" type="TextureRect" parent="Stage"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Image" type="TextureRect" parent="Stage"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SafeArea" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Layout" type="VBoxContainer" parent="SafeArea"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="Counter" type="Label" parent="SafeArea/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/outline_size = 4
+theme_override_colors/font_outline_color = Color(0.02, 0.025, 0.02, 1)
+text = "La carta"
+
+[node name="Caption" type="Label" parent="SafeArea/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 24
+theme_override_constants/outline_size = 4
+theme_override_colors/font_outline_color = Color(0.02, 0.025, 0.02, 1)
+autowrap_mode = 3
+
+[node name="Fiction" type="Label" parent="SafeArea/Layout"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 14
+theme_override_constants/outline_size = 3
+theme_override_colors/font_outline_color = Color(0.02, 0.025, 0.02, 1)
+text = "Relato ficticio inspirado en el Batallón Colombia."
+autowrap_mode = 3
+
+[node name="Spacer" type="Control" parent="SafeArea/Layout"]
+layout_mode = 2
+mouse_filter = 2
+size_flags_vertical = 3
+
+[node name="Footer" type="PanelContainer" parent="SafeArea/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("SubtitlePanel")
+
+[node name="Contents" type="VBoxContainer" parent="SafeArea/Layout/Footer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Subtitle" type="Label" parent="SafeArea/Layout/Footer/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Actions" type="HBoxContainer" parent="SafeArea/Layout/Footer/Contents"]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="PauseButton" type="Button" parent="SafeArea/Layout/Footer/Contents/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 52)
+text = "Pausar"
+
+[node name="SkipButton" type="Button" parent="SafeArea/Layout/Footer/Contents/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 52)
+text = "Omitir"
+
+[node name="StartPanel" type="CenterContainer" parent="SafeArea"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+unique_name_in_owner = true
+visible = false
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="SafeArea/StartPanel"]
+layout_mode = 2
+
+[node name="Contents" type="VBoxContainer" parent="SafeArea/StartPanel/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="SafeArea/StartPanel/Panel/Contents"]
+layout_mode = 2
+text = "Demonios de las Trincheras"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Fiction" type="Label" parent="SafeArea/StartPanel/Panel/Contents"]
+layout_mode = 2
+text = "Una carta ficticia inspirada en el Batallón Colombia."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="StartButton" type="Button" parent="SafeArea/StartPanel/Panel/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 64)
+text = "Comenzar"
+
+[node name="Voice" type="AudioStreamPlayer" parent="."]
