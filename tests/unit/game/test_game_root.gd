@@ -104,10 +104,14 @@ func _intro_sequence() -> IntroSequence:
 
 
 func _button(text: String) -> Button:
+	var fallback: Button
 	for node: Node in _app.find_children("*", "Button", true, false):
 		if (node as Button).text == text:
-			return node as Button
-	return null
+			if (node as Button).is_visible_in_tree():
+				return node as Button
+			if fallback == null:
+				fallback = node as Button
+	return fallback
 
 
 func _soldiers(node: Node) -> Array[Soldado]:
@@ -555,16 +559,31 @@ func test_return_from_each_real_result_waits_in_menu_and_starts_clean_three_time
 		assert_eq(_wave_events.size(), waves_before + 1)
 
 
-func test_menu_request_during_playing_keeps_the_live_attempt() -> void:
+func test_r2_menu_request_from_playing_or_paused_closes_the_attempt(
+		paused = use_parameters([false, true])) -> void:
 	var level: Node = await _start_retry_fixture()
 	if level == null:
 		return
+	if paused:
+		GameStateManager._current_state = GameStateManager.GameState.PAUSED
+		GameStateManager.game_state_changed.emit(GameStateManager.GameState.PAUSED)
+	var previous: WeakRef = weakref(level)
+	var old_objects := _weak_tree(level)
+	var callbacks := _navigation_callbacks(level)
 	_app.request_menu()
-	await wait_process_frames(3)
-	assert_same(_app.get_current_level(), level, "No se añade salida durante combate")
-	assert_eq(GameStateManager._current_state, GameStateManager.GameState.PLAYING)
-	assert_false(_button("Jugar").is_visible_in_tree())
-	assert_eq(_wave_events, [1])
+	_app.request_menu()
+	if not await _assert_returned_menu(previous, old_objects, 1):
+		return
+	_app.request_start()
+	var next: Node = await _new_level()
+	assert_not_null(next, "Jugar después del retorno crea una partida limpia")
+	if next == null:
+		return
+	await _assert_clean_retry(next, old_objects)
+	for callback: Callable in callbacks:
+		callback.call()
+	await wait_process_frames(2)
+	assert_same(_app.get_current_level(), next, "Ninguna intención vieja cierra el intento nuevo")
 
 
 func test_alternating_result_buttons_keep_the_first_accepted_destination(
@@ -885,7 +904,7 @@ func test_closing_an_unfinished_intro_does_not_mark_it_seen() -> void:
 	assert_null(_app.get_current_level())
 
 
-func test_replay_always_opens_at_first_scene_and_returns_to_menu(
+func test_r2_replay_always_opens_at_first_scene_and_waits_for_start(
 		skipped = use_parameters([false, true])) -> void:
 	await _mount(ROOT_SCENE, RETRY_LEVEL)
 	var replay := _button("Ver introducción")
@@ -902,11 +921,23 @@ func test_replay_always_opens_at_first_scene_and_returns_to_menu(
 	assert_eq(intro.get_slide_index(), 0)
 	assert_null(_app.get_current_level())
 	await _finish_intro(intro, skipped)
-	assert_true(await _wait_menu(), "Replay vuelve al menú sin pantalla de combate")
-	assert_null(_app.get_current_intro())
+	assert_true(is_instance_valid(intro) and _app.get_current_intro() == intro,
+		"Replay espera Comenzar en su propia pantalla")
 	assert_null(_app.get_current_level())
 	assert_true(_wave_events.is_empty())
-	assert_same(_viewport.gui_get_focus_owner(), _button("Jugar"))
+	assert_false(_button("Jugar").is_visible_in_tree(), "No se vuelve automáticamente al menú")
+	var start := _button("Comenzar")
+	assert_not_null(start)
+	if start == null:
+		return
+	assert_true(start.is_visible_in_tree())
+	var observer := GestureObserver.new()
+	_viewport.add_child(observer)
+	for repeat in 3:
+		_click(start.get_global_rect().get_center())
+	assert_not_null(await _new_level())
+	assert_eq(_wave_events, [1], "Sólo un gesto nuevo inicia la partida desde replay")
+	assert_eq(observer.presses, 0, "Comenzar no atraviesa al tablero")
 
 
 func test_retired_intro_callbacks_cannot_end_or_start_a_new_replay() -> void:
@@ -923,6 +954,16 @@ func test_retired_intro_callbacks_cannot_end_or_start_a_new_replay() -> void:
 			old_callbacks.append(connection.callable)
 	assert_false(old_callbacks.is_empty(), "Control: salida vigente conectada a la raíz")
 	await _finish_intro(first, true)
+	# R2: la repetición terminada espera Comenzar; volver luego desde partida.
+	_app.request_intro_start()
+	var level: Node = await _new_level()
+	assert_not_null(level)
+	if level == null:
+		return
+	if not await _real_result(level, "won"):
+		return
+	_app.request_menu()
+	assert_true(await _wait_menu())
 	_app.request_intro()
 	await wait_process_frames(2)
 	var second: Node = _app.get_current_intro()
@@ -934,4 +975,41 @@ func test_retired_intro_callbacks_cannot_end_or_start_a_new_replay() -> void:
 	_app.request_intro_start()
 	await wait_process_frames(2)
 	assert_same(_app.get_current_intro(), second, "Aviso retirado no cierra la reproducción nueva")
-	assert_null(_app.get_current_level(), "Comenzar ajeno a START_GAME se rechaza")
+	assert_null(_app.get_current_level(), "Comenzar antes del final de la carta se rechaza")
+
+
+func test_r2_real_active_menu_button_closes_every_level_object_and_consumes_input(
+		paused = use_parameters([false, true])) -> void:
+	var level: Node = await _start_retry_fixture()
+	if level == null:
+		return
+	if paused:
+		GameStateManager._current_state = GameStateManager.GameState.PAUSED
+		GameStateManager.game_state_changed.emit(GameStateManager.GameState.PAUSED)
+	await wait_process_frames(2)
+	var menu := _button("Menú principal")
+	assert_true(menu != null and menu.is_visible_in_tree(), "El nivel ofrece Menú principal durante la partida")
+	if menu == null or not menu.is_visible_in_tree():
+		return
+	# Audio real de fixture, además de actores/pools/timers: no debe sobrevivir.
+	var sound := AudioStreamPlayer.new()
+	sound.stream = load("res://assets/audio/narrative/la_carta/narracion_01.wav")
+	level.add_child(sound)
+	sound.play()
+	assert_true(sound.playing, "Control: existe audio del intento por cerrar")
+	var old_objects := _weak_tree(level)
+	var previous: WeakRef = weakref(level)
+	var observer := GestureObserver.new()
+	_viewport.add_child(observer)
+	var position := menu.get_global_rect().get_center()
+	for repeat in 3:
+		_click(position)
+	if not await _assert_returned_menu(previous, old_objects, 1):
+		return
+	assert_eq(observer.presses, 0, "El gesto de salir no alcanza input del tablero")
+	_app.request_start()
+	var next: Node = await _new_level()
+	assert_not_null(next)
+	if next != null:
+		assert_eq(_soldiers(next).size(), 5)
+		assert_eq(_wave_events, [1, 1], "Una única partida nueva después de cerrar")
