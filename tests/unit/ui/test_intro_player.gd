@@ -395,3 +395,49 @@ func test_r3_prompt_is_only_a_lower_action_with_the_current_image_and_silence(
 	_player.advance_intro(10.0)
 	assert_true(_playing_channels().is_empty(), "La vuelta de foco no revive sonido cerrado")
 	assert_signal_not_emitted(_player, "start_requested")
+
+
+func test_r3_early_skip_freezes_the_visible_frame_even_after_resize() -> void:
+	_player.close_intro()
+	_player.queue_free()
+	var viewport := SubViewport.new()
+	viewport.size = Vector2i(1152, 648)
+	add_child_autofree(viewport)
+	_sequence.transition_duration = 0.6
+	for index in _sequence.slides.size():
+		var pixels := Image.create(8, 8, false, Image.FORMAT_RGBA8)
+		pixels.fill(Color(float(index) / 3.0, 0.25, 0.5))
+		_sequence.slides[index].image = ImageTexture.create_from_image(pixels)
+	_player = PLAYER.instantiate() as Control
+	viewport.add_child(_player)
+	_player.play(_sequence)
+	_player.set_process(false)
+	_player.advance_intro(0.6) # Entra al segundo cuadro y conserva una imagen anterior real.
+	_player.advance_intro(0.1) # Fundido de producción todavía activo.
+	await wait_process_frames(2)
+	var image: TextureRect = _player.get_node("Stage/Image")
+	var previous: TextureRect = _player.get_node("Stage/PreviousImage")
+	assert_eq(_player.get_slide_index(), 1, "Control: omitir un fundido entre dos imágenes válidas")
+	assert_same(image.texture, _sequence.slides[1].image)
+	assert_same(previous.texture, _sequence.slides[0].image)
+	assert_lt(image.modulate.a, 1.0, "Control positivo: el fundido aún no terminó")
+	assert_true(previous.is_visible_in_tree())
+	_player.skip_intro()
+	_player.show_start_prompt()
+	await wait_process_frames(2)
+	assert_eq(image.modulate.a, 1.0, "El prompt muestra plenamente el último cuadro")
+	assert_false(previous.is_visible_in_tree(), "El prompt retira la imagen anterior")
+	for viewport_size: Vector2i in [Vector2i(960, 600), Vector2i(1280, 720)]:
+		viewport.size = viewport_size
+		await wait_process_frames(2)
+		assert_eq(image.modulate.a, 1.0, "Resize no reinicia un fundido ya cerrado")
+		assert_false(previous.is_visible_in_tree(), "Resize no reactiva la imagen anterior")
+		assert_same(image.texture, _sequence.slides[1].image, "Se conserva el cuadro al omitir")
+		var buttons := _visible_buttons()
+		assert_eq(buttons.size(), 1)
+		if buttons.size() == 1:
+			var rect := buttons[0].get_global_rect()
+			assert_eq(buttons[0].text, "Comenzar")
+			assert_true(Rect2(Vector2.ZERO, Vector2(viewport_size)).encloses(rect))
+			assert_gt(rect.get_center().y / float(viewport_size.y), 0.75, "El botón inferior sigue estable")
+		assert_true(_playing_channels().is_empty())
