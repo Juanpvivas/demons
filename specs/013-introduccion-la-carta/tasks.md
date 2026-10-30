@@ -7,14 +7,14 @@
 ## Fase 1: Preparación e interfaces neutrales
 
 - [X] T001 project-orchestrator con qa-validator: revisar preparación completa de `specs/013-introduccion-la-carta/`, decisiones confirmadas, cobertura FR/SC y dependencias; aprobar antes de modificar código.
-- [ ] T002 dev-godot: declarar únicamente interfaz neutral importable de `contracts/intro-flow.md` en `resources/schemas/intro_slide.gd`, `intro_sequence.gd`, `core/intro_progress.gd`, `scenes/ui/IntroPlayer.tscn`, `intro_player.gd`, `scenes/game/game_root.gd` y `scenes/ui/main_menu.gd`; sin reproducción/guardado/conexión de flujo. Tester comprueba carga y QA neutralidad; depende T001.
+- [X] T002 dev-godot: declarar únicamente interfaz neutral importable de `contracts/intro-flow.md` en `resources/schemas/intro_slide.gd`, `intro_sequence.gd`, `core/intro_progress.gd`, `scenes/ui/IntroPlayer.tscn`, `intro_player.gd`, `scenes/game/game_root.gd` y `scenes/ui/main_menu.gd`; sin reproducción/guardado/conexión de flujo. Tester comprueba carga y QA neutralidad; depende T001.
 
 ## Fase 2: RED de historias de usuario
 
-- [ ] T003 [US1] godot-tester: escribir/ejecutar RED válido en `tests/unit/ui/test_intro_player.gd` sobre orden/tiempo/voz-subtítulo, pausa/continuación/actividad, salida única por fin/omisión, cierre y callback viejo, prompt Comenzar; fixtures breves/audio válido y observación proporcional. Depende T002; fallo por aserción de comportamiento ausente, no parser/import.
-- [ ] T004 [US2] godot-tester: escribir/ejecutar RED válido en `tests/unit/systems/test_intro_progress.gd` y `tests/unit/game/test_game_root.gd` para primera entrada sin nivel, espera Comenzar, guardado por versión/final/omisión, lectura corrupta/error escritura, Jugar posterior y Retry directos, reentrada/gesto viejo. Usar almacenamiento temporal inyectado; depende T003, sin implementar comportamiento.
-- [ ] T005 [US3] godot-tester: escribir/ejecutar RED válido de botón/señal en `tests/unit/ui/test_main_menu.gd` y replay en `tests/unit/game/test_game_root.gd`: inicio escena1 y regreso menú tras fin/omisión sin nivel; controles/foco y callbacks viejos. Depende T004.
-- [ ] T006 qa-validator: revisar T003–T005 y controles positivos contra contrato/spec; aprobar sólo RED esperado válido y calidad de pruebas, no comportamiento entregado. Depende T005.
+- [X] T003 [US1] godot-tester: escribir/ejecutar RED válido en `tests/unit/ui/test_intro_player.gd` sobre orden/tiempo/voz-subtítulo, pausa/continuación/actividad, salida única por fin/omisión, cierre y callback viejo, prompt Comenzar; fixtures breves/audio válido y observación proporcional. Depende T002; fallo por aserción de comportamiento ausente, no parser/import.
+- [X] T004 [US2] godot-tester: escribir/ejecutar RED válido en `tests/unit/systems/test_intro_progress.gd` y `tests/unit/game/test_game_root.gd` para primera entrada sin nivel, espera Comenzar, guardado por versión/final/omisión, lectura corrupta/error escritura, Jugar posterior y Retry directos, reentrada/gesto viejo. Usar almacenamiento temporal inyectado; depende T003, sin implementar comportamiento.
+- [X] T005 [US3] godot-tester: escribir/ejecutar RED válido de botón/señal en `tests/unit/ui/test_main_menu.gd` y replay en `tests/unit/game/test_game_root.gd`: inicio escena1 y regreso menú tras fin/omisión sin nivel; controles/foco y callbacks viejos. Depende T004.
+- [X] T006 qa-validator: revisar T003–T005 y controles positivos contra contrato/spec; aprobar sólo RED esperado válido y calidad de pruebas, no comportamiento entregado. Depende T005.
 
 ## Fase 3: Implementación y GREEN de 013-I1
 
