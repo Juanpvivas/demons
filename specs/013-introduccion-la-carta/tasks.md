@@ -1,7 +1,7 @@
 # Tasks: La carta — introducción narrativa
 
 **Input**: [spec.md](spec.md), [plan.md](plan.md), [contrato](contracts/intro-flow.md), [guion](guion.md), [quickstart](quickstart.md).  
-**Entrega**: 013-I1; rama `codex/013-introduccion-la-carta`; [Issue #53](https://github.com/Juanpvivas/demons/issues/53); PR en borrador pendiente.  
+**Entrega**: 013-I1; rama `codex/013-introduccion-la-carta`; [Issue #53](https://github.com/Juanpvivas/demons/issues/53); [PR #54 en borrador](https://github.com/Juanpvivas/demons/pull/54).  
 **Flujo**: Spec Kit prepara, roles ejecutan según [workflow](../../docs/DEVELOPMENT_WORKFLOW.md). Sólo orquestador marca [X] tras QA. Sin nuevas evidencias versionadas.
 
 ## Fase 1: Preparación e interfaces neutrales
@@ -25,9 +25,9 @@
 ## Fase final: Documentación, CI y entrega
 
 - [X] T010 docs-writer: consolidar sólo comportamiento aprobado en `docs/SPEC.md`, `docs/ARCHITECTURE.md`, guía de usuario y `specs/013-introduccion-la-carta/`; resolver pregunta narrativa pertinente, conservar historia/pausa006/publicación004/005 y distinguir voz provisional/ficción. No volcar logs ni modificar tareas. Depende T009.
-- [ ] T011 project-orchestrator con godot-tester: comprobar diff/commits por resultado, publicar rama y verificar CI de revisión exacta; reutilizar GREEN válido, repetir sólo verificaciones invalidadas por cambios. Reportar en PR sin nuevas evidencias Git. Depende T010.
-- [ ] T012 qa-validator: revisar consolidación T010 y revisión exacta/CI T011; emitir APROBADO PARA INTEGRACIÓN sólo con fuente, GREEN/regresión, visual/build y CI suficientes, conservando publicación pendiente. Depende T011.
-- [ ] T013 project-orchestrator: consolidar Issue único y PR en borrador de 013-I1 con `Refs #<issue>`, trazabilidad RED/GREEN, QA y límites; marcar sólo alcance aprobado, adjuntar PR a chat, sin promoción/merge/distribución. Depende T012.
+- [X] T011 project-orchestrator con godot-tester: comprobar diff/commits por resultado, publicar rama y verificar CI de revisión exacta; reutilizar GREEN válido, repetir sólo verificaciones invalidadas por cambios. Reportar en PR sin nuevas evidencias Git. Depende T010.
+- [X] T012 qa-validator: revisar consolidación T010 y revisión exacta/CI T011; emitir APROBADO PARA INTEGRACIÓN sólo con fuente, GREEN/regresión, visual/build y CI suficientes, conservando publicación pendiente. Depende T011.
+- [X] T013 project-orchestrator: consolidar Issue único y PR en borrador de 013-I1 con `Refs #<issue>`, trazabilidad RED/GREEN, QA y límites; marcar sólo alcance aprobado, adjuntar PR a chat, sin promoción/merge/distribución. Depende T012.
 - [ ] T014 project-orchestrator con roles responsables: sólo ante autorización futura de publicación, completar SC-008 (artefacto exacto, firma/versión/renderer, hardware/smoke/60FPS y QA de publicación). Esta tarea permanece pendiente y no bloquea integración aprobada; no hereda excepciones beta.
 
 ## Dependencias y ejecución
