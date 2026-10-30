@@ -72,6 +72,7 @@ var _closing: bool = false
 
 ## Servicio local opcional: registro por creación física, nunca por acquire.
 var _combat_visual_effects: CombatVisualEffects
+var _combat_audio: CombatAudio
 
 ## Cola de spawns pendientes de la oleada activa, ya aplanada. Vacía cuando
 ## no hay ninguna oleada en curso o cuando ya se sacó el último elemento.
@@ -112,11 +113,12 @@ func _exit_tree() -> void:
 ## listo.
 func setup(enemy_scene: PackedScene, initial_pool_size: int, spawn_position: Vector2,
 		combat_visual_effects: CombatVisualEffects = null,
-		board_config: LaneBoardConfig = null) -> void:
+		board_config: LaneBoardConfig = null, combat_audio: CombatAudio = null) -> void:
 	_spawn_position = spawn_position
 	_board_config = board_config
 	_next_lane = 0
 	_combat_visual_effects = combat_visual_effects
+	_combat_audio = combat_audio
 	_enemy_pool = ObjectPool.new()
 	add_child(_enemy_pool)
 	# Conectado ANTES de `setup()` — ver justificación en la cabecera de
@@ -203,6 +205,8 @@ func _on_enemy_pool_instance_created(instance: Node) -> void:
 	enemy.enemy_defeated.connect(_on_enemy_defeated.bind(enemy))
 	if _combat_visual_effects != null:
 		_combat_visual_effects.register_actor(enemy)
+	if _combat_audio != null:
+		_combat_audio.register_actor(enemy)
 
 
 ## FR-012/T042: por cada enemigo derrotado que este spawner instanció,
