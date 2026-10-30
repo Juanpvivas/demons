@@ -327,6 +327,15 @@ func test_enemy_without_visual_listener_still_drops_credits_wave_and_releases_on
 	assert_signal_emit_count(EconomyManager, "ammo_pickup_spawned", 1)
 	assert_false(enemy.visible)
 
+## 014 añade un consumidor sonoro independiente; este oráculo sigue contando
+## TODAS las conexiones del receptor visual (también detectaría duplicados).
+func _visual_registration_count(actor: Node, service: CombatVisualEffects) -> int:
+	var count := 0
+	for connection: Dictionary in actor.get_signal_connection_list("defeat_visual_requested"):
+		if connection.callable.get_object() == service:
+			count += 1
+	return count
+
 func test_level_registers_initial_enemy_and_each_new_physical_pool_instance_once() -> void:
 	var level: Node = load("res://scenes/levels/Nivel_MonteCalvo.tscn").instantiate()
 	add_child_autofree(level)
@@ -335,7 +344,7 @@ func test_level_registers_initial_enemy_and_each_new_physical_pool_instance_once
 	if initials.size() != 1: return
 	var initial := initials[0] as Enemigo
 	var service: CombatVisualEffects = level._combat_visual_effects
-	assert_eq(initial.get_signal_connection_list("defeat_visual_requested").size(), 1, "Registro del enemigo inicial")
+	assert_eq(_visual_registration_count(initial, service), 1, "Registro del enemigo inicial")
 	initial.take_damage(initial.stats.max_health)
 	assert_eq(service.get_active_effect_count(), 1)
 	var pool: ObjectPool = level._wave_spawner._enemy_pool
@@ -345,14 +354,14 @@ func test_level_registers_initial_enemy_and_each_new_physical_pool_instance_once
 		var enemy := pool.acquire() as Enemigo
 		enemy.prepare_for_spawn(enemy.stats, Vector2(600 + index * 100, 100))
 		enemies.append(enemy)
-		assert_eq(enemy.get_signal_connection_list("defeat_visual_requested").size(), 1)
+		assert_eq(_visual_registration_count(enemy, service), 1)
 	var reused := enemies[0]
 	pool.release(reused)
 	assert_same(pool.acquire(), reused)
 	reused.prepare_for_spawn(reused.stats, Vector2(600, 100))
-	assert_eq(reused.get_signal_connection_list("defeat_visual_requested").size(), 1, "Acquire no duplica registro")
+	assert_eq(_visual_registration_count(reused, service), 1, "Acquire no duplica registro")
 	await wait_physics_frames(3)
-	assert_eq(reused.get_signal_connection_list("defeat_visual_requested").size(), 1, "Física no duplica registro")
+	assert_eq(_visual_registration_count(reused, service), 1, "Física no duplica registro")
 	reused.take_damage(reused.stats.max_health)
 	assert_eq(service.get_active_effect_count(), 2, "Una derrota produce exactamente un efecto")
 
