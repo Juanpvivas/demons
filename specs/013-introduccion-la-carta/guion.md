@@ -1,6 +1,6 @@
 # Guion autorado — La carta
 
-Personaje/carta ficticios inspirados en el contexto del Batallón Colombia. No testimonio documental ni palabras atribuidas a un veterano real. Voz provisional sintética en español; el acento provisional no pretende ser representación definitiva. Duraciones nominales orientan montaje y se amplían si voz/lectura lo requieren.
+Personaje/carta ficticios inspirados en el contexto del Batallón Colombia. No testimonio documental ni palabras atribuidas a un veterano real. En el guion original de I1 se preveía voz provisional sintética en español; el estado vigente de voces consta abajo. Duraciones nominales orientan montaje y se amplían si voz/lectura lo requieren.
 
 **Revisión R2**: conservar exactamente las palabras habladas y ambiente original
 discreto. La persona ha elegido leer los siete párrafos: hasta recibir su
@@ -16,6 +16,11 @@ autorizada por la persona; T026 aprobado técnicamente con T032. El compañero
 conserva su único clip Ald provisional y no se atribuye a esa grabación humana.
 Los textos hablados/subtítulos autorados se mantienen; la aceptación perceptual
 de toma3 es humana y no una escucha propia de los agentes.
+
+**Estado vigente posterior R4**: narrador humano toma3 y compañero sintético
+Qwen3-TTS VoiceDesign aceptado expresamente como voz definitiva por la persona,
+sin cambiar la frase ni atribuirla a su grabación humana. Las notas Ald y
+provisional anteriores conservan la historia de R2/R3.
 
 ## 1. El papel · 0:00–0:07
 

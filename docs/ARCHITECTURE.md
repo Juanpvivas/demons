@@ -584,7 +584,8 @@ fondo por escena y limpia ambos al salir. El tiempo autorado nunca recorta clips
 pausa o pérdida de actividad detienen ambos canales/avance hasta continuación
 explícita. Durante las imágenes no hay cabecera ni rótulos; sólo subtítulos y
 controles. R3 incorpora siete WAV humanos de toma3 elegida/autorizada; sólo
-el compañero conserva voz sintética provisional. El origen y procesamiento se
+el compañero usa el clip sintético Qwen3-TTS VoiceDesign, aceptado después
+expresamente como voz definitiva por la persona. El origen y procesamiento se
 documentan en el catálogo de audio; la aceptación perceptual es de la persona,
 separada de las verificaciones técnicas de los agentes.
 `IntroProgress`, dependencia local inyectable, escribe un ConfigFile canónico
@@ -1098,3 +1099,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-30 | 013/T010 tras QA funcional T009: §4.8 incorpora composición local de introducción, Resources narrativos inmutables, recuerdo canónico inyectable y aislamiento por apertura; coste de precarga y límites de validación constan en 013, sin certificar publicación. |
 | 2026-10-30 | 013/T022 tras QA funcional T021: §4.8 unifica destino Comenzar, audio de ambiente separado y retorno activo mediante intención HUD/nivel/raíz con cierre común; guards terminales y límites de publicación conservados. |
 | 2026-10-30 | 013/T033 tras QA funcional T032: §4.8 documenta prompt inferior aislado por API pública, imagen estable en espera/resize y narrador humano con compañero provisional separado; audio/recuerdo/cierre y gates conservados. |
+| 2026-10-30 | Corrección documental 013: aceptación humana definitiva del clip sintético del compañero, sin cambios de recursos de audio ni lógica y con publicación pendiente. |

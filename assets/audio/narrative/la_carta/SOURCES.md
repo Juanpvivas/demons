@@ -1,4 +1,4 @@
-# La carta — narrador humano, compañero provisional y ambiente
+# La carta — narrador humano, compañero sintético definitivo y ambiente
 
 ## Narración humana — toma 3
 
@@ -23,14 +23,18 @@ El uso de esta grabación propia se basa en la autorización recibida para el
 proyecto. No se le asigna Unlicense, CC0 ni la licencia del modelo sintético.
 La toma original, ASR y metadatos temporales no forman parte de estos recursos.
 
-## Compañero sintético — candidata R4
+## Compañero sintético — voz definitiva R4
 
 `companero_06.wav` contiene únicamente «Compañero. Ya es hora.» y permanece
-separado de las siete narraciones humanas. Es la candidata `companero_cercano`
-preparada para esta frase: WAV mono PCM de 24.000Hz y 16 bits, 82.560 frames y
+separado de las siete narraciones humanas. Es el clip `companero_cercano`,
+preparado para esta frase: WAV mono PCM de 24.000Hz y 16 bits, 82.560 frames y
 3,44 segundos. No se atribuye al narrador humano ni a un veterano identificado.
-La naturalidad de esta candidata sigue pendiente de escucha humana; el ASR y
-la verificación técnica no sustituyen esa aceptación ni una audición del agente.
+La persona aprobó perceptualmente este mismo archivo y decidió conservarlo
+como voz definitiva: «Esta voz me gusta, dejémosla como la voz definitiva del
+compañero». Esa aceptación humana corresponde al SHA256 indicado abajo; no es
+una audición del agente ni una inferencia de ASR/metadatos. La fase de candidata
+con naturalidad pendiente se conserva como historia de R4, ahora resuelta por
+esa decisión. La voz sigue siendo sintética y no un testimonio histórico.
 
 Generada sin audio de referencia ni clonación con Qwen3-TTS VoiceDesign,
 `mlx-audio 0.6.3` y MLX `0.32.4`. El procesamiento previo aplica ganancia lineal
@@ -41,7 +45,7 @@ dinámico. La importación habitual del juego puede codificar el WAV.
 - Revisión: `5c390979e4b93af5f2932f90742ca99c7dd04687`.
 - Modelo original: [Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign](https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign).
 - SHA256 del modelo: `d8627de7ef411f6775182925059e140a9e1edb1fde8feeb540b4fba0edee1e58`.
-- SHA256 de la candidata incorporada: `0c8e5bb5bf9aa476b70686c1846c4dd6b8dd836390a5161e11051eba3cd8c1d8`.
+- SHA256 del clip definitivo aceptado: `0c8e5bb5bf9aa476b70686c1846c4dd6b8dd836390a5161e11051eba3cd8c1d8`.
 - Licencia del modelo: [Apache License 2.0](QWEN-APACHE-2.0.txt), conservada de su fuente.
 
 Esta procedencia describe sólo el compañero sintético; no asigna Apache 2.0 a

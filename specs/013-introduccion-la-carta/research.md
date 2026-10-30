@@ -131,11 +131,15 @@ los riesgos descriptivos de precarga de I1/R2, sin nuevo benchmark ni reanudar00
 los pendientes004/005 no cambian. No se versionan toma original, ASR o metadatos
 temporales de comprobación.
 
-## Candidata R4 — compañero sintético
+## R4 — compañero sintético definitivo
 
-Sólo `companero_06.wav` se sustituye por una candidata Qwen3-TTS VoiceDesign,
+Sólo `companero_06.wav` se sustituyó por el clip Qwen3-TTS VoiceDesign,
 con procedencia y Apache2 del modelo en el [catálogo de audio](../../assets/audio/narrative/la_carta/SOURCES.md),
 sin referencia/clonación ni modelo runtime. Los siete WAV humanos, guion/montaje,
 ambiente y comportamiento R3 permanecen idénticos. T040 aprueba integración
-técnica; gate final T043 pendiente. La naturalidad requiere escucha humana pendiente,
-no desde ASR/metadatos o una audición atribuida al agente.
+técnica; R4 conserva su cierre aprobado. La persona aceptó después ese mismo
+clip como voz definitiva del compañero: aceptación perceptual humana vinculada
+al SHA256 de SOURCES, no inferida de ASR/metadatos ni de audición del agente.
+La etapa de candidata con naturalidad pendiente queda como historia resuelta;
+la voz sigue sintética y separada del narrador humano. Este registro documental
+no cambia audio/runtime ni autoriza publicación, hardware o FPS.

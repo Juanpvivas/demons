@@ -3,7 +3,7 @@
 **Feature ID**: `013-introduccion-la-carta`  
 **Planned Branch**: `codex/013-introduccion-la-carta`  
 **Created**: 2026-10-30  
-**Status**: I1/R2/R3 conservan sus aprobaciones; integración técnica de candidata R4 del compañero aprobada en T040, gate final T043 pendiente. Naturalidad pendiente de escucha humana; narrador toma3/T026 intacto y publicación T014 pendiente; PR #54 en borrador
+**Status**: I1/R2/R3/R4 conservan sus aprobaciones técnicas; la persona aceptó expresamente el mismo clip R4 como voz definitiva del compañero. Narrador toma3/T026 intacto y publicación T014 pendiente; PR #54 en borrador
 
 **Tracking**: [Issue #53](https://github.com/Juanpvivas/demons/issues/53), entrega intermedia `Refs #53`
 **Input**: Integrar el guion y las siete imágenes de La carta. La persona confirmó mostrarla automáticamente sólo la primera vez al pulsar Jugar, repetirla desde el menú e incluir voz provisional en la primera entrega.
@@ -49,11 +49,13 @@ de la candidata queda pendiente de escucha humana y no se aprueba desde
 metadatos o una escucha fingida del agente. El compañero sigue sintético y no
 se atribuye a quien grabó toma3. Las descripciones Ald anteriores son historia.
 
-La candidata incorporada se generó con Qwen3-TTS VoiceDesign sin referencia
+El clip incorporado se generó con Qwen3-TTS VoiceDesign sin referencia
 de audio ni clonación; su procedencia/licencia consta en
 [SOURCES](../../assets/audio/narrative/la_carta/SOURCES.md). T040 aprueba su
-integración técnica, no la aceptación perceptual de la candidata; gate final
-T043 y escucha humana de naturalidad permanecen pendientes.
+integración técnica. Posteriormente, la persona aceptó ese mismo archivo como
+voz definitiva del compañero; la aceptación perceptual queda registrada en
+SOURCES para su SHA256, sin atribuir audición al agente. Las frases anteriores
+de candidata/espera describen la preparación histórica, no el estado vigente.
 
 ### Historia conservada de I1
 
@@ -158,7 +160,7 @@ Como jugador quiero un botón visible para salir al menú mientras juego, sin te
 - **FR-015**: Mostrar Menú principal durante PLAYING y PAUSED, con salida directa segura al menú que cierre el intento/oleadas/audio/entradas/pools una vez; conservar resultado y Reintentar, sin modal, persistencia de partida ni cambios de balance.
 - **FR-016**: Durante las siete imágenes mostrar únicamente subtítulos de voz y controles, sin contador La carta/índice, captions de lugar/época ni aviso de ficción superior. La identificación de ficción y procedencia permanece en documentación/créditos fuera de las imágenes.
 - **FR-017**: Al terminar u omitir desde cualquiera de las dos entradas, mostrar sólo Comenzar centrado abajo, en la misma franja segura/estilo de Pausar/Omitir y mínimo 52 px de alto. Mantener última imagen visible limpia, sin panel central, banda de fondo, títulos/ficción/rótulos, subtítulo, Pausar/Omitir ni audio de voz/ambiente residual. Conservar foco/resize y exigir un gesto nuevo para iniciar exactamente un nivel.
-- **FR-018**: R4 reemplaza sólo el archivo del compañero por el candidato sintético masculino expresivo preparado/autorizado para esa frase, con procedencia portable y verificación proporcional de importación/carga, hash, duración, ausencia de saturación y reproducción completa. No modificar runtime, guion/montaje ni narrador humano; no declarar naturalidad aprobada mientras la escucha humana siga pendiente.
+- **FR-018**: R4 reemplaza sólo el archivo del compañero por el clip sintético masculino expresivo preparado/autorizado para esa frase, con procedencia portable y verificación proporcional de importación/carga, hash, duración, ausencia de saturación y reproducción completa. La persona aceptó ese mismo archivo como voz definitiva; registrar la aceptación humana sin atribuir escucha al agente ni modificar runtime, guion/montaje o narrador humano.
 
 ### Key Entities
 
@@ -183,7 +185,7 @@ Como jugador quiero un botón visible para salir al menú mientras juego, sin te
 - **SC-010**: En las siete imágenes no hay ningún contador, caption o aviso superior; permanecen completos los subtítulos de voz y los controles.
 - **SC-011**: Menú principal es visible durante partida activa/pausada y vuelve al menú con cero niveles/oleadas/audio/controles del intento anterior; pulsaciones repetidas no duplican cierre o nuevos niveles.
 - **SC-012**: En final natural y omisión de ambas entradas sólo se ve Comenzar centrado abajo, alto mínimo 52 px y estilo/franja segura de los controles previos, con última imagen visible y sin panel/banda central o inferior, textos/controles extra ni audio residual. Resize conserva su alcance/foco; sin gesto nuevo no se crea nivel y varias pulsaciones crean sólo uno.
-- **SC-013**: El compañero de escena6 usa el archivo candidato R4 con hash/procedencia concordantes, frase completa, carga/importación sin errores, duración compatible con el montaje vigente y sin saturación del PCM. Las siete narraciones, texto/montaje, UI, ambiente y recuerdo permanecen idénticos; la naturalidad de la candidata se informa pendiente de escucha humana hasta que ésta exista.
+- **SC-013**: El compañero de escena6 usa el archivo R4 con hash/procedencia concordantes, frase completa, carga/importación sin errores, duración compatible con el montaje vigente y sin saturación del PCM. Las siete narraciones, texto/montaje, UI, ambiente y recuerdo permanecen idénticos; la aceptación perceptual definitiva de ese clip es la decisión humana explícita registrada en SOURCES, no una audición del agente.
 
 ## Assumptions
 

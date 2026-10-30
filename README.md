@@ -120,10 +120,9 @@ los pendientes de 006 y la publicación se conservan.
 [013 — La carta](specs/013-introduccion-la-carta/spec.md) añade en su rama
 una introducción ilustrada con subtítulos, narración humana de la toma3 elegida
 y autorizada por la persona autora, y ambiente original discreto. El compañero
-usa un único clip sintético candidato generado con Qwen3-TTS VoiceDesign,
-cuya naturalidad está pendiente de escucha humana. R3 conserva sus aprobaciones;
-la integración técnica R4 del compañero está aprobada en T040, con gate final
-T043 pendiente. La carta y
+usa una voz sintética Qwen3-TTS VoiceDesign que la persona ha aceptado como
+definitiva para el compañero. R3/R4 conservan sus aprobaciones técnicas; esta
+aceptación perceptual es humana y no una audición de los agentes. La carta y
 sus personajes son ficción inspirada en el Batallón Colombia.
 
 - La primera vez que pulses «Jugar», verás las siete escenas. Puedes pulsar
@@ -142,9 +141,10 @@ sus personajes son ficción inspirada en el Batallón Colombia.
 - El recuerdo corresponde a cada instalación o almacenamiento del navegador;
   un fallo al guardarlo permite seguir jugando, aunque vuelva a aparecer.
 
-La aceptación perceptual de toma3 corresponde a la persona que la eligió;
+La aceptación perceptual de toma3 y de la voz definitiva del compañero
+corresponde a la persona que las eligió;
 las comprobaciones de incorporación/reproducción son técnicas y no una escucha
-propia de los agentes. El compañero sigue provisional; toque iOS, paquete final
+propia de los agentes. El compañero sigue siendo sintético; toque iOS, paquete final
 y rendimiento físico no se certifican.
 [Alcance y límites](specs/013-introduccion-la-carta/research.md#alcance-funcional-r3-y-límites).
 CI/gate final de integración y publicación conservan su

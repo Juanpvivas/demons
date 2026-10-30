@@ -13,7 +13,8 @@ sustitución del clip sintético del compañero; publicación T014 sigue pendien
 Sustituir únicamente `assets/audio/narrative/la_carta/companero_06.wav` por la
 candidata sintética masculina expresiva preparada por root, con la frase actual
 y SOURCES/licencias portables. Candidata Qwen3-TTS VoiceDesign incorporada;
-QA técnica T040 aprobada; gate final T043 y escucha humana de naturalidad pendientes;
+QA técnica y cierre R4 conservan sus aprobaciones; la persona ha aceptado el
+mismo clip Qwen como voz definitiva del compañero, registrado en SOURCES;
 no cambia guion/montaje, siete WAV humanos toma3, runtime, controles, ambiente
 o preferencia `la_carta_v1`. Conservar metadatos de importación necesarios sin
 reconfigurar codecs o lógica por esta tarea.
@@ -21,7 +22,8 @@ reconfigurar codecs o lógica por esta tarea.
 Verificación proporcional de medio: hash/procedencia, PCM sin saturación,
 importación/carga, frase/duración completa y reproducción en su turno sin
 truncamiento; preview Web si disponible. Naturalidad/expresión requieren escucha
-humana pendiente, no se deducen de metadatos ni se atribuye audición al agente.
+humana, ya dada expresamente para este clip, sin deducirla de metadatos ni
+atribuir audición al agente. Las notas de candidata pertenecen a la preparación histórica.
 Sin RED artificial o nuevas pruebas que reflejen el asset: dev incorpora medio,
 tester verifica, QA revisa, docs consolidan y se publica una revisión final
 consolidada de rama/CI exacto para el mismo PR #54 borrador Refs #53.
