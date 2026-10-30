@@ -11,6 +11,12 @@ como historia del guion I1 y no se muestran en las imágenes actuales. Tampoco
 se muestran contador ni aviso superior; únicamente subtítulos de voz y controles.
 Ambas rutas terminan/omiten en Comenzar y esperan un gesto nuevo para jugar.
 
+**Revisión R3 actual**: siete narraciones incorporadas de toma3 elegida y
+autorizada por la persona; T026 aprobado técnicamente con T032. El compañero
+conserva su único clip Ald provisional y no se atribuye a esa grabación humana.
+Los textos hablados/subtítulos autorados se mantienen; la aceptación perceptual
+de toma3 es humana y no una escucha propia de los agentes.
+
 ## 1. El papel · 0:00–0:07
 
 Primer plano de manos escribiendo sobre caja de madera, farol y trinchera nocturna.

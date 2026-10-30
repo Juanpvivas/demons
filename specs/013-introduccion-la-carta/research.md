@@ -1,8 +1,8 @@
 # Decisiones — La carta
 
 Las decisiones originales y el alcance aprobado de I1 se conservan abajo como
-historia. Para la revisión vigente prevalece la sección R2 final; sus cambios
-no heredan aprobación de pruebas o percepción auditiva anteriores.
+historia, junto con R2. Para la revisión vigente prevalece el alcance R3 final;
+los resultados históricos no certifican medios o plataformas posteriores.
 
 - Secuencia nativa ilustrada: reutiliza siete cuadros y permite texto/controles adaptables. Fundidos y encuadre, sin animar manos/capas inexistentes.
 - GameRoot ya posee menú/nivel y guard de reentrada. IntroPlayer temporal mantiene una autoridad local; GameStateManager queda MENU sin nivel ni renumeración.
@@ -106,3 +106,27 @@ benchmark causal ni FPS. Permanece el riesgo histórico de precarga de I1
 (aproximadamente +339 ms/+32,4 MiB observados). Builds de QA/export Xcode no
 certifican paquete final, firma/instalación, hardware/GPU, 60 FPS o victoria
 manual de producción. T014/SC-008, pausa006 y publicación004/005 se conservan.
+
+## Alcance funcional R3 y límites
+
+T032 aprueba función R3 y T026/SC-009: siete narraciones de toma3 aportada,
+elegida y autorizada por la persona, incorporadas con comprobaciones técnicas
+de integridad, texto/duración y reproducción. Su aceptación perceptual es humana;
+no se atribuye audición subjetiva a los agentes. El compañero mantiene un único
+clip Ald sintético/provisional, no atribuido al narrador humano. La preparación
+corta pausas con ganancia constante y microfundidos, sin cambiar timbre/tempo o
+resintetizar; la importación normal de Godot puede codificar audio, sin promesa
+de exportación sin pérdida. [Procedencia actual](../../assets/audio/narrative/la_carta/SOURCES.md).
+
+La espera de final/omisión muestra sólo Comenzar inferior, conservando imagen
+opaca/encuadrada incluso al redimensionar, sin panel/banda/textos/audio residual.
+Se observó en Chrome de computador y APK Android de QA con gesto a la partida;
+el menú activo y las zonas de recarga conservan su separación. La exportación
+Xcode no acredita interacción de la introducción iOS. El harness técnico de
+audio no es audición subjetiva ni aprobación humana del compañero.
+
+CI/head exacto y gate final T035 siguen pendientes; publicación T014/SC-008,
+hardware/FPS, partida manual completa y paquete final no se certifican. Persisten
+los riesgos descriptivos de precarga de I1/R2, sin nuevo benchmark ni reanudar006;
+los pendientes004/005 no cambian. No se versionan toma original, ASR o metadatos
+temporales de comprobación.

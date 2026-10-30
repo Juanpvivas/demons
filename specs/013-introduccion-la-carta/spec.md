@@ -3,7 +3,7 @@
 **Feature ID**: `013-introduccion-la-carta`  
 **Planned Branch**: `codex/013-introduccion-la-carta`  
 **Created**: 2026-10-30  
-**Status**: I1/R2 conservan sus aprobaciones; R3 en preparación para incorporar toma humana y ajustar Comenzar inferior. T026 pendiente de incorporación/verificación técnica y T014 de publicación; PR #54 en borrador
+**Status**: I1/R2 conservan sus aprobaciones; T032 aprueba función R3 y T026/SC-009 de narrador humano toma3 elegido/autorizado, con compañero Ald provisional divulgado. CI/gate final T034–T035 y publicación T014 pendientes; PR #54 en borrador
 
 **Tracking**: [Issue #53](https://github.com/Juanpvivas/demons/issues/53), entrega intermedia `Refs #53`
 **Input**: Integrar el guion y las siete imágenes de La carta. La persona confirmó mostrarla automáticamente sólo la primera vez al pulsar Jugar, repetirla desde el menú e incluir voz provisional en la primera entrega.
@@ -33,6 +33,12 @@ persona. El único comportamiento nuevo es el prompt final: sólo Comenzar,
 centrado abajo en la franja segura de controles, sin panel/banda de fondo,
 títulos, ficción, subtítulos ni otros controles; última imagen limpia visible.
 Las notas de espera de archivo en R2 son históricas y no son un bloqueo actual.
+
+R3 implementado y aprobado funcionalmente en T032: siete WAV humanos locales,
+compañero provisional separado y prompt inferior limpio. La imagen conserva
+opacidad/encuadre durante la espera y resize; no se reactiva la reproducción.
+T026/SC-009 quedan aprobados en ese alcance técnico y de elección humana, sin
+atribuir escucha propia a los agentes ni certificar plataformas/publicación.
 
 ### Historia conservada de I1
 

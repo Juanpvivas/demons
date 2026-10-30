@@ -15,13 +15,14 @@ Juego de defensa por carriles (estilo *Plants vs. Zombies*) inspirado en la hist
 - El apodo "demonios de las trincheras" se lo dieron los propios enemigos, como reflejo del miedo y respeto que inspiraba su ferocidad en combate cuerpo a cuerpo.
 - Nota de diseño: el juego usa la versión popular de la historia (soldados que se quedan sin munición y recurren al machete) como base narrativa y mecánica, priorizando jugabilidad sobre precisión documental estricta. Tratar el tema con respeto: es un homenaje, no glorificación gratuita de violencia.
 
-**La carta** ([013](../specs/013-introduccion-la-carta/spec.md), revisión R2
-aprobada funcionalmente en T021 en rama) presenta siete escenas antes de la primera partida.
+**La carta** ([013](../specs/013-introduccion-la-carta/spec.md), revisión R3
+aprobada funcionalmente en T032 en rama) presenta siete escenas antes de la primera partida.
 La carta y sus personajes son ficción inspirada en el Batallón Colombia,
 no testimonios ni retratos de veteranos identificados. Incluye subtítulos y
-ocho clips locales de voz Ald de preview provisional en español de México y
-ambiente original. La persona ha elegido grabar su narración: T026 espera el
-archivo y su verificación; no hay aprobación de voz final, naturalidad o fluidez.
+siete narraciones humanas de la toma3 aportada, elegida y autorizada por la
+persona autora, un compañero Ald sintético/provisional y ambiente original.
+T026 aprueba la incorporación técnica de la toma elegida; su aceptación
+perceptual es humana y no se atribuye audición propia a los agentes.
 
 ## 3. Género y referencias
 
@@ -210,7 +211,7 @@ orienta la composición lateral y no fija costos, estadísticas ni HUD final.
 
 ## 8. Arte y estilo visual
 
-**Introducción La carta (013-I1-R2):** siete cuadros del storyboard aceptado,
+**Introducción La carta (013-I1-R3):** siete cuadros del storyboard aceptado,
 con fundidos y encuadres suaves, conservan soldado, carta, uniforme y paleta.
 El primer «Jugar» abre la secuencia; terminarla u omitirla deja «Comenzar»
 esperando un gesto nuevo, sin combate activo. El recuerdo local por versión
@@ -219,17 +220,20 @@ la repite desde el menú y también termina/omite en Comenzar; nunca vuelve al
 menú ni inicia combate automáticamente. «Volver a jugar» sigue siendo directo.
 «Pausar»/«Continuar» controlan voz, ambiente y avance; perder actividad pausa hasta
 continuación explícita. Un fallo al guardar no impide jugar.
+En final u omisión sólo aparece Comenzar centrado abajo en la franja segura de
+controles, con alto mínimo de 52 px y sin panel/banda, títulos, ficción,
+subtítulos u otros controles. La imagen visible conserva opacidad/encuadre al
+redimensionar mientras se espera; voz y ambiente ya están detenidos.
 Las siete imágenes sólo muestran subtítulos de voz y controles, sin contador,
 caption ni aviso superior. Un ambiente original de viento/rumor grave suena
 en canal separado y cesa con la reproducción. «Menú principal», visible en la
 franja superior durante partida activa/pausada, cierra el intento sin modal ni
 guardado; su zona no se superpone a las trincheras/recarga.
-La voz provisional y el arte tienen [procedencia documentada](../specs/013-introduccion-la-carta/research.md).
-T021 aprueba cuatro correcciones e integración técnica de voz provisional;
-CI/gate final T023–T024 y publicación T014 siguen separados, con voz humana
-T026/SC-009 pendiente. La comprobación disponible no acredita audición perceptual
-final, toque iOS, hardware ni 60 FPS. El aumento de carga/memoria observado al
-precargar la secuencia se conserva como riesgo con [límites explícitos](../specs/013-introduccion-la-carta/research.md#alcance-funcional-r2-y-límites).
+El arte y las voces humanas/provisional tienen [procedencia documentada](../specs/013-introduccion-la-carta/research.md).
+T032 aprueba función R3 y T026/SC-009 en el alcance de narrador toma3 elegido y
+compañero provisional divulgado. CI/gate final T034–T035 y publicación T014
+siguen separados. No se acredita toque iOS, hardware, 60 FPS o paquete final;
+el riesgo de carga/memoria de precarga se conserva con [límites explícitos](../specs/013-introduccion-la-carta/research.md#alcance-funcional-r3-y-límites).
 
 **Dirección aprobada para el entorno de Monte Calvo, primera iteración**
 (`002-monte-calvo-terreno-trincheras`): ilustración 2D de textura pictórica,
@@ -586,3 +590,4 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 | 2026-10-29 | 012/T019 tras QA funcional T018: §6.3 sustituye el rótulo por rojo tenue/pulsante y toque sobre el arte de la trinchera, conservando autoridad, panel y reglas; alcance de verificación y publicación separados. |
 | 2026-10-30 | 013/T010 tras QA funcional T009: La carta incorpora narrativa ilustrada con voz provisional, primera entrada/replay/recuerdo local; se resuelve la pregunta narrativa y se conservan límites de audición, destinos y coste de precarga, con CI/integración final y publicación pendientes. |
 | 2026-10-30 | 013/T022 tras QA funcional T021: ambas rutas terminan en Comenzar, imágenes sin cabecera, ambiente separado y Menú principal activo/pausado; Ald sigue como preview, grabación humana T026 y gates de integración/publicación permanecen pendientes. |
+| 2026-10-30 | 013/T033 tras QA funcional T032: siete narraciones de toma3 elegida/autorizada, compañero sintético provisional y prompt Comenzar inferior limpio, estable ante resize; T026/SC-009 aprobados en su alcance, con CI/gate final T035 y publicación pendientes. |

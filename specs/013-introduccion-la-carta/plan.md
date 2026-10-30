@@ -5,9 +5,9 @@
 **Input**: Preparación `demons-preparation`; ejecución posterior por [roles](../../docs/DEVELOPMENT_WORKFLOW.md), sin `speckit-implement`.
 
 **Seguimiento**: [Issue #53](https://github.com/Juanpvivas/demons/issues/53).
-I1/R2 conservan sus aprobaciones históricas. R3 prepara el único cambio de
-comportamiento del prompt final y la incorporación de la toma humana elegida
-en T026, con gate propio T027–T036. Publicación T014 sigue pendiente.
+I1/R2 conservan sus aprobaciones históricas. R3 tiene función y medios T026
+aprobados en T032; CI/gate final T034–T035 siguen pendientes antes del cierre
+T036 del mismo PR borrador. Publicación T014 sigue pendiente.
 
 **Revisión actual 013-I1-R2**: I1 ya tiene T012 aprobado y PR #54 en borrador.
 T015–T025 preparan y entregan cuatro correcciones con voz preview provisional;

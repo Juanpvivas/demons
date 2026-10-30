@@ -56,6 +56,11 @@ audición perceptual final; T024, T026/SC-009 y T014 siguen separados.
 
 ## Enmienda vigente R3
 
+T032 aprueba función R3 y T026/SC-009 con narrador toma3 elegido por la persona
+y compañero Ald provisional; [alcance y límites](research.md#alcance-funcional-r3-y-límites).
+Los pasos siguientes siguen siendo criterios reproducibles, no acreditación
+de cada destino; CI/gate T035 y publicación T014 permanecen separados.
+
 1. Antes de implementar, RED válido sobre show_start_prompt con APIs actuales:
    tras final natural y omisión en ambas rutas sólo Comenzar, centrado abajo,
    mínimo 52 px y estilo de controles, sin panel/banda/textos/subtítulos/Pause/Skip

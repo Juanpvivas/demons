@@ -567,6 +567,11 @@ nivel hasta terminar/omitir la introducción y aceptar Comenzar mediante otro
 gesto. Con recuerdo válido, Jugar conserva el montaje directo diferido.
 Ver introducción usa una instancia nueva; R2/T019–T021 hace que ambas entradas
 terminen/omitan esperando Comenzar, sin retorno al menú ni inicio automático.
+R3/T030–T032 presenta sólo Comenzar centrado abajo en el mismo contenedor de
+acciones y con mínimo 52 px, sin panel/banda, cabecera, subtítulo ni botones
+de reproducción. La imagen visible conserva su opacidad/pivote/encuadre al
+redimensionar durante la espera. GameRoot usa show_start_prompt/señal públicos,
+sin conocer nodos privados del layout.
 La generación y los callbacks ligados a la instancia aíslan cada apertura;
 el cierre detiene voz, ambiente y avance antes de retirar la escena. Retry sigue directo.
 
@@ -578,7 +583,10 @@ IntroPlayer usa otro AudioStreamPlayer independiente de Voice, no reinicia el
 fondo por escena y limpia ambos al salir. El tiempo autorado nunca recorta clips;
 pausa o pérdida de actividad detienen ambos canales/avance hasta continuación
 explícita. Durante las imágenes no hay cabecera ni rótulos; sólo subtítulos y
-controles. La voz humana sigue pendiente y el preview no acredita fluidez final.
+controles. R3 incorpora siete WAV humanos de toma3 elegida/autorizada; sólo
+el compañero conserva voz sintética provisional. El origen y procesamiento se
+documentan en el catálogo de audio; la aceptación perceptual es de la persona,
+separada de las verificaciones técnicas de los agentes.
 `IntroProgress`, dependencia local inyectable, escribe un ConfigFile canónico
 dedicado en `user://intro_progress.cfg` y comprueba el Error de guardado.
 La lectura exige el registro canónico de la versión narrativa actual;
@@ -1089,3 +1097,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-30 | §7 referencia constitución 4.2.0 y la excepción acotada de beta 1.0.2/build 5; conserva controles, pendientes físicos y alcance histórico de 1.0.1. |
 | 2026-10-30 | 013/T010 tras QA funcional T009: §4.8 incorpora composición local de introducción, Resources narrativos inmutables, recuerdo canónico inyectable y aislamiento por apertura; coste de precarga y límites de validación constan en 013, sin certificar publicación. |
 | 2026-10-30 | 013/T022 tras QA funcional T021: §4.8 unifica destino Comenzar, audio de ambiente separado y retorno activo mediante intención HUD/nivel/raíz con cierre común; guards terminales y límites de publicación conservados. |
+| 2026-10-30 | 013/T033 tras QA funcional T032: §4.8 documenta prompt inferior aislado por API pública, imagen estable en espera/resize y narrador humano con compañero provisional separado; audio/recuerdo/cierre y gates conservados. |

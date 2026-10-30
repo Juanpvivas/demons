@@ -118,9 +118,10 @@ identifican el veredicto y CI de su revisión exacta. Los
 los pendientes de 006 y la publicación se conservan.
 
 [013 — La carta](specs/013-introduccion-la-carta/spec.md) añade en su rama
-una introducción ilustrada con subtítulos, voz Ald de preview provisional en
-español de México y ambiente original discreto. La revisión R2 tiene aprobación
-funcional T021 en rama; gate final de integración T024 pendiente. La carta y
+una introducción ilustrada con subtítulos, narración humana de la toma3 elegida
+y autorizada por la persona autora, y ambiente original discreto. El compañero
+conserva un único clip Ald sintético/provisional. R3 tiene aprobación funcional
+T032 y de medios T026 en rama; gate final de integración T035 pendiente. La carta y
 sus personajes son ficción inspirada en el Batallón Colombia.
 
 - La primera vez que pulses «Jugar», verás las siete escenas. Puedes pulsar
@@ -130,16 +131,20 @@ sus personajes son ficción inspirada en el Batallón Colombia.
 - «Ver introducción», en el menú, permite repetirla: al acabar u omitir también
   muestra «Comenzar» y espera tu acción para jugar. Cambiar de app o perder foco
   pausa voz y ambiente; debes pulsar «Continuar» al regresar.
+- Al terminar u omitir, sólo queda «Comenzar» centrado abajo, sobre la imagen
+  limpia, sin panel ni textos extra. La imagen permanece visible al redimensionar;
+  la partida espera otro gesto y no conserva voz o ambiente sonando.
 - Durante las imágenes sólo hay subtítulos y controles, sin contador ni rótulos
   superiores. Durante la partida, «Menú principal» está visible en la franja
   superior y permite abandonar el intento, también pausado, sin guardarlo.
 - El recuerdo corresponde a cada instalación o almacenamiento del navegador;
   un fallo al guardarlo permite seguir jugando, aunque vuelva a aparecer.
 
-La persona ha elegido grabar su narración porque percibe robotizada la síntesis;
-T026 espera ese archivo. No se aprueban aún voz final, naturalidad o fluidez,
-audición perceptual completa, toque iOS ni rendimiento físico.
-[Alcance y límites](specs/013-introduccion-la-carta/research.md#alcance-funcional-r2-y-límites).
+La aceptación perceptual de toma3 corresponde a la persona que la eligió;
+las comprobaciones de incorporación/reproducción son técnicas y no una escucha
+propia de los agentes. El compañero sigue provisional; toque iOS, paquete final
+y rendimiento físico no se certifican.
+[Alcance y límites](specs/013-introduccion-la-carta/research.md#alcance-funcional-r3-y-límites).
 CI/gate final de integración y publicación conservan su
 [seguimiento separado](specs/013-introduccion-la-carta/tasks.md); 006 sigue pausada
 y los pendientes 004/005 no se cierran por esta entrega.
