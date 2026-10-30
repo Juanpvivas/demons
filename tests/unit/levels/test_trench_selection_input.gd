@@ -203,3 +203,37 @@ func test_gui_reload_gesture_is_consumed_and_emits_one_order_without_board_actio
 	assert_eq(_owner.get_reload_state().ammo, _owner.stats.max_ammo)
 	assert_same(_level.get_selected_soldier(), _owner, "GUI no transmite acción al tablero")
 	assert_same(_board.get_occupant(HOME), _owner)
+
+
+func test_r2_live_menu_does_not_overlap_trench_actions_or_selected_panel(
+		viewport_size = use_parameters([Vector2i(1152, 648), Vector2i(960, 600)])) -> void:
+	_viewport.size = viewport_size
+	for home: Vector2i in _level.board_config.home_cells:
+		var soldier: Soldado = _board.get_occupant(home)
+		soldier.set("_current_ammo", 0)
+		soldier.set("_mode", Soldado.SoldierMode.MELEE)
+		soldier.reload_state_changed.emit()
+	assert_true(_level.select_trench(HOME))
+	await wait_process_frames(3)
+	var hud: Node = _level.get_node("HUD")
+	var menu: Button
+	for candidate: Node in hud.find_children("*", "Button", true, false):
+		if (candidate as Button).text == "Menú principal" and (candidate as Button).is_visible_in_tree():
+			menu = candidate as Button
+			break
+	assert_not_null(menu, "Acción de salida visible en partida")
+	if menu == null:
+		return
+	var menu_rect := menu.get_global_rect()
+	for home: Vector2i in _level.board_config.home_cells:
+		var reload: Button = hud.get_trench_reload_button(home)
+		assert_not_null(reload, "Se conservan los controles de cada trinchera")
+		if reload != null:
+			assert_true(reload.is_visible_in_tree(), "Control positivo: hogar vacío ofrece recarga")
+			assert_false(menu_rect.intersects(reload.get_global_rect()),
+				"El menú no tapa el control del hogar %s en %s" % [home, viewport_size])
+	var selection: Control = hud.get_node("SelectionPanel")
+	assert_true(selection.is_visible_in_tree(), "Control positivo: selección real abre su panel")
+	if selection.is_visible_in_tree():
+		assert_false(menu_rect.intersects(selection.get_global_rect()),
+			"Menú y panel seleccionado tienen regiones independientes")
