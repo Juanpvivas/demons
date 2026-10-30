@@ -151,6 +151,20 @@ CI/gate final de integración y publicación conservan su
 [seguimiento separado](specs/013-introduccion-la-carta/tasks.md); 006 sigue pausada
 y los pendientes 004/005 no se cierran por esta entrega.
 
+[014 — Sonidos de combate](specs/014-sonidos-combate/spec.md) añade en su rama
+sonidos de fusil, baja enemiga, baja colombiana, victoria y derrota, con nueve
+variantes offline. Ambas bajas combinan una exclamación breve ficticia con
+caída/equipo. Sólo suenan por hechos confirmados: no por daño no letal, limpieza
+de actores, menú o reintento. La mezcla tiene voces acotadas; pausar o perder
+foco las silencia y no reproduce eventos atrasados al volver. Menú y nueva
+partida cierran el audio del intento anterior. La introducción y sus voces
+definitivas permanecen intactas.
+
+T009 aprueba la función disponible; CI/gate final T011–T012 y publicación T014
+siguen separados. La verificación técnica no acredita audición perceptual,
+latencia/techo de mezcla Web o combate nativo/hardware.
+[Alcance y límites](specs/014-sonidos-combate/research.md#alcance-funcional-aprobado-y-límites).
+
 [008 — Marcha enemiga](specs/008-marcha-enemiga/spec.md) renueva el avance con
 ocho poses de apoyos alternados y balanceo del cuerpo/equipo, conservando el
 estilo pictórico, contacto/caída y las reglas actuales. I1 tiene validación

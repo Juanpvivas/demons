@@ -131,6 +131,11 @@ func is_targetable() -> bool:
 	return _activation_active and _current_health > 0 and not is_queued_for_deletion()
 
 
+## El retiro del pool también desactiva enemigos vivos; no constituye una baja.
+func has_confirmed_defeat() -> bool:
+	return _current_health <= 0
+
+
 ## Aplica `amount` de daño y retorna `true` únicamente si esta llamada dejó
 ## la salud en 0 o menos (contrato asumido por `soldado.gd`, usado para
 ## decidir si esa eliminación suma moral — FR-006). Defensivo ante llamadas

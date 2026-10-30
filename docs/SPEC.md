@@ -202,6 +202,19 @@ orienta la composición lateral y no fija costos, estadísticas ni HUD final.
 
 ## 7. Estructura técnica en Godot (borrador)
 
+**Sonidos de combate (014-I1, QA funcional T009 en rama):** cinco eventos
+confirmados —fusil, baja enemiga, baja colombiana, victoria y derrota— usan
+nueve variantes locales. Las bajas incorporan exclamación breve masculina
+ficticia y caída/equipo, sin imitar las voces de La carta. La última bala letal,
+la baja y la victoria pueden sonar sin que el resultado corte lo ya admitido.
+Daño no letal, cleanup/despawn, menú y retry no inventan bajas o resultados.
+La mezcla finita, variación cosmética y control de saturación son presentación,
+sin cambiar stats, RNG jugable o reglas. Pausa/foco silencian, sin cola atrasada;
+menú/retry cierran las voces propias. Audio definitivo de013 y Master intactos.
+[Procedencia y límites](../specs/014-sonidos-combate/research.md): audición,
+latencia/techo Web y hardware no certificados; gate final T012/CI y publicación
+T014 siguen pendientes, con pausa006 y pendientes004/005/013 conservados.
+
 - **Autoload `EconomyManager`:** controla el contador global de Munición recolectada, expone señal `ammo_pool_changed`.
 - **Tablero:** `TileMap` convierte mundo↔celda; `LaneBoardConfig` define cinco plazas/entradas y zona defendida. El nivel valida esas plazas antes de cobrar y `BoardManager` mantiene su ocupación.
 - **Movimiento y detección por soldado:** ambos actores usan `CharacterBody2D`; el soldado avanza con `move_and_slide()` en el tick físico. Consultas físicas de ese tick reúnen candidatos y los filtros conservan frente, fila, alcance y diagonales directas del fusil. El machete busca un frontal de su fila incluso lejos, pero sólo daña dentro de su alcance. No depende de overlaps almacenados de áreas móviles ni mueve sólo el sprite.
@@ -597,3 +610,4 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 | 2026-10-30 | 013/T033 tras QA funcional T032: siete narraciones de toma3 elegida/autorizada, compañero sintético provisional y prompt Comenzar inferior limpio, estable ante resize; T026/SC-009 aprobados en su alcance, con CI/gate final T035 y publicación pendientes. |
 | 2026-10-30 | 013/T041 tras QA técnica T040: sólo compañero sustituido por candidata Qwen3-TTS VoiceDesign; narrador humano y comportamiento intactos, naturalidad humana y gate final T043/publicación pendientes. |
 | 2026-10-30 | Corrección documental 013: la persona acepta expresamente el mismo clip Qwen3-TTS VoiceDesign como voz definitiva del compañero; se resuelve su aceptación perceptual humana sin modificar audio, comportamiento o gates de publicación. |
+| 2026-10-30 | 014/T010 tras QA funcional T009: cinco cues offline de hechos confirmados, bajas con exclamación breve/caída y mezcla acotada aislada de013; integración final/CI y publicación conservan sus gates y límites. |

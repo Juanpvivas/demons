@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="CombatAudioProfile" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://resources/schemas/combat_audio_profile.gd" id="1_profile"]
+[ext_resource type="AudioStream" path="res://assets/audio/combat/disparo_01.wav" id="2_audio"]
+[ext_resource type="AudioStream" path="res://assets/audio/combat/disparo_02.wav" id="3_audio"]
+[ext_resource type="AudioStream" path="res://assets/audio/combat/disparo_03.wav" id="4_audio"]
+[ext_resource type="AudioStream" path="res://assets/audio/combat/muerte_enemigo_01.wav" id="5_audio"]
+[ext_resource type="AudioStream" path="res://assets/audio/combat/muerte_enemigo_02.wav" id="6_audio"]
+[ext_resource type="AudioStream" path="res://assets/audio/combat/muerte_soldado_01.wav" id="7_audio"]
+[ext_resource type="AudioStream" path="res://assets/audio/combat/muerte_soldado_02.wav" id="8_audio"]
+[ext_resource type="AudioStream" path="res://assets/audio/combat/victoria.wav" id="9_audio"]
+[ext_resource type="AudioStream" path="res://assets/audio/combat/derrota.wav" id="10_audio"]
+
+[resource]
+script = ExtResource("1_profile")
+rifle = Array[AudioStream]([ExtResource("2_audio"), ExtResource("3_audio"), ExtResource("4_audio")])
+enemy_death = Array[AudioStream]([ExtResource("5_audio"), ExtResource("6_audio")])
+soldier_death = Array[AudioStream]([ExtResource("7_audio"), ExtResource("8_audio")])
+victory = Array[AudioStream]([ExtResource("9_audio")])
+defeat = Array[AudioStream]([ExtResource("10_audio")])
+combat_voice_count = 8
+volume_db = Dictionary[StringName, float]({
+&"rifle": -3.0,
+&"enemy_death": -1.0,
+&"soldier_death": 0.0,
+&"victory": -3.0,
+&"defeat": -3.0
+})
+pitch_range = Vector2(0.97, 1.03)
+volume_variation_db = 1.5

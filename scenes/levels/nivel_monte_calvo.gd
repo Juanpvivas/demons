@@ -33,6 +33,7 @@ const _ENEMY_POOL_INITIAL_SIZE := 10
 var _board_manager := BoardManager.new()
 var _wave_spawner := WaveSpawner.new()
 var _combat_visual_effects := CombatVisualEffects.new()
+var _combat_audio := CombatAudio.new()
 var _deploying_cells: Dictionary[Vector2i, bool] = {}
 var _selected_soldier: Soldado
 var _selected_home := Vector2i(-1, -1)
@@ -102,6 +103,8 @@ func _ready() -> void:
 	_hud.menu_requested.connect(_on_menu_requested)
 	add_child(_combat_visual_effects)
 	_combat_visual_effects.setup()
+	add_child(_combat_audio)
+	_combat_audio.setup(preload("res://resources/audio/combat_audio_profile.tres"))
 
 	for home: Vector2i in board_config.home_cells:
 		_create_soldier(home)
@@ -114,7 +117,7 @@ func _ready() -> void:
 
 	add_child(_wave_spawner)
 	_wave_spawner.setup(enemy_scene, _ENEMY_POOL_INITIAL_SIZE, wave_spawn_position,
-		_combat_visual_effects, board_config)
+		_combat_visual_effects, board_config, _combat_audio)
 	_wave_spawner.spawn_initial_enemy(initial_enemy_stats)
 	WaveManager.start_waves(waves)
 
@@ -134,6 +137,7 @@ func close_match() -> void:
 	if _closing:
 		return
 	_closing = true
+	_combat_audio.close_match()
 	_combat_visual_effects.close_match()
 	set_process_unhandled_input(false)
 	_wave_spawner.close_match()
@@ -217,6 +221,7 @@ func _create_soldier(cell: Vector2i) -> void:
 	_board_manager.occupy_cell(cell, soldier)
 	add_child(soldier)
 	_combat_visual_effects.register_actor(soldier)
+	_combat_audio.register_actor(soldier)
 	var lane := board_config.home_cells.find(cell) + 1
 	var pieces: Array[Sprite2D] = [
 		get_node("MonteCalvoVisual/TrincherasLaterales/Posterior%d" % lane) as Sprite2D,
