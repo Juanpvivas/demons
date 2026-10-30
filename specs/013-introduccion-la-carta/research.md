@@ -8,7 +8,7 @@
 - Duración nominal7,8,8,10,10,10,7s; cada escena permite clips completos más pausa legible. Compañero de escena6 después del narrador, con su propio subtítulo.
 - ConfigFile versión/estado en user:// con ruta inyectable. Lectura ausente/corrupta→no visto; Error real de escritura comprobado. No serializar scripts externos ni borrar datos ajenos.
 - START_GAME espera Comenzar; REPLAY termina/omite regresando al menú. Contexto vive en GameRoot y no en el recurso narrativo.
-- Perder foco pausa hasta Continuar. Cierre cancela tweens/audio e invalida eventos antes de emitir salida única.
+- Perder foco pausa hasta Continuar. Cierre cancela audio/avance/animación e invalida eventos antes de emitir salida única.
 - Producción incorpora assets/licencias. Conservar output/ previo y excluirlo de imports/export locales mediante `.gdignore` local no versionado; CI checkout limpio no lo contiene. No tocar presets.
 
 ## Alcance funcional aprobado y límites

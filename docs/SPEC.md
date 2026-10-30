@@ -507,7 +507,7 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 
 ### Resueltas (graduadas desde specs de feature)
 
-- ✅ Narrativa dentro del juego mediante La carta: 013-I1/T007–T009 añade siete escenas ilustradas, subtítulos y voz provisional antes del primer Jugar, con repetición voluntaria desde el menú y recuerdo local. Es ficción inspirada en el contexto histórico; gate final de integración T012 y publicación T014 permanecen separados.
+- ✅ Narrativa dentro del juego mediante La carta: 013-I1/T007–T009 añade siete escenas ilustradas, subtítulos y voz provisional tras el primer Jugar y antes del combate, con repetición voluntaria desde el menú y recuerdo local. Es ficción inspirada en el contexto histórico; gate final de integración T012 y publicación T014 permanecen separados.
 
 - ✅ Selección por dueño de trinchera, recarga única sólo con carga cero y regreso físico vulnerable sin ofensiva: 005-I3/T037–T042, integrado mediante PR #26 (`8c4cab4`). La publicación T071 sigue pendiente.
 - ✅ Composición lateral y estados observadores de marcha/espera, regreso con fusil bajo y caída orientada: 005-I4/T050–T057, integrado mediante PR #27 (`cffb2ec`). El estado de entrega y PR se mantiene en las tareas de 005. No cambia reglas, geometría ni concede cobertura.
