@@ -2,6 +2,15 @@
 
 Personaje/carta ficticios inspirados en el contexto del Batallón Colombia. No testimonio documental ni palabras atribuidas a un veterano real. Voz provisional sintética en español; el acento provisional no pretende ser representación definitiva. Duraciones nominales orientan montaje y se amplían si voz/lectura lo requieren.
 
+**Revisión R2**: conservar exactamente las palabras habladas y ambiente original
+discreto. La persona ha elegido leer los siete párrafos: hasta recibir su
+grabación se admite Ald únicamente como preview provisional, de timbre aceptado
+pero percibido robotizado. No se aprueba voz final ni fluidez; compañero humano
+opcional. Los rótulos anotados abajo se conservan
+como historia del guion I1 y no se muestran en las imágenes actuales. Tampoco
+se muestran contador ni aviso superior; únicamente subtítulos de voz y controles.
+Ambas rutas terminan/omiten en Comenzar y esperan un gesto nuevo para jugar.
+
 ## 1. El papel · 0:00–0:07
 
 Primer plano de manos escribiendo sobre caja de madera, farol y trinchera nocturna.

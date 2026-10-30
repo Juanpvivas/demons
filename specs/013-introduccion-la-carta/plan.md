@@ -8,6 +8,11 @@
 T009 aprueba funcionalidad T007–T008 en rama; la integración final requiere
 T011–T012 y la publicación sigue pendiente en T014.
 
+**Revisión actual 013-I1-R2**: I1 ya tiene T012 aprobado y PR #54 en borrador.
+T015–T025 preparan y entregan cuatro correcciones con voz preview provisional;
+T026 incorpora la grabación humana al recibirla. No reabren ni
+reinician T001–T014. La nueva revisión necesita su propio RED/GREEN/QA/CI.
+
 ## Summary
 
 IntroPlayer reproduce siete cuadros/voz/textos sin partida activa. GameRoot elige primera introducción, partida directa o replay; sólo crea nivel al aceptar el inicio correspondiente.
@@ -66,3 +71,38 @@ tests/unit/systems/test_intro_progress.gd
 ## Complexity Tracking
 
 Sin arquitectura global, motor de diálogo, vídeo prerenderizado o backend. Resource de secuencia/escena y un reproductor bastan.
+
+## Plan de corrección 013-I1-R2
+
+1. Mantener siete PNG/guion hablado e integrar Ald sólo como preview provisional
+   mientras se espera la grabación del narrador elegida por la persona.
+   Su timbre le gusta, pero lo percibe robotizado: no aprobar voz final/natural
+   ni fluidez. T026 sustituye siete narraciones al llegar el archivo humano y,
+   si incluye la frase del compañero, también ese clip. Verificar medios/mezcla
+   y escucha proporcional sin RED artificial ni exigir ocho tomas humanas.
+2. Ambas entradas de intro terminan/omiten en el mismo prompt Comenzar. GameRoot
+   acepta un gesto nuevo para crear un nivel; conserva reentrada/generación,
+   persistencia por versión y Retry directo. No autoarranque ni retorno al menú.
+3. Retirar de las imágenes contador, aviso de ficción y captions. Mantener
+   subtítulos hablados/controles; identidad ficticia/procedencia queda fuera de
+   las imágenes. Conservar cuadros y encuadres, sin repintarlos.
+4. Añadir `ambience: AudioStream` y `ambience_volume_db: float` a IntroSequence,
+   con reproductor no posicional independiente de Voice. El loop/volumen se
+   autoran con el ambiente original entregado por root; ambos canales comparten
+   pausa/foco/cierre y ninguno persiste tras fin/omisión. No motor de síntesis,
+   streaming o música nuevos.
+5. HUD añade botón visible Menú principal durante PLAYING/PAUSED. Reutilizar
+   `menu_requested`→nivel→GameRoot y extender sólo destino menú a estados activos;
+   Retry sigue restringido a terminal. Cierre común cancela oleadas, audio,
+   inputs, pools y generación antes de retirar nivel y restaurar menú. Evitar
+   click-through/doble cierre; sin modal ni guardado de partida.
+
+Rutas adicionales: `scenes/ui/HUD.tscn`, `scenes/ui/hud.gd`,
+`scenes/levels/nivel_monte_calvo.gd`, fixtures pertinentes de HUD/nivel/raíz y
+assets de ambiente/licencia. Las APIs existentes y observación segura de nodos
+permiten RED por aserción sin setup neutral nuevo. RED de layout, destino,
+ambiente y retorno activo precede implementación. Comprobar escucha/mezcla y las
+siete imágenes en los entornos disponibles; no heredar aprobación perceptual
+de I1 ni ampliar campaña de rendimiento/publicación. El archivo humano es
+dependencia externa de T026/SC-009; su ausencia permite entregar las cuatro
+correcciones y la integración técnica provisional con ese límite explícito.

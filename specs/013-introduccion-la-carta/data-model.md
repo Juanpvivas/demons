@@ -1,5 +1,7 @@
 # Datos — La carta
 
+Contrato vigente de R2; las aprobaciones I1 mantienen su alcance histórico.
+
 ## IntroSlide (Resource inmutable)
 
 `image: Texture2D`, `subtitle: String`, `companion_subtitle: String` opcional, `caption: String`, `narration: AudioStream`, `companion_voice: AudioStream` opcional, `minimum_duration: float`, encuadres `start_zoom/end_zoom` y desplazamiento acotado. Ningún campo cambia durante reproducción.
@@ -7,6 +9,16 @@
 ## IntroSequence (Resource inmutable)
 
 `version: String` inicialmente `la_carta_v1`; `slides: Array[IntroSlide]` exactamente siete; `transition_duration: float` independiente de duración de voz.
+
+R2 añade `ambience: AudioStream` y `ambience_volume_db: float` para un fondo
+original discreto. Son datos inmutables, independientes de los clips de voz;
+ninguno almacena posición de reproducción. La versión narrativa conserva el
+recuerdo existente al no cambiar el guion hablado. `caption` puede conservarse
+como dato histórico, pero nunca se presenta durante las imágenes en R2.
+
+Los AudioStream de narración admiten Ald provisional durante la entrega parcial
+y sustitución por las siete grabaciones humanas en T026 al recibirse el archivo,
+sin nuevo tipo de dato ni persistencia. El compañero humano es opcional.
 
 ## IntroPlayer (estado por instancia)
 
@@ -18,4 +30,7 @@ Secuencia, índice/tiempo, fase de clip/fundido, pausa, cerrado y guard/generaci
 
 ## Contexto de apertura
 
-START_GAME espera Comenzar tras final/omisión. REPLAY vuelve al menú. El contexto lo posee GameRoot; no reutilizar instancias cerradas.
+I1 distinguía START_GAME→Comenzar de REPLAY→menú. En R2 ambas aperturas esperan
+Comenzar tras final/omisión y sólo otro gesto inicia partida; no reutilizar
+instancias cerradas. El ambiente tiene estado/pausa por instancia de IntroPlayer,
+nunca por Resource ni singleton.

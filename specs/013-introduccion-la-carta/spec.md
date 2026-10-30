@@ -3,10 +3,33 @@
 **Feature ID**: `013-introduccion-la-carta`  
 **Planned Branch**: `codex/013-introduccion-la-carta`  
 **Created**: 2026-10-30  
-**Status**: 013-I1 aprobado funcionalmente en T009 en rama; CI/gate final de integración T011–T012 y publicación T014 pendientes
+**Status**: 013-I1 aprobado para integración en T012 y entregado en PR #54 borrador; revisión 013-I1-R2 en preparación, publicación T014 pendiente
 
 **Tracking**: [Issue #53](https://github.com/Juanpvivas/demons/issues/53), entrega intermedia `Refs #53`
 **Input**: Integrar el guion y las siete imágenes de La carta. La persona confirmó mostrarla automáticamente sólo la primera vez al pulsar Jugar, repetirla desde el menú e incluir voz provisional en la primera entrega.
+
+**Revisión autorizada 013-I1-R2**: voz claramente masculina, final/omisión de
+ambas rutas hacia Comenzar y después partida, imágenes sin textos superiores,
+ambiente original de fondo y botón Menú principal durante combate. La persona
+confirmó conservar Comenzar: nunca hay inicio automático al acabar la carta.
+Los requisitos siguientes describen esta revisión; no atribuyen su cumplimiento
+a los veredictos de I1 ni alteran los estados históricos T001–T014.
+
+**Actualización de voz confirmada**: la persona acepta el timbre de Ald pero
+lo percibe robotizado y ha elegido leer el guion. Se avanza con las otras
+cuatro correcciones y Ald sólo como preview provisional. La grabación humana
+del narrador y su incorporación/escucha final quedan en T026/SC-009, pendientes
+del archivo externo; no es una ambigüedad de diseño ni bloquea esa entrega parcial.
+La frase del compañero puede grabarse si la persona la incluye; su toma humana
+no es requisito para aceptar la narración humana de los siete párrafos.
+
+### Historia conservada de I1
+
+I1 usaba voz Piper es_MX-claude-high, contadores/rótulos/aviso superior y replay
+que volvía al menú. Tenía acceso al menú desde resultado y no ambiente de fondo.
+Las aprobaciones previas se limitan a ese alcance y sus límites. La corrección
+de la voz responde a la percepción de la persona de que sonaba femenina;
+la nueva revisión requiere escucha perceptual, no basta la etiqueta del modelo.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -23,6 +46,8 @@ Como jugador quiero conocer al soldado y sus compañeros mediante imágenes, nar
 1. **Given** una introducción abierta, **When** avanza normalmente, **Then** presenta las siete escenas de [guion.md](guion.md), con imágenes, voz provisional y subtítulos concordantes.
 2. **Given** una frase en curso, **When** se pausa o la app pierde actividad, **Then** voz, movimiento y avance se detienen; recuperar actividad no reanuda hasta Continuar.
 3. **Given** cualquier escena, **When** se omite, **Then** se detiene audio/animación y se acepta una sola salida hacia el destino de apertura.
+4. **Given** la entrega parcial R2, **When** se reproduce la carta, **Then** admite voz Ald provisional con ambiente discreto, sin declararla voz definitiva, natural o de fluidez aprobada; al recibirse la grabación humana se sustituye y verifica en T026.
+5. **Given** cualquiera de las siete imágenes, **When** se observa la interfaz, **Then** sólo aparecen subtítulos de voz y controles; no hay contador, aviso de ficción ni rótulos superiores.
 
 ### User Story 2 - Primera partida y siguientes (Priority: P1)
 
@@ -42,16 +67,29 @@ Como jugador quiero escuchar la carta la primera vez y acceder directamente a pa
 
 ### User Story 3 - Volver a verla (Priority: P2)
 
-Como jugador quiero volver a escuchar la carta voluntariamente desde el menú sin iniciar combate.
+Como jugador quiero volver a escuchar la carta voluntariamente y poder comenzar una partida al terminar.
 
 **Why this priority**: Mantiene disponible la historia después de la primera vez.
 
-**Independent Test**: Ver introducción→final/omisión→menú, sin crear nivel.
+**Independent Test**: Ver introducción→final/omisión→Comenzar→partida, sin nivel antes de ese gesto nuevo.
 
 **Acceptance Scenarios**:
 
 1. **Given** el menú, **When** se pulsa Ver introducción, **Then** se reproduce desde la primera escena con independencia del recuerdo.
-2. **Given** esa repetición, **When** termina o se omite, **Then** vuelve al menú con controles/foco restaurados, sin comenzar partida.
+2. **Given** esa repetición, **When** termina o se omite, **Then** muestra Comenzar sin volver al menú ni crear nivel automáticamente; un gesto nuevo inicia una partida.
+
+### User Story 4 - Volver al menú durante la partida (Priority: P1)
+
+Como jugador quiero un botón visible para salir al menú mientras juego, sin tener que esperar a ganar o perder.
+
+**Why this priority**: Permite abandonar el intento actual con una salida clara y reutilizar el menú.
+
+**Independent Test**: Durante PLAYING y PAUSED, pulsar Menú principal: la partida se retira, vuelve el menú y no quedan oleadas/audio/controles activos del intento.
+
+**Acceptance Scenarios**:
+
+1. **Given** una partida activa o pausada, **When** se pulsa Menú principal, **Then** el intento se cierra una sola vez y vuelve el menú, sin modal ni guardado de partida.
+2. **Given** el regreso al menú, **When** se pulsa Jugar, **Then** comienza un intento limpio respetando el recuerdo de la carta; resultado y Reintentar conservan sus rutas actuales.
 
 ### Edge Cases
 
@@ -61,24 +99,29 @@ Como jugador quiero volver a escuchar la carta voluntariamente desde el menú si
 - El gesto de Comenzar/Omitir no llega al tablero recién creado.
 - Resize y áreas seguras mantienen subtítulos completos y controles alcanzables.
 - Si el audio no puede reproducirse, los subtítulos/controles permiten continuar u omitir sin bloqueo.
+- Salir al menú durante combate invalida callbacks del intento y cancela oleadas, entradas, audio y pools antes de crear otro nivel.
+- Ambiente y voz no se acumulan al repetir la carta; ambos pausan y cesan al omitir, terminar o cerrar.
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
 - **FR-001**: Presentar siete imágenes en el orden y con el texto exacto de [guion.md](guion.md), conservando identidad del protagonista y estilo del storyboard.
-- **FR-002**: Incluir voz provisional en español, incluida intervención del compañero en escena6; archivos locales disponibles offline y reemplazables, sin atribuir voz/carta a veterano real.
-- **FR-003**: Usar fundidos y movimientos lentos de encuadre con subtítulos legibles y rótulos del guion; cada duración permite escuchar clips completos y leer el texto. El minuto del guion es orientativo.
+- **FR-002**: Incorporar la grabación humana en español del narrador elegida por la persona cuando entregue el archivo, con verificación de escucha/mezcla. Hasta T026 se admite Ald sólo como preview provisional; no se aprueba naturalidad/fluidez definitiva. Los clips son offline y reemplazables, sin atribuir carta a veterano real. La toma humana del compañero es opcional.
+- **FR-003**: Usar fundidos y movimientos lentos de encuadre con subtítulos de voz legibles; cada duración permite escuchar clips completos y leer el texto. El minuto del guion es orientativo. Rótulos del guion original no se muestran en R2.
 - **FR-004**: Ofrecer Pausar, Continuar y Omitir con ratón/teclado/toque según destino; pausa manual o pérdida de actividad detiene tiempo, audio y movimiento hasta Continuar explícito.
 - **FR-005**: Después de Jugar, ofrecer automáticamente la carta sólo si esta versión no está registrada como completada u omitida.
-- **FR-006**: Tras final/omisión desde Jugar, mostrar Comenzar sin nivel/oleadas hasta un nuevo gesto explícito.
+- **FR-006**: Tras final/omisión desde Jugar o Ver introducción, mostrar Comenzar sin nivel/oleadas hasta un nuevo gesto explícito, sin retorno automático al menú.
 - **FR-007**: Recordar finalización u omisión local por versión narrativa; lectura inválida se trata como no visto y escritura fallida no bloquea jugar ni falsea guardado.
-- **FR-008**: Añadir Ver introducción al menú; desde esa ruta terminar/omitir vuelve al menú, sin iniciar partida.
+- **FR-008**: Ver introducción reproduce desde escena1 independientemente del recuerdo y, al terminar/omitir, enlaza con partida únicamente mediante Comenzar.
 - **FR-009**: Conservar Jugar directo tras recuerdo y Reintentar directo, con exactamente un nivel por inicio aceptado.
-- **FR-010**: Consumir gestos, proteger reentrada y cancelar audio/tweens/callbacks de una reproducción al cerrarla.
+- **FR-010**: Consumir gestos, proteger reentrada y cancelar audio, avance, animación y callbacks de una reproducción al cerrarla.
 - **FR-011**: Adaptar imágenes, texto y controles a tamaños/áreas seguras y conservar foco visible y subtítulos completos.
 - **FR-012**: Mantener balance, cinco carriles, renderer y releases; 006 sigue pausada y publicación004/005 pendiente.
 - **FR-013**: Identificar carta/personajes como ficción inspirada en el contexto histórico y registrar procedencia/licencia de imágenes y audio, sin citas históricas inventadas.
+- **FR-014**: Añadir ambiente original discreto offline, separado de la voz, que pause/continúe con la introducción y se detenga al terminar, omitir o cerrar, sin solaparse en aperturas posteriores ni tapar la narración.
+- **FR-015**: Mostrar Menú principal durante PLAYING y PAUSED, con salida directa segura al menú que cierre el intento/oleadas/audio/entradas/pools una vez; conservar resultado y Reintentar, sin modal, persistencia de partida ni cambios de balance.
+- **FR-016**: Durante las siete imágenes mostrar únicamente subtítulos de voz y controles, sin contador La carta/índice, captions de lugar/época ni aviso de ficción superior. La identificación de ficción y procedencia permanece en documentación/créditos fuera de las imágenes.
 
 ### Key Entities
 
@@ -94,15 +137,18 @@ Como jugador quiero volver a escuchar la carta voluntariamente desde el menú si
 - **SC-001**: Se ven siete escenas y se escuchan completas siete narraciones y la intervención del compañero, con subtítulos concordantes y sin combate simultáneo.
 - **SC-002**: Final y omisión del primer Jugar llevan una sola vez a Comenzar; únicamente otro gesto inicia exactamente una partida.
 - **SC-003**: Tras final/omisión y reinicio con almacenamiento disponible, Jugar entra directamente; recuerdo nuevo/corrupto/de otra versión vuelve a ofrecer la carta.
-- **SC-004**: Ver introducción empieza en escena1 y vuelve al menú tras final/omisión sin crear nivel; Reintentar conserva inicio directo.
+- **SC-004**: Ver introducción empieza en escena1 y tras final/omisión muestra Comenzar; sólo otro gesto inicia exactamente un nivel. No vuelve al menú al finalizar y Reintentar conserva inicio directo.
 - **SC-005**: Pausa manual y pérdida de actividad detienen voz/tiempo/movimiento; Continuar retoma sin saltos ni voces solapadas y salir silencia la reproducción anterior.
 - **SC-006**: Controles/subtítulos son utilizables y legibles en las relaciones de pantalla verificadas para Web de computador y apps Android/iOS; destinos no disponibles se declaran separados.
 - **SC-007**: Pruebas de comportamiento/regresión, importación/exportación y CI no tienen fallos atribuibles al alcance; QA independiente emite el gate de integración con límites explícitos.
 - **SC-008**: Antes de distribuir se verifican paquete/renderer/versión/firma, instalación/smoke y 60FPS físicos aplicables, QA de publicación y autorización explícita. Integración no acredita este criterio.
+- **SC-009**: Tras recibir el archivo humano, las siete narraciones utilizan la voz suministrada por la persona y pasan escucha de texto completo, timbre, fluidez e inteligibilidad de mezcla. El compañero puede conservar su clip provisional si no se entrega toma humana. Este criterio permanece pendiente en T026; Ald preview no lo satisface y metadatos/waveform no sustituyen escucha.
+- **SC-010**: En las siete imágenes no hay ningún contador, caption o aviso superior; permanecen completos los subtítulos de voz y los controles.
+- **SC-011**: Menú principal es visible durante partida activa/pausada y vuelve al menú con cero niveles/oleadas/audio/controles del intento anterior; pulsaciones repetidas no duplican cierre o nuevos niveles.
 
 ## Assumptions
 
-- Guion e imágenes son entradas aceptadas. Primera entrega incluye voz sintética provisional sin prometer interpretación definitiva ni música nueva.
+- Guion hablado e imágenes son entradas aceptadas. R2 avanza con cuatro correcciones y Ald provisional mientras espera la grabación humana elegida; añade ambiente original sin música nueva ni aprobación de voz final.
 - La apertura automática ocurre tras Jugar, como se confirmó, para iniciar audio desde un gesto.
 - La repetición voluntaria es acceso narrativo desde menú, separado de Jugar.
 - Recuerdo por instalación/almacenamiento del navegador; no cuenta, backend, sincronización ni permisos nuevos.

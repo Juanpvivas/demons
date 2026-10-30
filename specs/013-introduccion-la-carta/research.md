@@ -1,5 +1,9 @@
 # Decisiones — La carta
 
+Las decisiones originales y el alcance aprobado de I1 se conservan abajo como
+historia. Para la revisión vigente prevalece la sección R2 final; sus cambios
+no heredan aprobación de pruebas o percepción auditiva anteriores.
+
 - Secuencia nativa ilustrada: reutiliza siete cuadros y permite texto/controles adaptables. Fundidos y encuadre, sin animar manos/capas inexistentes.
 - GameRoot ya posee menú/nivel y guard de reentrada. IntroPlayer temporal mantiene una autoridad local; GameStateManager queda MENU sin nivel ni renumeración.
 - Datos en IntroSlide/IntroSequence inmutables; estado temporal sólo en IntroPlayer. Consultar skills `resource-pattern`, `scene-organization`, `godot-ui`, `responsive-ui`, `tween-animation`, `audio-system`, `save-load`, `input-handling` antes de cada sistema.
@@ -40,3 +44,39 @@ final, instalación/firma, GPU/hardware ni 60 FPS físicos. SC-008/T014 y los
 pendientes 004/005 permanecen abiertos. Resultados exactos, comandos y CI
 corresponden al PR de [Issue #53](https://github.com/Juanpvivas/demons/issues/53),
 sin nuevos registros de evidencia versionados.
+
+## Revisión autorizada R2
+
+- La persona percibió femenina la voz anterior: sustituir los ocho clips por
+  voz provisional claramente masculina tras escucha, sin atribuir identidad
+  real. Root prepara medios y procedencia; el modelo no entra en el juego.
+- Ambas entradas finalizan/omiten en Comenzar. La persona confirmó mantener ese
+  gesto explícito: no autoarranque y nunca regreso al menú al terminar la carta.
+- Quitar todos los textos superiores de las siete imágenes (contador,
+  captions y aviso de ficción), manteniendo subtítulos hablados/controles.
+  La ficción y créditos permanecen en documentación fuera de las imágenes.
+- Añadir fondo original de viento/rumor grave discreto, offline y separado de
+  Voice. Comprobar pausa/foco/continuación/cierre sin acumulación y escuchar
+  mezcla inteligible. No añadir música, campaña o capas animadas.
+- Botón Menú principal durante PLAYING/PAUSED reutiliza intención y cierre
+  nivel/raíz; Retry sigue terminal y el retorno no guarda partida ni pide modal.
+- RED usa APIs/nodos ya observables: destinos, visibilidad superior, segundo
+  canal de ambiente y guard de salida activa. No fabricar error de parser ni
+  un setup nuevo cuando una aserción sobre ausencia actual demuestra RED.
+- Conservar recuerdo `la_carta_v1`: no se reescribe el guion hablado ni se
+  obliga a repetir la introducción por una corrección de voz/presentación.
+
+Medios candidatos R2: ocho WAV preparados con Piper `es_MX-ald-medium`, dataset
+bajo Unlicense (base de ajuste DaveFX CC0), y ambiente original periódico de
+20 segundos de viento/rumor grave sin samples de terceros. La atribución y
+licencia deben corresponder al modelo nuevo; Apache2 de la voz anterior sólo
+conserva su historia, no se reutiliza como licencia del reemplazo. El nivel
+inicial de ambiente propuesto es -18 dB, sujeto a escucha de mezcla. Disponer
+de los archivos o su etiqueta no acredita aprobación perceptual.
+
+Actualización humana: gusta el timbre Ald pero suena robotizado; la persona
+elige leer los siete párrafos. Ald sólo sirve de preview mientras llega el
+archivo. T026 incorpora/segmenta la grabación humana y revisa texto, naturalidad,
+fluidez y mezcla con QA; el compañero humano es opcional. Las cuatro correcciones
+restantes y la integración técnica de audio provisional continúan sin esperar
+ese archivo. No marcar SC-009 satisfecho ni voz definitiva aprobada en esa entrega.
