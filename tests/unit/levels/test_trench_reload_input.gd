@@ -12,6 +12,14 @@ var _saved_ammo: int
 var _saved_waves: Dictionary
 
 
+class SeenIntro:
+	extends RefCounted
+	func has_seen(_version: String) -> bool:
+		return true
+	func mark_seen(_version: String) -> Error:
+		return OK
+
+
 func before_each() -> void:
 	_saved_state = GameStateManager._current_state
 	_saved_ammo = EconomyManager.collected_ammo
@@ -399,6 +407,8 @@ func test_retry_or_menu_releases_old_controls_and_new_attempt_has_fresh_bindings
 	await wait_process_frames(2)
 	var app := ROOT_SCENE.instantiate()
 	app.level_scene = RETRY_LEVEL
+	# Este fixture verifica recarga/Retry, después de conocer la introducción.
+	app.intro_progress = SeenIntro.new()
 	_viewport.add_child(app)
 	app.request_start()
 	for frame in 12:

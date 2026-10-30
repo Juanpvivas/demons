@@ -10,6 +10,14 @@ var _saved_ammo: int
 var _saved_waves: Dictionary
 
 
+class SeenIntro:
+	extends RefCounted
+	func has_seen(_version: String) -> bool:
+		return true
+	func mark_seen(_version: String) -> Error:
+		return OK
+
+
 func before_each() -> void:
 	_saved_state = GameStateManager._current_state
 	_saved_ammo = EconomyManager.collected_ammo
@@ -156,6 +164,8 @@ func test_retry_releases_old_indicators_and_starts_both_sides_with_fresh_bars() 
 	WaveManager._defeated_in_current_wave = 0
 	var app := ROOT_SCENE.instantiate()
 	app.set("level_scene", RETRY_LEVEL)
+	# Las barras y Retry se verifican con la carta ya vista, sin perfil real.
+	app.set("intro_progress", SeenIntro.new())
 	_world.add_child(app)
 	app.request_start()
 	var level: Node
