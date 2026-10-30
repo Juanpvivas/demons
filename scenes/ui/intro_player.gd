@@ -224,9 +224,10 @@ func _render_slide() -> void:
 	_image.scale = Vector2.ONE * zoom
 	_image.position = slide.start_offset.lerp(slide.end_offset, smooth)
 	var transition: float = _sequence.transition_duration
-	_image.modulate.a = clampf(_elapsed / transition, 0.0, 1.0) if transition > 0.0 else 1.0
+	_image.modulate.a = clampf(_elapsed / transition, 0.0, 1.0) \
+		if transition > 0.0 and not _prompting else 1.0
 	_previous_image.pivot_offset = size * 0.5
-	_previous_image.visible = _image.modulate.a < 1.0
+	_previous_image.visible = not _prompting and _image.modulate.a < 1.0
 
 
 func _finish(skipped: bool) -> void:
