@@ -5,14 +5,39 @@
 **Input**: Preparación `demons-preparation`; ejecución posterior por [roles](../../docs/DEVELOPMENT_WORKFLOW.md), sin `speckit-implement`.
 
 **Seguimiento**: [Issue #53](https://github.com/Juanpvivas/demons/issues/53).
-I1 conserva aprobación de integración T012. R2 tiene aprobación funcional T021
-de cuatro correcciones e integración técnica provisional; su gate final requiere
-CI/T023–T024. Grabación humana T026 y publicación T014 siguen pendientes.
+I1/R2 conservan sus aprobaciones históricas. R3 prepara el único cambio de
+comportamiento del prompt final y la incorporación de la toma humana elegida
+en T026, con gate propio T027–T036. Publicación T014 sigue pendiente.
 
 **Revisión actual 013-I1-R2**: I1 ya tiene T012 aprobado y PR #54 en borrador.
 T015–T025 preparan y entregan cuatro correcciones con voz preview provisional;
 T026 incorpora la grabación humana al recibirla. No reabren ni
 reinician T001–T014. La nueva revisión necesita su propio RED/GREEN/QA/CI.
+
+La sección R2 conserva su planificación histórica; para el alcance actual
+prevalece la enmienda R3 siguiente. No reiniciar tareas aprobadas ni la
+preferencia narrativa `la_carta_v1`.
+
+## Enmienda vigente R3
+
+- Medio recibido/elegido: `toma-3.wav`. Root segmenta siete clips conservando
+  frases completas y proporciona metadatos técnicos temporales; dev incorpora
+  sólo WAVs y SOURCES portable. El compañero no está en la grabación: conservar
+  su único clip Ald provisional con atribución distinta. La aprobación perceptual
+  ya es humana; no exigir otra ni simular escucha del agente. T026 se verifica
+  proporcionalmente por integridad/texto/duración/reproducción/mezcla técnica,
+  sin RED artificial sobre medios.
+- Único comportamiento UI: show_start_prompt usa la franja inferior segura
+  de controles para un solo botón Comenzar de estilo equivalente y mínimo 52 px
+  de alto, sin panel/banda de fondo. Ocultar subtítulo, Pausar/Omitir y todo
+  texto extra; última imagen visible limpia. Ambas rutas esperan gesto nuevo,
+  sin audio residual. GameRoot usa sólo la API/señal pública, sin conocer nodos
+  privados del layout.
+- Reutilizar interfaces actuales, sin setup nuevo. Tester demuestra RED de
+  posición/visibilidad/limpieza/gesto antes de dev; GREEN/regresión y export Web
+  de una única revisión de QA, luego QA funcional, docs, CI exacto, QA integración
+  y actualización del mismo PR #54 borrador con Refs #53. No cambiar releases,
+  balance, destinos o gates de publicación; mantener ambiente y menú activo.
 
 ## Summary
 

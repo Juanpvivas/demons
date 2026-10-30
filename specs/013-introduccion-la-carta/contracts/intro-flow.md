@@ -82,3 +82,22 @@ Conservar play_requested, añadir intro_requested por botón Ver introducción; 
 ## Fixtures
 
 Ruta ConfigFile temporal y secuencias breves con AudioStream local válido, sin tocar preferencias reales. RED debe ejecutar aserciones: parser/import roto no vale. Audición/encuadre requieren verificación proporcional, no pruebas artificiales de píxel.
+
+## Enmienda R3 — prompt y toma humana
+
+- `show_start_prompt()` conserva firma/señal actuales; GameRoot sigue llamando
+  la API pública, sin rutas a nodos privados. No se requiere setup neutral nuevo.
+- Tras final natural u omisión en cualquiera de las aperturas, la última imagen
+  sigue visible y sólo aparece Comenzar centrado abajo en la franja segura de
+  Pausar/Omitir, con su estilo y mínimo 52 px de alto. No panel central o banda
+  de fondo, títulos/ficción/rótulos, Subtitle, Pause o Skip visibles/reservando
+  espacio. Resize y foco mantienen un botón alcanzable.
+- Voz/ambiente están detenidos y no reaparecen durante espera. El gesto de
+  omisión/final no activa Comenzar; sólo un gesto nuevo emite start_requested
+  una vez y permite un nivel. Conservar guards de generación/reentrada.
+- T026 reemplaza sólo siete narraciones por segmentos de `toma-3.wav` elegida
+  y autorizada; mantener texto íntegro y adaptar duración si hace falta. Un
+  compañero Ald provisional permanece separado/identificado. Procedencia humana
+  y aprobación perceptual se atribuyen a la persona; el agente verifica
+  técnicamente integridad/texto/duración/reproducción/mezcla sin fingir audición.
+  No versionar archivo original, metadatos temporales, ASR o logs innecesarios.

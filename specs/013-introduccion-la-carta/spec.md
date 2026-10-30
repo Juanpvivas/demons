@@ -3,7 +3,7 @@
 **Feature ID**: `013-introduccion-la-carta`  
 **Planned Branch**: `codex/013-introduccion-la-carta`  
 **Created**: 2026-10-30  
-**Status**: I1 conserva aprobación T012; R2 tiene aprobación funcional T021 de cuatro correcciones e integración técnica Ald provisional. CI/gate final T023–T024, grabación humana T026/SC-009 y publicación T014 pendientes; PR #54 en borrador
+**Status**: I1/R2 conservan sus aprobaciones; R3 en preparación para incorporar toma humana y ajustar Comenzar inferior. T026 pendiente de incorporación/verificación técnica y T014 de publicación; PR #54 en borrador
 
 **Tracking**: [Issue #53](https://github.com/Juanpvivas/demons/issues/53), entrega intermedia `Refs #53`
 **Input**: Integrar el guion y las siete imágenes de La carta. La persona confirmó mostrarla automáticamente sólo la primera vez al pulsar Jugar, repetirla desde el menú e incluir voz provisional en la primera entrega.
@@ -22,6 +22,17 @@ del narrador y su incorporación/escucha final quedan en T026/SC-009, pendientes
 del archivo externo; no es una ambigüedad de diseño ni bloquea esa entrega parcial.
 La frase del compañero puede grabarse si la persona la incluye; su toma humana
 no es requisito para aceptar la narración humana de los siete párrafos.
+
+**Actualización R3 vigente**: la persona entregó y eligió explícitamente
+`toma-3.wav`, autorizando usar su grabación para las siete narraciones. La
+aceptación perceptual de esa toma corresponde a la persona: no se pide una
+nueva aprobación del timbre ni se atribuye escucha propia al agente. T026 pasa
+a incorporación y verificación técnica proporcional. No hay toma humana del
+compañero: su único clip Ald se conserva como provisional y no se atribuye a la
+persona. El único comportamiento nuevo es el prompt final: sólo Comenzar,
+centrado abajo en la franja segura de controles, sin panel/banda de fondo,
+títulos, ficción, subtítulos ni otros controles; última imagen limpia visible.
+Las notas de espera de archivo en R2 son históricas y no son un bloqueo actual.
 
 ### Historia conservada de I1
 
@@ -61,6 +72,9 @@ Como jugador quiero escuchar la carta la primera vez y acceder directamente a pa
 
 1. **Given** que esta versión no fue vista/omitida localmente, **When** se pulsa Jugar, **Then** aparece la introducción sin nivel ni oleadas activos.
 2. **Given** esa introducción, **When** finaliza o se omite, **Then** aparece Comenzar y sólo un gesto nuevo inicia exactamente una partida.
+   En R3 ese botón es el único control/texto visible, centrado abajo en la franja
+   segura, con estilo de Pausar/Omitir y alto mínimo de 52 px; no hay panel
+   central, banda de fondo, subtítulo o audio residual.
 3. **Given** recuerdo válido de finalización/omisión, **When** se vuelve a Jugar incluso tras reiniciar, **Then** se entra directamente a la partida.
 4. **Given** resultado de partida, **When** se pulsa Reintentar, **Then** se inicia directamente otra partida.
 5. **Given** error al guardar, **When** termina/omite la carta, **Then** se permite Comenzar sin afirmar guardado exitoso; otra apertura puede ofrecerla de nuevo.
@@ -107,7 +121,7 @@ Como jugador quiero un botón visible para salir al menú mientras juego, sin te
 ### Functional Requirements
 
 - **FR-001**: Presentar siete imágenes en el orden y con el texto exacto de [guion.md](guion.md), conservando identidad del protagonista y estilo del storyboard.
-- **FR-002**: Incorporar la grabación humana en español del narrador elegida por la persona cuando entregue el archivo, con verificación de escucha/mezcla. Hasta T026 se admite Ald sólo como preview provisional; no se aprueba naturalidad/fluidez definitiva. Los clips son offline y reemplazables, sin atribuir carta a veterano real. La toma humana del compañero es opcional.
+- **FR-002**: Incorporar las siete narraciones de `toma-3.wav`, recibida y elegida por la persona, con texto completo, duraciones y reproducción/mezcla técnicamente comprobadas. La aceptación perceptual procede de esa elección humana, sin pedirla de nuevo ni atribuir audición al agente. El clip del compañero sigue Ald provisional, identificado como tal y sin atribuirlo a la persona; todos son recursos offline reemplazables, no testimonios históricos.
 - **FR-003**: Usar fundidos y movimientos lentos de encuadre con subtítulos de voz legibles; cada duración permite escuchar clips completos y leer el texto. El minuto del guion es orientativo. Rótulos del guion original no se muestran en R2.
 - **FR-004**: Ofrecer Pausar, Continuar y Omitir con ratón/teclado/toque según destino; pausa manual o pérdida de actividad detiene tiempo, audio y movimiento hasta Continuar explícito.
 - **FR-005**: Después de Jugar, ofrecer automáticamente la carta sólo si esta versión no está registrada como completada u omitida.
@@ -122,6 +136,7 @@ Como jugador quiero un botón visible para salir al menú mientras juego, sin te
 - **FR-014**: Añadir ambiente original discreto offline, separado de la voz, que pause/continúe con la introducción y se detenga al terminar, omitir o cerrar, sin solaparse en aperturas posteriores ni tapar la narración.
 - **FR-015**: Mostrar Menú principal durante PLAYING y PAUSED, con salida directa segura al menú que cierre el intento/oleadas/audio/entradas/pools una vez; conservar resultado y Reintentar, sin modal, persistencia de partida ni cambios de balance.
 - **FR-016**: Durante las siete imágenes mostrar únicamente subtítulos de voz y controles, sin contador La carta/índice, captions de lugar/época ni aviso de ficción superior. La identificación de ficción y procedencia permanece en documentación/créditos fuera de las imágenes.
+- **FR-017**: Al terminar u omitir desde cualquiera de las dos entradas, mostrar sólo Comenzar centrado abajo, en la misma franja segura/estilo de Pausar/Omitir y mínimo 52 px de alto. Mantener última imagen visible limpia, sin panel central, banda de fondo, títulos/ficción/rótulos, subtítulo, Pausar/Omitir ni audio de voz/ambiente residual. Conservar foco/resize y exigir un gesto nuevo para iniciar exactamente un nivel.
 
 ### Key Entities
 
@@ -142,13 +157,14 @@ Como jugador quiero un botón visible para salir al menú mientras juego, sin te
 - **SC-006**: Controles/subtítulos son utilizables y legibles en las relaciones de pantalla verificadas para Web de computador y apps Android/iOS; destinos no disponibles se declaran separados.
 - **SC-007**: Pruebas de comportamiento/regresión, importación/exportación y CI no tienen fallos atribuibles al alcance; QA independiente emite el gate de integración con límites explícitos.
 - **SC-008**: Antes de distribuir se verifican paquete/renderer/versión/firma, instalación/smoke y 60FPS físicos aplicables, QA de publicación y autorización explícita. Integración no acredita este criterio.
-- **SC-009**: Tras recibir el archivo humano, las siete narraciones utilizan la voz suministrada por la persona y pasan escucha de texto completo, timbre, fluidez e inteligibilidad de mezcla. El compañero puede conservar su clip provisional si no se entrega toma humana. Este criterio permanece pendiente en T026; Ald preview no lo satisface y metadatos/waveform no sustituyen escucha.
+- **SC-009**: Las siete narraciones proceden de la `toma-3.wav` autorizada y elegida por la persona, con texto íntegro, duración sin cortes y reproducción/mezcla técnicamente comprobadas. Timbre/fluidez se sustentan en la elección perceptual humana ya dada, no en una audición propia del agente. El compañero conserva un único clip Ald provisional identificado; T026 queda pendiente sólo de incorporar/verificar estos medios, no de otra aprobación de voz.
 - **SC-010**: En las siete imágenes no hay ningún contador, caption o aviso superior; permanecen completos los subtítulos de voz y los controles.
 - **SC-011**: Menú principal es visible durante partida activa/pausada y vuelve al menú con cero niveles/oleadas/audio/controles del intento anterior; pulsaciones repetidas no duplican cierre o nuevos niveles.
+- **SC-012**: En final natural y omisión de ambas entradas sólo se ve Comenzar centrado abajo, alto mínimo 52 px y estilo/franja segura de los controles previos, con última imagen visible y sin panel/banda central o inferior, textos/controles extra ni audio residual. Resize conserva su alcance/foco; sin gesto nuevo no se crea nivel y varias pulsaciones crean sólo uno.
 
 ## Assumptions
 
-- Guion hablado e imágenes son entradas aceptadas. R2 avanza con cuatro correcciones y Ald provisional mientras espera la grabación humana elegida; añade ambiente original sin música nueva ni aprobación de voz final.
+- Guion hablado e imágenes son entradas aceptadas. R3 incorpora toma humana recibida/elegida para siete narraciones y mantiene un compañero Ald provisional y ambiente original, sin música nueva ni cambio de versión narrativa.
 - La apertura automática ocurre tras Jugar, como se confirmó, para iniciar audio desde un gesto.
 - La repetición voluntaria es acceso narrativo desde menú, separado de Jugar.
 - Recuerdo por instalación/almacenamiento del navegador; no cuenta, backend, sincronización ni permisos nuevos.

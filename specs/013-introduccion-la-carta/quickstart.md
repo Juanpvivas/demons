@@ -53,3 +53,21 @@ audición perceptual final; T024, T026/SC-009 y T014 siguen separados.
 7. No extrapolar evidencia de I1: declarar los destinos/gestos/audio no observados
    en R2 y conservar límites físicos/paquete/FPS y riesgos anteriores. Sin nueva
    campaña de rendimiento ni distribución; SC-008/T014 permanece pendiente.
+
+## Enmienda vigente R3
+
+1. Antes de implementar, RED válido sobre show_start_prompt con APIs actuales:
+   tras final natural y omisión en ambas rutas sólo Comenzar, centrado abajo,
+   mínimo 52 px y estilo de controles, sin panel/banda/textos/subtítulos/Pause/Skip
+   visibles, imagen limpia y audio detenido. No crear nivel antes de otro gesto.
+2. GREEN: observar prompt en relaciones de pantalla disponibles, resize/foco y
+   doble pulsación→un nivel. Conservar pausa/foco/omisión de reproducción,
+   preferencia `la_carta_v1`, ambiente original y retorno activo al menú.
+3. Medios T026: comprobar que los siete WAV proceden de la toma3 elegida por la
+   persona, texto/frases completos, duraciones sin truncar reproducción y mezcla
+   técnica con ambiente; compañero Ald único sigue provisional. Citar aprobación
+   perceptual humana ya dada, sin solicitar otra ni atribuir escucha al agente.
+4. Ejecutar regresión/suite/import y export Web de una sola revisión exacta;
+   QA funcional→docs→CI exacto→QA integración→PR #54 borrador Refs #53.
+   No versionar metadatos/ASR/logs temporales. No heredar certificación nativa,
+   paquete/firma/hardware/FPS o publicación de revisiones previas.
