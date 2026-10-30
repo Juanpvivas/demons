@@ -188,7 +188,8 @@ func test_cleanup_and_pool_release_do_not_invent_death() -> void:
 	assert_eq(_audio.get_active_voice_count(), 0)
 
 
-func test_recycled_actor_accepts_a_new_death_and_ignores_old_delivery() -> void:
+func test_recycled_actor_accepts_a_new_death_and_ignores_old_delivery(
+		after_cleanup = use_parameters([false, true])) -> void:
 	var pool := ObjectPool.new()
 	_world.add_child(pool)
 	pool.instance_created.connect(func(node: Node):
@@ -212,10 +213,19 @@ func test_recycled_actor_accepts_a_new_death_and_ignores_old_delivery() -> void:
 	assert_same(reused, enemy, "Control: mismo nodo físico")
 	reused.prepare_for_spawn(stats, Vector2(900, 528), 4)
 	assert_gt(reused.activation_generation, generation)
+	assert_true(reused.is_targetable(), "Control: segunda activación viva antes de cualquier retirada")
+	assert_false(reused.take_damage(1), "Control: conserva salud tras un impacto no letal")
+	assert_eq(_events, [&"enemy_death"], "Ni reciclado ni daño no letal son otra baja")
+	if after_cleanup:
+		pool.release(reused) # Retirar una activación viva no representa una muerte.
+		assert_false(reused.is_targetable())
+		assert_eq(_events, [&"enemy_death"], "Cleanup por sí solo sigue siendo silencioso")
 	assert_false(old.is_empty(), "Observador vigente capturable antes del reciclado")
 	for callback: Callable in old:
 		callback.call(snapshots[0]) # Entrega antigua mientras la nueva activación sigue viva.
-	assert_eq(_events, [&"enemy_death"], "El snapshot anterior no representa otra baja")
+	assert_eq(_events, [&"enemy_death"], "El snapshot anterior no representa otra baja, tampoco tras cleanup vivo")
+	if after_cleanup:
+		return # La otra variante conserva el control positivo de una segunda muerte real.
 	assert_true(reused.take_damage(9999))
 	assert_eq(_events, [&"enemy_death", &"enemy_death"], "Otra activación sí tiene su baja")
 
