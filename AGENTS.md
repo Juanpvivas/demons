@@ -118,7 +118,7 @@ persona `Squash and merge` para dejar un commit por PR en `main`, conservando
 la trazabilidad RED/GREEN en el cuerpo del PR; no reescribas historial compartido o
 aprobado sin autorización.
 
-Según la constitución 4.1.1, **integración y publicación tienen gates distintos**.
+Según la constitución 4.2.0, **integración y publicación tienen gates distintos**.
 `main` recibe incrementos funcionales con TDD/GREEN, compilación, CI,
 documentación y `APROBADO PARA INTEGRACIÓN` independiente. Hardware físico,
 renderer o paquete final sin certificar permanecen pendientes de publicación;
@@ -133,10 +133,13 @@ Un merge no publica: los workflows de distribución requieren gate explícito.
 Solo el orquestador marca el alcance aprobado; una tarea que también contenga
 publicación mantiene pendiente esa parte y no se marca completa por integración.
 
-La única excepción autorizada para la beta 1.0.1 (build 4) está delimitada en
-la [constitución V](.specify/memory/constitution.md#excepción-autorizada-beta-101-build-4).
-No convierte las pruebas físicas diferidas en aprobadas ni dispensa QA o la
-verificación de firma/empaquetado/versionado previa al upload.
+La excepción consumida de [beta 1.0.1 (build 4)](.specify/memory/constitution.md#excepción-autorizada-beta-101-build-4)
+se conserva como historia. La nueva excepción autorizada exclusivamente para
+[beta 1.0.2 (build 5)](.specify/memory/constitution.md#excepción-autorizada-beta-102-build-5)
+permite un envío exitoso por destino en su alcance. No convierte las pruebas
+físicas diferidas en aprobadas ni dispensa QA o la verificación de
+firma/empaquetado/versionado previa a cada upload; conserva los pendientes y
+la pausa de 006.
 
 Las consultas y correcciones documentales puntuales conservan su alcance;
 no disparan automáticamente la implementación de una feature.
@@ -207,3 +210,4 @@ no afirmes haberla aplicado ni sustituyas su consulta por conocimiento genérico
 | 2026-10-19 | Constitución 4.0.0: gates separados de integración funcional y publicación; requisitos físicos conservados para publicar, sin distribución automática por merge |
 | 2026-10-29 | Constitución 4.1.0: referencia a la excepción autorizada y acotada de la beta 1.0.1/build 4, conservando pendientes físicos y verificaciones de publicación no eximidas |
 | 2026-10-29 | Constitución 4.1.1: trazabilidad de la corrección acotada de empaquetado de la misma beta, con nueva QA/CI antes de reintentar y sin ampliar la excepción |
+| 2026-10-30 | Constitución 4.2.0: nueva excepción acotada para beta 1.0.2/build 5, sin reutilizar 1.0.1 ni dar por aprobados sus requisitos físicos diferidos; QA y controles previos conservados |

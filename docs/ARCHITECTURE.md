@@ -897,7 +897,7 @@ el instrumento y diagnóstico limitado, sin parche ni cierre de bases nativas.
   solo ese entorno; Compatibility temporal no certifica Mobile.
 - Presets de exportación por plataforma se versionan en
   `export_presets.cfg`, sin credenciales ni keystores/certificados dentro
-  del repositorio. Según constitución 4.1.1, merge/push a `main` integra
+  del repositorio. Según constitución 4.2.0, merge/push a `main` integra
   desarrollo y no dispara distribución externa. Los workflows
   **Android/Firebase App Distribution** (`.github/workflows/deploy-android-testers.yml`)
   e **iOS/TestFlight** (`.github/workflows/deploy-ios-testflight.yml`) se ejecutan
@@ -913,6 +913,14 @@ el instrumento y diagnóstico limitado, sin parche ni cierre de bases nativas.
   QA identifica la revisión exacta y los pendientes físicos diferidos; firma,
   empaquetado y versión del APK/IPA siguen verificándose antes de cada upload.
   No se modifica el renderer ni se extiende esta excepción a otra versión o canal.
+  La excepción 1.0.1 está consumida. La nueva
+  [excepción de beta 1.0.2/build 5](../.specify/memory/constitution.md#excepción-autorizada-beta-102-build-5)
+  autoriza, con QA y CI, integrar el PR #52 por Squash and merge y un envío
+  exitoso manual por destino sobre la revisión exacta de `main` aprobada.
+  Sólo difiere las verificaciones físicas delimitadas allí; mantiene los
+  controles previos de firma/empaquetado/versionado, los pendientes
+  004/T039, 005/T071 y SC-007 y la pausa de 006. No acredita un veredicto de
+  publicación ni envíos ejecutados.
 - **Firma beta estable de Android:** el workflow conserva un único firmante
   mediante los secrets `ANDROID_BETA_KEYSTORE_BASE64`,
   `ANDROID_BETA_KEYSTORE_PASSWORD` y `ANDROID_BETA_KEYSTORE_ALIAS`; la variable
@@ -1051,3 +1059,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-29 | 012/T009 tras QA funcional T008: §5 incorpora intención de recarga por hogar/ID, panel informativo, controles por señales y notificación de encuadre aplicado; fuente económica del actor y gates de publicación conservados. |
 | 2026-10-29 | 012/T019 tras QA funcional T018: §5 describe TrenchReloadControl transparente sobre el arte, brillo aditivo local por hogar y Tween idempotente/limpiado; autoridad y gates conservados, sin patrón global nuevo. |
 | 2026-10-29 | §7 documenta la firma beta Android fija y protegida, verificación obligatoria de su huella antes del upload y transición por reinstalación manual; gates de publicación conservados. |
+| 2026-10-30 | §7 referencia constitución 4.2.0 y la excepción acotada de beta 1.0.2/build 5; conserva controles, pendientes físicos y alcance histórico de 1.0.1. |
