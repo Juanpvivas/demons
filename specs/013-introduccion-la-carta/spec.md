@@ -3,7 +3,9 @@
 **Feature ID**: `013-introduccion-la-carta`  
 **Planned Branch**: `codex/013-introduccion-la-carta`  
 **Created**: 2026-10-30  
-**Status**: Preparación para revisión independiente  
+**Status**: 013-I1 aprobado funcionalmente en T009 en rama; CI/gate final de integración T011–T012 y publicación T014 pendientes
+
+**Tracking**: [Issue #53](https://github.com/Juanpvivas/demons/issues/53), entrega intermedia `Refs #53`
 **Input**: Integrar el guion y las siete imágenes de La carta. La persona confirmó mostrarla automáticamente sólo la primera vez al pulsar Jugar, repetirla desde el menú e incluir voz provisional en la primera entrega.
 
 ## User Scenarios & Testing *(mandatory)*

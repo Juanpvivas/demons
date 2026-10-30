@@ -101,7 +101,7 @@ estabilización y publicación conservan sus pendientes, sin certificación nuev
 integrado en `main` mediante el [PR #34](https://github.com/Juanpvivas/demons/pull/34),
 implementa el ciclo completo:
 
-- Al abrir, el menú espera a que pulses «Jugar» para iniciar Monte Calvo.
+- Al abrir, el menú espera a que pulses «Jugar»; 013-I1 añade la introducción de primera vez descrita abajo antes de iniciar Monte Calvo.
 - Tras ganar o perder, «Volver a jugar» empieza un intento nuevo sin refrescar.
 - «Menú principal» permite esperar antes de iniciar otro intento con «Jugar».
 
@@ -116,6 +116,28 @@ causa o fuga demostradas. El
 identifican el veredicto y CI de su revisión exacta. Los
 [límites de las variantes nativas](docs/SPEC.md#8-arte-y-estilo-visual),
 los pendientes de 006 y la publicación se conservan.
+
+[013 — La carta](specs/013-introduccion-la-carta/spec.md) añade en su rama
+una introducción ilustrada con subtítulos y voz sintética provisional en español
+de México, aprobada funcionalmente en T009. La carta y sus personajes son
+ficción inspirada en el Batallón Colombia.
+
+- La primera vez que pulses «Jugar», verás las siete escenas. Puedes pulsar
+  «Pausar», «Continuar» u «Omitir»; al terminar, «Comenzar» inicia la partida.
+- El juego recuerda localmente que terminaste u omitiste la introducción.
+  Las siguientes partidas y «Volver a jugar» entran directamente al combate.
+- «Ver introducción», en el menú, permite repetirla y regresa al menú al acabar
+  u omitir, sin iniciar una partida. Cambiar de app o perder foco la pausa;
+  debes pulsar «Continuar» al regresar.
+- El recuerdo corresponde a cada instalación o almacenamiento del navegador;
+  un fallo al guardarlo permite seguir jugando, aunque vuelva a aparecer.
+
+La voz aún es provisional. La comprobación disponible no certifica audición
+perceptual, toque iOS, recorrido visual completo de los siete cuadros ni
+rendimiento físico. [Alcance y límites](specs/013-introduccion-la-carta/research.md#alcance-funcional-aprobado-y-límites).
+CI/gate final de integración y publicación conservan su
+[seguimiento separado](specs/013-introduccion-la-carta/tasks.md); 006 sigue pausada
+y los pendientes 004/005 no se cierran por esta entrega.
 
 [008 — Marcha enemiga](specs/008-marcha-enemiga/spec.md) renueva el avance con
 ocho poses de apoyos alternados y balanceo del cuerpo/equipo, conservando el

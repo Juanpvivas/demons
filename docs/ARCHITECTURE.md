@@ -559,10 +559,27 @@ detalla ese ciclo sin introducir otra autoridad de salud ni cambiar el pool.
 
 ### 4.8 Entrada común y composición local
 
-`GameRoot.tscn` es la entrada del producto y compone menú y nivel sin un
-autoload adicional. `MainMenu` sólo emite la intención `play_requested`;
-la raíz acepta una vez el inicio y monta el nivel de forma diferida, protegida
-contra reentrada. Hasta «Jugar» no existe un nivel de combate activo.
+`GameRoot.tscn` es la entrada del producto y compone menú, introducción y nivel
+sin un autoload adicional. `MainMenu` emite `play_requested` o
+`intro_requested`; la raíz decide el destino y protege la reentrada.
+013-I1/T007–T009 añade `IntroPlayer`: después del primer Jugar no se monta
+nivel hasta terminar/omitir la introducción y aceptar Comenzar mediante otro
+gesto. Con recuerdo válido, Jugar conserva el montaje directo diferido.
+Ver introducción usa una instancia nueva y vuelve al menú al terminar/omitir.
+La generación y los callbacks ligados a la instancia aíslan cada apertura;
+el cierre detiene voz/avance antes de retirar la escena. Retry sigue directo.
+
+`IntroSequence`/`IntroSlide` son Resources compartidos inmutables con imágenes,
+textos, clips y encuadres; el índice/tiempo/pausa vive sólo en IntroPlayer.
+Los clips pregrabados son recursos locales: no hay sintetizador ni modelo
+runtime. El tiempo autorado nunca recorta clips; pausa o pérdida de actividad
+detienen audio y avance hasta continuación explícita.
+`IntroProgress`, dependencia local inyectable, escribe un ConfigFile canónico
+dedicado en `user://intro_progress.cfg` y comprueba el Error de guardado.
+La lectura exige el registro canónico de la versión narrativa actual;
+ausencia/corrupción/otra versión se consideran no visto. Un error de escritura
+no bloquea el destino ni simula persistencia. Las pruebas usan rutas temporales
+y los fixtures de nivel inyectan recuerdo ya visto para mantener su propósito.
 El menú usa `CanvasLayer` para mantener su presentación independiente de la
 `Camera2D` del nivel. Menú y resultado reutilizan el `Theme` de
 `resources/ui/monte_calvo_theme.tres`; el acabado y el foco se comparten como
@@ -1060,3 +1077,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-29 | 012/T019 tras QA funcional T018: §5 describe TrenchReloadControl transparente sobre el arte, brillo aditivo local por hogar y Tween idempotente/limpiado; autoridad y gates conservados, sin patrón global nuevo. |
 | 2026-10-29 | §7 documenta la firma beta Android fija y protegida, verificación obligatoria de su huella antes del upload y transición por reinstalación manual; gates de publicación conservados. |
 | 2026-10-30 | §7 referencia constitución 4.2.0 y la excepción acotada de beta 1.0.2/build 5; conserva controles, pendientes físicos y alcance histórico de 1.0.1. |
+| 2026-10-30 | 013/T010 tras QA funcional T009: §4.8 incorpora composición local de introducción, Resources narrativos inmutables, recuerdo canónico inyectable y aislamiento por apertura; coste de precarga y límites de validación constan en 013, sin certificar publicación. |

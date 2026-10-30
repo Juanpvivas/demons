@@ -1,6 +1,9 @@
 # Verificación — La carta
 
-Pasos previstos, no resultados aprobados. Gate integración; publicación separada.
+Escenarios de comprobación reproducibles; su enumeración no afirma que todos
+fueran observados en cada destino. T009 aprueba el alcance funcional disponible
+con [límites explícitos](research.md#alcance-funcional-aprobado-y-límites);
+CI/gate final de integración T011–T012 y publicación T014 siguen separados.
 
 1. Perfil/ruta temporal sin borrar preferencias: menú→Jugar→escena1/voz/texto, sin nivel/oleadas.
 2. Recorrer siete escenas completas; escuchar narrador/compañero y comprobar textos/rótulos/fundidos sin cortar voz. Esperar Comenzar y sólo entonces montar partida.

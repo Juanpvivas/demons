@@ -4,6 +4,10 @@
 
 **Input**: Preparación `demons-preparation`; ejecución posterior por [roles](../../docs/DEVELOPMENT_WORKFLOW.md), sin `speckit-implement`.
 
+**Seguimiento**: [Issue #53](https://github.com/Juanpvivas/demons/issues/53).
+T009 aprueba funcionalidad T007–T008 en rama; la integración final requiere
+T011–T012 y la publicación sigue pendiente en T014.
+
 ## Summary
 
 IntroPlayer reproduce siete cuadros/voz/textos sin partida activa. GameRoot elige primera introducción, partida directa o replay; sólo crea nivel al aceptar el inicio correspondiente.
