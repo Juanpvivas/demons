@@ -838,7 +838,16 @@ func test_intro_finish_or_skip_waits_for_a_fresh_start_click(
 	var intro: Node = await _fresh_intro(progress)
 	if intro == null:
 		return
-	await _finish_intro(intro, skipped)
+	if skipped:
+		var omit := _button("Omitir")
+		assert_not_null(omit, "Control positivo: omisión por un gesto real")
+		if omit == null:
+			return
+		_click(omit.get_global_rect().get_center())
+		await wait_process_frames(2)
+	else:
+		await _finish_intro(intro, false)
+	_assert_r3_prompt_is_the_only_visible_action(intro)
 	assert_null(_app.get_current_level(), "Finalizar u omitir no inicia combate")
 	assert_eq(progress.writes, 1, "Final/omisión se registra una vez")
 	assert_true(progress.seen)
@@ -920,7 +929,16 @@ func test_r2_replay_always_opens_at_first_scene_and_waits_for_start(
 	intro.set_process(false)
 	assert_eq(intro.get_slide_index(), 0)
 	assert_null(_app.get_current_level())
-	await _finish_intro(intro, skipped)
+	if skipped:
+		var omit := _button("Omitir")
+		assert_not_null(omit, "Control positivo: omisión por un gesto real")
+		if omit == null:
+			return
+		_click(omit.get_global_rect().get_center())
+		await wait_process_frames(2)
+	else:
+		await _finish_intro(intro, false)
+	_assert_r3_prompt_is_the_only_visible_action(intro)
 	assert_true(is_instance_valid(intro) and _app.get_current_intro() == intro,
 		"Replay espera Comenzar en su propia pantalla")
 	assert_null(_app.get_current_level())
@@ -1013,3 +1031,20 @@ func test_r2_real_active_menu_button_closes_every_level_object_and_consumes_inpu
 	if next != null:
 		assert_eq(_soldiers(next).size(), 5)
 		assert_eq(_wave_events, [1, 1], "Una única partida nueva después de cerrar")
+
+
+func _assert_r3_prompt_is_the_only_visible_action(intro: Node) -> void:
+	var texts: Array[String] = []
+	var actions: Array[String] = []
+	for node: Node in intro.find_children("*", "Label", true, false):
+		if (node as Label).is_visible_in_tree() and not (node as Label).text.is_empty():
+			texts.append((node as Label).text)
+	for node: Node in intro.find_children("*", "Button", true, false):
+		if (node as Button).is_visible_in_tree():
+			actions.append((node as Button).text)
+	assert_eq(texts, [], "Ambas rutas cierran sin título, ficción ni subtítulo")
+	assert_eq(actions, ["Comenzar"], "Sólo queda la acción explícita de inicio")
+	for node: Node in intro.find_children("*", "AudioStreamPlayer", true, false):
+		assert_false((node as AudioStreamPlayer).playing, "La espera no mantiene sonido residual")
+	assert_null(_app.get_current_level(), "Sin nivel antes del gesto nuevo")
+	assert_true(_wave_events.is_empty(), "Sin oleadas antes del gesto nuevo")

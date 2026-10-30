@@ -296,3 +296,102 @@ func test_r2_all_exit_paths_silence_both_channels_before_next_opening(
 	assert_eq(_playing_channels().size(), 2)
 	for channel: AudioStreamPlayer in previous_channels:
 		assert_false(channel.playing, "Reabrir no revive canales del intento anterior")
+
+
+## 013/T028 R3: el cierre conserva imagen y usa sólo la franja de acciones.
+func _visible_buttons() -> Array[Button]:
+	var result: Array[Button] = []
+	for node: Node in _player.find_children("*", "Button", true, false):
+		if (node as Button).is_visible_in_tree():
+			result.append(node as Button)
+	return result
+
+
+func _opaque_panels() -> Array[PanelContainer]:
+	var result: Array[PanelContainer] = []
+	for node: Node in _player.find_children("*", "PanelContainer", true, false):
+		var panel := node as PanelContainer
+		if not panel.is_visible_in_tree():
+			continue
+		var style := panel.get_theme_stylebox("panel")
+		if (style is StyleBoxFlat and style.bg_color.a > 0.0) or style is StyleBoxTexture:
+			result.append(panel)
+	return result
+
+
+func test_r3_prompt_is_only_a_lower_action_with_the_current_image_and_silence(
+		skipped = use_parameters([false, true])) -> void:
+	_player.close_intro()
+	_player.queue_free()
+	var viewport := SubViewport.new()
+	viewport.size = Vector2i(1152, 648)
+	viewport.handle_input_locally = true
+	add_child_autofree(viewport)
+	for index in _sequence.slides.size():
+		var pixels := Image.create(8, 8, false, Image.FORMAT_RGBA8)
+		pixels.fill(Color(float(index) / 3.0, 0.25, 0.5))
+		_sequence.slides[index].image = ImageTexture.create_from_image(pixels)
+	_sequence.ambience = _voice(2.0)
+	_player = PLAYER.instantiate() as Control
+	viewport.add_child(_player)
+	watch_signals(_player)
+	_player.play(_sequence)
+	_player.set_process(false)
+	await wait_process_frames(2)
+	var pause: Button
+	for button: Button in _visible_buttons():
+		if button.text == "Pausar":
+			pause = button
+	assert_not_null(pause, "Control positivo: acción previa visible para comparar la franja")
+	if pause == null:
+		return
+	var action_height := pause.get_global_rect().size.y
+	var action_bottom_inset := float(viewport.size.y) - pause.get_global_rect().end.y
+	var action_font_size := pause.get_theme_font_size("font_size")
+	var action_color := pause.get_theme_color("font_color")
+	var action_style := pause.get_theme_stylebox("normal")
+	var current_image: Texture2D = _sequence.slides[0].image if skipped else _sequence.slides.back().image
+	if skipped:
+		_player.skip_intro()
+	else:
+		_complete()
+	_player.show_start_prompt()
+	await wait_process_frames(2)
+	var buttons := _visible_buttons()
+	assert_eq(buttons.map(func(button: Button): return button.text), ["Comenzar"],
+		"El cierre ofrece una sola acción")
+	assert_eq(_texts().filter(func(text: String): return not text.is_empty()), [],
+		"Sin título, ficción o subtítulos durante la espera")
+	assert_true(_opaque_panels().is_empty(), "La última imagen no recibe paneles o bandas de fondo")
+	assert_true(_playing_channels().is_empty(), "Voz y ambiente se detienen antes del prompt")
+	var displayed: TextureRect = _player.get_node("Stage/Image")
+	assert_true(displayed.is_visible_in_tree())
+	assert_same(displayed.texture, current_image, "Conservar la imagen en que terminó/se omitió")
+	assert_eq(displayed.modulate.a, 1.0, "La imagen permanece visible al cerrar")
+	if buttons.size() != 1:
+		return
+	var start := buttons[0]
+	assert_eq(start.get_theme_font_size("font_size"), action_font_size, "Tipografía de las acciones previas")
+	assert_eq(start.get_theme_color("font_color"), action_color)
+	var start_style := start.get_theme_stylebox("normal")
+	assert_eq(start_style.get_class(), action_style.get_class())
+	if start_style is StyleBoxFlat and action_style is StyleBoxFlat:
+		assert_eq(start_style.bg_color, action_style.bg_color, "Estilo visual equivalente sin exigir el mismo Resource")
+		assert_eq(start_style.border_color, action_style.border_color)
+	for viewport_size: Vector2i in [Vector2i(1152, 648), Vector2i(960, 600), Vector2i(1280, 720)]:
+		viewport.size = viewport_size
+		await wait_process_frames(2)
+		var rect := start.get_global_rect()
+		assert_gte(rect.size.y, 52.0, "Alto mínimo solicitado")
+		assert_true(Rect2(Vector2.ZERO, Vector2(viewport_size)).encloses(rect), "Acción alcanzable tras resize")
+		assert_almost_eq(rect.get_center().x / float(viewport_size.x), 0.5, 0.01, "Comenzar centrado horizontalmente")
+		assert_lte(absf(float(viewport_size.y) - rect.end.y - action_bottom_inset), action_height,
+			"Se mantiene en la franja inferior de Pausar/Omitir, sin coordenadas absolutas")
+		assert_same(viewport.gui_get_focus_owner(), start, "Resize conserva foco de teclado")
+		assert_true(_playing_channels().is_empty())
+	assert_signal_not_emitted(_player, "start_requested", "Ni final, omisión ni resize inician solos")
+	_player.set_application_active(false)
+	_player.set_application_active(true)
+	_player.advance_intro(10.0)
+	assert_true(_playing_channels().is_empty(), "La vuelta de foco no revive sonido cerrado")
+	assert_signal_not_emitted(_player, "start_requested")
