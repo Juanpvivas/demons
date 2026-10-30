@@ -12,7 +12,8 @@ sustitución del clip sintético del compañero; publicación T014 sigue pendien
 
 Sustituir únicamente `assets/audio/narrative/la_carta/companero_06.wav` por la
 candidata sintética masculina expresiva preparada por root, con la frase actual
-y SOURCES/licencias portables. Archivo candidato aún pendiente de provisión;
+y SOURCES/licencias portables. Candidata Qwen3-TTS VoiceDesign incorporada;
+QA técnica T040 aprobada; gate final T043 y escucha humana de naturalidad pendientes;
 no cambia guion/montaje, siete WAV humanos toma3, runtime, controles, ambiente
 o preferencia `la_carta_v1`. Conservar metadatos de importación necesarios sin
 reconfigurar codecs o lógica por esta tarea.

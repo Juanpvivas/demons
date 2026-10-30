@@ -120,8 +120,10 @@ los pendientes de 006 y la publicación se conservan.
 [013 — La carta](specs/013-introduccion-la-carta/spec.md) añade en su rama
 una introducción ilustrada con subtítulos, narración humana de la toma3 elegida
 y autorizada por la persona autora, y ambiente original discreto. El compañero
-conserva un único clip Ald sintético/provisional. R3 tiene aprobación funcional
-T032 y de medios T026 en rama; gate final de integración T035 pendiente. La carta y
+usa un único clip sintético candidato generado con Qwen3-TTS VoiceDesign,
+cuya naturalidad está pendiente de escucha humana. R3 conserva sus aprobaciones;
+la integración técnica R4 del compañero está aprobada en T040, con gate final
+T043 pendiente. La carta y
 sus personajes son ficción inspirada en el Batallón Colombia.
 
 - La primera vez que pulses «Jugar», verás las siete escenas. Puedes pulsar

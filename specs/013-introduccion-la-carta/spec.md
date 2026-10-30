@@ -3,7 +3,7 @@
 **Feature ID**: `013-introduccion-la-carta`  
 **Planned Branch**: `codex/013-introduccion-la-carta`  
 **Created**: 2026-10-30  
-**Status**: I1/R2/R3 conservan sus aprobaciones; R4 prepara únicamente sustitución del clip del compañero. Narrador humano toma3/T026 intacto y publicación T014 pendiente; PR #54 en borrador
+**Status**: I1/R2/R3 conservan sus aprobaciones; integración técnica de candidata R4 del compañero aprobada en T040, gate final T043 pendiente. Naturalidad pendiente de escucha humana; narrador toma3/T026 intacto y publicación T014 pendiente; PR #54 en borrador
 
 **Tracking**: [Issue #53](https://github.com/Juanpvivas/demons/issues/53), entrega intermedia `Refs #53`
 **Input**: Integrar el guion y las siete imágenes de La carta. La persona confirmó mostrarla automáticamente sólo la primera vez al pulsar Jugar, repetirla desde el menú e incluir voz provisional en la primera entrega.
@@ -48,6 +48,12 @@ recurso/procedencia/importación/reproducción/tiempo e integridad; la naturalid
 de la candidata queda pendiente de escucha humana y no se aprueba desde
 metadatos o una escucha fingida del agente. El compañero sigue sintético y no
 se atribuye a quien grabó toma3. Las descripciones Ald anteriores son historia.
+
+La candidata incorporada se generó con Qwen3-TTS VoiceDesign sin referencia
+de audio ni clonación; su procedencia/licencia consta en
+[SOURCES](../../assets/audio/narrative/la_carta/SOURCES.md). T040 aprueba su
+integración técnica, no la aceptación perceptual de la candidata; gate final
+T043 y escucha humana de naturalidad permanecen pendientes.
 
 ### Historia conservada de I1
 

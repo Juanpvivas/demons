@@ -130,3 +130,12 @@ hardware/FPS, partida manual completa y paquete final no se certifican. Persiste
 los riesgos descriptivos de precarga de I1/R2, sin nuevo benchmark ni reanudar006;
 los pendientes004/005 no cambian. No se versionan toma original, ASR o metadatos
 temporales de comprobación.
+
+## Candidata R4 — compañero sintético
+
+Sólo `companero_06.wav` se sustituye por una candidata Qwen3-TTS VoiceDesign,
+con procedencia y Apache2 del modelo en el [catálogo de audio](../../assets/audio/narrative/la_carta/SOURCES.md),
+sin referencia/clonación ni modelo runtime. Los siete WAV humanos, guion/montaje,
+ambiente y comportamiento R3 permanecen idénticos. T040 aprueba integración
+técnica; gate final T043 pendiente. La naturalidad requiere escucha humana pendiente,
+no desde ASR/metadatos o una audición atribuida al agente.

@@ -20,7 +20,8 @@ aprobada funcionalmente en T032 en rama) presenta siete escenas antes de la prim
 La carta y sus personajes son ficción inspirada en el Batallón Colombia,
 no testimonios ni retratos de veteranos identificados. Incluye subtítulos y
 siete narraciones humanas de la toma3 aportada, elegida y autorizada por la
-persona autora, un compañero Ald sintético/provisional y ambiente original.
+persona autora, un compañero sintético candidato Qwen3-TTS VoiceDesign y
+ambiente original. La naturalidad de la candidata espera escucha humana.
 T026 aprueba la incorporación técnica de la toma elegida; su aceptación
 perceptual es humana y no se atribuye audición propia a los agentes.
 
@@ -230,9 +231,11 @@ en canal separado y cesa con la reproducción. «Menú principal», visible en l
 franja superior durante partida activa/pausada, cierra el intento sin modal ni
 guardado; su zona no se superpone a las trincheras/recarga.
 El arte y las voces humanas/provisional tienen [procedencia documentada](../specs/013-introduccion-la-carta/research.md).
-T032 aprueba función R3 y T026/SC-009 en el alcance de narrador toma3 elegido y
-compañero provisional divulgado. CI/gate final T034–T035 y publicación T014
-siguen separados. No se acredita toque iOS, hardware, 60 FPS o paquete final;
+T032 aprobó función R3 y T026/SC-009 en el alcance de narrador toma3 elegido y
+compañero provisional divulgado. La sustitución candidata R4 del compañero
+tiene aprobación técnica T040 y espera gate final T043; no cambia narrador,
+montaje ni controles, y su naturalidad sigue pendiente de escucha humana.
+Publicación T014 sigue separada. No se acredita toque iOS, hardware, 60 FPS o paquete final;
 el riesgo de carga/memoria de precarga se conserva con [límites explícitos](../specs/013-introduccion-la-carta/research.md#alcance-funcional-r3-y-límites).
 
 **Dirección aprobada para el entorno de Monte Calvo, primera iteración**
@@ -591,3 +594,4 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 | 2026-10-30 | 013/T010 tras QA funcional T009: La carta incorpora narrativa ilustrada con voz provisional, primera entrada/replay/recuerdo local; se resuelve la pregunta narrativa y se conservan límites de audición, destinos y coste de precarga, con CI/integración final y publicación pendientes. |
 | 2026-10-30 | 013/T022 tras QA funcional T021: ambas rutas terminan en Comenzar, imágenes sin cabecera, ambiente separado y Menú principal activo/pausado; Ald sigue como preview, grabación humana T026 y gates de integración/publicación permanecen pendientes. |
 | 2026-10-30 | 013/T033 tras QA funcional T032: siete narraciones de toma3 elegida/autorizada, compañero sintético provisional y prompt Comenzar inferior limpio, estable ante resize; T026/SC-009 aprobados en su alcance, con CI/gate final T035 y publicación pendientes. |
+| 2026-10-30 | 013/T041 tras QA técnica T040: sólo compañero sustituido por candidata Qwen3-TTS VoiceDesign; narrador humano y comportamiento intactos, naturalidad humana y gate final T043/publicación pendientes. |
