@@ -151,8 +151,8 @@ func _on_actor_defeated(_snapshot: Dictionary, id: int, session: int) -> void:
 	var cue: StringName = &"soldier_death"
 	if actor is Enemigo:
 		var enemy := actor as Enemigo
-		# La baja ya desactivó el actor; el snapshot viejo no mata su nueva activación.
-		if enemy.is_targetable():
+		# Estar inactivo por cleanup no confirma una baja de esta activación.
+		if not enemy.has_confirmed_defeat():
 			return
 		generation = enemy.activation_generation
 		cue = &"enemy_death"
