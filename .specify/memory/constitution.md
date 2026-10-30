@@ -1,5 +1,26 @@
 <!--
 Sync Impact Report
+- Version change: 4.1.1 → 4.2.0 (MINOR).
+- Motivo: autorización explícita de la persona el 2026-10-30 para la beta
+  excepcional 1.0.2/build 5, integración por Squash and merge del PR #52 y
+  un envío exitoso por destino a Firebase App Distribution y TestFlight;
+  seguimiento en Issue #51.
+- MINOR: añade una autorización acotada y consumible a V, sin sustituir los
+  principios II/IV/V ni renovar la excepción consumida de 1.0.1/build 4.
+- Difiere sólo instalación/smoke físicos completos y medición de 60 FPS y
+  referencia IV/005. No completa 004/T039, 005/T071 o SC-007 ni reanuda 006.
+- Conserva fuente/GREEN/regresión, build/CI, configuración y renderer,
+  firma/empaquetado/identificadores/versionado antes de cada upload, QA
+  independiente, revisión exacta de main y despacho manual autorizado.
+- La firma Android fija y sus controles fueron autorizados por separado;
+  esta excepción no dispensa fallos del firmante ni reduce guards.
+- Alinear referencias breves en AGENTS, arquitectura y flujo. Sin cambios
+  de fuente, workflows, secretos, pruebas o tareas por esta enmienda;
+  sección 1.0.1 e informes históricos conservados literalmente.
+-->
+
+<!--
+Sync Impact Report
 - Version change: 4.1.0 → 4.1.1 (PATCH).
 - Aclarar la trazabilidad de la misma beta autorizada 1.0.1/build 4: preparación
   en PR #47 y su corrección de filtros de exportación nativos en Issue #46.
@@ -251,6 +272,54 @@ fuera de ese alcance, futuros builds, cambios de renderer, itch.io,
 publicación en tiendas ni cierre de las features 004/005.
 La regla general de II/IV/V sigue vigente para cualquier otro alcance.
 
+#### Excepción autorizada: beta 1.0.2 (build 5)
+
+Por decisión explícita de la persona del **2026-10-30**, se permite una beta
+excepcional **1.0.2 (build 5)** para **Android mediante Firebase App
+Distribution** e **iOS mediante TestFlight**, preparada en el
+[PR #52](https://github.com/Juanpvivas/demons/pull/52) y seguida en el
+[Issue #51](https://github.com/Juanpvivas/demons/issues/51). La autorización
+incluye integrar esa preparación mediante **Squash and merge** y ejecutar
+manualmente un envío exitoso por destino, sobre la revisión exacta de `main`
+que QA apruebe. No autoriza otra versión, build, canal o cambio de
+gameplay/renderer.
+
+Exclusivamente para esta beta se **difieren** las verificaciones físicas
+completas de instalación y smoke de partida de II/V, y las mediciones de
+rendimiento/60 FPS y referencia aplicable de IV/005. No se dan por aprobadas:
+**004/T039, 005/T071 y SC-007 conservan sus pendientes**, y **006 mantiene su
+pausa**. La referencia provisional Xiaomi de 002/004 no se extiende a 005,
+a iOS ni a otros dispositivos. Se conservan las anomalías y limitaciones
+observadas; ni la prueba humana de una copia QA, ni CI, ni simulación
+certifican el artefacto final, hardware o 60 FPS.
+
+Siguen siendo obligatorios fuente funcional, GREEN/regresión pertinentes,
+compilación/CI, configuración y renderer de destino, y **firma, empaquetado,
+identificadores y versión exactos del APK/IPA**. Para Android se usa la firma
+fija nueva autorizada por separado y se verifica el certificado contra la
+huella esperada configurada; no se permite una firma alternativa automática
+ante un fallo. Las verificaciones del paquete DEBEN ejecutarse **antes de
+cada upload** y cualquier fallo bloquea el envío. La excepción no dispensa
+errores reales de fuente, build, firmante o funcionamiento conocido, ni
+permite reemplazar Mobile por una variante Compatibility de QA.
+
+QA independiente puede emitir **APROBADO PARA PUBLICACIÓN — beta excepcional
+1.0.2 (build 5)** con el alcance diferido explícito e identificando la revisión
+exacta de `main` y los artefactos. Puede condicionar el envío a las
+verificaciones previas de firma/empaquetado/versionado; su incumplimiento
+invalida ese envío. Se mantienen el despacho manual desde `main`, los guards
+de versión y las confirmaciones de QA/humanas. No se registra un veredicto
+inexistente ni se desactiva ningún gate.
+
+La excepción se agota con **un upload exitoso por destino** de esta beta. Un
+intento fallido antes del upload no la consume; se puede reintentar sólo
+mientras no se haya confirmado la subida de ese destino y sobre la revisión
+exacta aprobada. No se reutiliza la excepción consumida de 1.0.1/build 4 ni se
+autorizan futuros builds, itch.io, publicación en tiendas o cierre de las
+features 004/005. La regla general de II/IV/V permanece vigente fuera de este
+alcance. Esta autorización no constituye por sí misma un veredicto de QA ni
+afirma que los envíos se hayan ejecutado.
+
 ## Restricciones Técnicas
 
 - Motor: Godot 4.x, licencia MIT — no se introduce dependencia de pago
@@ -305,4 +374,4 @@ listo para implementar. Cualquier complejidad técnica que viole un principio
 DEBE justificarse explícitamente en el documento correspondiente (plan o spec)
 o rechazarse.
 
-**Version**: 4.1.1 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-29
+**Version**: 4.2.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-30

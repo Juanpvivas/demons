@@ -342,6 +342,12 @@ class PublicationPolicyTests(unittest.TestCase):
                 git("add", "export_presets.cfg")
                 git("commit", "--quiet", "--allow-empty", "-m", "candidate version")
 
+            upload_steps = [(index, step) for index, step in enumerate(workflow.steps)
+                            if ('uses' in step and 'Firebase-Distribution' in scalar(step['uses']))
+                            or ('run' in step and '--upload-app' in scalar(step['run']))]
+            self.assertEqual(len(upload_steps), 1)
+            upload_index, upload_step = upload_steps[0]
+
             def history_run(run_id, sha, published):
                 return {
                     "databaseId": run_id, "headSha": sha, "conclusion": "success",
@@ -349,8 +355,8 @@ class PublicationPolicyTests(unittest.TestCase):
                     "workflowName": workflow.name,
                     "jobs": [{"name": scalar(workflow.job["name"]),
                               "status": "completed", "conclusion": "success" if published else "skipped",
-                              "steps": [{"name": scalar(workflow.steps[-1]["name"]),
-                                         "number": len(workflow.steps), "status": "completed",
+                              "steps": [{"name": scalar(upload_step["name"]),
+                                         "number": upload_index + 1, "status": "completed",
                                          "conclusion": "success"}] if published else []}],
                 }
 

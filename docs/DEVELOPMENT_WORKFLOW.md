@@ -35,7 +35,7 @@ checklist de especificación no equivalen a validación de una implementación.
 Las consultas y correcciones documentales puntuales mantienen su alcance;
 no disparan por sí solas la implementación de una feature, Issues o un PR.
 
-La matriz vigente sigue la constitución 4.1.1: Web solo en navegador de
+La matriz vigente sigue la constitución 4.2.0: Web solo en navegador de
 computador; Android/iOS como apps instaladas. No continuar pruebas Web en
 navegadores móviles, tampoco en emulador/simulador. Conservar las evidencias
 históricas sin convertirlas en pruebas de apps ni reabrir features anteriores.
@@ -44,7 +44,7 @@ de rendimiento físico.
 
 ## Gate de integración y gate de publicación
 
-La constitución 4.1.1 distingue el código funcional integrado en `main` de un
+La constitución 4.2.0 distingue el código funcional integrado en `main` de un
 artefacto aprobado para distribuir. El orquestador declara qué gate se revisa.
 
 | Gate | Requisitos y resultado de QA |
@@ -69,9 +69,39 @@ QA declara ese alcance excepcional, la revisión exacta y las pruebas físicas
 diferidas; firma/empaquetado/versionado deben verificarse antes del upload.
 La excepción no marca aprobados los pendientes físicos ni se aplica fuera de
 la preparación y corrección acotada delimitadas allí, ni a otro build o canal.
+Esa excepción está consumida. La
+[excepción de beta 1.0.2/build 5](../.specify/memory/constitution.md#excepción-autorizada-beta-102-build-5),
+autorizada el 2026-10-30, permite integrar el PR #52 por Squash and merge y
+un envío exitoso manual por destino, manteniendo QA independiente, CI, revisión
+exacta de `main` y verificaciones previas de firma/empaquetado/versionado.
+Sólo difiere los requisitos físicos delimitados allí; no constituye un
+veredicto de publicación ni acredita envíos ejecutados. 004/T039, 005/T071 y
+SC-007 siguen pendientes; 006 permanece pausada.
 No fabricar una prueba física, cerrar SC-007 ni completar una feature por haber
 integrado un incremento. Mantener IDs y pendientes de publicación identificados;
 si una tarea cubre ambos gates, una aprobación parcial no marca toda su casilla.
+
+### Firma estable y transición de la beta Android
+
+La distribución Android requiere los secrets `ANDROID_BETA_KEYSTORE_BASE64`,
+`ANDROID_BETA_KEYSTORE_PASSWORD` y `ANDROID_BETA_KEYSTORE_ALIAS`, junto con la
+variable `ANDROID_BETA_CERT_SHA256`. Conservar la clave privada y un respaldo
+protegido fuera de Git; no publicar sus valores ni rutas personales. El workflow
+restaura la clave en un temporal protegido, valida configuración y alias, y
+configura la firma de exportación mediante el entorno de Godot. El temporal se
+limpia también si falla el proceso.
+
+Antes de cada upload, ejecutar `tools/ci/verify_native_artifact.py` con
+`DEMONS_ANDROID_CERT_SHA256` establecido a la huella esperada: debe coincidir con
+el único certificado firmante del APK, además de superar las comprobaciones de
+firma, paquete y versión. La variable es opcional para otros usos del helper;
+el flujo de distribución la exige y bloquea cualquier fallo sin usar otra firma.
+
+La firma fija nueva de 1.0.2 exige avisar a los testers de que deben desinstalar
+manualmente una vez la beta Android anterior para instalar ésta; pueden perder
+datos locales o progreso. No automatizar la desinstalación ni el borrado. Esta
+preparación no sustituye QA ni autoriza integración, publicación o dispensas de
+pruebas físicas. Las [notas de 1.0.2](releases/1.0.2.md) incluyen el aviso.
 
 ### Transición autorizada 004-I2 + 005-I1
 
@@ -271,3 +301,5 @@ comprobar que sus comandos y plantillas siguen activos tras una actualización.
 | 2026-10-19 | Constitución 4.0.0: integración funcional separada de publicación, veredictos explícitos y transición conjunta 004-I2/005-I1; sin despliegue externo automático por merge |
 | 2026-10-29 | Referencia a constitución 4.1.0: excepción puntual de beta 1.0.1/build 4 con alcance QA explícito y verificaciones del paquete previas al upload; pendientes físicos conservados. |
 | 2026-10-29 | Constitución 4.1.1 aclara el reintento de la misma beta tras corregir sus filtros nativos: revisión exacta, nueva QA/CI y verificaciones previas al upload; sin heredar aprobaciones anteriores. |
+| 2026-10-29 | Documenta firma beta Android estable, preflight protegido, verificación de huella sin fallback y aviso de reinstalación manual única; sin modificar los gates. |
+| 2026-10-30 | Referencia vigente a constitución 4.2.0 y excepción acotada de beta 1.0.2/build 5; QA, CI y verificaciones previas conservados, sin aprobar requisitos físicos ni afirmar envíos. |
