@@ -2,6 +2,10 @@
 extends Node
 
 @export var level_scene: PackedScene = preload("res://scenes/levels/Nivel_MonteCalvo.tscn")
+@export var intro_scene: PackedScene
+@export var intro_sequence: Resource
+
+var intro_progress: RefCounted
 
 var _current_level: Node
 var _transition_pending: bool = false
@@ -97,3 +101,16 @@ func _on_level_menu_requested(generation: int) -> void:
 
 func get_current_level() -> Node:
 	return _current_level if is_instance_valid(_current_level) else null
+
+
+## Firmas neutrales de 013: todavía no alteran la entrada vigente.
+func request_intro() -> void:
+	pass
+
+
+func request_intro_start() -> void:
+	pass
+
+
+func get_current_intro() -> Node:
+	return null

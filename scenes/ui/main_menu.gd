@@ -2,6 +2,7 @@
 extends Control
 
 signal play_requested
+signal intro_requested
 
 @onready var _play_button: Button = %PlayButton
 @onready var _safe_area: MarginContainer = $SafeArea
