@@ -77,6 +77,8 @@ var _trench_reload_bindings: Dictionary[Vector2i, Dictionary] = {}
 @onready var _trench_reload_controls: Control = $TrenchReloadControls
 @onready var _retry_button: Button = $GameOverScreen/Actions/RetryButton
 @onready var _menu_button: Button = $GameOverScreen/Actions/MenuButton
+@onready var _live_menu_button: Button = $Root/Info/LiveMenuButton
+@onready var _closing_input_blocker: Control = $ClosingInputBlocker
 
 
 func get_trench_reload_button(home_cell: Vector2i) -> Button:
@@ -243,6 +245,21 @@ func _on_game_state_changed(_state: int) -> void:
 	if not _closing:
 		_refresh_selection()
 		_refresh_trench_reloads()
+		_refresh_live_menu()
+
+
+func _refresh_live_menu() -> void:
+	_live_menu_button.visible = not _closing and not _game_over_screen.visible \
+		and GameStateManager._current_state in [
+			GameStateManager.GameState.PLAYING, GameStateManager.GameState.PAUSED]
+
+
+func _on_live_menu_pressed() -> void:
+	if not _closing and _live_menu_button.is_visible_in_tree() \
+			and GameStateManager._current_state in [
+				GameStateManager.GameState.PLAYING, GameStateManager.GameState.PAUSED]:
+		get_viewport().set_input_as_handled()
+		menu_requested.emit()
 
 
 func _can_request_result_action() -> bool:
@@ -268,11 +285,13 @@ func close_match() -> void:
 	if _closing:
 		return
 	_closing = true
+	_closing_input_blocker.show()
 	set_selected_soldier(null)
 	for home: Vector2i in _trench_reload_bindings.keys():
 		unregister_trench_reload(home)
 	_retry_button.disabled = true
 	_menu_button.disabled = true
+	_live_menu_button.disabled = true
 	_rejection_message_timer.stop()
 	_wave_message_timer.stop()
 	_disconnect_signal(EconomyManager.ammo_pool_changed, _on_ammo_pool_changed)
@@ -313,6 +332,8 @@ func _apply_safe_area() -> void:
 	var right := ceili(get_viewport().get_visible_rect().size.x - safe.end.x)
 	var top := ceili(safe.position.y)
 	$Root.add_theme_constant_override("margin_top", top)
+	$Root.add_theme_constant_override("margin_left", ceili(safe.position.x))
+	$Root.add_theme_constant_override("margin_right", right)
 	_selection_panel.offset_right = -right
 	_selection_panel.offset_left = -right - 324
 	_selection_panel.offset_top = top
@@ -335,6 +356,7 @@ func _ready() -> void:
 	GameStateManager.game_state_changed.connect(_on_game_state_changed)
 	_retry_button.pressed.connect(_on_retry_pressed)
 	_menu_button.pressed.connect(_on_menu_pressed)
+	_live_menu_button.pressed.connect(_on_live_menu_pressed)
 	get_viewport().size_changed.connect(_apply_safe_area)
 	_apply_safe_area()
 	_refresh_selection()
@@ -347,6 +369,7 @@ func _ready() -> void:
 	_rejection_label.visible = false
 	_wave_label.visible = false
 	_game_over_screen.visible = false
+	_refresh_live_menu()
 
 
 func _on_ammo_pool_changed(new_amount: int) -> void:
@@ -416,4 +439,5 @@ func _show_game_over_screen(message: String) -> void:
 		return
 	_game_over_label.text = message
 	_game_over_screen.visible = true
+	_live_menu_button.hide()
 	_retry_button.grab_focus()

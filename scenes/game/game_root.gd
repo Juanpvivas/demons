@@ -13,7 +13,6 @@ var _generation: int = 0
 var _retry_callback: Callable
 var _menu_callback: Callable
 var _current_intro: Control
-var _intro_from_start: bool = false
 var _intro_waiting_start: bool = false
 var _intro_completed: bool = false
 var _intro_finished_callback: Callable
@@ -66,9 +65,13 @@ func request_menu() -> void:
 
 
 func _request_terminal_destination(restart: bool) -> void:
+	var allowed_states: Array[int] = [
+		GameStateManager.GameState.WON, GameStateManager.GameState.LOST]
+	if not restart:
+		allowed_states.append_array([
+			GameStateManager.GameState.PLAYING, GameStateManager.GameState.PAUSED])
 	if _transition_pending or not is_instance_valid(_current_level) \
-			or GameStateManager._current_state not in [
-				GameStateManager.GameState.WON, GameStateManager.GameState.LOST]:
+			or GameStateManager._current_state not in allowed_states:
 		return
 	_transition_pending = true
 	_generation += 1
@@ -136,11 +139,10 @@ func get_current_intro() -> Node:
 	return _current_intro if is_instance_valid(_current_intro) else null
 
 
-func _open_intro(from_start: bool) -> void:
+func _open_intro(_from_start: bool) -> void:
 	if is_queued_for_deletion():
 		return
 	_generation += 1
-	_intro_from_start = from_start
 	_intro_waiting_start = false
 	_intro_completed = false
 	_current_intro = intro_scene.instantiate() as Control
@@ -162,12 +164,8 @@ func _on_intro_finished(_skipped: bool, generation: int) -> void:
 	var save_error: Error = intro_progress.mark_seen(intro_sequence.version)
 	if save_error != OK:
 		push_warning("La carta no pudo recordarse en este dispositivo; se puede seguir jugando.")
-	if _intro_from_start:
-		_intro_waiting_start = true
-		_show_intro_start.call_deferred(generation)
-	else:
-		_transition_pending = true
-		_retire_intro.call_deferred(false)
+	_intro_waiting_start = true
+	_show_intro_start.call_deferred(generation)
 
 
 func _show_intro_start(generation: int) -> void:

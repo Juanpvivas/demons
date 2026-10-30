@@ -76,32 +76,6 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 12
 
-[node name="Counter" type="Label" parent="SafeArea/Layout"]
-unique_name_in_owner = true
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/outline_size = 4
-theme_override_colors/font_outline_color = Color(0.02, 0.025, 0.02, 1)
-text = "La carta"
-
-[node name="Caption" type="Label" parent="SafeArea/Layout"]
-unique_name_in_owner = true
-layout_mode = 2
-mouse_filter = 2
-theme_override_font_sizes/font_size = 24
-theme_override_constants/outline_size = 4
-theme_override_colors/font_outline_color = Color(0.02, 0.025, 0.02, 1)
-autowrap_mode = 3
-
-[node name="Fiction" type="Label" parent="SafeArea/Layout"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_font_sizes/font_size = 14
-theme_override_constants/outline_size = 3
-theme_override_colors/font_outline_color = Color(0.02, 0.025, 0.02, 1)
-text = "Relato ficticio inspirado en el Batallón Colombia."
-autowrap_mode = 3
-
 [node name="Spacer" type="Control" parent="SafeArea/Layout"]
 layout_mode = 2
 mouse_filter = 2
@@ -178,3 +152,5 @@ custom_minimum_size = Vector2(0, 64)
 text = "Comenzar"
 
 [node name="Voice" type="AudioStreamPlayer" parent="."]
+
+[node name="Ambience" type="AudioStreamPlayer" parent="."]

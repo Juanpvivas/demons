@@ -1,15 +1,15 @@
-# Model card for claude (high)
+# Model card for ald (medium)
 
 * Language: es_MX (Spanish, Mexico)
 * Speakers: 1
-* Quality: high
+* Quality: medium
 * Samplerate: 22,050Hz
 
 ## Dataset
 
-* URL: https://huggingface.co/spaces/HirCoir/Piper-TTS-Spanish
-* License: apache-2.0
+* URL: https://huggingface.co/datasets/rmcpantoja/Ald_Mexican_Spanish_speech_dataset
+* License: http://unlicense.org
 
 ## Training
 
-See URL above
+Finetuned from Spanish davefx voice (medium quality).

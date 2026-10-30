@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="IntroSequence" load_steps=25 format=3]
+[gd_resource type="Resource" script_class="IntroSequence" load_steps=26 format=3]
 
 [ext_resource type="Script" path="res://resources/schemas/intro_sequence.gd" id="seq"]
 [ext_resource type="Script" path="res://resources/schemas/intro_slide.gd" id="slide"]
@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" path="res://assets/narrative/la_carta/07-la-trinchera.png" id="image7"]
 [ext_resource type="AudioStream" path="res://assets/audio/narrative/la_carta/narracion_07.wav" id="voice7"]
 [ext_resource type="AudioStream" path="res://assets/audio/narrative/la_carta/companero_06.wav" id="companion"]
+[ext_resource type="AudioStream" path="res://assets/audio/narrative/la_carta/ambiente_trinchera_loop.wav" id="ambience"]
 
 [sub_resource type="Resource" id="Slide1"]
 script = ExtResource("slide")
@@ -53,7 +54,6 @@ narration = ExtResource("voice4")
 minimum_duration = 10.0
 start_zoom = 1.0
 end_zoom = 1.035
-caption = "Corea · Marzo de 1953"
 
 [sub_resource type="Resource" id="Slide5"]
 script = ExtResource("slide")
@@ -63,7 +63,6 @@ narration = ExtResource("voice5")
 minimum_duration = 10.0
 start_zoom = 1.035
 end_zoom = 1.0
-caption = "Monte Calvo · Old Baldy"
 
 [sub_resource type="Resource" id="Slide6"]
 script = ExtResource("slide")
@@ -89,4 +88,6 @@ end_zoom = 1.035
 script = ExtResource("seq")
 version = "la_carta_v1"
 transition_duration = 0.6
+ambience = ExtResource("ambience")
+ambience_volume_db = -18.0
 slides = Array[ExtResource("slide")]([SubResource("Slide1"), SubResource("Slide2"), SubResource("Slide3"), SubResource("Slide4"), SubResource("Slide5"), SubResource("Slide6"), SubResource("Slide7")])

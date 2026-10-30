@@ -20,14 +20,13 @@ var _prompting: bool = false
 @onready var _previous_image: TextureRect = $Stage/PreviousImage
 @onready var _safe_area: MarginContainer = $SafeArea
 @onready var _subtitle: Label = %Subtitle
-@onready var _caption: Label = %Caption
-@onready var _counter: Label = %Counter
 @onready var _footer: PanelContainer = %Footer
 @onready var _pause_button: Button = %PauseButton
 @onready var _skip_button: Button = %SkipButton
 @onready var _start_panel: CenterContainer = %StartPanel
 @onready var _start_button: Button = %StartButton
 @onready var _voice: AudioStreamPlayer = $Voice
+@onready var _ambience: AudioStreamPlayer = $Ambience
 
 
 func _ready() -> void:
@@ -73,6 +72,11 @@ func play(sequence: Resource) -> void:
 	if _sequence == null or _sequence.slides.is_empty():
 		_finish(false)
 		return
+	if _sequence.ambience != null:
+		_ambience.stream = _sequence.ambience
+		_ambience.volume_db = _sequence.ambience_volume_db
+		_ambience.stream_paused = false
+		_ambience.play()
 	_show_slide(0)
 	_pause_button.grab_focus()
 	set_process(true)
@@ -83,6 +87,7 @@ func pause_intro() -> void:
 		return
 	_paused = true
 	_voice.stream_paused = true
+	_ambience.stream_paused = true
 	_pause_button.text = "Continuar"
 
 
@@ -91,6 +96,7 @@ func resume_intro() -> void:
 		return
 	_paused = false
 	_voice.stream_paused = false
+	_ambience.stream_paused = false
 	_pause_button.text = "Pausar"
 
 
@@ -103,9 +109,10 @@ func close_intro() -> void:
 	_closed = true
 	_prompting = false
 	set_process(false)
-	if is_instance_valid(_voice):
-		_voice.stop()
-		_voice.stream = null
+	for channel: AudioStreamPlayer in [_voice, _ambience]:
+		if is_instance_valid(channel):
+			channel.stop()
+			channel.stream = null
 
 
 func get_slide_index() -> int:
@@ -153,8 +160,6 @@ func show_start_prompt() -> void:
 		return
 	_prompting = true
 	_footer.hide()
-	_caption.text = ""
-	_counter.text = ""
 	_image.modulate.a = 1.0
 	_start_panel.show()
 	_start_button.disabled = false
@@ -171,8 +176,6 @@ func _show_slide(index: int) -> void:
 	var slide: Resource = _sequence.slides[index]
 	_image.texture = slide.image
 	_subtitle.text = slide.subtitle
-	_caption.text = slide.caption
-	_counter.text = "La carta · %s / %s" % [index + 1, _sequence.slides.size()]
 	_play_voice(slide.narration)
 	_render_slide()
 
