@@ -3,7 +3,7 @@
 **Feature ID**: `013-introduccion-la-carta`  
 **Planned Branch**: `codex/013-introduccion-la-carta`  
 **Created**: 2026-10-30  
-**Status**: 013-I1 aprobado para integración en T012 y entregado en PR #54 borrador; revisión 013-I1-R2 en preparación, publicación T014 pendiente
+**Status**: I1 conserva aprobación T012; R2 tiene aprobación funcional T021 de cuatro correcciones e integración técnica Ald provisional. CI/gate final T023–T024, grabación humana T026/SC-009 y publicación T014 pendientes; PR #54 en borrador
 
 **Tracking**: [Issue #53](https://github.com/Juanpvivas/demons/issues/53), entrega intermedia `Refs #53`
 **Input**: Integrar el guion y las siete imágenes de La carta. La persona confirmó mostrarla automáticamente sólo la primera vez al pulsar Jugar, repetirla desde el menú e incluir voz provisional en la primera entrega.

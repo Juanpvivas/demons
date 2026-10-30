@@ -5,8 +5,9 @@
 **Input**: Preparación `demons-preparation`; ejecución posterior por [roles](../../docs/DEVELOPMENT_WORKFLOW.md), sin `speckit-implement`.
 
 **Seguimiento**: [Issue #53](https://github.com/Juanpvivas/demons/issues/53).
-T009 aprueba funcionalidad T007–T008 en rama; la integración final requiere
-T011–T012 y la publicación sigue pendiente en T014.
+I1 conserva aprobación de integración T012. R2 tiene aprobación funcional T021
+de cuatro correcciones e integración técnica provisional; su gate final requiere
+CI/T023–T024. Grabación humana T026 y publicación T014 siguen pendientes.
 
 **Revisión actual 013-I1-R2**: I1 ya tiene T012 aprobado y PR #54 en borrador.
 T015–T025 preparan y entregan cuatro correcciones con voz preview provisional;

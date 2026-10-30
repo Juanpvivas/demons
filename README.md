@@ -118,23 +118,28 @@ identifican el veredicto y CI de su revisión exacta. Los
 los pendientes de 006 y la publicación se conservan.
 
 [013 — La carta](specs/013-introduccion-la-carta/spec.md) añade en su rama
-una introducción ilustrada con subtítulos y voz sintética provisional en español
-de México, aprobada funcionalmente en T009. La carta y sus personajes son
-ficción inspirada en el Batallón Colombia.
+una introducción ilustrada con subtítulos, voz Ald de preview provisional en
+español de México y ambiente original discreto. La revisión R2 tiene aprobación
+funcional T021 en rama; gate final de integración T024 pendiente. La carta y
+sus personajes son ficción inspirada en el Batallón Colombia.
 
 - La primera vez que pulses «Jugar», verás las siete escenas. Puedes pulsar
   «Pausar», «Continuar» u «Omitir»; al terminar, «Comenzar» inicia la partida.
 - El juego recuerda localmente que terminaste u omitiste la introducción.
   Las siguientes partidas y «Volver a jugar» entran directamente al combate.
-- «Ver introducción», en el menú, permite repetirla y regresa al menú al acabar
-  u omitir, sin iniciar una partida. Cambiar de app o perder foco la pausa;
-  debes pulsar «Continuar» al regresar.
+- «Ver introducción», en el menú, permite repetirla: al acabar u omitir también
+  muestra «Comenzar» y espera tu acción para jugar. Cambiar de app o perder foco
+  pausa voz y ambiente; debes pulsar «Continuar» al regresar.
+- Durante las imágenes sólo hay subtítulos y controles, sin contador ni rótulos
+  superiores. Durante la partida, «Menú principal» está visible en la franja
+  superior y permite abandonar el intento, también pausado, sin guardarlo.
 - El recuerdo corresponde a cada instalación o almacenamiento del navegador;
   un fallo al guardarlo permite seguir jugando, aunque vuelva a aparecer.
 
-La voz aún es provisional. La comprobación disponible no certifica audición
-perceptual, toque iOS, recorrido visual completo de los siete cuadros ni
-rendimiento físico. [Alcance y límites](specs/013-introduccion-la-carta/research.md#alcance-funcional-aprobado-y-límites).
+La persona ha elegido grabar su narración porque percibe robotizada la síntesis;
+T026 espera ese archivo. No se aprueban aún voz final, naturalidad o fluidez,
+audición perceptual completa, toque iOS ni rendimiento físico.
+[Alcance y límites](specs/013-introduccion-la-carta/research.md#alcance-funcional-r2-y-límites).
 CI/gate final de integración y publicación conservan su
 [seguimiento separado](specs/013-introduccion-la-carta/tasks.md); 006 sigue pausada
 y los pendientes 004/005 no se cierran por esta entrega.

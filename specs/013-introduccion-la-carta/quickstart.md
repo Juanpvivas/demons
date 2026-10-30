@@ -22,6 +22,11 @@ No añadir capturas/logs/manifiestos de evidencia a Git. Usar temporales/síntes
 
 ## Escenarios vigentes R2
 
+T021 aprueba el alcance funcional disponible de cuatro correcciones y la
+integración técnica de Ald preview/ambiente, con [límites de R2](research.md#alcance-funcional-r2-y-límites).
+Esta lista no afirma observación de cada escenario en todos los destinos ni
+audición perceptual final; T024, T026/SC-009 y T014 siguen separados.
+
 1. Con recuerdo temporal nuevo, Jugar→intro; con recuerdo válido, Ver
    introducción→intro. En ambas, probar final natural y Omitir: aparece Comenzar
    sin volver al menú ni iniciar combate; sólo otro gesto monta un nivel.

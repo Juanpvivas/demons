@@ -565,15 +565,20 @@ sin un autoload adicional. `MainMenu` emite `play_requested` o
 013-I1/T007–T009 añade `IntroPlayer`: después del primer Jugar no se monta
 nivel hasta terminar/omitir la introducción y aceptar Comenzar mediante otro
 gesto. Con recuerdo válido, Jugar conserva el montaje directo diferido.
-Ver introducción usa una instancia nueva y vuelve al menú al terminar/omitir.
+Ver introducción usa una instancia nueva; R2/T019–T021 hace que ambas entradas
+terminen/omitan esperando Comenzar, sin retorno al menú ni inicio automático.
 La generación y los callbacks ligados a la instancia aíslan cada apertura;
-el cierre detiene voz/avance antes de retirar la escena. Retry sigue directo.
+el cierre detiene voz, ambiente y avance antes de retirar la escena. Retry sigue directo.
 
 `IntroSequence`/`IntroSlide` son Resources compartidos inmutables con imágenes,
 textos, clips y encuadres; el índice/tiempo/pausa vive sólo en IntroPlayer.
 Los clips pregrabados son recursos locales: no hay sintetizador ni modelo
-runtime. El tiempo autorado nunca recorta clips; pausa o pérdida de actividad
-detienen audio y avance hasta continuación explícita.
+runtime. IntroSequence autora ambiente original en bucle y volumen −18 dB;
+IntroPlayer usa otro AudioStreamPlayer independiente de Voice, no reinicia el
+fondo por escena y limpia ambos al salir. El tiempo autorado nunca recorta clips;
+pausa o pérdida de actividad detienen ambos canales/avance hasta continuación
+explícita. Durante las imágenes no hay cabecera ni rótulos; sólo subtítulos y
+controles. La voz humana sigue pendiente y el preview no acredita fluidez final.
 `IntroProgress`, dependencia local inyectable, escribe un ConfigFile canónico
 dedicado en `user://intro_progress.cfg` y comprueba el Error de guardado.
 La lectura exige el registro canónico de la versión narrativa actual;
@@ -588,6 +593,11 @@ presentación, sin dar autoridad jugable al recurso.
 US2–US3 de 007 añaden repetición y regreso al menú desde `WON/LOST`: el HUD
 emite una intención, propagada por el nivel y aceptada por la raíz sólo para
 el intento actual.
+R2 añade una intención de menú durante PLAYING/PAUSED desde un botón propio
+en la franja superior segura del HUD, separado del panel informativo y de las
+zonas HOME/recarga. Nivel/raíz aceptan ese retorno activo; las acciones ocultas
+de resultado conservan guards terminales y Retry no se habilita en combate.
+La ruta reutiliza el cierre común sin modal ni persistencia de partida.
 El cierre bloquea reentrada, invalida la generación anterior, entra en `MENU`
 y cancela oleadas sin emitir progreso o victoria. Nivel y spawner detienen
 actividad y desconectan consumidores antes de retirar su árbol. El servicio
@@ -1078,3 +1088,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-29 | §7 documenta la firma beta Android fija y protegida, verificación obligatoria de su huella antes del upload y transición por reinstalación manual; gates de publicación conservados. |
 | 2026-10-30 | §7 referencia constitución 4.2.0 y la excepción acotada de beta 1.0.2/build 5; conserva controles, pendientes físicos y alcance histórico de 1.0.1. |
 | 2026-10-30 | 013/T010 tras QA funcional T009: §4.8 incorpora composición local de introducción, Resources narrativos inmutables, recuerdo canónico inyectable y aislamiento por apertura; coste de precarga y límites de validación constan en 013, sin certificar publicación. |
+| 2026-10-30 | 013/T022 tras QA funcional T021: §4.8 unifica destino Comenzar, audio de ambiente separado y retorno activo mediante intención HUD/nivel/raíz con cierre común; guards terminales y límites de publicación conservados. |

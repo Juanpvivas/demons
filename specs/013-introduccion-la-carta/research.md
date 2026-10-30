@@ -80,3 +80,29 @@ archivo. T026 incorpora/segmenta la grabación humana y revisa texto, naturalida
 fluidez y mezcla con QA; el compañero humano es opcional. Las cuatro correcciones
 restantes y la integración técnica de audio provisional continúan sin esperar
 ese archivo. No marcar SC-009 satisfecho ni voz definitiva aprobada en esa entrega.
+
+## Alcance funcional R2 y límites
+
+T021 aprueba cuatro correcciones e integración técnica de Ald provisional y
+ambiente; T024 espera CI de la revisión exacta. Ambas rutas terminan/omiten en
+Comenzar, imágenes sin cabecera y Menú principal activo/pausado quedan en el
+alcance funcional. El botón ocupa la franja superior segura, independiente de
+panel informativo y zonas HOME/recarga. Se conservan cierre único y Retry
+terminal. La procedencia actual es [Ald/Unlicense y ambiente original](../../assets/audio/narrative/la_carta/SOURCES.md);
+Claude/Apache2 sólo pertenece a la historia de I1.
+
+Chrome de computador permitió observar cuadros de la secuencia sin cabecera,
+pausa/omisión y replay natural hacia Comenzar, entrada al juego y retorno activo
+al menú sin superposición con trinchera/recarga. Android de QA permitió observar
+el botón corregido y su retorno al menú. La verificación técnica de dos canales
+de audio, pausa/cierre y exportaciones no acredita escucha perceptual de voz,
+mezcla o fluidez, ni recorrido/input de la introducción iOS. La voz humana
+elegida sigue pendiente del archivo en T026/SC-009; no se entrega 5/5 ni se
+aprueba voz definitiva desde este preview.
+
+Una muestra headless de R2 observó aproximadamente +4,5 ms y +0,4 MB de memoria
+estática respecto de I1, con caché/concurrencia sin controlar; no establece
+benchmark causal ni FPS. Permanece el riesgo histórico de precarga de I1
+(aproximadamente +339 ms/+32,4 MiB observados). Builds de QA/export Xcode no
+certifican paquete final, firma/instalación, hardware/GPU, 60 FPS o victoria
+manual de producción. T014/SC-008, pausa006 y publicación004/005 se conservan.
