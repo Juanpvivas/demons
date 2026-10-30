@@ -107,8 +107,14 @@ autowrap_mode = 3
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(0, 64)
-focus_neighbor_left = NodePath(".")
-focus_neighbor_top = NodePath(".")
-focus_neighbor_right = NodePath(".")
-focus_neighbor_bottom = NodePath(".")
+focus_neighbor_top = NodePath("../IntroButton")
+focus_neighbor_bottom = NodePath("../IntroButton")
 text = "Jugar"
+
+[node name="IntroButton" type="Button" parent="SafeArea/CenterContainer/Panel/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 64)
+focus_neighbor_top = NodePath("../PlayButton")
+focus_neighbor_bottom = NodePath("../PlayButton")
+text = "Ver introducción"

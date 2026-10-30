@@ -2,8 +2,10 @@
 extends Control
 
 signal play_requested
+signal intro_requested
 
 @onready var _play_button: Button = %PlayButton
+@onready var _intro_button: Button = %IntroButton
 @onready var _safe_area: MarginContainer = $SafeArea
 @onready var _panel: PanelContainer = $SafeArea/CenterContainer/Panel
 @onready var _title: Label = %TitleLabel
@@ -11,6 +13,7 @@ signal play_requested
 
 func _ready() -> void:
 	_play_button.pressed.connect(_on_play_pressed)
+	_intro_button.pressed.connect(_on_intro_pressed)
 	get_viewport().size_changed.connect(_apply_layout)
 	_apply_layout()
 	_play_button.grab_focus()
@@ -18,6 +21,7 @@ func _ready() -> void:
 
 func set_start_enabled(enabled: bool) -> void:
 	_play_button.disabled = not enabled
+	_intro_button.disabled = not enabled
 
 
 func show_menu() -> void:
@@ -30,6 +34,11 @@ func show_menu() -> void:
 func _on_play_pressed() -> void:
 	get_viewport().set_input_as_handled()
 	play_requested.emit()
+
+
+func _on_intro_pressed() -> void:
+	get_viewport().set_input_as_handled()
+	intro_requested.emit()
 
 
 func _apply_layout() -> void:

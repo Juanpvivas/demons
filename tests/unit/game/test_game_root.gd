@@ -6,12 +6,29 @@ const BOARD := preload("res://resources/levels/monte_calvo_board.tres")
 const RETRY_LEVEL := preload("res://tests/unit/game/fixtures/OneWaveLevel.tscn")
 const ENEMY_SCENE := preload("res://scenes/enemies/EnemigoBase.tscn")
 const PICKUP_SCENE := preload("res://scenes/levels/AmmoPickup.tscn")
+const INTRO_SCENE := preload("res://scenes/ui/IntroPlayer.tscn")
 var _viewport: SubViewport
 var _app: Node
 var _saved_state: int
 var _saved_ammo: int
 var _saved_waves: Dictionary
 var _wave_events: Array[int] = []
+var _intro_path: String
+
+
+class MemoryIntroProgress:
+	extends RefCounted
+	var seen := true
+	var writes := 0
+	var fail_save := false
+	func has_seen(_version: String) -> bool:
+		return seen
+	func mark_seen(_version: String) -> Error:
+		writes += 1
+		if fail_save:
+			return ERR_CANT_CREATE
+		seen = true
+		return OK
 
 
 class GestureObserver:
@@ -23,6 +40,7 @@ class GestureObserver:
 
 
 func before_each() -> void:
+	_intro_path = OS.get_temp_dir().path_join("demons_intro_root_%s.cfg" % str(Time.get_ticks_usec()))
 	_saved_state = GameStateManager._current_state
 	_saved_ammo = EconomyManager.collected_ammo
 	_saved_waves = {}
@@ -46,6 +64,8 @@ func before_each() -> void:
 
 
 func after_each() -> void:
+	if FileAccess.file_exists(_intro_path):
+		DirAccess.remove_absolute(_intro_path)
 	WaveManager.wave_started.disconnect(_on_wave_started)
 	GameStateManager._current_state = _saved_state
 	EconomyManager.collected_ammo = _saved_ammo
@@ -57,19 +77,41 @@ func _on_wave_started(number: int) -> void:
 	_wave_events.append(number)
 
 
-func _mount(scene: PackedScene = ROOT_SCENE, level_override: PackedScene = null) -> void:
+func _mount(scene: PackedScene = ROOT_SCENE, level_override: PackedScene = null,
+		progress: RefCounted = null) -> void:
 	_app = scene.instantiate()
+	# Las pruebas históricas007 parten del recuerdo ya visto; la nueva US2
+	# inyecta explícitamente un perfil nuevo sin usar preferencias reales.
+	_app.set("intro_progress", progress if progress != null else MemoryIntroProgress.new())
+	_app.set("intro_scene", INTRO_SCENE)
+	_app.set("intro_sequence", _intro_sequence())
 	if level_override != null:
 		_app.set("level_scene", level_override)
 	_viewport.add_child(_app)
 	await wait_process_frames(2)
 
 
+func _intro_sequence() -> IntroSequence:
+	var sequence := IntroSequence.new()
+	sequence.version = "la_carta_test_v1"
+	sequence.transition_duration = 0.0
+	for text: String in ["Primera escena", "Última escena"]:
+		var slide := IntroSlide.new()
+		slide.subtitle = text
+		slide.minimum_duration = 0.2
+		sequence.slides.append(slide)
+	return sequence
+
+
 func _button(text: String) -> Button:
+	var fallback: Button
 	for node: Node in _app.find_children("*", "Button", true, false):
 		if (node as Button).text == text:
-			return node as Button
-	return null
+			if (node as Button).is_visible_in_tree():
+				return node as Button
+			if fallback == null:
+				fallback = node as Button
+	return fallback
 
 
 func _soldiers(node: Node) -> Array[Soldado]:
@@ -517,16 +559,31 @@ func test_return_from_each_real_result_waits_in_menu_and_starts_clean_three_time
 		assert_eq(_wave_events.size(), waves_before + 1)
 
 
-func test_menu_request_during_playing_keeps_the_live_attempt() -> void:
+func test_r2_menu_request_from_playing_or_paused_closes_the_attempt(
+		paused = use_parameters([false, true])) -> void:
 	var level: Node = await _start_retry_fixture()
 	if level == null:
 		return
+	if paused:
+		GameStateManager._current_state = GameStateManager.GameState.PAUSED
+		GameStateManager.game_state_changed.emit(GameStateManager.GameState.PAUSED)
+	var previous: WeakRef = weakref(level)
+	var old_objects := _weak_tree(level)
+	var callbacks := _navigation_callbacks(level)
 	_app.request_menu()
-	await wait_process_frames(3)
-	assert_same(_app.get_current_level(), level, "No se añade salida durante combate")
-	assert_eq(GameStateManager._current_state, GameStateManager.GameState.PLAYING)
-	assert_false(_button("Jugar").is_visible_in_tree())
-	assert_eq(_wave_events, [1])
+	_app.request_menu()
+	if not await _assert_returned_menu(previous, old_objects, 1):
+		return
+	_app.request_start()
+	var next: Node = await _new_level()
+	assert_not_null(next, "Jugar después del retorno crea una partida limpia")
+	if next == null:
+		return
+	await _assert_clean_retry(next, old_objects)
+	for callback: Callable in callbacks:
+		callback.call()
+	await wait_process_frames(2)
+	assert_same(_app.get_current_level(), next, "Ninguna intención vieja cierra el intento nuevo")
 
 
 func test_alternating_result_buttons_keep_the_first_accepted_destination(
@@ -730,3 +787,264 @@ func test_rifle_effects_new_deployment_uses_existing_level_registration_for_real
 	assert_eq(enemy.get("damage_received"), [soldier.stats.damage_per_shot], "Control: el nuevo defensor disparó realmente")
 	var service: CombatVisualEffects = level.get("_combat_visual_effects")
 	assert_eq(service.get_active_rifle_effect_count(), 1, "La ruta de despliegue conecta también la petición de fusil")
+
+
+## 013/T004–T005: navegación narrativa con secuencia breve y perfiles aislados.
+func _fresh_intro(progress: RefCounted) -> Node:
+	await _mount(ROOT_SCENE, RETRY_LEVEL, progress)
+	_app.request_start()
+	await wait_process_frames(2)
+	var intro: Node = _app.get_current_intro()
+	assert_not_null(intro, "El primer Jugar abre la carta antes de montar combate")
+	if intro != null:
+		intro.set_process(false)
+	return intro
+
+
+func _finish_intro(intro: Node, skipped: bool) -> void:
+	if skipped:
+		intro.skip_intro()
+	else:
+		for step in 30:
+			intro.advance_intro(0.1)
+	await wait_process_frames(2)
+
+
+func test_first_start_waits_in_intro_without_any_level_or_wave() -> void:
+	var progress := MemoryIntroProgress.new()
+	progress.seen = false
+	var intro: Node = await _fresh_intro(progress)
+	if intro == null:
+		return
+	for repeat in 3:
+		_app.request_start()
+		_app.request_intro()
+		_app.request_intro_start() # No existe un Comenzar válido durante la carta.
+	await wait_process_frames(2)
+	assert_same(_app.get_current_intro(), intro, "Reentrada no sustituye la carta actual")
+	assert_eq(intro.get_slide_index(), 0)
+	assert_null(_app.get_current_level())
+	assert_true(_soldiers(_app).is_empty())
+	assert_true(_enemies(_app).is_empty())
+	assert_true(_wave_events.is_empty())
+	assert_eq(GameStateManager._current_state, GameStateManager.GameState.MENU)
+	assert_eq(progress.writes, 0, "Abrir no cuenta como completar")
+
+
+func test_intro_finish_or_skip_waits_for_a_fresh_start_click(
+		skipped = use_parameters([false, true])) -> void:
+	var progress := MemoryIntroProgress.new()
+	progress.seen = false
+	var intro: Node = await _fresh_intro(progress)
+	if intro == null:
+		return
+	if skipped:
+		var omit := _button("Omitir")
+		assert_not_null(omit, "Control positivo: omisión por un gesto real")
+		if omit == null:
+			return
+		_click(omit.get_global_rect().get_center())
+		await wait_process_frames(2)
+	else:
+		await _finish_intro(intro, false)
+	_assert_r3_prompt_is_the_only_visible_action(intro)
+	assert_null(_app.get_current_level(), "Finalizar u omitir no inicia combate")
+	assert_eq(progress.writes, 1, "Final/omisión se registra una vez")
+	assert_true(progress.seen)
+	var start := _button("Comenzar")
+	assert_not_null(start)
+	if start == null:
+		return
+	assert_true(start.is_visible_in_tree())
+	var observer := GestureObserver.new()
+	_viewport.add_child(observer)
+	for repeat in 3:
+		_click(start.get_global_rect().get_center())
+	var level: Node = await _new_level()
+	assert_not_null(level, "Comenzar acepta un gesto nuevo")
+	assert_eq(_wave_events, [1], "Ráfaga de Comenzar crea una partida")
+	assert_eq(observer.presses, 0, "El gesto no atraviesa al tablero")
+
+
+func test_persisted_finish_skips_intro_after_a_new_root_instance() -> void:
+	var progress := IntroProgress.new()
+	progress.storage_path = _intro_path
+	var intro: Node = await _fresh_intro(progress)
+	if intro == null:
+		return
+	await _finish_intro(intro, true)
+	_app.queue_free()
+	await wait_process_frames(2)
+	var reopened := IntroProgress.new()
+	reopened.storage_path = _intro_path
+	await _mount(ROOT_SCENE, RETRY_LEVEL, reopened)
+	_app.request_start()
+	var level: Node = await _new_level()
+	assert_not_null(level, "Recuerdo real persiste entre raíces nuevas")
+	assert_null(_app.get_current_intro())
+
+
+func test_save_failure_still_offers_start_without_false_seen_record() -> void:
+	var progress := MemoryIntroProgress.new()
+	progress.seen = false
+	progress.fail_save = true
+	var intro: Node = await _fresh_intro(progress)
+	if intro == null:
+		return
+	await _finish_intro(intro, true)
+	assert_eq(progress.writes, 1)
+	assert_false(progress.seen)
+	assert_null(_app.get_current_level())
+	assert_not_null(_button("Comenzar"), "Fallo de escritura no bloquea jugar")
+	_app.request_intro_start()
+	assert_not_null(await _new_level())
+
+
+func test_closing_an_unfinished_intro_does_not_mark_it_seen() -> void:
+	var progress := MemoryIntroProgress.new()
+	progress.seen = false
+	var intro: Node = await _fresh_intro(progress)
+	if intro == null:
+		return
+	intro.close_intro()
+	intro.advance_intro(50.0)
+	assert_eq(progress.writes, 0)
+	assert_false(progress.seen)
+	assert_null(_app.get_current_level())
+
+
+func test_r2_replay_always_opens_at_first_scene_and_waits_for_start(
+		skipped = use_parameters([false, true])) -> void:
+	await _mount(ROOT_SCENE, RETRY_LEVEL)
+	var replay := _button("Ver introducción")
+	assert_not_null(replay, "La historia sigue disponible en el menú")
+	if replay == null:
+		return
+	_click(replay.get_global_rect().get_center())
+	await wait_process_frames(2)
+	var intro: Node = _app.get_current_intro()
+	assert_not_null(intro)
+	if intro == null:
+		return
+	intro.set_process(false)
+	assert_eq(intro.get_slide_index(), 0)
+	assert_null(_app.get_current_level())
+	if skipped:
+		var omit := _button("Omitir")
+		assert_not_null(omit, "Control positivo: omisión por un gesto real")
+		if omit == null:
+			return
+		_click(omit.get_global_rect().get_center())
+		await wait_process_frames(2)
+	else:
+		await _finish_intro(intro, false)
+	_assert_r3_prompt_is_the_only_visible_action(intro)
+	assert_true(is_instance_valid(intro) and _app.get_current_intro() == intro,
+		"Replay espera Comenzar en su propia pantalla")
+	assert_null(_app.get_current_level())
+	assert_true(_wave_events.is_empty())
+	assert_false(_button("Jugar").is_visible_in_tree(), "No se vuelve automáticamente al menú")
+	var start := _button("Comenzar")
+	assert_not_null(start)
+	if start == null:
+		return
+	assert_true(start.is_visible_in_tree())
+	var observer := GestureObserver.new()
+	_viewport.add_child(observer)
+	for repeat in 3:
+		_click(start.get_global_rect().get_center())
+	assert_not_null(await _new_level())
+	assert_eq(_wave_events, [1], "Sólo un gesto nuevo inicia la partida desde replay")
+	assert_eq(observer.presses, 0, "Comenzar no atraviesa al tablero")
+
+
+func test_retired_intro_callbacks_cannot_end_or_start_a_new_replay() -> void:
+	await _mount(ROOT_SCENE, RETRY_LEVEL)
+	_app.request_intro()
+	await wait_process_frames(2)
+	var first: Node = _app.get_current_intro()
+	assert_not_null(first)
+	if first == null:
+		return
+	var old_callbacks: Array[Callable] = []
+	for connection: Dictionary in first.get_signal_connection_list("finished"):
+		if connection.callable.get_object() == _app:
+			old_callbacks.append(connection.callable)
+	assert_false(old_callbacks.is_empty(), "Control: salida vigente conectada a la raíz")
+	await _finish_intro(first, true)
+	# R2: la repetición terminada espera Comenzar; volver luego desde partida.
+	_app.request_intro_start()
+	var level: Node = await _new_level()
+	assert_not_null(level)
+	if level == null:
+		return
+	if not await _real_result(level, "won"):
+		return
+	_app.request_menu()
+	assert_true(await _wait_menu())
+	_app.request_intro()
+	await wait_process_frames(2)
+	var second: Node = _app.get_current_intro()
+	assert_not_null(second)
+	if second == null:
+		return
+	for callback: Callable in old_callbacks:
+		callback.call(true)
+	_app.request_intro_start()
+	await wait_process_frames(2)
+	assert_same(_app.get_current_intro(), second, "Aviso retirado no cierra la reproducción nueva")
+	assert_null(_app.get_current_level(), "Comenzar antes del final de la carta se rechaza")
+
+
+func test_r2_real_active_menu_button_closes_every_level_object_and_consumes_input(
+		paused = use_parameters([false, true])) -> void:
+	var level: Node = await _start_retry_fixture()
+	if level == null:
+		return
+	if paused:
+		GameStateManager._current_state = GameStateManager.GameState.PAUSED
+		GameStateManager.game_state_changed.emit(GameStateManager.GameState.PAUSED)
+	await wait_process_frames(2)
+	var menu := _button("Menú principal")
+	assert_true(menu != null and menu.is_visible_in_tree(), "El nivel ofrece Menú principal durante la partida")
+	if menu == null or not menu.is_visible_in_tree():
+		return
+	# Audio real de fixture, además de actores/pools/timers: no debe sobrevivir.
+	var sound := AudioStreamPlayer.new()
+	sound.stream = load("res://assets/audio/narrative/la_carta/narracion_01.wav")
+	level.add_child(sound)
+	sound.play()
+	assert_true(sound.playing, "Control: existe audio del intento por cerrar")
+	var old_objects := _weak_tree(level)
+	var previous: WeakRef = weakref(level)
+	var observer := GestureObserver.new()
+	_viewport.add_child(observer)
+	var position := menu.get_global_rect().get_center()
+	for repeat in 3:
+		_click(position)
+	if not await _assert_returned_menu(previous, old_objects, 1):
+		return
+	assert_eq(observer.presses, 0, "El gesto de salir no alcanza input del tablero")
+	_app.request_start()
+	var next: Node = await _new_level()
+	assert_not_null(next)
+	if next != null:
+		assert_eq(_soldiers(next).size(), 5)
+		assert_eq(_wave_events, [1, 1], "Una única partida nueva después de cerrar")
+
+
+func _assert_r3_prompt_is_the_only_visible_action(intro: Node) -> void:
+	var texts: Array[String] = []
+	var actions: Array[String] = []
+	for node: Node in intro.find_children("*", "Label", true, false):
+		if (node as Label).is_visible_in_tree() and not (node as Label).text.is_empty():
+			texts.append((node as Label).text)
+	for node: Node in intro.find_children("*", "Button", true, false):
+		if (node as Button).is_visible_in_tree():
+			actions.append((node as Button).text)
+	assert_eq(texts, [], "Ambas rutas cierran sin título, ficción ni subtítulo")
+	assert_eq(actions, ["Comenzar"], "Sólo queda la acción explícita de inicio")
+	for node: Node in intro.find_children("*", "AudioStreamPlayer", true, false):
+		assert_false((node as AudioStreamPlayer).playing, "La espera no mantiene sonido residual")
+	assert_null(_app.get_current_level(), "Sin nivel antes del gesto nuevo")
+	assert_true(_wave_events.is_empty(), "Sin oleadas antes del gesto nuevo")

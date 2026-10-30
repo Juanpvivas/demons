@@ -138,6 +138,8 @@ func close_match() -> void:
 	set_process_unhandled_input(false)
 	_wave_spawner.close_match()
 	_hud.close_match()
+	for audio: Node in find_children("*", "AudioStreamPlayer", true, false):
+		(audio as AudioStreamPlayer).stop()
 	if $Camera2D.framing_changed.is_connected(_hud.update_trench_reload_layout):
 		$Camera2D.framing_changed.disconnect(_hud.update_trench_reload_layout)
 	_selected_soldier = null

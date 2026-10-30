@@ -559,10 +559,41 @@ detalla ese ciclo sin introducir otra autoridad de salud ni cambiar el pool.
 
 ### 4.8 Entrada común y composición local
 
-`GameRoot.tscn` es la entrada del producto y compone menú y nivel sin un
-autoload adicional. `MainMenu` sólo emite la intención `play_requested`;
-la raíz acepta una vez el inicio y monta el nivel de forma diferida, protegida
-contra reentrada. Hasta «Jugar» no existe un nivel de combate activo.
+`GameRoot.tscn` es la entrada del producto y compone menú, introducción y nivel
+sin un autoload adicional. `MainMenu` emite `play_requested` o
+`intro_requested`; la raíz decide el destino y protege la reentrada.
+013-I1/T007–T009 añade `IntroPlayer`: después del primer Jugar no se monta
+nivel hasta terminar/omitir la introducción y aceptar Comenzar mediante otro
+gesto. Con recuerdo válido, Jugar conserva el montaje directo diferido.
+Ver introducción usa una instancia nueva; R2/T019–T021 hace que ambas entradas
+terminen/omitan esperando Comenzar, sin retorno al menú ni inicio automático.
+R3/T030–T032 presenta sólo Comenzar centrado abajo en el mismo contenedor de
+acciones y con mínimo 52 px, sin panel/banda, cabecera, subtítulo ni botones
+de reproducción. La imagen visible conserva su opacidad/pivote/encuadre al
+redimensionar durante la espera. GameRoot usa show_start_prompt/señal públicos,
+sin conocer nodos privados del layout.
+La generación y los callbacks ligados a la instancia aíslan cada apertura;
+el cierre detiene voz, ambiente y avance antes de retirar la escena. Retry sigue directo.
+
+`IntroSequence`/`IntroSlide` son Resources compartidos inmutables con imágenes,
+textos, clips y encuadres; el índice/tiempo/pausa vive sólo en IntroPlayer.
+Los clips pregrabados son recursos locales: no hay sintetizador ni modelo
+runtime. IntroSequence autora ambiente original en bucle y volumen −18 dB;
+IntroPlayer usa otro AudioStreamPlayer independiente de Voice, no reinicia el
+fondo por escena y limpia ambos al salir. El tiempo autorado nunca recorta clips;
+pausa o pérdida de actividad detienen ambos canales/avance hasta continuación
+explícita. Durante las imágenes no hay cabecera ni rótulos; sólo subtítulos y
+controles. R3 incorpora siete WAV humanos de toma3 elegida/autorizada; sólo
+el compañero usa el clip sintético Qwen3-TTS VoiceDesign, aceptado después
+expresamente como voz definitiva por la persona. El origen y procesamiento se
+documentan en el catálogo de audio; la aceptación perceptual es de la persona,
+separada de las verificaciones técnicas de los agentes.
+`IntroProgress`, dependencia local inyectable, escribe un ConfigFile canónico
+dedicado en `user://intro_progress.cfg` y comprueba el Error de guardado.
+La lectura exige el registro canónico de la versión narrativa actual;
+ausencia/corrupción/otra versión se consideran no visto. Un error de escritura
+no bloquea el destino ni simula persistencia. Las pruebas usan rutas temporales
+y los fixtures de nivel inyectan recuerdo ya visto para mantener su propósito.
 El menú usa `CanvasLayer` para mantener su presentación independiente de la
 `Camera2D` del nivel. Menú y resultado reutilizan el `Theme` de
 `resources/ui/monte_calvo_theme.tres`; el acabado y el foco se comparten como
@@ -571,6 +602,11 @@ presentación, sin dar autoridad jugable al recurso.
 US2–US3 de 007 añaden repetición y regreso al menú desde `WON/LOST`: el HUD
 emite una intención, propagada por el nivel y aceptada por la raíz sólo para
 el intento actual.
+R2 añade una intención de menú durante PLAYING/PAUSED desde un botón propio
+en la franja superior segura del HUD, separado del panel informativo y de las
+zonas HOME/recarga. Nivel/raíz aceptan ese retorno activo; las acciones ocultas
+de resultado conservan guards terminales y Retry no se habilita en combate.
+La ruta reutiliza el cierre común sin modal ni persistencia de partida.
 El cierre bloquea reentrada, invalida la generación anterior, entra en `MENU`
 y cancela oleadas sin emitir progreso o victoria. Nivel y spawner detienen
 actividad y desconectan consumidores antes de retirar su árbol. El servicio
@@ -1060,3 +1096,7 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-29 | 012/T019 tras QA funcional T018: §5 describe TrenchReloadControl transparente sobre el arte, brillo aditivo local por hogar y Tween idempotente/limpiado; autoridad y gates conservados, sin patrón global nuevo. |
 | 2026-10-29 | §7 documenta la firma beta Android fija y protegida, verificación obligatoria de su huella antes del upload y transición por reinstalación manual; gates de publicación conservados. |
 | 2026-10-30 | §7 referencia constitución 4.2.0 y la excepción acotada de beta 1.0.2/build 5; conserva controles, pendientes físicos y alcance histórico de 1.0.1. |
+| 2026-10-30 | 013/T010 tras QA funcional T009: §4.8 incorpora composición local de introducción, Resources narrativos inmutables, recuerdo canónico inyectable y aislamiento por apertura; coste de precarga y límites de validación constan en 013, sin certificar publicación. |
+| 2026-10-30 | 013/T022 tras QA funcional T021: §4.8 unifica destino Comenzar, audio de ambiente separado y retorno activo mediante intención HUD/nivel/raíz con cierre común; guards terminales y límites de publicación conservados. |
+| 2026-10-30 | 013/T033 tras QA funcional T032: §4.8 documenta prompt inferior aislado por API pública, imagen estable en espera/resize y narrador humano con compañero provisional separado; audio/recuerdo/cierre y gates conservados. |
+| 2026-10-30 | Corrección documental 013: aceptación humana definitiva del clip sintético del compañero, sin cambios de recursos de audio ni lógica y con publicación pendiente. |

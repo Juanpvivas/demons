@@ -95,7 +95,7 @@ func _restore_result_context(context: Dictionary) -> void:
 
 func _result_action(text: String) -> Button:
 	for node: Node in _hud.find_children("*", "Button", true, false):
-		if (node as Button).text == text:
+		if (node as Button).text == text and (node as Button).is_visible_in_tree():
 			return node as Button
 	return null
 
@@ -623,3 +623,43 @@ func test_keyboard_reaches_menu_action_and_emits_only_its_intent(
 		assert_eq(GameStateManager._current_state, state)
 		assert_eq(EconomyManager.collected_ammo, 9)
 	_restore_result_context(context)
+
+
+## 013/T017: acceso durante combate; HUD expresa intención sin cerrar Managers.
+func test_r2_menu_is_visible_and_emits_only_its_intent_in_playing_and_paused(
+		paused = use_parameters([false, true])) -> void:
+	var saved_state: int = GameStateManager._current_state
+	var state: int = GameStateManager.GameState.PAUSED if paused else GameStateManager.GameState.PLAYING
+	GameStateManager._current_state = state
+	var viewport := SubViewport.new()
+	viewport.size = Vector2i(1152, 648)
+	viewport.handle_input_locally = true
+	add_child_autofree(viewport)
+	viewport.notify_mouse_entered()
+	_hud = load(HUD_SCENE_PATH).instantiate()
+	viewport.add_child(_hud)
+	await wait_process_frames(2)
+	var menu := _result_action("Menú principal")
+	assert_not_null(menu, "Hay un acceso visible al menú antes del resultado")
+	if menu == null:
+		GameStateManager._current_state = saved_state
+		return
+	assert_false(menu.disabled)
+	watch_signals(_hud)
+	var ammo: int = EconomyManager.collected_ammo
+	var wave: int = WaveManager.current_wave_index
+	_click_result(viewport, menu.get_global_rect().get_center())
+	assert_signal_emit_count(_hud, "menu_requested", 1)
+	assert_signal_not_emitted(_hud, "retry_requested")
+	assert_eq(GameStateManager._current_state, state, "El HUD no cierra la partida por su cuenta")
+	assert_eq(EconomyManager.collected_ammo, ammo)
+	assert_eq(WaveManager.current_wave_index, wave)
+	var callbacks: Array[Callable] = []
+	for connection: Dictionary in menu.get_signal_connection_list("pressed"):
+		if connection.callable.get_object() == _hud:
+			callbacks.append(connection.callable)
+	_hud.close_match()
+	for callback: Callable in callbacks:
+		callback.call()
+	assert_signal_emit_count(_hud, "menu_requested", 1, "Un callback retirado no emite otra salida")
+	GameStateManager._current_state = saved_state

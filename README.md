@@ -101,7 +101,7 @@ estabilización y publicación conservan sus pendientes, sin certificación nuev
 integrado en `main` mediante el [PR #34](https://github.com/Juanpvivas/demons/pull/34),
 implementa el ciclo completo:
 
-- Al abrir, el menú espera a que pulses «Jugar» para iniciar Monte Calvo.
+- Al abrir, el menú espera a que pulses «Jugar»; 013-I1 añade la introducción de primera vez descrita abajo antes de iniciar Monte Calvo.
 - Tras ganar o perder, «Volver a jugar» empieza un intento nuevo sin refrescar.
 - «Menú principal» permite esperar antes de iniciar otro intento con «Jugar».
 
@@ -116,6 +116,40 @@ causa o fuga demostradas. El
 identifican el veredicto y CI de su revisión exacta. Los
 [límites de las variantes nativas](docs/SPEC.md#8-arte-y-estilo-visual),
 los pendientes de 006 y la publicación se conservan.
+
+[013 — La carta](specs/013-introduccion-la-carta/spec.md) añade en su rama
+una introducción ilustrada con subtítulos, narración humana de la toma3 elegida
+y autorizada por la persona autora, y ambiente original discreto. El compañero
+usa una voz sintética Qwen3-TTS VoiceDesign que la persona ha aceptado como
+definitiva para el compañero. R3/R4 conservan sus aprobaciones técnicas; esta
+aceptación perceptual es humana y no una audición de los agentes. La carta y
+sus personajes son ficción inspirada en el Batallón Colombia.
+
+- La primera vez que pulses «Jugar», verás las siete escenas. Puedes pulsar
+  «Pausar», «Continuar» u «Omitir»; al terminar, «Comenzar» inicia la partida.
+- El juego recuerda localmente que terminaste u omitiste la introducción.
+  Las siguientes partidas y «Volver a jugar» entran directamente al combate.
+- «Ver introducción», en el menú, permite repetirla: al acabar u omitir también
+  muestra «Comenzar» y espera tu acción para jugar. Cambiar de app o perder foco
+  pausa voz y ambiente; debes pulsar «Continuar» al regresar.
+- Al terminar u omitir, sólo queda «Comenzar» centrado abajo, sobre la imagen
+  limpia, sin panel ni textos extra. La imagen permanece visible al redimensionar;
+  la partida espera otro gesto y no conserva voz o ambiente sonando.
+- Durante las imágenes sólo hay subtítulos y controles, sin contador ni rótulos
+  superiores. Durante la partida, «Menú principal» está visible en la franja
+  superior y permite abandonar el intento, también pausado, sin guardarlo.
+- El recuerdo corresponde a cada instalación o almacenamiento del navegador;
+  un fallo al guardarlo permite seguir jugando, aunque vuelva a aparecer.
+
+La aceptación perceptual de toma3 y de la voz definitiva del compañero
+corresponde a la persona que las eligió;
+las comprobaciones de incorporación/reproducción son técnicas y no una escucha
+propia de los agentes. El compañero sigue siendo sintético; toque iOS, paquete final
+y rendimiento físico no se certifican.
+[Alcance y límites](specs/013-introduccion-la-carta/research.md#alcance-funcional-r3-y-límites).
+CI/gate final de integración y publicación conservan su
+[seguimiento separado](specs/013-introduccion-la-carta/tasks.md); 006 sigue pausada
+y los pendientes 004/005 no se cierran por esta entrega.
 
 [008 — Marcha enemiga](specs/008-marcha-enemiga/spec.md) renueva el avance con
 ocho poses de apoyos alternados y balanceo del cuerpo/equipo, conservando el

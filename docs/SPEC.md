@@ -15,6 +15,17 @@ Juego de defensa por carriles (estilo *Plants vs. Zombies*) inspirado en la hist
 - El apodo "demonios de las trincheras" se lo dieron los propios enemigos, como reflejo del miedo y respeto que inspiraba su ferocidad en combate cuerpo a cuerpo.
 - Nota de diseño: el juego usa la versión popular de la historia (soldados que se quedan sin munición y recurren al machete) como base narrativa y mecánica, priorizando jugabilidad sobre precisión documental estricta. Tratar el tema con respeto: es un homenaje, no glorificación gratuita de violencia.
 
+**La carta** ([013](../specs/013-introduccion-la-carta/spec.md), revisión R3
+aprobada funcionalmente en T032 en rama) presenta siete escenas antes de la primera partida.
+La carta y sus personajes son ficción inspirada en el Batallón Colombia,
+no testimonios ni retratos de veteranos identificados. Incluye subtítulos y
+siete narraciones humanas de la toma3 aportada, elegida y autorizada por la
+persona autora, un compañero sintético Qwen3-TTS VoiceDesign y ambiente
+original. La persona aceptó expresamente el clip del compañero como voz
+definitiva; esa aceptación perceptual humana no se atribuye a los agentes.
+T026 aprueba la incorporación técnica de la toma elegida; su aceptación
+perceptual es humana y no se atribuye audición propia a los agentes.
+
 ## 3. Género y referencias
 
 - **Género:** Tower defense / lane defense, 2D.
@@ -201,6 +212,32 @@ orienta la composición lateral y no fija costos, estadísticas ni HUD final.
 - **Baja y recolección:** `enemy_defeated` permite al spawner contar sólo bajas de oleada y reciclar al enemigo. El actor genera una pickup en su posición de muerte y notifica su aparición; la reserva global sólo aumenta al recogerla. El soldado confirma la baja para sumar moral únicamente si fue con fusil. El contexto de baja se conserva aunque el pool reutilice el cuerpo síncronamente.
 
 ## 8. Arte y estilo visual
+
+**Introducción La carta (013-I1-R3):** siete cuadros del storyboard aceptado,
+con fundidos y encuadres suaves, conservan soldado, carta, uniforme y paleta.
+El primer «Jugar» abre la secuencia; terminarla u omitirla deja «Comenzar»
+esperando un gesto nuevo, sin combate activo. El recuerdo local por versión
+permite iniciar directamente las partidas posteriores. «Ver introducción»
+la repite desde el menú y también termina/omite en Comenzar; nunca vuelve al
+menú ni inicia combate automáticamente. «Volver a jugar» sigue siendo directo.
+«Pausar»/«Continuar» controlan voz, ambiente y avance; perder actividad pausa hasta
+continuación explícita. Un fallo al guardar no impide jugar.
+En final u omisión sólo aparece Comenzar centrado abajo en la franja segura de
+controles, con alto mínimo de 52 px y sin panel/banda, títulos, ficción,
+subtítulos u otros controles. La imagen visible conserva opacidad/encuadre al
+redimensionar mientras se espera; voz y ambiente ya están detenidos.
+Las siete imágenes sólo muestran subtítulos de voz y controles, sin contador,
+caption ni aviso superior. Un ambiente original de viento/rumor grave suena
+en canal separado y cesa con la reproducción. «Menú principal», visible en la
+franja superior durante partida activa/pausada, cierra el intento sin modal ni
+guardado; su zona no se superpone a las trincheras/recarga.
+El arte y las voces humana/sintética tienen [procedencia documentada](../specs/013-introduccion-la-carta/research.md).
+T032 aprobó función R3 y T026/SC-009 en el alcance de narrador toma3 elegido y
+compañero provisional divulgado en aquel momento. R4 conserva sus aprobaciones
+técnicas y la persona ha elegido ese mismo clip como voz definitiva del
+compañero; no cambia narrador, montaje o controles ni implica audición del agente.
+Publicación T014 sigue separada. No se acredita toque iOS, hardware, 60 FPS o paquete final;
+el riesgo de carga/memoria de precarga se conserva con [límites explícitos](../specs/013-introduccion-la-carta/research.md#alcance-funcional-r3-y-límites).
 
 **Dirección aprobada para el entorno de Monte Calvo, primera iteración**
 (`002-monte-calvo-terreno-trincheras`): ilustración 2D de textura pictórica,
@@ -479,12 +516,13 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 - Publicación de [005](../specs/005-cinco-carriles/tasks.md), T071/SC-007: rendimiento físico, renderer y artefacto final, firma/instalación/versionado y matriz de destino. I1–I4 están integrados en `main` mediante los PR #24–#27 e I5 consolida el alcance funcional aprobado; las tareas mantienen el estado de entrega. No deducir balance de la imagen.
 - Acabado adicional de interfaz, audio y demás alcance del MVP, siguiendo la dirección aprobada en §8; el HUD, la recarga y las pantallas terminales actuales están integrados por 005. SC-007 y certificaciones de publicación siguen pendientes.
 - ¿Habrá progresión entre niveles (más batallas históricas) o es un solo escenario?
-- ¿Narrativa/contexto histórico se presenta dentro del juego (cutscenes, texto) o queda solo como inspiración temática?
 - Balance de costos exactos de cada unidad (se define con playtesting).
 - ¿La munición cae solo de enemigos derrotados, o también se acumula pasivamente con el tiempo? (supuesto actual: solo de enemigos)
 - Todas las alternativas del gap crítico de T043 quedaron resueltas o descartadas — ver entrada en "Resueltas" abajo. La ausencia de una convención propia de `collision_layer`/`collision_mask` en el proyecto sigue documentada como tal (no una decisión tomada) en `docs/ARCHITECTURE.md` §5, sin bloquear nada hoy.
 
 ### Resueltas (graduadas desde specs de feature)
+
+- ✅ Narrativa dentro del juego mediante La carta: 013-I1/T007–T009 añade siete escenas ilustradas, subtítulos y voz provisional tras el primer Jugar y antes del combate, con repetición voluntaria desde el menú y recuerdo local. Es ficción inspirada en el contexto histórico; gate final de integración T012 y publicación T014 permanecen separados.
 
 - ✅ Selección por dueño de trinchera, recarga única sólo con carga cero y regreso físico vulnerable sin ofensiva: 005-I3/T037–T042, integrado mediante PR #26 (`8c4cab4`). La publicación T071 sigue pendiente.
 - ✅ Composición lateral y estados observadores de marcha/espera, regreso con fusil bajo y caída orientada: 005-I4/T050–T057, integrado mediante PR #27 (`cffb2ec`). El estado de entrega y PR se mantiene en las tareas de 005. No cambia reglas, geometría ni concede cobertura.
@@ -554,3 +592,8 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 | 2026-10-24 | 011/T009 tras QA funcional T008: §6.3/§6.4 incorporan barras de vida siempre visibles y sin números para ambos bandos, proporción inmediata y tonos mates por umbral; sin cambios de balance, con cierre de integración y publicación pendientes. |
 | 2026-10-29 | 012/T009 tras QA funcional T008: §6.3 presenta recarga directa sobre cada hogar sin selección previa, panel informativo y reglas conservadas; límites de input nativo, integración final y publicación explícitos. |
 | 2026-10-29 | 012/T019 tras QA funcional T018: §6.3 sustituye el rótulo por rojo tenue/pulsante y toque sobre el arte de la trinchera, conservando autoridad, panel y reglas; alcance de verificación y publicación separados. |
+| 2026-10-30 | 013/T010 tras QA funcional T009: La carta incorpora narrativa ilustrada con voz provisional, primera entrada/replay/recuerdo local; se resuelve la pregunta narrativa y se conservan límites de audición, destinos y coste de precarga, con CI/integración final y publicación pendientes. |
+| 2026-10-30 | 013/T022 tras QA funcional T021: ambas rutas terminan en Comenzar, imágenes sin cabecera, ambiente separado y Menú principal activo/pausado; Ald sigue como preview, grabación humana T026 y gates de integración/publicación permanecen pendientes. |
+| 2026-10-30 | 013/T033 tras QA funcional T032: siete narraciones de toma3 elegida/autorizada, compañero sintético provisional y prompt Comenzar inferior limpio, estable ante resize; T026/SC-009 aprobados en su alcance, con CI/gate final T035 y publicación pendientes. |
+| 2026-10-30 | 013/T041 tras QA técnica T040: sólo compañero sustituido por candidata Qwen3-TTS VoiceDesign; narrador humano y comportamiento intactos, naturalidad humana y gate final T043/publicación pendientes. |
+| 2026-10-30 | Corrección documental 013: la persona acepta expresamente el mismo clip Qwen3-TTS VoiceDesign como voz definitiva del compañero; se resuelve su aceptación perceptual humana sin modificar audio, comportamiento o gates de publicación. |

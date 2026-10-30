@@ -1,0 +1,93 @@
+[gd_resource type="Resource" script_class="IntroSequence" load_steps=26 format=3]
+
+[ext_resource type="Script" path="res://resources/schemas/intro_sequence.gd" id="seq"]
+[ext_resource type="Script" path="res://resources/schemas/intro_slide.gd" id="slide"]
+[ext_resource type="Texture2D" path="res://assets/narrative/la_carta/01-el-papel.png" id="image1"]
+[ext_resource type="AudioStream" path="res://assets/audio/narrative/la_carta/narracion_01.wav" id="voice1"]
+[ext_resource type="Texture2D" path="res://assets/narrative/la_carta/02-lo-que-quedo-en-casa.png" id="image2"]
+[ext_resource type="AudioStream" path="res://assets/audio/narrative/la_carta/narracion_02.wav" id="voice2"]
+[ext_resource type="Texture2D" path="res://assets/narrative/la_carta/03-la-distancia.png" id="image3"]
+[ext_resource type="AudioStream" path="res://assets/audio/narrative/la_carta/narracion_03.wav" id="voice3"]
+[ext_resource type="Texture2D" path="res://assets/narrative/la_carta/04-los-companeros.png" id="image4"]
+[ext_resource type="AudioStream" path="res://assets/audio/narrative/la_carta/narracion_04.wav" id="voice4"]
+[ext_resource type="Texture2D" path="res://assets/narrative/la_carta/05-monte-calvo.png" id="image5"]
+[ext_resource type="AudioStream" path="res://assets/audio/narrative/la_carta/narracion_05.wav" id="voice5"]
+[ext_resource type="Texture2D" path="res://assets/narrative/la_carta/06-la-carta-queda-pendiente.png" id="image6"]
+[ext_resource type="AudioStream" path="res://assets/audio/narrative/la_carta/narracion_06.wav" id="voice6"]
+[ext_resource type="Texture2D" path="res://assets/narrative/la_carta/07-la-trinchera.png" id="image7"]
+[ext_resource type="AudioStream" path="res://assets/audio/narrative/la_carta/narracion_07.wav" id="voice7"]
+[ext_resource type="AudioStream" path="res://assets/audio/narrative/la_carta/companero_06.wav" id="companion"]
+[ext_resource type="AudioStream" path="res://assets/audio/narrative/la_carta/ambiente_trinchera_loop.wav" id="ambience"]
+
+[sub_resource type="Resource" id="Slide1"]
+script = ExtResource("slide")
+image = ExtResource("image1")
+subtitle = "Mamá… He empezado esta carta varias veces. Siempre me quedo pensando qué contarle."
+narration = ExtResource("voice1")
+minimum_duration = 7.0
+start_zoom = 1.0
+end_zoom = 1.035
+
+[sub_resource type="Resource" id="Slide2"]
+script = ExtResource("slide")
+image = ExtResource("image2")
+subtitle = "¿Cómo está la casa? Todavía me acuerdo del café que dejó servido el día que salí."
+narration = ExtResource("voice2")
+minimum_duration = 8.0
+start_zoom = 1.0
+end_zoom = 1.035
+
+[sub_resource type="Resource" id="Slide3"]
+script = ExtResource("slide")
+image = ExtResource("image3")
+subtitle = "Cuando dejamos de ver la costa, guardé su carta en el bolsillo. La llevo conmigo."
+narration = ExtResource("voice3")
+minimum_duration = 8.0
+start_zoom = 1.035
+end_zoom = 1.0
+
+[sub_resource type="Resource" id="Slide4"]
+script = ExtResource("slide")
+image = ExtResource("image4")
+subtitle = "Aquí tengo compañeros de muchas partes. Ya sé quién ronca, quién hace chistes y quién escucha cuando uno necesita hablar."
+narration = ExtResource("voice4")
+minimum_duration = 10.0
+start_zoom = 1.0
+end_zoom = 1.035
+
+[sub_resource type="Resource" id="Slide5"]
+script = ExtResource("slide")
+image = ExtResource("image5")
+subtitle = "El lugar se llama Monte Calvo. De noche hace frío. A veces cuesta dormir, aunque uno esté rendido."
+narration = ExtResource("voice5")
+minimum_duration = 10.0
+start_zoom = 1.035
+end_zoom = 1.0
+
+[sub_resource type="Resource" id="Slide6"]
+script = ExtResource("slide")
+image = ExtResource("image6")
+subtitle = "No le voy a negar que tengo miedo. Nos cuidamos entre todos. Eso ayuda."
+narration = ExtResource("voice6")
+minimum_duration = 10.0
+start_zoom = 1.0
+end_zoom = 1.035
+companion_subtitle = "Compañero. Ya es hora."
+companion_voice = ExtResource("companion")
+
+[sub_resource type="Resource" id="Slide7"]
+script = ExtResource("slide")
+image = ExtResource("image7")
+subtitle = "Voy a guardar la carta, mamá. Después sigo escribiendo."
+narration = ExtResource("voice7")
+minimum_duration = 7.0
+start_zoom = 1.0
+end_zoom = 1.035
+
+[resource]
+script = ExtResource("seq")
+version = "la_carta_v1"
+transition_duration = 0.6
+ambience = ExtResource("ambience")
+ambience_volume_db = -18.0
+slides = Array[ExtResource("slide")]([SubResource("Slide1"), SubResource("Slide2"), SubResource("Slide3"), SubResource("Slide4"), SubResource("Slide5"), SubResource("Slide6"), SubResource("Slide7")])

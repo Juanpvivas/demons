@@ -89,3 +89,45 @@ func test_background_click_does_not_request_play() -> void:
 	_click(Vector2(8, 8))
 	await wait_process_frames(2)
 	assert_eq(_intents, 0, "Pulsar decoración no equivale a Jugar")
+
+
+func _replay_button() -> Button:
+	for node: Node in _menu.find_children("*", "Button", true, false):
+		if (node as Button).text == "Ver introducción":
+			return node as Button
+	return null
+
+
+func test_replay_button_requests_only_intro_and_disables_during_transition() -> void:
+	var replay := _replay_button()
+	assert_not_null(replay, "El menú permite volver a ver la carta")
+	if replay == null:
+		return
+	watch_signals(_menu)
+	_click(replay.get_global_rect().get_center())
+	await wait_process_frames(1)
+	assert_signal_emit_count(_menu, "intro_requested", 1)
+	assert_eq(_intents, 0, "Ver introducción no equivale a Jugar")
+	_menu.set_start_enabled(false)
+	assert_true(replay.disabled, "Una transición bloquea ambas rutas")
+	_menu.show_menu()
+	assert_false(replay.disabled)
+	assert_same(_viewport.gui_get_focus_owner(), _play)
+
+
+func test_keyboard_can_request_replay_without_requesting_play() -> void:
+	var replay := _replay_button()
+	assert_not_null(replay)
+	if replay == null:
+		return
+	watch_signals(_menu)
+	replay.grab_focus()
+	for down: bool in [true, false]:
+		var event := InputEventKey.new()
+		event.keycode = KEY_ENTER
+		event.physical_keycode = KEY_ENTER
+		event.pressed = down
+		_viewport.push_input(event, true)
+	await wait_process_frames(1)
+	assert_signal_emit_count(_menu, "intro_requested", 1)
+	assert_eq(_intents, 0)
