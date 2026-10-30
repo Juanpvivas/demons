@@ -77,7 +77,7 @@ var _trench_reload_bindings: Dictionary[Vector2i, Dictionary] = {}
 @onready var _trench_reload_controls: Control = $TrenchReloadControls
 @onready var _retry_button: Button = $GameOverScreen/Actions/RetryButton
 @onready var _menu_button: Button = $GameOverScreen/Actions/MenuButton
-@onready var _live_menu_button: Button = $Root/Info/LiveMenuButton
+@onready var _live_menu_button: Button = $LiveMenuButton
 @onready var _closing_input_blocker: Control = $ClosingInputBlocker
 
 
@@ -212,6 +212,22 @@ func _layout_info_around_trenches(safe: Rect2) -> void:
 			left = maxf(left, button.get_global_rect().end.x + 12.0)
 	left = minf(left, maxf(safe.position.x, safe.end.x - info_size.x))
 	$Root.add_theme_constant_override("margin_left", ceili(left))
+	_layout_live_menu(safe, Rect2(Vector2(left, safe.position.y), info_size))
+
+
+## Reserva siempre el panel derecho: seleccionar no desplaza la salida.
+func _layout_live_menu(safe: Rect2, info_rect: Rect2) -> void:
+	var minimum := _live_menu_button.get_combined_minimum_size()
+	_live_menu_button.size = Vector2(maxf(44.0, minimum.x), maxf(44.0, minimum.y))
+	var menu_position := Vector2(
+		maxf(safe.position.x, safe.end.x - 324.0 - 12.0 - _live_menu_button.size.x),
+		safe.position.y)
+	if Rect2(menu_position, _live_menu_button.size).intersects(info_rect):
+		# En anchos reducidos, usar el margen derecho debajo del panel reservado
+		# conserva la información y no ocupa las trincheras del borde izquierdo.
+		menu_position = Vector2(safe.end.x - _live_menu_button.size.x,
+			maxf(safe.position.y + 70.0, info_rect.end.y) + 12.0)
+	_live_menu_button.position = menu_position
 
 
 func set_selected_soldier(soldier: Soldado) -> void:
