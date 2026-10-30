@@ -11,7 +11,7 @@ Servicio CombatAudio hijo del nivel, configurado por Resource inmutable. Observa
 ## Technical Context
 
 **Language/Version**: GDScript/Godot4.x vigente, local4.7.1.
-**Primary Dependencies**: AudioStreamPlayer, señales directas, Resources, GUT existentes; sin dependencia runtime nueva.
+**Primary Dependencies**: AudioStreamPlayer, AudioBusLayout/AudioEffectHardLimiter de Godot, señales directas, Resources y GUT; sin dependencia externa nueva.
 **Storage**: Sólo recursos locales; sin persistencia nueva.
 **Testing**: GUT/runner vigente, inspección proporcional de medios, preview/smoke y export/CI por destino disponible.
 **Target Platform**: Web sólo navegador de computador, apps Android/iOS instaladas; PC nativo desarrollo.
@@ -37,6 +37,7 @@ V: Gate integración con build/CI/QA; publicación separada SC007, sin merge/env
 scenes/audio/combat_audio.gd
 resources/schemas/combat_audio_profile.gd
 resources/audio/combat_audio_profile.tres
+default_bus_layout.tres                     # Master intacto + GameplaySFX
 assets/audio/combat/                         # cinco cues, SOURCES/licencias
 scenes/levels/nivel_monte_calvo.gd
 scenes/levels/wave_spawner.gd
@@ -51,12 +52,13 @@ specs/014-sonidos-combate/contracts/combat-audio.md
 - Soldado ya emite rifle_shot_visual_requested tras descontar munición, antes de daño, y defeat_visual_requested sólo al morir. Enemigo emite derrota antes de enemy_defeated y reciclado. Observar esas confirmaciones semánticas existentes sin depender de animación/píxeles; no introducir un segundo disparo o daño.
 - Nivel registra soldados iniciales/reemplazos y el spawner registra cada enemigo físico una vez. Cada baja se distingue por instancia+activation_generation (enemigo) o identidad de soldado; no rechazar una muerte porque el actor ya se desactivó antes de emitir.
 - GameStateManager emite transición y game_won/game_lost: elegir una sola fuente terminal, con guard por intento. Aceptar baja final antes de resultado; las voces ya admitidas pueden terminar en capacidad acotada, sin nuevos ataques tras terminal.
-- Pool local precalentado de8 AudioStreamPlayers para disparos/bajas, con reemplazo del más antiguo si se satura, sin cola de espera; un reproductor reservado para resultado evita que ráfagas lo roben. Volúmenes conservadores en perfil, sin modificar buses globales de intro. Variación de pitch acotada mediante RNG local independiente; resultado sin variación.
-- Headroom autorado: WAV pico máximo−6dBFS; combate−18dB con variación máxima±1.5dB, pitch0.97–1.03; resultado−12dB/pitch1 sin variación. La suma conservadora de picos con8+1 voces queda por debajo de0.73 lineal (<1), a verificar con medios/configuración reales. No añadir limiter global ni tocar Master/intro.
+- Pool local precalentado de8 AudioStreamPlayers para disparos/bajas, con reemplazo del más antiguo si se satura, sin cola de espera; un reproductor reservado para resultado evita que ráfagas lo roben. Los9 players sólo usan GameplaySFX; variación mediante RNG local independiente, resultado sin variación.
+- Mezcla revisada antes de RED: bus dedicado GameplaySFX en layout estático con AudioEffectHardLimiter ceiling_db−3, pre_gain_db0, release0.1, envíoMaster sin modificarlo ni tocar audio013. Perfil de producción: rifle−3, enemy_death−1, soldier_death0, victory/defeat−3dB; variacióncombat±1.5dB/pitch0.97–1.03, resultado fijo. WAV individualespico≤−6dBFS mantienen margen en solo; concurrencia se limita en bus. Verificar rutas/efecto/configuración y mezcla/captura runtime disponible; sin inferir audición o techo físico del dispositivo.
+- Cada controller sólo detiene/libera sus9 reproductores: no mutea/elimina el bus compartido ni reencamina a Master al cerrar. Cubrir aislamiento entre controllers/fixtures y voces de intro. Setup neutral T002–T003 ya aprobado permanece idéntico; ganancias/layout de producción se implementan en T007 después de RED.
 - Pausa/foco silencian one-shots activos y no los reanudan/reencolan; se aceptan futuros cues sólo cuando la sesión/actividad lo permiten. MENU/close_match detiene, desconecta e invalida callbacks; nuevo nivel usa servicio nuevo.
 - Setup neutral de clase/Resource sólo para RED importable: sin pool, conexiones, archivos finales o comportamiento. Tester confirma carga y QA neutralidad antes de RED.
 - Consultar GodotPrompter using/audio-system+referencia sfx-pooling/event-bus/resource-pattern/godot-testing según rol; usar señales directas por padre común, no aplicar ejemplo de autoload indiscriminadamente.
 
 ## Complexity Tracking
 
-Sin bus global/event bus nuevo, UI o persistencia; un servicio local y un perfil bastan. El audio observa combate y no modifica economía, daño o resultado.
+Sin autoload/event bus, UI o persistencia nuevos; servicio local, perfil y layout estático con bus exclusivo bastan. El audio observa combate y no modifica economía, daño o resultado; el limiter de SFX no afecta Master o intro.

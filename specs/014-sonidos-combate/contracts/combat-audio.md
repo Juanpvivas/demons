@@ -27,7 +27,9 @@ CombatAudioProfile declara cinco arrays tipados de AudioStream y configuración 
 - No nuevas peticiones de combate fuera de PLAYING/actividad; las aceptadas antes del terminal pueden terminar. Pausa/foco detienen todas sin replay al regresar.
 - MENU/close_match/retry detienen voces y limpian/desconectan registros antes de retirar nivel; callbacks/generaciones viejos se ignoran.
 - Sólo RNG local cosmético. Ninguna llamada sonora decide daño, ammo, moral, blanco, oleadas o victoria.
-- Perfil y headroom: combate−18dB±1.5dB/pitch0.97–1.03, resultado−12dB/pitch1 fijo; con9 WAV de pico≤−6dBFS la cota de8+1 voces es<0.73 lineal. Verificar que perfiles y medios cumplen sin tocar Master/buses de013 o añadir limiter global.
+- Perfil de producción: rifle−3, enemy_death−1, soldier_death0, victory/defeat−3dB, variacióncombat±1.5dB/pitch0.97–1.03 y resultado fijo. Stubs neutrales aprobados siguen idénticos hasta implementación T007.
+- Nueve players exclusivamente en GameplaySFX, layout estático con HardLimiter ceiling_db−3/pre_gain_db0/release0.1 y envíoMaster. No cambiar volumen/efectos/rutas de Master o intro. RED discrimina routing/capacidad/aislamiento/limpieza; ganancias, picos y propiedades del limiter se revisan proporcionalmente en T008, no mediante tests que sólo repitan datos de arte.
+- Cierre sólo detiene/libera players propios; nunca mutea/borra bus compartido ni reencamina a Master. Otra instancia/fixture y audio013 siguen intactos. Tests restauran sólo su configuración temporal sin contaminar otras pruebas.
 - Fichero ausente no bloquea jugar; la ausencia es fallo de entrega a resolver, no un aprobado ficticio.
 
 ## Medios
