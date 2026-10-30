@@ -23,29 +23,32 @@ El uso de esta grabación propia se basa en la autorización recibida para el
 proyecto. No se le asigna Unlicense, CC0 ni la licencia del modelo sintético.
 La toma original, ASR y metadatos temporales no forman parte de estos recursos.
 
-## Compañero Ald — único clip provisional
+## Compañero sintético — candidata R4
 
-`companero_06.wav` sigue siendo voz sintética provisional, separada del narrador
-humano. La toma elegida no incluye esa frase y no se la atribuye a la persona.
-WAV mono PCM de 22.050Hz sintetizado con `piper-tts 1.8.0`, `es_MX-ald-medium`,
-volumen 0.85 y length_scale 1.0. No se imita una persona real.
+`companero_06.wav` contiene únicamente «Compañero. Ya es hora.» y permanece
+separado de las siete narraciones humanas. Es la candidata `companero_cercano`
+preparada para esta frase: WAV mono PCM de 24.000Hz y 16 bits, 82.560 frames y
+3,44 segundos. No se atribuye al narrador humano ni a un veterano identificado.
+La naturalidad de esta candidata sigue pendiente de escucha humana; el ASR y
+la verificación técnica no sustituyen esa aceptación ni una audición del agente.
 
-La siguiente procedencia y licencias corresponden sólo a este clip Ald:
+Generada sin audio de referencia ni clonación con Qwen3-TTS VoiceDesign,
+`mlx-audio 0.6.3` y MLX `0.32.4`. El procesamiento previo aplica ganancia lineal
+−2,185573dB y microfundidos de 5ms, sin recorte, cambio de tono/tempo ni compresor
+dinámico. La importación habitual del juego puede codificar el WAV.
 
-- Repositorio: [rhasspy/piper-voices](https://huggingface.co/rhasspy/piper-voices).
-- Voz: [es/es_MX/ald/medium](https://huggingface.co/rhasspy/piper-voices/tree/b4e358ffcb232591bf73a540e70f7de528e4174a/es/es_MX/ald/medium).
-- Revisión: `b4e358ffcb232591bf73a540e70f7de528e4174a`.
-- SHA256 del modelo: `019b3803293c93e34a206dd2e53a3889209a514e786fd7144f7b70196c579b63`.
-- [MODEL_CARD.txt](MODEL_CARD.txt) original: dataset
-  [Ald Mexican Spanish](https://huggingface.co/datasets/rmcpantoja/Ald_Mexican_Spanish_speech_dataset)
-  bajo [Unlicense](UNLICENSE.txt).
-- Base de entrenamiento DaveFX: [DAVEFX_MODEL_CARD.txt](DAVEFX_MODEL_CARD.txt)
-  declara dataset [OHF-Voice/voice-datasets](https://github.com/OHF-Voice/voice-datasets)
-  bajo [CC0](CC0-LICENSE.txt).
+- Modelo: [mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-4bit](https://huggingface.co/mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-4bit).
+- Revisión: `5c390979e4b93af5f2932f90742ca99c7dd04687`.
+- Modelo original: [Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign](https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign).
+- SHA256 del modelo: `d8627de7ef411f6775182925059e140a9e1edb1fde8feeb540b4fba0edee1e58`.
+- SHA256 de la candidata incorporada: `0c8e5bb5bf9aa476b70686c1846c4dd6b8dd836390a5161e11051eba3cd8c1d8`.
+- Licencia del modelo: [Apache License 2.0](QWEN-APACHE-2.0.txt), conservada de su fuente.
 
-Las voces sintéticas anteriores del narrador pertenecen a la historia en Git.
-El juego contiene sólo los WAV grabados,
-sin motor Piper, modelos ONNX, llamadas de red o voces del sistema operativo.
+Esta procedencia describe sólo el compañero sintético; no asigna Apache 2.0 a
+la voz humana. Las voces Ald/Claude y sus licencias anteriores se conservan
+como historia en Git, sin mantener atribuciones a recursos que ya no están en
+uso. Todos los clips se reproducen offline: no se incorpora el modelo, motor
+de síntesis, audio de referencia, variante descartada ni llamadas a servicios.
 
 ## Ambiente original
 
