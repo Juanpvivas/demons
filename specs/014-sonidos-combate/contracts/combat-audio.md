@@ -10,6 +10,9 @@
 - `close_match() -> void`: idempotente.
 - `get_active_voice_count() -> int`, `get_voice_capacity() -> int`: límites observables.
 
+Ambos getters cuentan el total combate+resultado: capacidad inicial8+1=9 y
+activas incluidas las terminales. Los retornos neutrales de setup siguen0.
+
 CombatAudioProfile declara cinco arrays tipados de AudioStream y configuración del [modelo](../data-model.md). T002 sólo crea firmas/Resource sin conexiones, reproducción o pool y observadores0; el nivel no monta el servicio todavía. No crear .tres con preloads de WAV inexistentes. Tester usa WAV breve válido en memoria y perfil de fixture, sin tocar preferencias/audio013. Parser/import roto no vale RED.
 
 ## Confirmaciones y composición
@@ -29,6 +32,7 @@ CombatAudioProfile declara cinco arrays tipados de AudioStream y configuración 
 - Sólo RNG local cosmético. Ninguna llamada sonora decide daño, ammo, moral, blanco, oleadas o victoria.
 - Perfil de producción: rifle−3, enemy_death−1, soldier_death0, victory/defeat−3dB, variacióncombat±1.5dB/pitch0.97–1.03 y resultado fijo. Stubs neutrales aprobados siguen idénticos hasta implementación T007.
 - Nueve players exclusivamente en GameplaySFX, layout estático con HardLimiter ceiling_db−3/pre_gain_db0/release0.1 y envíoMaster. No cambiar volumen/efectos/rutas de Master o intro. RED discrimina routing/capacidad/aislamiento/limpieza; ganancias, picos y propiedades del limiter se revisan proporcionalmente en T008, no mediante tests que sólo repitan datos de arte.
+- Los9 players nuevos usan `playback_type = AudioServer.PLAYBACK_TYPE_STREAM`: en Web, Sample no procesa AudioEffects y eludiría el limiter. Es contrato de routing/efectos, cubierto por RED; no cambiar default global, audio013, singlethread, presets o renderers. T008 verifica Web/latencia disponible y declara límites de Stream, sin extrapolar ejecución nativa.
 - Cierre sólo detiene/libera players propios; nunca mutea/borra bus compartido ni reencamina a Master. Otra instancia/fixture y audio013 siguen intactos. Tests restauran sólo su configuración temporal sin contaminar otras pruebas.
 - Fichero ausente no bloquea jugar; la ausencia es fallo de entrega a resolver, no un aprobado ficticio.
 
