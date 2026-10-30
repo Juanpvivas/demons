@@ -85,3 +85,24 @@ ambiente y menú activo; T014 continúa pendiente de publicación.
 - [ ] T036 project-orchestrator: actualizar PR #54 borrador e Issue #53 con alcance R3/toma3 humana y compañero provisional, trazabilidad RED/GREEN/QA y límites, `Refs #53`; marcar sólo tareas aprobadas, sin promoción/merge/distribución. Depende T035.
 
 **Dependencias R3**: T027→T028→T029→T030→T031→T032→T033→T034→T035→T036. T026 se incorpora durante T030 y se verifica en T031–T032, sin depender de T036 ni crear ciclo. Sin [P] por archivos compartidos. FR017/SC012→T028–T032; FR002/SC009/T026→T030–T032; regresiones FR001–016/SC001–007,010–011→T031–T032; SC008 sigue sólo T014. La elección humana de toma3 no certifica otras voces o plataformas.
+
+## Enmienda autorizada R4 — únicamente compañero sintético
+
+Alcance medio/arte sin lógica nueva: reemplazar `companero_06.wav` por candidata
+masculina expresiva de root y actualizar procedencia; las siete narraciones
+toma3 y comportamiento/montaje/textos/ambiente/recuerdo quedan intactos. La
+naturalidad candidata está pendiente de escucha humana, sin aprobación fingida
+ni RED artificial. T001–T036 conservan su historia, incluido el cierre R3
+informado por orquestación; este anexo no altera sus marcas. T014 continúa
+pendiente de publicación, pausa006 y pendientes004/005 se mantienen.
+
+- [X] T037 project-orchestrator con qa-validator: revisar enmienda mínima R4 en `spec.md`, `plan.md` y `tasks.md`, FR018/SC013, clasificación de medio sin lógica y alcance exacto de sustitución/procedencia; no reabrir R3 ni exigir RED artificial. Aprobar preparación antes de incorporar el archivo.
+- [ ] T038 [US1] dev-godot: al recibir la candidata de root, reemplazar sólo `assets/audio/narrative/la_carta/companero_06.wav` y actualizar SOURCES/licencias portables pertinentes, conservando narraciones humanas, ambiente, guion/montaje, runtime y configuración. No subir metadatos/logs temporales ni modelos; identificar voz como sintética separada del narrador humano y naturalidad aún pendiente de escucha. Depende T037 y archivo candidato disponible.
+- [ ] T039 [US1] godot-tester: verificar proporcionalmente T038 mediante hash/procedencia, formato/duración, PCM sin saturación, importación/carga y reproducción completa en escena6 sin truncar montaje. Preview Web si disponible; reutilizar verificación de comportamiento vigente salvo indicio real de regresión, sin RED artificial ni tests nuevos que sólo reflejen asset. Declarar audición/naturalidad humana pendiente y límites por destino; comprobar que los otros recursos/fuente permanecen idénticos. Depende T038.
+- [ ] T040 qa-validator: revisar recurso/procedencia/diff y verificación T039 contra FR018/SC013; aprobar sólo integración técnica del medio suficientemente acreditada, con naturalidad pendiente de escucha humana explícita, sin atribuir voz al narrador ni reabrir aprobaciones R3. Depende T039.
+- [ ] T041 docs-writer: consolidar sólo sustitución R4 aprobada en documentación necesaria y SOURCES portable, conservando historia R3, narrador humano y carácter sintético del compañero; no declarar naturalidad aprobada sin escucha humana ni modificar código/pruebas/tareas. Depende T040.
+- [ ] T042 project-orchestrator con godot-tester: publicar la revisión consolidada final de la misma rama/PR #54 y comprobar CI del head exacto, reutilizando verificaciones aún válidas; sin publicaciones repetidas por revisiones intermedias, promoción/merge/distribución. Depende T041.
+- [ ] T043 qa-validator: revisar documentación y CI/revisión exacta T042, emitir APROBADO PARA INTEGRACIÓN sólo con recurso, verificación proporcional y límites suficientes; naturalidad perceptual pendiente no se presenta aprobada ni se certifica publicación T014. Depende T042.
+- [ ] T044 project-orchestrator: actualizar PR #54 borrador e Issue #53 con sustitución única de compañero, verificación/QA y límites, `Refs #53`; conservar historia y marcar sólo tareas aprobadas, sin promoción/merge/distribución. Depende T043.
+
+**Dependencias R4**: T037→T038→T039→T040→T041→T042→T043→T044; T038 espera únicamente el recurso candidato además de preparación. Sin [P] ni RED artificial por ser medio sin lógica nueva. FR018/SC013→T038–T040 y cierre T041–T044; FR002/SC009 del narrador y demás comportamiento conservan su verificación histórica. SC008 permanece sólo en T014.

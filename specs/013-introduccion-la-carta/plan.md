@@ -5,9 +5,26 @@
 **Input**: Preparación `demons-preparation`; ejecución posterior por [roles](../../docs/DEVELOPMENT_WORKFLOW.md), sin `speckit-implement`.
 
 **Seguimiento**: [Issue #53](https://github.com/Juanpvivas/demons/issues/53).
-I1/R2 conservan sus aprobaciones históricas. R3 tiene función y medios T026
-aprobados en T032; CI/gate final T034–T035 siguen pendientes antes del cierre
-T036 del mismo PR borrador. Publicación T014 sigue pendiente.
+I1/R2/R3 conservan sus aprobaciones históricas y medios T026. R4 prepara sólo
+sustitución del clip sintético del compañero; publicación T014 sigue pendiente.
+
+## Enmienda vigente R4 — sólo medio de compañero
+
+Sustituir únicamente `assets/audio/narrative/la_carta/companero_06.wav` por la
+candidata sintética masculina expresiva preparada por root, con la frase actual
+y SOURCES/licencias portables. Archivo candidato aún pendiente de provisión;
+no cambia guion/montaje, siete WAV humanos toma3, runtime, controles, ambiente
+o preferencia `la_carta_v1`. Conservar metadatos de importación necesarios sin
+reconfigurar codecs o lógica por esta tarea.
+
+Verificación proporcional de medio: hash/procedencia, PCM sin saturación,
+importación/carga, frase/duración completa y reproducción en su turno sin
+truncamiento; preview Web si disponible. Naturalidad/expresión requieren escucha
+humana pendiente, no se deducen de metadatos ni se atribuye audición al agente.
+Sin RED artificial o nuevas pruebas que reflejen el asset: dev incorpora medio,
+tester verifica, QA revisa, docs consolidan y se publica una revisión final
+consolidada de rama/CI exacto para el mismo PR #54 borrador Refs #53.
+No reabrir comportamiento R3 ni distribución, versión, balance o pausa006.
 
 **Revisión actual 013-I1-R2**: I1 ya tiene T012 aprobado y PR #54 en borrador.
 T015–T025 preparan y entregan cuatro correcciones con voz preview provisional;

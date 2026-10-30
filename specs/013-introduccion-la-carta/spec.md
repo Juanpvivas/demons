@@ -3,7 +3,7 @@
 **Feature ID**: `013-introduccion-la-carta`  
 **Planned Branch**: `codex/013-introduccion-la-carta`  
 **Created**: 2026-10-30  
-**Status**: I1/R2 conservan sus aprobaciones; T032 aprueba función R3 y T026/SC-009 de narrador humano toma3 elegido/autorizado, con compañero Ald provisional divulgado. CI/gate final T034–T035 y publicación T014 pendientes; PR #54 en borrador
+**Status**: I1/R2/R3 conservan sus aprobaciones; R4 prepara únicamente sustitución del clip del compañero. Narrador humano toma3/T026 intacto y publicación T014 pendiente; PR #54 en borrador
 
 **Tracking**: [Issue #53](https://github.com/Juanpvivas/demons/issues/53), entrega intermedia `Refs #53`
 **Input**: Integrar el guion y las siete imágenes de La carta. La persona confirmó mostrarla automáticamente sólo la primera vez al pulsar Jugar, repetirla desde el menú e incluir voz provisional en la primera entrega.
@@ -39,6 +39,15 @@ compañero provisional separado y prompt inferior limpio. La imagen conserva
 opacidad/encuadre durante la espera y resize; no se reactiva la reproducción.
 T026/SC-009 quedan aprobados en ese alcance técnico y de elección humana, sin
 atribuir escucha propia a los agentes ni certificar plataformas/publicación.
+
+**Enmienda vigente R4**: sustituir únicamente `companero_06.wav` por el candidato
+sintético masculino expresivo que prepara root, con la misma frase «Compañero.
+Ya es hora.». Es trabajo de medio/arte sin lógica nueva: no cambia las siete
+narraciones humanas, guion, montaje, controles, ambiente o recuerdo. Se verifica
+recurso/procedencia/importación/reproducción/tiempo e integridad; la naturalidad
+de la candidata queda pendiente de escucha humana y no se aprueba desde
+metadatos o una escucha fingida del agente. El compañero sigue sintético y no
+se atribuye a quien grabó toma3. Las descripciones Ald anteriores son historia.
 
 ### Historia conservada de I1
 
@@ -127,7 +136,7 @@ Como jugador quiero un botón visible para salir al menú mientras juego, sin te
 ### Functional Requirements
 
 - **FR-001**: Presentar siete imágenes en el orden y con el texto exacto de [guion.md](guion.md), conservando identidad del protagonista y estilo del storyboard.
-- **FR-002**: Incorporar las siete narraciones de `toma-3.wav`, recibida y elegida por la persona, con texto completo, duraciones y reproducción/mezcla técnicamente comprobadas. La aceptación perceptual procede de esa elección humana, sin pedirla de nuevo ni atribuir audición al agente. El clip del compañero sigue Ald provisional, identificado como tal y sin atribuirlo a la persona; todos son recursos offline reemplazables, no testimonios históricos.
+- **FR-002**: Incorporar las siete narraciones de `toma-3.wav`, recibida y elegida por la persona, con texto completo, duraciones y reproducción/mezcla técnicamente comprobadas. La aceptación perceptual procede de esa elección humana, sin pedirla de nuevo ni atribuir audición al agente. El compañero es un clip sintético identificado como tal, separado de la persona; todos son recursos offline reemplazables, no testimonios históricos.
 - **FR-003**: Usar fundidos y movimientos lentos de encuadre con subtítulos de voz legibles; cada duración permite escuchar clips completos y leer el texto. El minuto del guion es orientativo. Rótulos del guion original no se muestran en R2.
 - **FR-004**: Ofrecer Pausar, Continuar y Omitir con ratón/teclado/toque según destino; pausa manual o pérdida de actividad detiene tiempo, audio y movimiento hasta Continuar explícito.
 - **FR-005**: Después de Jugar, ofrecer automáticamente la carta sólo si esta versión no está registrada como completada u omitida.
@@ -143,6 +152,7 @@ Como jugador quiero un botón visible para salir al menú mientras juego, sin te
 - **FR-015**: Mostrar Menú principal durante PLAYING y PAUSED, con salida directa segura al menú que cierre el intento/oleadas/audio/entradas/pools una vez; conservar resultado y Reintentar, sin modal, persistencia de partida ni cambios de balance.
 - **FR-016**: Durante las siete imágenes mostrar únicamente subtítulos de voz y controles, sin contador La carta/índice, captions de lugar/época ni aviso de ficción superior. La identificación de ficción y procedencia permanece en documentación/créditos fuera de las imágenes.
 - **FR-017**: Al terminar u omitir desde cualquiera de las dos entradas, mostrar sólo Comenzar centrado abajo, en la misma franja segura/estilo de Pausar/Omitir y mínimo 52 px de alto. Mantener última imagen visible limpia, sin panel central, banda de fondo, títulos/ficción/rótulos, subtítulo, Pausar/Omitir ni audio de voz/ambiente residual. Conservar foco/resize y exigir un gesto nuevo para iniciar exactamente un nivel.
+- **FR-018**: R4 reemplaza sólo el archivo del compañero por el candidato sintético masculino expresivo preparado/autorizado para esa frase, con procedencia portable y verificación proporcional de importación/carga, hash, duración, ausencia de saturación y reproducción completa. No modificar runtime, guion/montaje ni narrador humano; no declarar naturalidad aprobada mientras la escucha humana siga pendiente.
 
 ### Key Entities
 
@@ -163,10 +173,11 @@ Como jugador quiero un botón visible para salir al menú mientras juego, sin te
 - **SC-006**: Controles/subtítulos son utilizables y legibles en las relaciones de pantalla verificadas para Web de computador y apps Android/iOS; destinos no disponibles se declaran separados.
 - **SC-007**: Pruebas de comportamiento/regresión, importación/exportación y CI no tienen fallos atribuibles al alcance; QA independiente emite el gate de integración con límites explícitos.
 - **SC-008**: Antes de distribuir se verifican paquete/renderer/versión/firma, instalación/smoke y 60FPS físicos aplicables, QA de publicación y autorización explícita. Integración no acredita este criterio.
-- **SC-009**: Las siete narraciones proceden de la `toma-3.wav` autorizada y elegida por la persona, con texto íntegro, duración sin cortes y reproducción/mezcla técnicamente comprobadas. Timbre/fluidez se sustentan en la elección perceptual humana ya dada, no en una audición propia del agente. El compañero conserva un único clip Ald provisional identificado; T026 queda pendiente sólo de incorporar/verificar estos medios, no de otra aprobación de voz.
+- **SC-009**: Las siete narraciones proceden de la `toma-3.wav` autorizada y elegida por la persona, con texto íntegro, duración sin cortes y reproducción/mezcla técnicamente comprobadas. Timbre/fluidez se sustentan en la elección perceptual humana ya dada, no en una audición propia del agente. T026 conserva su aprobación R3; el único compañero sintético identificado permanece separado y su sustitución R4 no reabre la aceptación del narrador.
 - **SC-010**: En las siete imágenes no hay ningún contador, caption o aviso superior; permanecen completos los subtítulos de voz y los controles.
 - **SC-011**: Menú principal es visible durante partida activa/pausada y vuelve al menú con cero niveles/oleadas/audio/controles del intento anterior; pulsaciones repetidas no duplican cierre o nuevos niveles.
 - **SC-012**: En final natural y omisión de ambas entradas sólo se ve Comenzar centrado abajo, alto mínimo 52 px y estilo/franja segura de los controles previos, con última imagen visible y sin panel/banda central o inferior, textos/controles extra ni audio residual. Resize conserva su alcance/foco; sin gesto nuevo no se crea nivel y varias pulsaciones crean sólo uno.
+- **SC-013**: El compañero de escena6 usa el archivo candidato R4 con hash/procedencia concordantes, frase completa, carga/importación sin errores, duración compatible con el montaje vigente y sin saturación del PCM. Las siete narraciones, texto/montaje, UI, ambiente y recuerdo permanecen idénticos; la naturalidad de la candidata se informa pendiente de escucha humana hasta que ésta exista.
 
 ## Assumptions
 
