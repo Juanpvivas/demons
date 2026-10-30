@@ -1,8 +1,8 @@
 # Decisiones — La carta
 
 Las decisiones originales y el alcance aprobado de I1 se conservan abajo como
-historia, junto con R2. Para la revisión vigente prevalece el alcance R3 final;
-los resultados históricos no certifican medios o plataformas posteriores.
+historia, junto con R2. R3 rige comportamiento y narrador; la sección R4 rige
+el compañero actual. Los resultados históricos no certifican medios o plataformas posteriores.
 
 - Secuencia nativa ilustrada: reutiliza siete cuadros y permite texto/controles adaptables. Fundidos y encuadre, sin animar manos/capas inexistentes.
 - GameRoot ya posee menú/nivel y guard de reentrada. IntroPlayer temporal mantiene una autoridad local; GameStateManager queda MENU sin nivel ni renumeración.
