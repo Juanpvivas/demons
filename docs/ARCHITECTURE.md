@@ -328,8 +328,8 @@ fusil y contacto se excluyen. `Enemigo` reconoce el grupo `soldiers` y el
 contrato consultable del actor sin depender de la clase `Soldado`, evitando
 una referencia circular entre scripts. Generación, objetivo y reloj son propios
 de cada activación. 015-I1 cuenta con CI y QA de integración aprobados en
-`2351798`, en la rama del [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59),
-sin fusionar ni cerrar publicación. La recompensa de machete captura identidad/generación antes
+`2351798`, previos a su integración en `main` por [PR #59](https://github.com/Juanpvivas/demons/pull/59)
+(`73c2dff`), sin cerrar publicación. La recompensa de machete captura identidad/generación antes
 del daño y bloquea reentrada: sólo la baja confirmada acredita +2 moral/+3 vida
 limitada al máximo del dueño aún vivo, incluso con victoria síncrona.
 
@@ -340,7 +340,7 @@ intactos. Los arrays de `WaveData.spawn_entries` intercalan A,A,R globalmente
 cursor de tipo, RNG o IA nuevos; conserva tiempos/carriles y el inicial R1
 independiente. El mismo pool restaura R→A→R con sus hooks existentes, sin nuevas
 colisiones. I2 cuenta con CI y QA de integración aprobados en `d8826e2`,
-en su rama/PR59 en borrador, sin merge ni cierre de publicación.
+y se integra junto con I1 en `main` por PR #59 (`73c2dff`), sin cerrar publicación.
 
 ### 4.4 Modo fusil / modo machete como estado simple
 
@@ -1159,3 +1159,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-30 | Actualización documental: 013 integrado por PR #54 (`77be629`) y 014 por PR #56 (`45cd83a`); estado de integración/CI vigente, con publicación y certificación física aún pendientes. |
 | 2026-10-30 | 015/T011 tras QA funcional T010: perfiles de fusil enemigo, alcance864 y premio transaccional; snapshot por generación previo al daño y consulta por grupo sin ciclo de scripts. CI/integración final y publicación pendientes. |
 | 2026-10-30 | 015/T022 tras QA funcional T021: mezcla continua de 66 asaltantes/33 fusileros WAVE por datos, inicial R1 independiente y tiempos/carriles conservados; CI/integración final I2 y publicación pendientes. |
+| 2026-10-30 | Actualización documental: I1/I2 de 015 integrados en `main` por PR #59 (`73c2dff`); conserva CI/QA de sus revisiones previas y pendientes de publicación/hardware, sin distribución nueva. |

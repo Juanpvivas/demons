@@ -9,4 +9,4 @@ Sólo documento, no implementación. [Spec](../spec.md).
 - [X] Setup neutral mínimo antes de RED y roles separados; presentación/audio son cosméticos.
 - [X] Integración/playtesting de balance y publicación física se mantienen separados; historia/pausa006 intactas.
 
-La preparación e implementación I1 conservan sus aprobaciones históricas en tasks.md. La preparación I2 fue aprobada en T016 y su funcionalidad en T021; CI y QA de integración I2 están aprobados sobre `d8826e2`, en rama/PR59 en borrador y sin merge; publicación T015 sigue pendiente. Ninguna marca histórica de esta lista sustituye esas aprobaciones de tasks.md.
+La preparación e implementación I1 conservan sus aprobaciones históricas en tasks.md. La preparación I2 fue aprobada en T016 y su funcionalidad en T021; CI y QA de integración I2 están aprobados sobre `d8826e2`; I1 e I2 están integrados en `main` por PR #59 (`73c2dff`); publicación T015 sigue pendiente. Ninguna marca histórica de esta lista sustituye esas aprobaciones de tasks.md.

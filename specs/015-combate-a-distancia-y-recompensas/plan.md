@@ -3,7 +3,7 @@
 **Feature ID**: `015-combate-a-distancia-y-recompensas` | **Branch**: `codex/015-combate-a-distancia-y-recompensas` | **Date**: 2026-10-30 | **Spec**: [spec.md](spec.md)
 **Base**: main4fb1267. Preparación demons-preparation, agentes ejecutan; no speckit-implement.
 **Tracking**: [Issue #58](https://github.com/Juanpvivas/demons/issues/58)
-**Estado**: funcionalidad, documentación y CI de `2351798` aprobadas por QA para integración; [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59), sin merge. Publicación T015 pendiente. [Alcance y límites](research.md#alcance-funcional-aprobado-y-límites).
+**Estado**: I1 e I2 integrados en `main` por [PR #59](https://github.com/Juanpvivas/demons/pull/59), `73c2dff`; CI/QA anteriores conservan su revisión exacta. Publicación T015 pendiente. [Alcance y límites](research.md#alcance-funcional-aprobado-y-límites).
 
 ## Summary
 
@@ -66,7 +66,7 @@ Sin autoload, nuevo backend o motor de IA. Tres cambios usan sistemas actuales; 
 
 ## Enmienda 015-I2 — Composición por datos (aprobación funcional T021)
 
-Implementada en `b4fbaf8`; I2 cuenta con CI y APROBADO PARA INTEGRACIÓN de QA sobre `d8826e2`, en rama/PR59 en borrador, sin merge ni publicación. I1 conserva su aprobación histórica.
+Implementada en `b4fbaf8`; I2 conserva CI y APROBADO PARA INTEGRACIÓN de QA sobre `d8826e2`; está integrada con I1 por PR #59 (`73c2dff`) sin publicación. I1 conserva su aprobación histórica.
 
 Misma rama/PR59/Issue58; I1 intacto. Se añadió únicamente
 `resources/enemies/enemigo_asaltante_base.tres`, con rifle_range/rifle_damage/
