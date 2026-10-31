@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EnemyStats" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/schemas/enemy_stats.gd" id="1_enemigo"]
+
+[resource]
+script = ExtResource("1_enemigo")
+max_health = 15
+move_speed = 40.0
+melee_damage = 5
+ammo_drop = 3
+rifle_range = 864.0
+rifle_damage = 2
+rifle_interval = 2.2

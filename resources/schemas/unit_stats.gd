@@ -44,7 +44,7 @@ extends Resource
 ## acumulada (FR-005): daño total = machete_base_damage + moral * este valor.
 @export_range(0.0, 10.0, 0.1) var machete_moral_multiplier: float = 1.0
 
-## Recompensas neutras; su consumo pertenece a la implementación posterior.
+## Recompensas de una baja letal a machete, limitando la cura por max_health.
 @export var machete_moral_per_kill: float = 0.0
 @export var machete_heal_per_kill: int = 0
 

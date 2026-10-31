@@ -9,6 +9,7 @@ var _pool: ObjectPool
 var _rifle_pool: ObjectPool
 var _active_rifle_effects: Array[RifleShotVisualEffect] = []
 var _closed: bool = false
+var _enemy_shooters: Dictionary[int, Dictionary] = {}
 
 
 func setup(initial_size: int = 10) -> void:
@@ -30,9 +31,44 @@ func register_actor(actor: Node) -> void:
 	if actor.has_signal("defeat_visual_requested") \
 			and not actor.is_connected("defeat_visual_requested", request_defeat):
 		actor.connect("defeat_visual_requested", request_defeat)
-	if actor.has_signal("rifle_shot_visual_requested") \
+	if actor is Enemigo:
+		var id := actor.get_instance_id()
+		if not _enemy_shooters.has(id):
+			var callback := _on_enemy_rifle_shot.bind(weakref(actor))
+			_enemy_shooters[id] = {"actor": weakref(actor), "callback": callback, "snapshot": null}
+			actor.connect(&"rifle_shot_visual_requested", callback)
+			actor.tree_exiting.connect(_on_enemy_leaving.bind(id))
+	elif actor.has_signal("rifle_shot_visual_requested") \
 			and not actor.is_connected("rifle_shot_visual_requested", request_rifle_shot):
 		actor.connect("rifle_shot_visual_requested", request_rifle_shot)
+
+
+func _on_enemy_rifle_shot(snapshot: Dictionary, reference: WeakRef) -> void:
+	var enemy := reference.get_ref() as Enemigo
+	if _closed or not is_instance_valid(enemy) or not enemy.is_targetable() \
+			or snapshot.size() != 3 or not snapshot.get("activation_generation") is int \
+			or snapshot.activation_generation != enemy.activation_generation:
+		return
+	var id := enemy.get_instance_id()
+	if not _enemy_shooters.has(id) or is_same(_enemy_shooters[id].snapshot, snapshot):
+		return
+	_enemy_shooters[id].snapshot = snapshot
+	# La generación sólo valida admisión. El efecto conserva dos datos sin dueño.
+	request_rifle_shot({"origin_world": snapshot.get("origin_world"), "target_world": snapshot.get("target_world")})
+
+
+func _on_enemy_leaving(id: int) -> void:
+	if not _enemy_shooters.has(id):
+		return
+	var record: Dictionary = _enemy_shooters[id]
+	var actor: Node = record.actor.get_ref()
+	if is_instance_valid(actor):
+		if actor.is_connected(&"rifle_shot_visual_requested", record.callback):
+			actor.disconnect(&"rifle_shot_visual_requested", record.callback)
+		var leaving := _on_enemy_leaving.bind(id)
+		if actor.tree_exiting.is_connected(leaving):
+			actor.tree_exiting.disconnect(leaving)
+	_enemy_shooters.erase(id)
 
 
 func request_defeat(snapshot: Dictionary) -> void:
@@ -73,6 +109,8 @@ func close_match() -> void:
 	if _closed:
 		return
 	_closed = true
+	for id: int in _enemy_shooters.keys():
+		_on_enemy_leaving(id)
 	for effect: RifleShotVisualEffect in _active_rifle_effects:
 		_rifle_pool.release(effect)
 	_active_rifle_effects.clear()

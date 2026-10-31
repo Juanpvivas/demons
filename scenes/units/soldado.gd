@@ -57,7 +57,7 @@ signal ammo_depleted
 ## Cambio entre `RIFLE` y `MELEE`, en cualquier dirección.
 signal mode_changed(new_mode: SoldierMode)
 
-## Se acumuló moral por una eliminación confirmada con fusil (FR-006).
+## Se acumuló moral por una eliminación confirmada con el arma correspondiente.
 signal moral_changed(new_morale: float)
 
 ## El soldado fue derrotado (`spec.md` Edge Case: pierde moral, libera
@@ -147,6 +147,7 @@ var _melee_cooldown: float = 0.0
 ## primer golpe recibido tras entrar el primer enemigo sea inmediato (mismo
 ## criterio que `_melee_cooldown`/`_rifle_cooldown`).
 var _incoming_melee_cooldown: float = 0.0
+var _attack_in_progress: bool = false
 
 @onready var _sprite: SoldadoVisual = $AnimatedSprite2D
 @onready var _health_bar: WorldHealthBar = $HealthBar
@@ -198,6 +199,8 @@ func _configure_rifle_range() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if _attack_in_progress:
+		return
 	velocity = Vector2.ZERO
 	if not _can_process_combat():
 		_clear_combat_targets()
@@ -317,6 +320,11 @@ func _process_rifle(delta: float) -> void:
 
 func _fire_at_current_target() -> void:
 	var target := _current_target
+	if _attack_in_progress or not _can_process_combat() or _current_ammo <= 0 \
+			or not _is_rifle_eligible(target):
+		return
+	var generation := _generation_of(target)
+	_attack_in_progress = true
 	_current_ammo -= 1
 	rifle_shot_visual_requested.emit(_sprite.capture_rifle_shot_snapshot(target.global_position))
 	# TODO (T047): `.call()` en vez de `target.take_damage(...)` directo —
@@ -327,15 +335,18 @@ func _fire_at_current_target() -> void:
 	# método real de `Node2D` (heredado de `Object`), por lo que el
 	# despacho dinámico compila sin problema, pero es más frágil que tipar
 	# `_current_target` como `Enemigo`.
-	var killed: bool = target.call("take_damage", stats.damage_per_shot)
+	var killed := false
+	if _can_process_combat() and _is_rifle_eligible(target) and _generation_of(target) == generation:
+		killed = target.call("take_damage", stats.damage_per_shot)
 	_sprite.play_confirmed_attack(SoldierMode.RIFLE)
-	if killed:
+	if killed and _current_health > 0 and not is_queued_for_deletion():
 		_register_kill()
 		_remove_rifle_candidate(target)
 	if _current_ammo <= 0:
 		_current_ammo = 0
 		ammo_depleted.emit()
 	reload_state_changed.emit()
+	_attack_in_progress = false
 
 
 func _remove_rifle_candidate(body: Node2D) -> void:
@@ -392,16 +403,31 @@ func _process_melee(delta: float) -> void:
 
 func _attack_current_melee_target() -> void:
 	var target := _current_melee_target
+	if _attack_in_progress or not _can_process_combat() or not _is_melee_eligible(target):
+		return
+	# Arma, identidad y activación pertenecen a esta transacción, no al retorno.
+	var target_id := target.get_instance_id()
+	var generation := _generation_of(target)
+	var morale_reward := stats.machete_moral_per_kill
+	var health_reward := stats.machete_heal_per_kill
+	_attack_in_progress = true
 	# TODO (T047): mismo despacho dinámico que `_fire_at_current_target()` —
 	# ver TODO en la cabecera del archivo.
 	var killed: bool = target.call("take_damage", _current_machete_damage())
 	_sprite.play_confirmed_attack(SoldierMode.MELEE)
 	if killed:
-		# A diferencia del fusil, una eliminación a machete NO suma moral
-		# (FR-006, `data-model.md` fila `moral_per_kill`, `spec.md`
-		# Assumptions): la moral se acumula únicamente por eliminaciones
-		# mientras el soldado dispara con munición disponible.
-		_remove_melee_candidate(target)
+		# La baja original da crédito aunque un callback recicle el blanco o gane.
+		if _current_health > 0 and not is_queued_for_deletion():
+			_current_morale += morale_reward
+			_current_health = mini(stats.max_health, _current_health + health_reward)
+			_health_bar.set_health(_current_health, stats.max_health)
+			moral_changed.emit(_current_morale)
+			reload_state_changed.emit()
+		# No retirar/reseleccionar como cadáver a una activación nueva del mismo nodo.
+		if is_instance_valid(target) and target.get_instance_id() == target_id \
+				and _generation_of(target) == generation:
+			_remove_melee_candidate(target)
+	_attack_in_progress = false
 
 
 ## Daño de machete = base + moral * multiplicador (`research.md` §2). Con
@@ -488,9 +514,16 @@ func _is_melee_eligible(body: Node2D) -> bool:
 
 
 func _is_incoming_eligible(body: Node2D) -> bool:
-	if _movement_state != MovementState.RETURNING:
-		return _is_melee_eligible(body)
-	if not _is_live_candidate(body) or _candidate_cell(body).y != _grid_cell.y:
+	return _is_live_candidate(body) and is_in_melee_contact_with(body)
+
+
+## Consulta del mismo contacto autorado para excluir el fusil enemigo.
+func is_in_melee_contact_with(body: Node2D) -> bool:
+	if not is_instance_valid(body) or not get_reload_state().alive \
+			or (body is Enemigo and not (body as Enemigo).is_targetable()) \
+			or _candidate_cell(body).y != _grid_cell.y:
+		return false
+	if _movement_state != MovementState.RETURNING and body.global_position.x <= global_position.x:
 		return false
 	var contact_transform := _melee_shape.global_transform
 	if body.global_position.x < global_position.x:
@@ -651,10 +684,7 @@ func _die() -> void:
 
 # --- Moral (T024) ---------------------------------------------------------
 
-## Suma moral únicamente por una eliminación confirmada mientras el soldado
-## dispara con munición disponible (modo RIFLE; FR-006) — nunca por un
-## impacto que no mata, y nunca por una eliminación a machete (modo MELEE,
-## ver `_attack_current_melee_target()`).
+## Recompensa de fusil. El machete captura y acredita su premio en su transacción.
 func _register_kill() -> void:
 	_current_morale += stats.moral_per_kill
 	moral_changed.emit(_current_morale)

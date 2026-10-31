@@ -98,6 +98,10 @@ func close_match() -> void:
 	_closing = true
 	_spawn_timer.stop()
 	_pending_spawns.clear()
+	if _enemy_pool != null:
+		for actor: Node in _enemy_pool.get_children():
+			if actor is Enemigo:
+				(actor as Enemigo).close_match()
 	if WaveManager.wave_started.is_connected(_on_wave_started):
 		WaveManager.wave_started.disconnect(_on_wave_started)
 
@@ -201,6 +205,8 @@ func _on_spawn_timer_timeout() -> void:
 ## `enemy_defeated` una sola vez para toda la vida de esa instancia.
 func _on_enemy_pool_instance_created(instance: Node) -> void:
 	var enemy := instance as Enemigo
+	if _board_config != null:
+		enemy.board_config = _board_config
 	enemy.set_pool(_enemy_pool)
 	enemy.enemy_defeated.connect(_on_enemy_defeated.bind(enemy))
 	if _combat_visual_effects != null:

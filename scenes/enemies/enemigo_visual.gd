@@ -5,6 +5,8 @@ extends AnimatedSprite2D
 const _MOVEMENT_THRESHOLD: float = 0.01
 const _HIT_SECONDS: float = 0.12
 const _HIT_COLOR := Color(1.0, 0.55, 0.45)
+const _RIFLE_MUZZLE_PIXEL := Vector2(91, 137) # Pose contact, lienzo con margen.
+const _RIFLE_RECOIL_SECONDS: float = 0.12
 
 var _alive: bool = false
 var _generation: int = 0
@@ -18,6 +20,7 @@ var _authored_material: Material
 var _authored_rotation: float
 var _authored_speed_scale: float
 var _hit_tween: Tween
+var _rifle_tween: Tween
 
 
 func _ready() -> void:
@@ -48,10 +51,36 @@ func play_confirmed_hit() -> void:
 	_hit_tween.tween_method(_apply_hit_progress.bind(_generation), 0.0, 1.0, _HIT_SECONDS)
 
 
+func capture_rifle_shot_snapshot(target_world: Vector2) -> Dictionary:
+	var frame_size := sprite_frames.get_frame_texture(&"contact", 0).get_size()
+	var muzzle := _RIFLE_MUZZLE_PIXEL
+	if flip_h:
+		muzzle.x = frame_size.x - muzzle.x
+	if flip_v:
+		muzzle.y = frame_size.y - muzzle.y
+	if centered:
+		muzzle -= frame_size * 0.5
+	return {"origin_world": to_global(muzzle + _authored_offset), "target_world": target_world}
+
+
+func play_confirmed_rifle() -> void:
+	if not _alive:
+		return
+	if _rifle_tween != null:
+		_rifle_tween.kill()
+	_play_pose(&"contact")
+	offset = _authored_offset + Vector2(3, 0)
+	_rifle_tween = create_tween().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
+	_rifle_tween.tween_property(self, "offset", _authored_offset, _RIFLE_RECOIL_SECONDS)
+
+
 func deactivate_visual() -> void:
 	_capture_authored()
 	_alive = false
 	_generation += 1
+	if _rifle_tween != null:
+		_rifle_tween.kill()
+		_rifle_tween = null
 	if _hit_tween != null:
 		_hit_tween.kill()
 		_hit_tween = null
