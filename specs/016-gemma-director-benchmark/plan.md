@@ -1,7 +1,7 @@
 # Plan016 — Spike local de comparación
 
 **Base/rama**: main `e8407ec` / `codex/016-gemma-director-benchmark`.
-**Estado**: preparación; Issue único pendiente del orquestador.
+**Estado**: implementación/batch real aprobados por QA T007 sobre `b30f9a6`; CI/gate final pendientes. [Issue #63](https://github.com/Juanpvivas/demons/issues/63).
 **Entradas**: [spec](spec.md), [contrato y ejecución](contracts/benchmark.md), [tareas](tasks.md).
 
 ## Decisión y arquitectura
@@ -20,7 +20,7 @@ antes de medir Gemma. La capacidad24GB no es una medición RSS/GPU.
 
 ## TDD mínimo
 
-El paquete no existe: setup neutral de como máximo 30 líneas con firmas del
+Setup histórico T002: paquete neutral de como máximo 30 líneas con firmas del
 contrato y retornos `None`, sin HTTP/validación/selección/fixtures/reporte. Así
 RED falla por aserción semántica sobre retorno neutro, nunca por ModuleNotFoundError
 ni NotImplementedError. El tester confirma import y neutralidad y ejecuta RED;
