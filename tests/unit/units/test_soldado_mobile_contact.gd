@@ -51,6 +51,7 @@ func _enemy(position: Vector2, row := 2, health := 500, speed := 40.0) -> Enemig
 	var data := EnemyData.duplicate() as EnemyStats
 	data.max_health = health
 	data.move_speed = speed
+	data.rifle_damage = 0 # Contacto móvil con enemigo sin fusil.
 	enemy.stats = data
 	enemy.position = position
 	_world.add_child(enemy)
@@ -297,8 +298,10 @@ func test_real_machete_kill_recycles_same_enemy_without_second_drop_or_stale_hit
 	var enemy := pool.acquire() as Enemigo
 	enemy.set_pool(pool)
 	var first := EnemyData.duplicate() as EnemyStats
+	first.rifle_damage = 0
 	first.max_health = roundi(UnitData.machete_base_damage + UnitData.moral_per_kill * UnitData.machete_moral_multiplier)
 	var next := EnemyData.duplicate() as EnemyStats
+	next.rifle_damage = 0
 	next.max_health = 500
 	var defeats: Array[int] = []
 	enemy.enemy_defeated.connect(func(amount: int, _where: Vector2) -> void:
@@ -314,7 +317,8 @@ func test_real_machete_kill_recycles_same_enemy_without_second_drop_or_stale_hit
 	assert_eq(defeats, [EnemyData.ammo_drop], "El machete provoca una única baja/recompensa")
 	assert_gt(enemy.activation_generation, initial_generation)
 	assert_eq(enemy.get("_current_health"), 500, "Reutilización síncrona no recibe un golpe viejo")
-	assert_eq(_soldier.get("_current_morale"), UnitData.moral_per_kill, "La baja con machete no suma moral")
+	assert_eq(_soldier.get("_current_morale"), UnitData.moral_per_kill + UnitData.machete_moral_per_kill,
+		"Una baja de fusil1 y la original de machete2; reciclado no duplica crédito")
 	assert_eq(_soldier.get_movement_state(), Soldado.MovementState.WAITING)
 
 

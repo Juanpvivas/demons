@@ -139,21 +139,21 @@ func test_rifle_rejects_the_old_vertical_front() -> void:
 	assert_eq(_ammo(), UNIT_STATS.max_ammo)
 
 
-func test_longitudinal_range_uses_body_overlap_beyond_center_distance_396() -> void:
+func test_longitudinal_range_uses_body_overlap_beyond_authored_center_distance() -> void:
 	_spawn_soldier()
-	# 010/T014: centro +419, borde izquierdo +395 solapa [24,396].
-	var enemy := _enemy_at(Vector2(419, 0))
+	# Cuerpo48: centro range+23 deja el borde izquierdo1px dentro del alcance.
+	var enemy := _enemy_at(Vector2(UNIT_STATS.rifle_range + 23.0, 0))
 	await wait_physics_frames(DETECTION_FRAMES)
 	assert_eq(_health(enemy), 500 - UNIT_STATS.damage_per_shot,
-		"396 limita la forma, no el centro del cuerpo enemigo de48×48")
+		"El alcance limita la forma, no el centro del cuerpo enemigo de48×48")
 
 
 func test_longitudinal_range_does_not_expand_past_the_configured_shape() -> void:
 	_spawn_soldier()
-	# Centro +421: borde izquierdo +397, fuera de [24,396].
-	var enemy := _enemy_at(Vector2(421, 0))
+	# Cuerpo48: centro range+25 deja el borde izquierdo1px fuera del alcance.
+	var enemy := _enemy_at(Vector2(UNIT_STATS.rifle_range + 25.0, 0))
 	await wait_physics_frames(DETECTION_FRAMES)
-	assert_eq(_health(enemy), 500, "La ampliación autorizada termina en396, incluso con solape de cuerpos")
+	assert_eq(_health(enemy), 500, "El borde de producción864 excluye el cuerpo situado1px fuera")
 	assert_eq(_ammo(), UNIT_STATS.max_ammo)
 
 

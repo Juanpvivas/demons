@@ -25,6 +25,7 @@ func _configured_enemy() -> Enemigo:
 	var enemy := EnemyScene.instantiate() as Enemigo
 	enemy.stats = enemy.stats.duplicate()
 	enemy.stats.max_health = 500
+	enemy.stats.rifle_damage = 0 # Fixture de locomoción/contacto sin fusil.
 	enemy.stats.move_speed = 120.0
 	var visual := enemy.get_node("AnimatedSprite2D") as AnimatedSprite2D
 	# Fixture de arte e interfaz T003; no conecta hechos ni implementa el actor.

@@ -42,19 +42,19 @@
 ## persona dueña del proyecto: invertir qué lado dispara la interacción. El
 ## daño al `Soldado` ahora se dispara desde la propia `Area2D` "RangoMelee"
 ## del `Soldado` (`StaticBody2D`, que sí detecta de forma fiable) —
-## `soldado.gd` es quien aplica `take_damage()` sobre sí mismo usando el
-## `melee_damage` que cada `Enemigo` dentro de su rango expone vía
-## `get_melee_damage()` (ver más abajo). `Enemigo` ya no tiene ninguna
-## `Area2D` propia de ataque ni lógica de cooldown — solo expone el dato.
+## El soldado conserva el daño de contacto; el enemigo sólo administra su
+## fusil excluyente mediante consultas de cuerpos, sin Area2D móvil.
 class_name Enemigo
 extends CharacterBody2D
 
 ## Un inicial no contribuye al contador de bajas de las oleadas.
 enum SpawnOrigin { INITIAL, WAVE }
+enum CombatPhase { MARCH, RIFLE, CONTACT }
 
 ## Grupo que identifica a todo `Enemigo` ante los sistemas de detección de
 ## `Soldado` (`Soldado.ENEMY_GROUP`, mismo literal).
 const ENEMY_GROUP: String = "enemies"
+const _SOLDIER_GROUP: StringName = &"soldiers"
 
 ## T032: escena de la pickup de munición que se instancia al morir
 ## (`_die()`), según `research.md` §3 (recolección explícita por tap/click,
@@ -72,6 +72,9 @@ signal enemy_defeated(ammo_dropped: int, position: Vector2)
 ## Snapshot neutro anterior a cualquier retiro/reciclado síncrono.
 signal defeat_visual_requested(snapshot: Dictionary)
 
+## Confirmación anterior al daño, con coordenadas y generación, sin owner Node.
+signal rifle_shot_visual_requested(snapshot: Dictionary)
+
 ## T043 (`contracts/signals.md`, FR-013): este enemigo alcanzó la "posición
 ## defendida" sin haber sido detenido por ningún soldado. No la emite este
 ## script por sí solo — la detección de la zona vive en el nivel
@@ -85,6 +88,7 @@ signal reached_defended_position
 ## Molde de datos base/máximos de este enemigo — solo lectura, nunca mutado
 ## en runtime (`docs/ARCHITECTURE.md` §4.3).
 @export var stats: EnemyStats
+@export var board_config: LaneBoardConfig = preload("res://resources/levels/monte_calvo_board.tres")
 
 ## Estado de esta activación; nunca se escribe en EnemyStats.
 var lane_id: int = -1
@@ -101,6 +105,15 @@ var _current_health: int = 0
 ## Pool propietario o null para un enemigo aislado. Monte Calvo comparte
 ## el pool para el inicial y las oleadas sin cambiar la API genérica.
 var _pool: ObjectPool = null
+## Contrato por grupo/capacidades para evitar dependencia circular de scripts.
+var _rifle_target: CharacterBody2D
+var _rifle_cooldown: float = 0.0
+var _combat_phase: CombatPhase = CombatPhase.MARCH
+var _attack_in_progress: bool = false
+var _closing: bool = false
+var _search_shape := RectangleShape2D.new()
+var _rifle_range_shape := RectangleShape2D.new()
+var _search_query := PhysicsShapeQueryParameters2D.new()
 
 @onready var _sprite: EnemigoVisual = $AnimatedSprite2D
 @onready var _health_bar: WorldHealthBar = $HealthBar
@@ -115,20 +128,142 @@ func _ready() -> void:
 		_health_bar.clear()
 	add_to_group(ENEMY_GROUP)
 	_sprite.reset_visual()
+	_search_query.shape = _search_shape
+	_search_query.collide_with_areas = false
+	_search_query.exclude = [get_rid()]
+	GameStateManager.game_state_changed.connect(_on_game_state_changed)
 
 
-func _physics_process(_delta: float) -> void:
-	if not is_targetable() or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
+func _physics_process(delta: float) -> void:
+	if _attack_in_progress:
+		return
+	if _closing or not is_targetable() or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
 		velocity = Vector2.ZERO
 		return
 	var before := global_position
+	if stats.rifle_range > 0.0 and stats.rifle_damage > 0 and stats.rifle_interval > 0.0:
+		var targets := _find_rifle_candidates()
+		for candidate: CharacterBody2D in targets:
+			if candidate.call("is_in_melee_contact_with", self):
+				_reset_rifle()
+				_combat_phase = CombatPhase.CONTACT
+				velocity = Vector2.ZERO
+				_sprite.observe_displacement(Vector2.ZERO)
+				return
+		if not _is_rifle_target_valid(_rifle_target):
+			_reset_rifle()
+			for candidate: CharacterBody2D in targets:
+				if _is_rifle_target_valid(candidate) and (_rifle_target == null \
+						or candidate.global_position.x > _rifle_target.global_position.x):
+					_rifle_target = candidate
+		if _rifle_target != null:
+			_combat_phase = CombatPhase.RIFLE
+			velocity = Vector2.ZERO
+			_sprite.observe_displacement(Vector2.ZERO)
+			_rifle_cooldown -= delta
+			if _rifle_cooldown <= 0.0:
+				_fire_rifle()
+			return
+	_combat_phase = CombatPhase.MARCH
 	velocity = Vector2(-stats.move_speed, 0.0)
 	move_and_slide()
 	_sprite.observe_displacement(global_position - before)
 
 
+func _find_rifle_candidates() -> Array[CharacterBody2D]:
+	# El margen derecho incluye contacto durante el regreso de un soldado.
+	var margin := float(board_config.cell_size.x)
+	_search_shape.size = Vector2(stats.rifle_range + margin, board_config.cell_size.y)
+	_search_query.transform = Transform2D(0.0,
+		global_position + Vector2((margin - stats.rifle_range) * 0.5, 0.0))
+	_search_query.collision_mask = collision_mask
+	var space := get_world_2d().direct_space_state
+	var limit := 32
+	var hits := space.intersect_shape(_search_query, limit)
+	while hits.size() == limit:
+		limit *= 2
+		hits = space.intersect_shape(_search_query, limit)
+	var result: Array[CharacterBody2D] = []
+	for hit: Dictionary in hits:
+		var soldier := hit.collider as CharacterBody2D
+		if is_instance_valid(soldier) and soldier.is_in_group(_SOLDIER_GROUP) \
+				and soldier.call("get_reload_state").alive and not result.has(soldier):
+			result.append(soldier)
+	return result
+
+
+func _is_rifle_target_valid(target: CharacterBody2D) -> bool:
+	if not is_instance_valid(target) or not target.is_inside_tree() \
+			or not target.is_in_group(_SOLDIER_GROUP) or not target.call("get_reload_state").alive \
+			or target.global_position.x >= global_position.x:
+		return false
+	if floori(target.global_position.y / board_config.cell_size.y) \
+			!= floori(global_position.y / board_config.cell_size.y):
+		return false
+	# Revalidar las formas con sus transforms actuales, también tras listeners síncronos.
+	_rifle_range_shape.size = Vector2(stats.rifle_range, board_config.cell_size.y)
+	var range_transform := Transform2D(0.0, global_position - Vector2(stats.rifle_range * 0.5, 0.0))
+	for owner_id: int in target.get_shape_owners():
+		if target.is_shape_owner_disabled(owner_id):
+			continue
+		var body_transform := target.global_transform * target.shape_owner_get_transform(owner_id)
+		for index in target.shape_owner_get_shape_count(owner_id):
+			if _rifle_range_shape.collide(range_transform, target.shape_owner_get_shape(owner_id, index), body_transform):
+				return true
+	return false
+
+
+func _fire_rifle() -> void:
+	var target := _rifle_target
+	if _attack_in_progress or not _is_rifle_target_valid(target) or target.call("is_in_melee_contact_with", self):
+		return
+	var generation := activation_generation
+	var target_id := target.get_instance_id()
+	var damage := stats.rifle_damage
+	_rifle_cooldown = stats.rifle_interval
+	_attack_in_progress = true
+	var snapshot := _sprite.capture_rifle_shot_snapshot(target.global_position)
+	snapshot["activation_generation"] = generation
+	rifle_shot_visual_requested.emit(snapshot)
+	# Un listener puede mover/matar el blanco o reciclar al propio emisor.
+	if not _closing and is_targetable() and activation_generation == generation \
+			and GameStateManager._current_state == GameStateManager.GameState.PLAYING \
+			and _is_rifle_target_valid(target) and target.get_instance_id() == target_id \
+			and not target.call("is_in_melee_contact_with", self):
+		_sprite.play_confirmed_rifle()
+		target.call("take_damage", damage)
+	_attack_in_progress = false
+
+
+func _reset_rifle() -> void:
+	_rifle_target = null
+	_rifle_cooldown = 0.0
+	_combat_phase = CombatPhase.MARCH
+
+
+func close_match() -> void:
+	_closing = true
+	_reset_rifle()
+	velocity = Vector2.ZERO
+
+
+func _on_game_state_changed(state: int) -> void:
+	if state == GameStateManager.GameState.MENU:
+		close_match()
+	elif state in [GameStateManager.GameState.WON, GameStateManager.GameState.LOST]:
+		_reset_rifle()
+		velocity = Vector2.ZERO
+	# PAUSED congela el intervalo restante; regresar no acumula tiros ni readquiere.
+
+
+func _exit_tree() -> void:
+	close_match()
+	if GameStateManager.game_state_changed.is_connected(_on_game_state_changed):
+		GameStateManager.game_state_changed.disconnect(_on_game_state_changed)
+
+
 func is_targetable() -> bool:
-	return _activation_active and _current_health > 0 and not is_queued_for_deletion()
+	return not _closing and _activation_active and _current_health > 0 and not is_queued_for_deletion()
 
 
 ## El retiro del pool también desactiva enemigos vivos; no constituye una baja.
@@ -195,6 +330,8 @@ func prepare_for_spawn(new_stats: EnemyStats, spawn_position: Vector2,
 	lane_id = new_lane_id
 	spawn_origin = new_origin
 	activation_generation += 1
+	_reset_rifle()
+	_closing = false
 	_activation_active = true
 	_reached_defense_notified = false
 	velocity = Vector2.ZERO
@@ -208,6 +345,7 @@ func prepare_for_spawn(new_stats: EnemyStats, spawn_position: Vector2,
 ## No necesita stats nuevos; el reset de aparición sigue en prepare_for_spawn.
 func on_pool_released() -> void:
 	_activation_active = false
+	_reset_rifle()
 	var health_bar := get_node_or_null("HealthBar") as WorldHealthBar
 	if health_bar != null:
 		health_bar.clear()
@@ -260,6 +398,7 @@ func _die() -> void:
 	var pool := _pool
 	_last_defeat_origin = spawn_origin
 	_activation_active = false
+	_reset_rifle()
 	_health_bar.clear()
 	var snapshot := _sprite.capture_defeat_snapshot(global_position)
 	_sprite.deactivate_visual()

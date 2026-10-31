@@ -1,13 +1,37 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/levels/Nivel_MonteCalvo.tscn" id="1_level"]
 [ext_resource type="Script" path="res://resources/schemas/wave_data.gd" id="2_wave"]
 [ext_resource type="Script" path="res://resources/schemas/wave_spawn_entry.gd" id="3_entry"]
-[ext_resource type="Resource" path="res://resources/enemies/enemigo_infanteria_base.tres" id="4_stats"]
+[ext_resource type="Script" path="res://resources/schemas/enemy_stats.gd" id="4_enemy"]
+[ext_resource type="Script" path="res://resources/schemas/unit_stats.gd" id="5_unit"]
+
+[sub_resource type="Resource" id="LegacyEnemyUnarmed"]
+script = ExtResource("4_enemy")
+max_health = 15
+move_speed = 40.0
+melee_damage = 5
+ammo_drop = 3
+
+[sub_resource type="Resource" id="LegacyUnit396"]
+script = ExtResource("5_unit")
+max_health = 30
+max_ammo = 10
+damage_per_shot = 5
+fire_rate = 1.5
+rifle_range = 396.0
+machete_base_damage = 3
+machete_moral_multiplier = 1.0
+machete_moral_per_kill = 2.0
+machete_heal_per_kill = 3
+moral_per_kill = 1.0
+advance_speed = 40.0
+return_speed = 40.0
+deploy_ammo_cost = 10
 
 [sub_resource type="Resource" id="Entry"]
 script = ExtResource("3_entry")
-enemy_stats = ExtResource("4_stats")
+enemy_stats = SubResource("LegacyEnemyUnarmed")
 count = 1
 spawn_interval = 0.05
 
@@ -17,4 +41,8 @@ wave_number = 1
 spawn_entries = Array[ExtResource("3_entry")]([SubResource("Entry")])
 
 [node name="OneWaveLevel" instance=ExtResource("1_level")]
+; Fixture007/013/014: rango anterior e infantería sin fusil para aislar navegación.
+; Las pruebas015 de producción/rifle enemigo usan otras escenas y perfiles.
+soldado_deploy_stats = SubResource("LegacyUnit396")
+initial_enemy_stats = SubResource("LegacyEnemyUnarmed")
 waves = Array[ExtResource("2_wave")]([SubResource("Wave")])

@@ -116,11 +116,14 @@ func test_last_confirmed_shot_shows_home_control_without_selection() -> void:
 	var initial: Button = _hud.get_trench_reload_button(_home(1))
 	assert_true(initial == null or not initial.is_visible_in_tree(), "Carga positiva no muestra acción")
 	var enemy := ENEMY_SCENE.instantiate() as Enemigo
+	enemy.stats = enemy.stats.duplicate()
+	enemy.stats.rifle_damage = 0
 	enemy.position = _anchor(1) + Vector2(240, 0)
 	_viewport.add_child(enemy)
 	enemy.set_physics_process(false)
-	owner.set("_current_target", enemy)
-	owner.call("_fire_at_current_target")
+	owner.set_physics_process(true)
+	await wait_physics_frames(5)
+	owner.set_physics_process(false)
 	assert_eq(owner.get_reload_state().ammo, 0, "CONTROL: el último disparo real agotó la carga")
 	assert_null(_hud.get_selected_soldier())
 	var button := _button(_home(1))

@@ -185,10 +185,18 @@ func test_menu_background_and_wait_do_not_start_waves_or_change_reserve() -> voi
 
 func test_repeated_start_requests_create_one_real_match_with_initial_conditions() -> void:
 	await _mount()
+	# Capturar el constructor antes de la nueva bala enemiga del primer tick.
+	var births: Dictionary = {}
+	var capture := func(node: Node):
+		if node is Soldado and _app.is_ancestor_of(node):
+			node.ready.connect(func(): births[node.get_instance_id()] = node.get_reload_state(), CONNECT_ONE_SHOT)
+	get_tree().node_added.connect(capture)
 	EconomyManager.collected_ammo = 41
 	for repeat in 4:
 		_app.request_start()
 	var level: Node = await _new_level()
+	get_tree().node_added.disconnect(capture)
+	assert_eq(births.size(), 5, "Cinco estados iniciales capturados antes de combate")
 	assert_not_null(level, "Una intención de inicio monta una partida")
 	if level == null:
 		return
@@ -212,9 +220,9 @@ func test_repeated_start_requests_create_one_real_match_with_initial_conditions(
 		var owner := board.get_occupant(home) as Soldado
 		assert_not_null(owner, "La plaza inicial tiene un dueño real")
 		if owner != null:
-			assert_eq(owner._current_health, owner.stats.max_health)
-			assert_eq(owner._current_ammo, owner.stats.max_ammo)
-			assert_eq(owner._current_morale, 0.0)
+			assert_eq(births[owner.get_instance_id()].health, owner.stats.max_health)
+			assert_eq(births[owner.get_instance_id()].ammo, owner.stats.max_ammo)
+			assert_eq(births[owner.get_instance_id()].morale, 0.0)
 	assert_eq(_wave_events, [1], "Las activaciones repetidas no duplican el inicio de oleadas")
 	_app.request_start()
 	await wait_process_frames(2)

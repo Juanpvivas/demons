@@ -3,23 +3,14 @@ extends GutTest
 ## Las referencias T0xx de 001 conservan la procedencia de cada invariante;
 ## las expectativas ejecutables siguen el spec005 actual, sin modo vertical.
 ## Test de `scenes/levels/Nivel_MonteCalvo.tscn` (T027) — verifica que el
-## nivel mínimo carga sin errores y que su geometría (posiciones de
-## Soldado/Enemigo, tamaños/offsets de las `Area2D` de detección del
-## soldado) permite que el enemigo, avanzando hacia −X, entre en rango
-## y sea eliminado sin intervención, preservando el Independent Test de 001.
-## El fixture usa stats de producción: el inicial recorre ~576px a 40px/s
-## hasta el borde del fusil (~14.4s); se esperan 870 physics frames.
+## nivel mínimo carga sin errores y elimina al inicial con actores reales.
+## 015 autoriza cobertura desde la entrada: el inicial ya solapa el fusil864
+## al comenzar; no debe esperar la antigua marcha hasta un borde acotado.
 
 const LEVEL_SCENE_PATH := "res://scenes/levels/Nivel_MonteCalvo.tscn"
 
 # T043: enemigo real adicional al inicial del pool, en una fila liberada.
 const ENEMY_SCENE_PATH := "res://scenes/enemies/EnemigoBase.tscn"
-
-# Geometría 005: soldado central (144,336), inicial (1008,336), misma fila y.
-# Fusil local x:[24,264], borde global derecho x=408. Cuerpo enemigo 48x48:
-# enemigo_x - 24 <= 408 -> enemigo_x <= 432. Desde x=1008 recorre 576px
-# hacia −X a 40px/s: ~14.4s/864 ticks; se espera un margen de seis ticks.
-const FRAMES_TO_ENTER_DETECTION_RANGE := 870
 
 # Frames adicionales para que, ya detectado, el soldado dispare las 3 balas
 # de daño de producción (15 salud / 5 daño por disparo) necesarias para
@@ -137,55 +128,21 @@ func test_nivel_montecalvo_instantiates_without_errors_with_expected_structure()
 	)
 
 
-## --- Geometría real: el avance en −X del enemigo lo hace entrar en rango,
-## y el soldado lo elimina automáticamente sin intervención adicional ---
-## (spec.md User Story 1, Independent Test / Acceptance Scenario 1)
-
-func test_enemigo_avanzando_en_menos_x_entra_en_rango_y_es_eliminado_sin_intervencion() -> void:
-	# Given: el nivel mínimo tal cual está diseñado, sin overrides de stats
+## 015: la entrada de producción ya está en cobertura; daño y baja automáticos.
+func test_enemigo_en_entrada_ya_esta_en_rango_y_es_eliminado_sin_intervencion() -> void:
 	var level := _load_level()
 	var soldado := _central_soldier(level)
 	var enemigo := _initial_enemy(level)
-	# 005/I2 conserva las formas, pero detecta con consultas físicas de tick;
-	# Area2D ya no mantiene overlaps sobre el cuerpo móvil.
 	var rango: CollisionShape2D = soldado.get_node("DeteccionRango/CollisionShape2D")
 	var cuerpo: CollisionShape2D = enemigo.get_node("CollisionShape2D")
 	enemigo.enemy_defeated.connect(_on_enemy_defeated)
-
-	# Precondición: al arrancar, el enemigo todavía no está dentro del
-	# rango de detección (geometría documentada arriba)
-	assert_false(
-		rango.shape.collide(rango.global_transform, cuerpo.shape, cuerpo.global_transform),
-		"precondición del test: el enemigo no debe empezar ya dentro de DeteccionRango"
-	)
-
-	# When: transcurre el tiempo suficiente para que el enemigo, avanzando
-	# por su cuenta en −X (sin intervención del jugador), recorra la
-	# distancia real hasta el borde de "DeteccionRango"
-	await wait_physics_frames(FRAMES_TO_ENTER_DETECTION_RANGE)
-
-	# Then: la geometría del nivel efectivamente hace que el enemigo entre
-	# en el área de detección real del soldado
-	assert_true(
-		rango.shape.collide(rango.global_transform, cuerpo.shape, cuerpo.global_transform),
-		"tras avanzar en −X la distancia diseñada, el enemigo debe solapar con DeteccionRango del soldado"
-	)
-
-	# When: el soldado, ya con el enemigo detectado, dispara automáticamente
-	# hasta eliminarlo (sin ninguna acción adicional del jugador)
+	assert_true(rango.shape.collide(rango.global_transform, cuerpo.shape, cuerpo.global_transform),
+		"El cuerpo inicial en1008 ya solapa el fusil864 desde hogar144")
+	await wait_physics_frames(5)
+	assert_lt(enemigo.get("_current_health"), enemigo.stats.max_health, "Daño real inmediato sin marchar hasta el antiguo borde")
 	await wait_physics_frames(FRAMES_TO_DEFEAT_AFTER_DETECTION)
-
-	# Then: el enemigo del nivel es eliminado por el soldado del nivel,
-	# completando de punta a punta el escenario que describe el
-	# "Independent Test" de spec.md User Story 1
-	assert_true(
-		_enemy_defeated_emitted,
-		"el soldado del nivel debe eliminar automáticamente al enemigo del nivel tras detectarlo (Independent Test de User Story 1)"
-	)
-	assert_false(
-		enemigo.is_targetable(),
-		"el inicial derrotado se retira de gameplay y vuelve al pool"
-	)
+	assert_true(_enemy_defeated_emitted, "Soldado real elimina al inicial automáticamente")
+	assert_false(enemigo.is_targetable(), "El inicial derrotado vuelve al pool")
 
 
 ## --- Despliegue de un soldado nuevo en celda vacía (T035, `spec.md` User
@@ -858,6 +815,10 @@ func test_completing_all_configured_real_waves_transitions_the_real_gamestateman
 	level.waves = test_waves
 	add_child_autofree(level)
 	_level = level
+	# Aislar el conteo de spawn de la nueva cobertura inmediata del fusil.
+	for actor: Node in _descendants(level):
+		if actor is Soldado: actor.set_physics_process(false)
+
 
 	# When: transcurre tiempo real suficiente para que WaveSpawner instancie
 	# el único enemigo de la única oleada configurada

@@ -1,16 +1,29 @@
-[gd_resource type="Resource" script_class="WaveData" format=3]
+[gd_resource type="Resource" script_class="WaveData" load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://resources/schemas/wave_data.gd" id="1_tdg2i"]
 [ext_resource type="Script" path="res://resources/schemas/wave_spawn_entry.gd" id="2_ynoff"]
-[ext_resource type="Resource" path="res://resources/enemies/enemigo_infanteria_base.tres" id="3_mtgwn"]
+[ext_resource type="Resource" path="res://resources/enemies/enemigo_infanteria_oleada_02.tres" id="3_mtgwn"]
+[ext_resource type="Resource" path="res://resources/enemies/enemigo_asaltante_base.tres" id="4_asaltante"]
 
-[sub_resource type="Resource" id="Resource_xqanc"]
+[sub_resource type="Resource" id="Entry_A2"]
+script = ExtResource("2_ynoff")
+enemy_stats = ExtResource("4_asaltante")
+count = 2
+spawn_interval = 1.4
+
+[sub_resource type="Resource" id="Entry_R1"]
 script = ExtResource("2_ynoff")
 enemy_stats = ExtResource("3_mtgwn")
-count = 4
+count = 1
+spawn_interval = 1.4
+
+[sub_resource type="Resource" id="Entry_A1"]
+script = ExtResource("2_ynoff")
+enemy_stats = ExtResource("4_asaltante")
+count = 1
 spawn_interval = 1.4
 
 [resource]
 script = ExtResource("1_tdg2i")
 wave_number = 2
-spawn_entries = Array[ExtResource("2_ynoff")]([SubResource("Resource_xqanc")])
+spawn_entries = Array[ExtResource("2_ynoff")]([SubResource("Entry_A2"), SubResource("Entry_R1"), SubResource("Entry_A1")])

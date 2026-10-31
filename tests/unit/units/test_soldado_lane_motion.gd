@@ -46,6 +46,7 @@ func _enemy(position: Vector2, row := 2, speed := 40.0, health := 500) -> Enemig
 	var data := EnemyData.duplicate() as EnemyStats
 	data.max_health = health
 	data.move_speed = speed
+	data.rifle_damage = 0 # Aislar la marcha del enemigo en este escenario.
 	enemy.stats = data
 	enemy.position = position
 	_world.add_child(enemy)

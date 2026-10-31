@@ -53,8 +53,7 @@ func register_actor(actor: Node) -> void:
 	_actors[id] = {"actor": weakref(actor), "death": death, "shot": shot,
 		"leaving": leaving, "death_generation": -1, "last_shot": null}
 	actor.connect(&"defeat_visual_requested", death)
-	if actor is Soldado:
-		actor.connect(&"rifle_shot_visual_requested", shot)
+	actor.connect(&"rifle_shot_visual_requested", shot)
 	actor.tree_exiting.connect(leaving)
 
 
@@ -109,7 +108,7 @@ func _on_actor_leaving(id: int) -> void:
 	if is_instance_valid(actor):
 		if actor.is_connected(&"defeat_visual_requested", record.death):
 			actor.disconnect(&"defeat_visual_requested", record.death)
-		if actor is Soldado and actor.is_connected(&"rifle_shot_visual_requested", record.shot):
+		if actor.is_connected(&"rifle_shot_visual_requested", record.shot):
 			actor.disconnect(&"rifle_shot_visual_requested", record.shot)
 		if actor.tree_exiting.is_connected(record.leaving):
 			actor.tree_exiting.disconnect(record.leaving)
@@ -128,8 +127,16 @@ func _can_play_combat() -> bool:
 
 
 func _on_rifle_shot(snapshot: Dictionary, id: int, session: int) -> void:
-	var actor := _registered_actor(id, session) as Soldado
-	if actor == null or not actor.get_reload_state().alive:
+	var actor := _registered_actor(id, session)
+	if actor == null:
+		return
+	if actor is Enemigo:
+		var enemy := actor as Enemigo
+		if not enemy.is_targetable() or snapshot.size() != 3 \
+				or not snapshot.get("activation_generation") is int \
+				or snapshot.activation_generation != enemy.activation_generation:
+			return
+	elif not (actor as Soldado).get_reload_state().alive:
 		return
 	if not snapshot.get("origin_world") is Vector2 or not snapshot.get("target_world") is Vector2:
 		return

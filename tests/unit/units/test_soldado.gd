@@ -351,30 +351,21 @@ func test_moral_changed_is_emitted_with_moral_per_kill_when_a_shot_kills_the_tar
 	)
 
 
-func test_moral_changed_is_not_emitted_when_a_melee_kill_happens() -> void:
-	# Given: un soldado que ya está en modo MELEE (agotó su munición sin
-	# eliminar a nadie con el fusil, moral permanece en 0)
+func test_machete_kill_emits_two_morale_and_keeps_full_health_capped() -> void:
+	# 015 reemplaza la antigua regla de prohibir moral por bajas a machete.
 	_spawn_soldado({"max_ammo": 1})
-	_spawn_enemy(RIFLE_ONLY_OFFSET, 1000) # sobrevive al único disparo, sin acumular moral
+	_stats.machete_moral_per_kill = 2.0
+	_stats.machete_heal_per_kill = 3
+	_spawn_enemy(RIFLE_ONLY_OFFSET, 1000)
 	await wait_physics_frames(FRAMES_TO_DETECT)
-
-	# When: entra un enemigo en RangoMelee y el soldado, ya en modo MELEE, lo
-	# elimina a machetazos
 	watch_signals(_soldado)
 	var melee_target := _spawn_enemy(MELEE_OFFSET, _stats.machete_base_damage)
 	await wait_physics_frames(FRAMES_TO_FIRE_SEVERAL_SHOTS)
-	assert_true(
-		melee_target.damage_received.size() > 0,
-		"precondición del test: el objetivo en RangoMelee debe haber sido golpeado"
-	)
-
-	# Then: la eliminación en modo MELEE (machete) NO debe sumar moral —
-	# FR-006 exige que la moral solo suba por eliminaciones mientras hay
-	# munición/modo RIFLE
-	assert_signal_not_emitted(
-		_soldado, "moral_changed",
-		"una eliminación en modo MELEE (machete) no debe acumular moral (FR-006)"
-	)
+	assert_true(melee_target.damage_received.size() > 0, "Control: golpe de machete real")
+	assert_eq(melee_target.health, 0, "Control: golpe letal confirmado")
+	assert_signal_emitted_with_parameters(_soldado, "moral_changed", [2.0])
+	assert_eq(_soldado.get_reload_state().morale, 2.0)
+	assert_eq(_soldado.get_reload_state().health, _stats.max_health, "La cura no supera vida máxima")
 
 
 ## --- Daño de machete = base + moral * multiplicador (FR-005) ---
@@ -776,3 +767,86 @@ func test_soldier_takes_incoming_melee_damage_from_every_candidate_present_not_o
 		_soldado.get("_current_health"), 1000 - 11,
 		"el soldado debe recibir el daño de CADA enemigo presente en RangoMelee simultáneamente, no solo del objetivo actual de su propio ataque"
 	)
+
+
+# 015/T004: cuerpos 48x48 de producción y consulta física real; el alcance
+# viene del Resource autorado, nunca de un override que oculte el requisito.
+func test_production_rifle_reaches_spawn_and_preserves_lane_and_body_edges(
+	case = use_parameters([
+		[Vector2(1008, 336), true],
+		[Vector2(1030, 336), true],
+		[Vector2(1057, 336), false],
+		[Vector2(100, 336), false],
+		[Vector2(240, 240), true],
+		[Vector2(240, 432), true],
+		[Vector2(432, 240), false],
+		[Vector2(1008, 144), false],
+	])) -> void:
+	_stats = load("res://resources/units/soldado_base_stats.tres").duplicate()
+	_soldado = load(SOLDADO_SCENE_PATH).instantiate()
+	_soldado.stats = _stats
+	_soldado.position = HOME_POSITION
+	_soldado.set_grid_cell(HOME_CELL)
+	_world.add_child(_soldado)
+	var enemy: Enemigo = load(ENEMY_SCENE_PATH).instantiate()
+	enemy.stats = load("res://resources/enemies/enemigo_infanteria_base.tres").duplicate()
+	enemy.stats.max_health = 1000
+	enemy.stats.move_speed = 0.0
+	enemy.position = case[0]
+	_world.add_child(enemy)
+	watch_signals(_soldado)
+	await wait_physics_frames(FRAMES_TO_DETECT)
+	var expected_shots: int = 1 if case[1] else 0
+	assert_eq(_soldado.stats.rifle_range, _stats.rifle_range, "El test conserva el dato de producción")
+	assert_eq(get_signal_emit_count(_soldado, "rifle_shot_visual_requested"), expected_shots,
+		"Adquisición real desde hogar144: frente, carril y borde físico del fusil864")
+	assert_eq(enemy.get("_current_health"), 1000 - expected_shots * _stats.damage_per_shot,
+		"Un tiro confirmado causa exactamente un daño; negativos permanecen intactos")
+
+
+func _prepare_reward_soldier(injury: int = 5) -> void:
+	_spawn_soldado({"max_ammo": 1, "fire_rate": 0.1, "machete_moral_multiplier": 1.0})
+	_stats.machete_moral_per_kill = 2.0
+	_stats.machete_heal_per_kill = 3
+	var spent_target := _spawn_enemy(RIFLE_ONLY_OFFSET, 1000)
+	await wait_physics_frames(FRAMES_TO_DETECT)
+	assert_eq(_soldado.get_reload_state().ammo, 0, "Control: agotó una bala real y pasó a machete")
+	spent_target.free()
+	_soldado.take_damage(injury)
+
+
+func test_machete_confirmed_kill_rewards_owner_with_health_cap(
+	injury = use_parameters([0, 1, 5])) -> void:
+	await _prepare_reward_soldier(injury)
+	var target := _spawn_real_enemy(MELEE_OFFSET, {"max_health": 3, "move_speed": 0.0, "melee_damage": 0, "ammo_drop": 0})
+	var killed: Array[bool] = []
+	target.enemy_defeated.connect(func(_amount: int, _position: Vector2): killed.append(true))
+	watch_signals(_soldado)
+	await wait_physics_frames(FRAMES_TO_DETECT)
+	assert_eq(killed.size(), 1, "Control: baja real única a machete")
+	assert_eq(_soldado.get_reload_state().morale, 2.0, "+2 moral por machete letal")
+	assert_eq(_soldado.get_reload_state().health, mini(30, 30 - injury + 3), "+3 vida con tope30")
+	assert_signal_emitted(_soldado, "moral_changed", "Los observadores existentes reciben el premio")
+	assert_signal_emitted(_soldado, "reload_state_changed", "Vida/estado observable actualizados")
+	await wait_physics_frames(FRAMES_TO_DETECT)
+	assert_eq(_soldado.get_reload_state().morale, 2.0, "El cadáver no duplica crédito")
+
+
+func test_machete_nonlethal_hit_does_not_reward_or_heal() -> void:
+	await _prepare_reward_soldier()
+	var target := _spawn_real_enemy(MELEE_OFFSET, {"max_health": 100, "move_speed": 0.0, "melee_damage": 0})
+	await wait_physics_frames(FRAMES_TO_DETECT)
+	assert_eq(target.get("_current_health"), 97, "Control: un machetazo no letal real")
+	assert_eq(_soldado.get_reload_state().morale, 0.0)
+	assert_eq(_soldado.get_reload_state().health, 25)
+
+
+func test_rifle_kill_keeps_one_morale_and_does_not_heal() -> void:
+	_spawn_soldado({"max_ammo": 2})
+	_stats.machete_moral_per_kill = 2.0
+	_stats.machete_heal_per_kill = 3
+	_soldado.take_damage(5)
+	_spawn_enemy(RIFLE_ONLY_OFFSET, _stats.damage_per_shot)
+	await wait_physics_frames(FRAMES_TO_DETECT)
+	assert_eq(_soldado.get_reload_state().morale, 1.0)
+	assert_eq(_soldado.get_reload_state().health, 25, "Fusil no recibe la cura de machete")

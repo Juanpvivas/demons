@@ -80,9 +80,9 @@ implica una publicación en el portal. [Alcance y evidencias](WEB_EXPORT.md).
 - **Confirmado** (spec `001-soldado-defensor-oleadas`, Assumptions; implementado y validado en T034): el costo en munición recolectada de una recarga completa es el mismo que el de desplegar un soldado nuevo de ese tipo (`UnitStats.deploy_ammo_cost` — no existe un campo separado de "costo de recarga").
 
 **Stat individual: Moral (por soldado, no es un recurso global)**
-- Cada soldado acumula su propia moral mientras tiene munición y sigue eliminando enemigos (los impactos que no eliminan al enemigo no otorgan moral).
+- Cada soldado acumula su propia moral al eliminar enemigos: el fusil concede +1; desde 015, cada baja letal de machete concede +2 moral y cura 3 de vida al dueño aún vivo, sin exceder su máximo actual 30. No hay premio por impacto no letal, cleanup o callback repetido ni resurrección.
 - Al quedarse sin munición, el soldado pasa automáticamente a combate cuerpo a cuerpo (machete).
-- El **daño del machete depende de la moral acumulada por ese soldado en particular** antes de quedarse sin balas: un soldado que resistió más tiempo disparando y sumó más bajas será más letal cuerpo a cuerpo que uno que se quedó sin munición rápido.
+- El **daño del machete depende de la moral acumulada por ese soldado en particular**: base 3 + moral×1. Las bajas de fusil y las nuevas bajas de machete refuerzan sus ataques posteriores.
 - **Confirmado** (spec `001-soldado-defensor-oleadas`): si el soldado es recargado después de haber entrado en modo machete, vuelve a modo fusil conservando la moral acumulada — la moral no decae con el tiempo, y solo se pierde por completo si el soldado es derrotado.
 
 Esta economía recrea la tensión histórica real: cada bala cuenta, y sobrevivir el tiempo suficiente disparando paga dividendos cuando llega el momento de pelear cuerpo a cuerpo.
@@ -116,8 +116,8 @@ Ninguna decoración concede cobertura ni cambia las plazas jugables.
 
 **Soldado base (única unidad inicial, dos modos):**
 - **Modo fusil** (por defecto al desplegarlo): dispara hacia +X a enemigos elegibles del frente de su fila o celdas diagonalmente contiguas, dentro del alcance físico del arma, con una cantidad limitada de disparos definida por su munición actual.
-- La revisión de 010, aprobada funcionalmente en T018, amplía el extremo frontal de 264 a 396 unidades (+50 %) mediante `UnitStats.rifle_range`/`.tres`. Conserva el límite cercano de 24, altura de 192 y solape real del cuerpo enemigo; no amplía las diagonales contiguas ni el machete.
-- **Modo machete** (automático al quedarse sin munición): combate cuerpo a cuerpo, rango de 1 casilla frontal, daño escalado según la moral acumulada en modo fusil.
+- La revisión de 010 amplió el extremo frontal de 264 a 396; 015 lo lleva a 864 mediante `UnitStats.rifle_range`/`.tres`, desde hogar x144 hasta entrada x1008. Conserva límite cercano 24, altura 192 y solape real del cuerpo enemigo; no amplía diagonales contiguas ni machete.
+- **Modo machete** (automático al quedarse sin munición): combate cuerpo a cuerpo, rango de 1 casilla frontal, daño escalado según la moral acumulada por sus bajas de fusil o machete.
 - Los stats vigentes viven en `UnitStats`/`soldado_base_stats.tres`; el cambio de orientación no altera daño, carga, moral, costo o cadencia.
 
 **005-I2, integrado en `main` mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25):** al agotar
@@ -200,6 +200,32 @@ orienta la composición lateral y no fija costos, estadísticas ni HUD final.
   de cualquier enemigo por la defensa izquierda produce una única derrota.
   Los estados terminales bloquean nuevas acciones y otra partida reinicia
   estado, reserva y cursor.
+
+**Fusil enemigo y recompensa (015-I1, aprobación funcional T010 en rama):**
+el fusilero vivo dispara hacia −X sólo a un colombiano vivo de su carril, con
+alcance 864; se detiene, dispara al adquirir y después respeta su intervalo.
+Sin blanco vuelve a marchar; contacto y fusil son excluyentes y no hay munición
+enemiga nueva. Los diez perfiles siguen la [tabla autorizada](../specs/015-combate-a-distancia-y-recompensas/spec.md#progresión-autorizada):
+daño/intervalo de 1/4 s en ola 1, 2/3 s en ola 5 y 3/2 s en ola 10; el inicial usa
+perfil 1. HP15, velocidad40, melee5, drop3 y cantidades/ritmos de spawn permanecen.
+La baja letal de machete premia una vez al dueño vivo incluso si activa victoria;
+la derrota sigue dependiendo del cruce de PosicionDefendida, no del último soldado.
+El avance a machete está expuesto al fusil enemigo y se observaron derrotas tempranas;
+esto es un riesgo táctico, sin conclusión de imposibilidad de victoria ni nuevo
+balance autorizado. [Verificación y límites](../specs/015-combate-a-distancia-y-recompensas/research.md#alcance-funcional-aprobado-y-límites):
+I1 conserva CI/QA de integración de `2351798`; I2 cuenta con CI y QA de
+integración aprobados en `d8826e2`, en la rama del
+[PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59), aún sin fusionar;
+publicación T015 sigue pendiente.
+
+**Composición mixta (015-I2, aprobación funcional T021):** los 99 enemigos WAVE
+siguen A,A,R de forma continua entre oleadas: 66 asaltantes sin fusil y 33
+fusileros. El inicial es otro fusilero de perfil1 y no consume la secuencia ni
+el cursor de carriles WAVE. Ambos mantienen HP15/velocidad40/melee5/drop3;
+los fusileros conservan la tabla anterior y los asaltantes avanzan con el
+comportamiento previo sin fusil. Cantidades, intervalos y reparto 1→5 no cambian;
+la [tabla de composición](../specs/015-combate-a-distancia-y-recompensas/spec.md#enmienda-015-i2--dos-asaltantes-por-fusilero)
+fija los totales por oleada. No hay nueva IA ni cambios de colisión.
 
 ## 7. Estructura técnica en Godot (borrador)
 
@@ -537,6 +563,8 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 
 ### Resueltas (graduadas desde specs de feature)
 
+- ✅ Alcance colombiano 864, fusil enemigo estacionario por carril con progresión autorada y baja de machete +2 moral/+3 vida limitada al máximo del dueño vivo: 015/T008–T010, aprobado funcionalmente. Se conservan diagonales inmediatas, contacto excluyente, reglas de derrota y resto de stats; CI/QA de integración aprobados en rama (PR #59 en borrador, sin merge), con publicación pendiente.
+
 - ✅ Narrativa dentro del juego mediante La carta: 013-I1 integrado por PR #54 (`77be629`), con siete escenas, narrador humano toma3 y compañero sintético definitivo aceptados por la persona, subtítulos y recuerdo local. Tras Jugar o Ver introducción espera Comenzar antes del combate. Es ficción inspirada en el contexto histórico; publicación T014 sigue pendiente.
 
 - ✅ Selección por dueño de trinchera, recarga única sólo con carga cero y regreso físico vulnerable sin ofensiva: 005-I3/T037–T042, integrado mediante PR #26 (`8c4cab4`). La publicación T071 sigue pendiente.
@@ -614,3 +642,5 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 | 2026-10-30 | Corrección documental 013: la persona acepta expresamente el mismo clip Qwen3-TTS VoiceDesign como voz definitiva del compañero; se resuelve su aceptación perceptual humana sin modificar audio, comportamiento o gates de publicación. |
 | 2026-10-30 | 014/T010 tras QA funcional T009: cinco cues offline de hechos confirmados, bajas con exclamación breve/caída y mezcla acotada aislada de013; integración final/CI y publicación conservan sus gates y límites. |
 | 2026-10-30 | Actualización documental: 013 integrado por PR #54 (`77be629`) y 014 por PR #56 (`45cd83a`); integración/CI aprobados, publicación y requisitos físicos pendientes conservados. |
+| 2026-10-30 | 015/T011 tras QA funcional T010: alcance864, fusil enemigo por carril/perfiles y recompensa machete +2/+3; riesgo táctico y límites por destino explícitos, CI/integración final y publicación pendientes. |
+| 2026-10-30 | 015/T022 tras QA funcional T021: mezcla continua de 66 asaltantes/33 fusileros WAVE por datos, inicial R1 independiente y tiempos/carriles conservados; CI/integración final I2 y publicación pendientes. |
