@@ -1,4 +1,8 @@
-# Verificación de 015-I1
+# Verificación de 015
+
+I2 está aprobado funcionalmente en T021 (`b4fbaf8`), con CI/gate final pendientes. Verificar además la secuencia global 99 WAVE=66 A/33 R, inicial R1 independiente, tabla por ola/tiempos/carriles; cuerpos mixtos y reset R→A→R conservan avance A, parada/tiro R, contacto y limpieza. [Alcance y límites I2](research.md#i2-vigente-aprobado-funcionalmente).
+
+## Recorrido I1 conservado
 
 Comportamiento aprobado funcionalmente en T010; este recorrido conserva criterios repetibles. El [alcance ya observado y sus límites](research.md#alcance-funcional-aprobado-y-límites) distingue GUT, Web y apps. CI de `2351798` y QA de integración están aprobados; [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59), sin merge. Publicación T015 pendiente.
 

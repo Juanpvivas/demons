@@ -64,9 +64,11 @@ tests/unit/systems/test_combat_{audio,visual_effects}.gd
 
 Sin autoload, nuevo backend o motor de IA. Tres cambios usan sistemas actuales; ampliación de snapshots se valida en adaptadores manteniendo contratos anteriores.
 
-## Enmienda 015-I2 — Composición por datos (preparación)
+## Enmienda 015-I2 — Composición por datos (aprobación funcional T021)
 
-Misma rama/PR59/Issue58; no reabrir I1. Añadir únicamente
+Implementada en `b4fbaf8`; CI/gate final I2 T023–T024 pendientes. I1 conserva su aprobación histórica.
+
+Misma rama/PR59/Issue58; I1 intacto. Se añadió únicamente
 `resources/enemies/enemigo_asaltante_base.tres`, con rifle_range/rifle_damage/
 rifle_interval=0 y HP15/move_speed40/melee_damage5/ammo_drop3. Los diez perfiles
 R de I1 no cambian; el inicial sigue referenciando perfil1.

@@ -9,6 +9,25 @@
 
 ## Alcance funcional aprobado y límites
 
+### I2 vigente aprobado funcionalmente
+
+QA T021 aprueba `b4fbaf8`: A,A,R continuo entre 99 WAVE (66 A/33 R), inicial R1
+independiente, stats/tabla/ritmos/carriles conservados y hasta tres entradas
+inmutables reutilizadas por oleada. No hay nueva IA o colisiones. GREEN/regresión,
+import y export Web están verificados; CI/gate final T023–T024 siguen pendientes.
+Chrome en macOS observó asaltantes avanzando, fusileros detenidos, transición
+a machete, derrota real al cruzar la defensa, Retry limpio y salida al menú
+durante combate activo, ahora observado manualmente en I2.
+
+El APK QA2 está preparado con el mismo paquete/firma de prueba; QA autoriza sólo
+su entrega personal por root en el borrador privado existente. No se ha observado
+su instalación en el S24 ni se certifica victoria de producción en diez oleadas,
+conteo manual de 99 bajas, audición, latencia Web, FPS/hardware o paquete final.
+La mezcla no cierra T015/SC008, pendientes 004/005/013/014 ni pausa 006; release 1.0.2
+se conserva. El riesgo táctico anterior sigue sin justificar otro cambio de balance.
+
+### I1 — Historial de alcance y aprobación
+
 QA T010 aprueba los tres cambios de 015-I1: alcance físico 864 desde el hogar,
 enemigos estacionarios con fusil por carril y perfiles de la tabla, y recompensa
 letal de machete +2 moral/+3 vida con cap y protección de reentrada/reciclado.

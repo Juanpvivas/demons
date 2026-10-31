@@ -172,14 +172,17 @@ latencia/techo de mezcla Web o combate nativo/hardware.
 [015 — Combate a distancia y recompensas](specs/015-combate-a-distancia-y-recompensas/spec.md)
 está aprobado funcionalmente en su rama: el fusil colombiano cubre desde el
 hogar hasta la entrada del mismo carril (864 unidades), conservando las diagonales
-inmediatas. Los enemigos se detienen para disparar al colombiano vivo de su carril;
+inmediatas. I2 intercala A,A,R continuamente entre los 99 enemigos de oleadas:
+66 asaltantes sin fusil y 33 fusileros, más un fusilero inicial independiente de
+perfil 1. Los asaltantes avanzan; los fusileros se detienen para disparar al colombiano vivo de su carril;
 sin blanco reanudan el avance y el contacto excluye el fusil. Su daño/intervalo
 progresa de 1/4 s a 3/2 s según la [tabla autorizada](specs/015-combate-a-distancia-y-recompensas/spec.md#progresión-autorizada).
 Cada baja letal de machete concede al dueño vivo +2 moral y +3 vida hasta su
 máximo; el fusil conserva +1 moral sin curación. El avance sin munición queda
 expuesto al fuego enemigo: se observaron derrotas tempranas, sin demostrar que
-sea imposible ganar ni autorizar otro ajuste de balance. Cuenta con CI y QA
-`APROBADO PARA INTEGRACIÓN` de la revisión `2351798`, en su rama y
+sea imposible ganar ni autorizar otro ajuste de balance. I1 conserva CI/QA de
+integración de `2351798`; I2 está aprobado funcionalmente en `b4fbaf8`, con CI
+y QA final de integración todavía pendientes. Ambos siguen en su rama y
 [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59), sin fusionar;
 publicación T015 y los pendientes anteriores se conservan. [Alcance verificado y límites](specs/015-combate-a-distancia-y-recompensas/research.md#alcance-funcional-aprobado-y-límites).
 

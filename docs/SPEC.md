@@ -202,7 +202,7 @@ orienta la composición lateral y no fija costos, estadísticas ni HUD final.
   estado, reserva y cursor.
 
 **Fusil enemigo y recompensa (015-I1, aprobación funcional T010 en rama):**
-el enemigo vivo dispara hacia −X sólo a un colombiano vivo de su carril, con
+el fusilero vivo dispara hacia −X sólo a un colombiano vivo de su carril, con
 alcance 864; se detiene, dispara al adquirir y después respeta su intervalo.
 Sin blanco vuelve a marchar; contacto y fusil son excluyentes y no hay munición
 enemiga nueva. Los diez perfiles siguen la [tabla autorizada](../specs/015-combate-a-distancia-y-recompensas/spec.md#progresión-autorizada):
@@ -213,9 +213,19 @@ la derrota sigue dependiendo del cruce de PosicionDefendida, no del último sold
 El avance a machete está expuesto al fusil enemigo y se observaron derrotas tempranas;
 esto es un riesgo táctico, sin conclusión de imposibilidad de victoria ni nuevo
 balance autorizado. [Verificación y límites](../specs/015-combate-a-distancia-y-recompensas/research.md#alcance-funcional-aprobado-y-límites):
-CI y QA de integración están aprobados para `2351798`, en la rama del
+I1 conserva CI/QA de integración de `2351798`; I2 tiene aprobación funcional
+T021 en `b4fbaf8`, con CI/gate final de integración pendientes, en la rama del
 [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59), aún sin fusionar;
 publicación T015 sigue pendiente.
+
+**Composición mixta (015-I2, aprobación funcional T021):** los 99 enemigos WAVE
+siguen A,A,R de forma continua entre oleadas: 66 asaltantes sin fusil y 33
+fusileros. El inicial es otro fusilero de perfil1 y no consume la secuencia ni
+el cursor de carriles WAVE. Ambos mantienen HP15/velocidad40/melee5/drop3;
+los fusileros conservan la tabla anterior y los asaltantes avanzan con el
+comportamiento previo sin fusil. Cantidades, intervalos y reparto 1→5 no cambian;
+la [tabla de composición](../specs/015-combate-a-distancia-y-recompensas/spec.md#enmienda-015-i2--dos-asaltantes-por-fusilero)
+fija los totales por oleada. No hay nueva IA ni cambios de colisión.
 
 ## 7. Estructura técnica en Godot (borrador)
 
@@ -633,3 +643,4 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 | 2026-10-30 | 014/T010 tras QA funcional T009: cinco cues offline de hechos confirmados, bajas con exclamación breve/caída y mezcla acotada aislada de013; integración final/CI y publicación conservan sus gates y límites. |
 | 2026-10-30 | Actualización documental: 013 integrado por PR #54 (`77be629`) y 014 por PR #56 (`45cd83a`); integración/CI aprobados, publicación y requisitos físicos pendientes conservados. |
 | 2026-10-30 | 015/T011 tras QA funcional T010: alcance864, fusil enemigo por carril/perfiles y recompensa machete +2/+3; riesgo táctico y límites por destino explícitos, CI/integración final y publicación pendientes. |
+| 2026-10-30 | 015/T022 tras QA funcional T021: mezcla continua de 66 asaltantes/33 fusileros WAVE por datos, inicial R1 independiente y tiempos/carriles conservados; CI/integración final I2 y publicación pendientes. |

@@ -33,6 +33,8 @@ Perfil inicial y ola1 iguales a tabla1; ola2–10 refs distintas con sus campos 
 
 ## Enmienda 015-I2 — Contrato de composición
 
+Comportamiento funcional aprobado en T021 (`b4fbaf8`); CI/gate final I2 pendientes. El contrato anterior de tiro corresponde a R; A conserva avance/contacto sin fusil.
+
 A = `enemigo_asaltante_base.tres` (tres campos rifle0, HP15/speed40/melee5/drop3);
 R = perfil de fusilero I1 de su oleada (alcance864/tabla exacta). A no requiere
 una clase o modo de IA nuevo. Estado por activación, contacto y callbacks siguen

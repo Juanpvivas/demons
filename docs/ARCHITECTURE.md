@@ -321,7 +321,7 @@ ese extremo, manteniendo el borde cercano y la altura autorados. Ni la forma
 compartida de la escena ni los stats se mutan; cambiar el alcance de una
 configuración no altera otros actores.
 
-015 añade perfiles `EnemyStats` por oleada con alcance 864, daño e intervalo
+015 añade perfiles de fusilero `EnemyStats` por oleada con alcance 864, daño e intervalo
 según su [tabla](../specs/015-combate-a-distancia-y-recompensas/spec.md#progresión-autorizada).
 La consulta física enemiga valida frente, carril, vida y solape real; marcha,
 fusil y contacto se excluyen. `Enemigo` reconoce el grupo `soldiers` y el
@@ -332,6 +332,15 @@ de cada activación. 015-I1 cuenta con CI y QA de integración aprobados en
 sin fusionar ni cerrar publicación. La recompensa de machete captura identidad/generación antes
 del daño y bloquea reentrada: sólo la baja confirmada acredita +2 moral/+3 vida
 limitada al máximo del dueño aún vivo, incluso con victoria síncrona.
+
+I2 añade un perfil asaltante con los tres campos de fusil en 0 y demás stats
+intactos. Los arrays de `WaveData.spawn_entries` intercalan A,A,R globalmente
+(66 A/33 R WAVE), reusando hasta tres `WaveSpawnEntry` inmutables por oleada
+(A/count2, R/count1 y parcial A/count1). `WaveSpawner` aplana estos datos sin
+cursor de tipo, RNG o IA nuevos; conserva tiempos/carriles y el inicial R1
+independiente. El mismo pool restaura R→A→R con sus hooks existentes, sin nuevas
+colisiones. I2 está aprobado funcionalmente en `b4fbaf8`; su CI/gate final
+T023–T024 siguen pendientes.
 
 ### 4.4 Modo fusil / modo machete como estado simple
 
@@ -1149,3 +1158,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-30 | 014/T010 tras QA funcional T009: §4.9 documenta audio local, pool8+1, señales confirmadas/consulta letal de sólo lectura y routing Stream/GameplaySFX aislado; CI/integración final, audición y publicación mantienen límites. |
 | 2026-10-30 | Actualización documental: 013 integrado por PR #54 (`77be629`) y 014 por PR #56 (`45cd83a`); estado de integración/CI vigente, con publicación y certificación física aún pendientes. |
 | 2026-10-30 | 015/T011 tras QA funcional T010: perfiles de fusil enemigo, alcance864 y premio transaccional; snapshot por generación previo al daño y consulta por grupo sin ciclo de scripts. CI/integración final y publicación pendientes. |
+| 2026-10-30 | 015/T022 tras QA funcional T021: mezcla continua de 66 asaltantes/33 fusileros WAVE por datos, inicial R1 independiente y tiempos/carriles conservados; CI/integración final I2 y publicación pendientes. |
