@@ -247,6 +247,8 @@ func test_real_result_is_unique_and_menu_does_not_create_a_result(outcome = use_
 func test_final_lethal_shot_death_and_victory_are_all_admitted_before_terminal() -> void:
 	var soldier := _soldier(1)
 	var enemy := _enemy()
+	# Este escenario aísla el tiro colombiano; el fusil enemigo se cubre abajo.
+	enemy.stats.rifle_damage = 0
 	enemy.global_position = soldier.global_position + Vector2(150, 0)
 	enemy.set("_current_health", soldier.stats.damage_per_shot)
 	var entry := WaveSpawnEntry.new()

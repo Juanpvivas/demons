@@ -351,30 +351,21 @@ func test_moral_changed_is_emitted_with_moral_per_kill_when_a_shot_kills_the_tar
 	)
 
 
-func test_moral_changed_is_not_emitted_when_a_melee_kill_happens() -> void:
-	# Given: un soldado que ya está en modo MELEE (agotó su munición sin
-	# eliminar a nadie con el fusil, moral permanece en 0)
+func test_machete_kill_emits_two_morale_and_keeps_full_health_capped() -> void:
+	# 015 reemplaza la antigua regla de prohibir moral por bajas a machete.
 	_spawn_soldado({"max_ammo": 1})
-	_spawn_enemy(RIFLE_ONLY_OFFSET, 1000) # sobrevive al único disparo, sin acumular moral
+	_stats.machete_moral_per_kill = 2.0
+	_stats.machete_heal_per_kill = 3
+	_spawn_enemy(RIFLE_ONLY_OFFSET, 1000)
 	await wait_physics_frames(FRAMES_TO_DETECT)
-
-	# When: entra un enemigo en RangoMelee y el soldado, ya en modo MELEE, lo
-	# elimina a machetazos
 	watch_signals(_soldado)
 	var melee_target := _spawn_enemy(MELEE_OFFSET, _stats.machete_base_damage)
 	await wait_physics_frames(FRAMES_TO_FIRE_SEVERAL_SHOTS)
-	assert_true(
-		melee_target.damage_received.size() > 0,
-		"precondición del test: el objetivo en RangoMelee debe haber sido golpeado"
-	)
-
-	# Then: la eliminación en modo MELEE (machete) NO debe sumar moral —
-	# FR-006 exige que la moral solo suba por eliminaciones mientras hay
-	# munición/modo RIFLE
-	assert_signal_not_emitted(
-		_soldado, "moral_changed",
-		"una eliminación en modo MELEE (machete) no debe acumular moral (FR-006)"
-	)
+	assert_true(melee_target.damage_received.size() > 0, "Control: golpe de machete real")
+	assert_eq(melee_target.health, 0, "Control: golpe letal confirmado")
+	assert_signal_emitted_with_parameters(_soldado, "moral_changed", [2.0])
+	assert_eq(_soldado.get_reload_state().morale, 2.0)
+	assert_eq(_soldado.get_reload_state().health, _stats.max_health, "La cura no supera vida máxima")
 
 
 ## --- Daño de machete = base + moral * multiplicador (FR-005) ---
