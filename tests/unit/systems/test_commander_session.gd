@@ -328,3 +328,276 @@ func test_memory_and_diagnostic_are_copied_and_unrelated_input_keys_do_not_revea
 	assert_eq(session.get_decision_snapshot().get("pending_lanes", []), [0, 1, 2, 3, 4])
 	assert_eq(_probabilities(session).size(), 5)
 	assert_eq(before.cells.size(), 1)
+
+
+func _candidate(session: CommanderSession, result: int = GameStateManager.GameState.WON) -> Dictionary:
+	var candidate := session.finish(result)
+	var valid_shape := candidate.has_all(["changed", "memory", "match_id"])
+	assert_true(valid_shape, "finish debe devolver explícitamente candidato y changed, incluso sin muestras")
+	return candidate if valid_shape else {}
+
+
+func _spawn_sample(session: CommanderSession, actor_id: int, generation: int = 1,
+		spawn_x: float = 1008.0, defended_right: float = 96.0) -> Dictionary:
+	var decision := _decision(session)
+	if decision.is_empty():
+		return {}
+	assert_true(session.register_spawn(decision, actor_id, generation, spawn_x, defended_right))
+	return decision
+
+
+func test_death_reward_uses_injected_geometry_and_clamps_progress(params = use_parameters([
+	[250.0, 50.0, 300.0, 0.425], [250.0, 50.0, 250.0, 0.425],
+	[250.0, 50.0, 150.0, 0.5], [250.0, 50.0, 50.0, 0.575],
+	[250.0, 50.0, -20.0, 0.575], [1008.0, 96.0, 552.0, 0.5],
+])) -> void:
+	var session := _session()
+	var decision := _spawn_sample(session, 700, 1, params[0], params[1])
+	session.record_defeat(700, 1, params[2])
+	var candidate := _candidate(session)
+	if candidate.is_empty():
+		return
+	assert_true(candidate.changed)
+	assert_eq(candidate.match_id, "selector-test")
+	assert_eq(candidate.memory.last_match_id, "selector-test")
+	assert_eq(candidate.memory.generation, 0, "Sólo Store incrementa la generación al verificar save")
+	assert_eq(candidate.memory.cells.size(), 1)
+	var cell: Dictionary = candidate.memory.cells.get(decision.context, {})
+	assert_almost_eq(cell.get("q", -1.0), params[3], 0.000001)
+	assert_almost_eq(cell.get("n", -1.0), 1.0, 0.000001)
+
+
+func test_breach_is_one_and_first_valid_closure_wins_over_duplicate_death() -> void:
+	var session := _session()
+	var decision := _spawn_sample(session, 701)
+	session.record_breach(701, 1)
+	session.record_breach(701, 1)
+	session.record_defeat(701, 1, 1008.0)
+	var candidate := _candidate(session, GameStateManager.GameState.LOST)
+	if candidate.is_empty():
+		return
+	var cell: Dictionary = candidate.memory.cells.get(decision.context, {})
+	assert_almost_eq(cell.get("q", -1.0), 0.575, 0.000001)
+	assert_almost_eq(cell.get("n", -1.0), 1.0, 0.000001)
+
+
+func test_defeat_first_is_not_replaced_by_later_breach_or_invalid_positions() -> void:
+	var session := _session()
+	var decision := _spawn_sample(session, 702)
+	session.record_defeat(702, 1, NAN)
+	session.record_defeat(702, 1, INF)
+	session.record_defeat(702, 1, 1008.0)
+	session.record_breach(702, 1)
+	var candidate := _candidate(session)
+	if candidate.is_empty():
+		return
+	assert_almost_eq(candidate.memory.cells.get(decision.context, {}).get("q", -1.0), 0.425, 0.000001)
+
+
+func test_censored_survivors_and_unregistered_initial_do_not_create_zero_samples() -> void:
+	var session := _session()
+	var first := _spawn_sample(session, 710)
+	for actor_id in range(711, 719):
+		_spawn_sample(session, actor_id)
+	session.record_breach(710, 1)
+	session.record_breach(9999, 1) # INITIAL jamás recibió register_spawn WAVE.
+	session.record_defeat(9999, 1, 0.0)
+	var candidate := _candidate(session, GameStateManager.GameState.LOST)
+	if candidate.is_empty():
+		return
+	assert_eq(candidate.memory.cells.size(), 1, "OPEN es censura, no recompensa cero")
+	assert_almost_eq(candidate.memory.cells.get(first.context, {}).get("q", -1.0), 0.575, 0.000001)
+
+
+func test_wrong_generation_and_recycled_actor_ids_cannot_close_another_activation() -> void:
+	var session := _session()
+	var first := _spawn_sample(session, 720, 1)
+	session.record_breach(720, 2)
+	session.record_defeat(720, 0, 0.0)
+	session.record_defeat(720, 1, 1008.0)
+	var second := _spawn_sample(session, 720, 2)
+	session.record_breach(720, 1)
+	session.record_breach(720, 2)
+	var candidate := _candidate(session)
+	if candidate.is_empty():
+		return
+	assert_eq(candidate.memory.cells.size(), 2)
+	assert_almost_eq(candidate.memory.cells.get(first.context, {}).get("q", -1.0), 0.425, 0.000001)
+	assert_almost_eq(candidate.memory.cells.get(second.context, {}).get("q", -1.0), 0.575, 0.000001)
+
+
+func test_each_context_receives_mean_reward_and_one_visit_per_match() -> void:
+	var session := _session()
+	var decisions: Array[Dictionary] = []
+	for ordinal in 10:
+		decisions.append(_spawn_sample(session, 800 + ordinal))
+	var observed: String = decisions[0].context
+	session.record_defeat(800, 1, 1008.0)
+	for ordinal in range(5, 10):
+		if decisions[ordinal].context == observed:
+			session.record_breach(800 + ordinal, 1)
+	var candidate := _candidate(session)
+	if candidate.is_empty():
+		return
+	assert_eq(candidate.memory.cells.size(), 1)
+	assert_almost_eq(candidate.memory.cells.get(observed, {}).get("q", -1.0), 0.5, 0.000001)
+	assert_almost_eq(candidate.memory.cells.get(observed, {}).get("n", -1.0), 1.0, 0.000001)
+
+
+func test_terminal_with_samples_decays_all_cells_and_caps_observed_effective_visits() -> void:
+	var cells: Dictionary = {}
+	for lane in 5:
+		cells["early/A/%d/empty/zero" % lane] = {"q": 0.9, "n": 20.0}
+	cells["late/R/4/armed/two_plus"] = {"q": 0.1, "n": 10.0}
+	var original := _memory(cells)
+	var before := original.duplicate(true)
+	var session := _session(42, original)
+	var decision := _spawn_sample(session, 900)
+	session.record_defeat(900, 1, 1008.0)
+	var candidate := _candidate(session)
+	if candidate.is_empty():
+		return
+	var observed: Dictionary = candidate.memory.cells.get(decision.context, {})
+	assert_almost_eq(observed.get("q", -1.0), 0.7582, 0.000001)
+	assert_almost_eq(observed.get("n", -1.0), 20.0, 0.000001)
+	var old: Dictionary = candidate.memory.cells.get("late/R/4/armed/two_plus", {})
+	assert_almost_eq(old.get("q", -1.0), 0.108, 0.000001)
+	assert_almost_eq(old.get("n", -1.0), 9.8, 0.000001)
+	assert_eq(original, before, "El candidato nunca publica ni muta la memoria de entrada")
+
+
+func test_five_contradictory_matches_reverse_extreme_prior_without_growing_visits() -> void:
+	var cells: Dictionary = {}
+	for lane in 5:
+		cells["early/A/%d/empty/zero" % lane] = {"q": 1.0, "n": 20.0}
+	var memory := _memory(cells)
+	var expected_q := 1.0
+	for match_index in 5:
+		var session := SessionScript.new()
+		session.begin_match("reverse-%d" % match_index, 42, _config(), memory)
+		for ordinal in 5:
+			_spawn_sample(session, 1000 + ordinal)
+			session.record_defeat(1000 + ordinal, 1, 1008.0)
+		var candidate := _candidate(session)
+		if candidate.is_empty():
+			return
+		memory = candidate.memory
+		expected_q = (0.5 + 0.98 * (expected_q - 0.5)) * 0.85
+		for cell: Dictionary in memory.cells.values():
+			assert_almost_eq(cell.q, expected_q, 0.000001)
+			assert_almost_eq(cell.n, 20.0, 0.000001)
+	assert_lt(expected_q, 0.5, "Experiencia contraria debe superar una preferencia extrema antigua")
+
+
+func test_effective_confidence_interpolates_before_three_visits() -> void:
+	var cells: Dictionary = {}
+	for lane in 5:
+		cells["early/A/%d/empty/zero" % lane] = {"q": 1.0, "n": 1.5} if lane == 0 else {"q": 0.5, "n": 0.0}
+	var session := _session(42, _memory(cells))
+	_decision(session)
+	var probabilities := _probabilities(session)
+	assert_almost_eq(probabilities.get(0, -1.0), 0.05 + 0.75 * 1.125 / 5.125, 0.000001)
+	assert_almost_eq(probabilities.get(1, -1.0), 0.05 + 0.75 / 5.125, 0.000001)
+
+
+func test_recorded_results_do_not_change_selection_until_the_next_match() -> void:
+	var session := _session(23)
+	var control := _session(23)
+	for ordinal in 5:
+		var decision := _spawn_sample(session, 1100 + ordinal)
+		var reference := _spawn_sample(control, 1100 + ordinal)
+		assert_eq(decision.lane, reference.lane)
+		session.record_breach(1100 + ordinal, 1)
+	var next := _decision(session)
+	var reference_next := _decision(control)
+	assert_eq(next.lane, reference_next.lane)
+	assert_eq(_probabilities(session), _probabilities(control))
+	var candidate := _candidate(session)
+	if candidate.is_empty():
+		return
+	assert_true(session.choose_lane(_snapshot()).is_empty(), "FINALIZED cancela cualquier propuesta pendiente")
+	var next_match := _session(23, candidate.memory)
+	_decision(next_match)
+	assert_eq(candidate.memory.cells.size(), 5)
+	for cell: Dictionary in candidate.memory.cells.values():
+		assert_almost_eq(cell.q, 0.575, 0.000001)
+
+
+func test_nonterminal_results_do_not_close_session_and_terminal_only_commits_once() -> void:
+	var session := _session()
+	_spawn_sample(session, 1200)
+	session.record_breach(1200, 1)
+	for result in [GameStateManager.GameState.PLAYING, GameStateManager.GameState.PAUSED, GameStateManager.GameState.MENU]:
+		var rejected := session.finish(result)
+		assert_false(rejected.get("changed", false))
+		assert_eq(session.get_decision_snapshot().get("state"), "ACTIVE")
+	var candidate := _candidate(session)
+	if candidate.is_empty():
+		return
+	assert_true(candidate.changed)
+	assert_eq(session.get_decision_snapshot().get("state"), "FINALIZED")
+	assert_false(session.finish(GameStateManager.GameState.LOST).get("changed", false))
+	session.abandon()
+	assert_eq(session.get_decision_snapshot().get("state"), "FINALIZED")
+
+
+func test_zero_closed_samples_preserve_memory_exactly_without_decay(params = use_parameters([
+	GameStateManager.GameState.WON, GameStateManager.GameState.LOST,
+])) -> void:
+	var memory := _memory({"late/R/4/armed/one": {"q": 0.8, "n": 17.0}})
+	memory.generation = 9
+	memory.last_match_id = "previous"
+	var session := _session(42, memory)
+	_spawn_sample(session, 1300)
+	session.record_breach(9999, 1) # INITIAL u otra identidad no registrada.
+	var candidate := _candidate(session, params)
+	if candidate.is_empty():
+		return
+	assert_false(candidate.changed)
+	assert_eq(candidate.memory, memory)
+	assert_eq(session.get_decision_snapshot().get("state"), "FINALIZED")
+
+
+func test_abandon_discards_closed_samples_idempotently_and_disables_selection() -> void:
+	var session := _session()
+	_spawn_sample(session, 1400)
+	session.record_breach(1400, 1)
+	session.abandon()
+	session.abandon()
+	assert_eq(session.get_decision_snapshot().get("state"), "ABANDONED")
+	assert_true(session.choose_lane(_snapshot()).is_empty())
+	assert_false(session.finish(GameStateManager.GameState.WON).get("changed", false))
+
+
+func test_valid_config_parameters_drive_learning_and_retention_instead_of_literal_defaults() -> void:
+	var config := _config()
+	config.learning_rate = 0.1
+	config.retention_per_match = 0.9
+	var cells: Dictionary = {}
+	for lane in 5:
+		cells["early/A/%d/empty/zero" % lane] = {"q": 0.8, "n": 3.0}
+	var session := _session(42, _memory(cells), config)
+	var decision := _spawn_sample(session, 1500)
+	session.record_breach(1500, 1)
+	var candidate := _candidate(session)
+	if candidate.is_empty():
+		return
+	var cell: Dictionary = candidate.memory.cells.get(decision.context, {})
+	assert_almost_eq(cell.get("q", -1.0), 0.793, 0.000001)
+	assert_almost_eq(cell.get("n", -1.0), 3.7, 0.000001)
+
+
+func test_one_learned_experience_changes_next_match_preference_with_confidence_and_alternatives() -> void:
+	var session := _session()
+	var decision := _spawn_sample(session, 1600)
+	session.record_breach(1600, 1)
+	var candidate := _candidate(session)
+	if candidate.is_empty():
+		return
+	var following := _session(42, candidate.memory)
+	_decision(following)
+	var probabilities := _probabilities(following)
+	assert_gt(probabilities.get(decision.lane, -1.0), 0.2)
+	assert_almost_eq(probabilities.get(decision.lane, -1.0), 0.05 + 0.75 * 1.0125 / 5.0125, 0.000001)
+	for lane in 5:
+		assert_gt(probabilities.get(lane, -1.0), 0.0)
