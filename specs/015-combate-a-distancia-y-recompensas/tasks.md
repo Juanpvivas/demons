@@ -1,8 +1,8 @@
 # Tasks: Combate a distancia y recompensas
 
 **Input**: [spec](spec.md), [plan](plan.md), [contrato](contracts/ranged-combat.md), [datos](data-model.md), [quickstart](quickstart.md).
-**Entrega**: 015-I1 completo, tres cambios; rama `codex/015-combate-a-distancia-y-recompensas`, base main4fb1267; [Issue #58](https://github.com/Juanpvivas/demons/issues/58), [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59). I1 e I2 aprobados para integración (I2 sobre `d8826e2`); sin merge ni publicación.
-**Ajuste I2**: T016–T025 completos y aprobados para integración sobre `d8826e2`. I1/T001–T014 y sus aprobaciones se conservan; T015 publicación sigue pendiente.
+**Entrega**: 015-I1 completo, tres cambios; rama `codex/015-combate-a-distancia-y-recompensas`, base main4fb1267; [Issue #58](https://github.com/Juanpvivas/demons/issues/58), [PR #59 integrado](https://github.com/Juanpvivas/demons/pull/59) en `main` mediante Squash and merge `73c2dff`. I1 e I2 integrados; publicación pendiente.
+**Ajuste I2**: T016–T025 completos; aprobación final de integración en `c6bd482`, integrado por PR #59 (`73c2dff`). I1/T001–T014 y sus aprobaciones se conservan; T015 publicación sigue pendiente.
 **Flujo**: [roles/TDD](../../docs/DEVELOPMENT_WORKFLOW.md); Spec Kit prepara, agentes ejecutan. Sólo orquestador marca [X] tras QA. Sin nuevas evidencias Git.
 
 ## Preparación y setup mínimo

@@ -201,7 +201,7 @@ orienta la composición lateral y no fija costos, estadísticas ni HUD final.
   Los estados terminales bloquean nuevas acciones y otra partida reinicia
   estado, reserva y cursor.
 
-**Fusil enemigo y recompensa (015-I1, aprobación funcional T010 en rama):**
+**Fusil enemigo y recompensa (015-I1, integrado por PR #59, `73c2dff`):**
 el fusilero vivo dispara hacia −X sólo a un colombiano vivo de su carril, con
 alcance 864; se detiene, dispara al adquirir y después respeta su intervalo.
 Sin blanco vuelve a marchar; contacto y fusil son excluyentes y no hay munición
@@ -214,8 +214,8 @@ El avance a machete está expuesto al fusil enemigo y se observaron derrotas tem
 esto es un riesgo táctico, sin conclusión de imposibilidad de victoria ni nuevo
 balance autorizado. [Verificación y límites](../specs/015-combate-a-distancia-y-recompensas/research.md#alcance-funcional-aprobado-y-límites):
 I1 conserva CI/QA de integración de `2351798`; I2 cuenta con CI y QA de
-integración aprobados en `d8826e2`, en la rama del
-[PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59), aún sin fusionar;
+integración aprobados en `d8826e2`. Ambos incrementos están integrados en `main`
+por [PR #59](https://github.com/Juanpvivas/demons/pull/59), `73c2dff`;
 publicación T015 sigue pendiente.
 
 **Composición mixta (015-I2, aprobación funcional T021):** los 99 enemigos WAVE
@@ -563,7 +563,7 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 
 ### Resueltas (graduadas desde specs de feature)
 
-- ✅ Alcance colombiano 864, fusil enemigo estacionario por carril con progresión autorada y baja de machete +2 moral/+3 vida limitada al máximo del dueño vivo: 015/T008–T010, aprobado funcionalmente. Se conservan diagonales inmediatas, contacto excluyente, reglas de derrota y resto de stats; CI/QA de integración aprobados en rama (PR #59 en borrador, sin merge), con publicación pendiente.
+- ✅ Alcance colombiano 864, fusil enemigo estacionario por carril con progresión autorada y baja de machete +2 moral/+3 vida limitada al máximo del dueño vivo: 015/T008–T010, aprobado funcionalmente. Se conservan diagonales inmediatas, contacto excluyente, reglas de derrota y resto de stats; integrados en `main` por PR #59 (`73c2dff`), con publicación pendiente.
 
 - ✅ Narrativa dentro del juego mediante La carta: 013-I1 integrado por PR #54 (`77be629`), con siete escenas, narrador humano toma3 y compañero sintético definitivo aceptados por la persona, subtítulos y recuerdo local. Tras Jugar o Ver introducción espera Comenzar antes del combate. Es ficción inspirada en el contexto histórico; publicación T014 sigue pendiente.
 
@@ -644,3 +644,4 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 | 2026-10-30 | Actualización documental: 013 integrado por PR #54 (`77be629`) y 014 por PR #56 (`45cd83a`); integración/CI aprobados, publicación y requisitos físicos pendientes conservados. |
 | 2026-10-30 | 015/T011 tras QA funcional T010: alcance864, fusil enemigo por carril/perfiles y recompensa machete +2/+3; riesgo táctico y límites por destino explícitos, CI/integración final y publicación pendientes. |
 | 2026-10-30 | 015/T022 tras QA funcional T021: mezcla continua de 66 asaltantes/33 fusileros WAVE por datos, inicial R1 independiente y tiempos/carriles conservados; CI/integración final I2 y publicación pendientes. |
+| 2026-10-30 | Actualización documental: I1/I2 de 015 integrados en `main` por PR #59 (`73c2dff`); conserva CI/QA de sus revisiones previas y pendientes de publicación/hardware, sin distribución nueva. |

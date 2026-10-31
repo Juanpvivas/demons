@@ -33,7 +33,7 @@ Perfil inicial y ola1 iguales a tabla1; ola2–10 refs distintas con sus campos 
 
 ## Enmienda 015-I2 — Contrato de composición
 
-I2 cuenta con CI y QA APROBADO PARA INTEGRACIÓN sobre `d8826e2`, en rama/PR59 en borrador, sin merge ni publicación. El contrato anterior de tiro corresponde a R; A conserva avance/contacto sin fusil.
+I2 está integrado con I1 en `main` por [PR #59](https://github.com/Juanpvivas/demons/pull/59) (`73c2dff`), con CI/QA previos de `d8826e2` y sin publicación. El contrato anterior de tiro corresponde a R; A conserva avance/contacto sin fusil.
 
 A = `enemigo_asaltante_base.tres` (tres campos rifle0, HP15/speed40/melee5/drop3);
 R = perfil de fusilero I1 de su oleada (alcance864/tabla exacta). A no requiere

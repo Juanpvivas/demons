@@ -170,7 +170,8 @@ latencia/techo de mezcla Web o combate nativo/hardware.
 [Alcance y límites](specs/014-sonidos-combate/research.md#alcance-funcional-aprobado-y-límites).
 
 [015 — Combate a distancia y recompensas](specs/015-combate-a-distancia-y-recompensas/spec.md)
-está aprobado funcionalmente en su rama: el fusil colombiano cubre desde el
+está integrado en `main` mediante el [PR #59](https://github.com/Juanpvivas/demons/pull/59)
+(`73c2dff`): el fusil colombiano cubre desde el
 hogar hasta la entrada del mismo carril (864 unidades), conservando las diagonales
 inmediatas. I2 intercala A,A,R continuamente entre los 99 enemigos de oleadas:
 66 asaltantes sin fusil y 33 fusileros, más un fusilero inicial independiente de
@@ -182,8 +183,7 @@ máximo; el fusil conserva +1 moral sin curación. El avance sin munición queda
 expuesto al fuego enemigo: se observaron derrotas tempranas, sin demostrar que
 sea imposible ganar ni autorizar otro ajuste de balance. I1 conserva CI/QA de
 integración de `2351798`; I2 cuenta con CI y QA `APROBADO PARA INTEGRACIÓN`
-de `d8826e2`. Ambos siguen en su rama y
-[PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59), sin fusionar;
+de `d8826e2`, previos al merge de I1 e I2;
 publicación T015 y los pendientes anteriores se conservan. [Alcance verificado y límites](specs/015-combate-a-distancia-y-recompensas/research.md#alcance-funcional-aprobado-y-límites).
 
 [008 — Marcha enemiga](specs/008-marcha-enemiga/spec.md) renueva el avance con

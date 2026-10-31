@@ -15,8 +15,10 @@ QA T021 aprueba `b4fbaf8`: A,A,R continuo entre 99 WAVE (66 A/33 R), inicial R1
 independiente, stats/tabla/ritmos/carriles conservados y hasta tres entradas
 inmutables reutilizadas por oleada. No hay nueva IA o colisiones. GREEN/regresión,
 import y export Web están verificados. CI de `d8826e2` y QA final aprobaron
-integración I2, en rama/PR59 en borrador, sin merge. La comprobación de esa
-revisión no se atribuye automáticamente a cambios documentales posteriores.
+integración I2; el cierre previo al merge en `c6bd482` también completó CI.
+I1 e I2 están integrados en `main` por [PR #59](https://github.com/Juanpvivas/demons/pull/59),
+`73c2dff`. Estas comprobaciones no acreditan automáticamente el SHA del merge
+ni cambios documentales posteriores.
 Chrome en macOS observó asaltantes avanzando, fusileros detenidos, transición
 a machete, derrota real al cruzar la defensa, Retry limpio y salida al menú
 durante combate activo, ahora observado manualmente en I2.
