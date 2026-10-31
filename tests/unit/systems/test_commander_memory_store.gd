@@ -17,10 +17,15 @@ class FakeIO extends RefCounted:
 	var last_written: String = ""
 	var tamper_after_write: bool = false
 	var readback_armed: bool = false
+	var fail_remove_path: String = ""
+	var lie_remove_path: String = ""
+	var fail_verify_path: String = ""
+	var removal_attempts: Array[String] = []
 
 	func exists(path: String) -> Dictionary:
 		calls.append("exists:" + path)
-		return {"error": ERR_FILE_CANT_READ if fail_stage == "exists" else OK, "value": files.has(path)}
+		var failed := fail_stage == "exists" or (path == fail_verify_path and removal_attempts.has(path))
+		return {"error": ERR_FILE_CANT_READ if failed else OK, "value": files.has(path)}
 
 	func size(path: String) -> Dictionary:
 		calls.append("size:" + path)
@@ -48,7 +53,11 @@ class FakeIO extends RefCounted:
 
 	func remove(path: String) -> Dictionary:
 		calls.append("remove:" + path)
-		files.erase(path)
+		removal_attempts.append(path)
+		if path == fail_remove_path:
+			return {"error": ERR_FILE_CANT_WRITE}
+		if path != lie_remove_path:
+			files.erase(path)
 		return {"error": OK}
 
 
@@ -696,3 +705,240 @@ func test_returned_memory_is_detached_from_store_ram() -> void:
 	if not _result_shape(loaded):
 		return
 	assert_eq(loaded.memory.cells.size(), 1)
+
+
+func _cleared(store: CommanderMemoryStore) -> Dictionary:
+	var result := store.clear()
+	var shape_ok := result.has_all(["status", "memory", "applied", "saved"])
+	assert_true(shape_ok, "clear debe comunicar resultado explícito y distinguir borrado persistente de RAM")
+	return result if shape_ok else {}
+
+
+func _two_generations(store: CommanderMemoryStore) -> Dictionary:
+	var neutral := _neutral(store)
+	if neutral.is_empty():
+		return {}
+	var first := _save(store, _candidate(neutral, "clear-previous"), 0)
+	if not _result_shape(first):
+		return {}
+	assert_eq(first.status, "OK")
+	var second := _save(store, _candidate(first.memory, "clear-current"), 1)
+	if not _result_shape(second):
+		return {}
+	assert_eq(second.status, "OK")
+	return second.memory
+
+
+func _write_witness() -> String:
+	var path := _directory.path_join("intro_progress.json")
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	assert_not_null(file)
+	if file != null:
+		file.store_string("intro-only-witness: capítulo-á; preferences unchanged")
+		file.close()
+	return path
+
+
+func test_clear_real_files_removes_both_slots_restarts_neutral_and_preserves_foreign_witness() -> void:
+	var witness := _write_witness()
+	var witness_before := FileAccess.get_file_as_bytes(witness)
+	var store := _store()
+	var previous := _two_generations(store)
+	if previous.is_empty():
+		return
+	assert_true(FileAccess.file_exists(_path("a")))
+	assert_true(FileAccess.file_exists(_path("b")))
+	var result := _cleared(store)
+	if result.is_empty():
+		return
+	assert_eq(result.status, "OK")
+	assert_true(result.applied)
+	assert_true(result.saved)
+	assert_eq(result.memory.cells, {})
+	assert_eq(result.memory.generation, 0)
+	assert_eq(result.memory.last_match_id, "")
+	assert_false(FileAccess.file_exists(_path("a")))
+	assert_false(FileAccess.file_exists(_path("b")))
+	assert_eq(FileAccess.get_file_as_bytes(witness), witness_before)
+	assert_eq(DirAccess.get_files_at(_directory), PackedStringArray(["intro_progress.json"]))
+	var reopened := _neutral(_store())
+	assert_false(reopened.is_empty())
+
+
+func test_clear_deletes_inactive_before_active_and_checks_absence_of_each() -> void:
+	var io := FakeIO.new()
+	var store := _store(io)
+	var previous := _two_generations(store)
+	if previous.is_empty():
+		return
+	var active := io.last_written
+	var inactive := _path("a") if active == _path("b") else _path("b")
+	io.calls.clear()
+	var result := _cleared(store)
+	if result.is_empty():
+		return
+	assert_eq(result.status, "OK")
+	var remove_calls: Array[String] = []
+	for call: String in io.calls:
+		if call.begins_with("remove:"):
+			remove_calls.append(call)
+	assert_eq(remove_calls, ["remove:" + inactive, "remove:" + active])
+	for path in [inactive, active]:
+		var remove_index := io.calls.find("remove:" + path)
+		var last_check := io.calls.rfind("exists:" + path)
+		assert_gt(last_check, remove_index, "No basta recibir OK de remove: verificar ausencia después")
+	assert_eq(io.files, {})
+	assert_eq(result.memory.cells, {})
+
+
+func test_clear_missing_slots_is_idempotent_without_recreating_any_file() -> void:
+	var io := FakeIO.new()
+	var store := _store(io)
+	if _neutral(store).is_empty():
+		return
+	for attempt in 2:
+		var result := _cleared(store)
+		if result.is_empty():
+			return
+		assert_eq(result.status, "OK")
+		assert_true(result.applied)
+		assert_true(result.saved)
+		assert_eq(result.memory.cells, {})
+	assert_eq(io.files, {})
+	for call: String in io.calls:
+		assert_false(call.begins_with("open:") or call.begins_with("write:"), "Clear no guarda un backup ni repuebla memoria")
+
+
+func test_clear_also_removes_invalid_copies_and_leaves_foreign_file_untouched() -> void:
+	var witness := _write_witness()
+	var before := FileAccess.get_file_as_bytes(witness)
+	for slot in ["a", "b"]:
+		var file := FileAccess.open(_path(slot), FileAccess.WRITE)
+		assert_not_null(file)
+		if file != null:
+			file.store_string("{corrupt slot")
+			file.close()
+	var store := _store()
+	assert_eq(store.load_compatible(_config()).get("status"), "INVALID")
+	var result := _cleared(store)
+	if result.is_empty():
+		return
+	assert_eq(result.status, "OK")
+	assert_false(FileAccess.file_exists(_path("a")))
+	assert_false(FileAccess.file_exists(_path("b")))
+	assert_eq(FileAccess.get_file_as_bytes(witness), before)
+	assert_false(_neutral(_store()).is_empty())
+
+
+func test_clear_remove_failure_preserves_ram_and_remaining_disk_copy_is_revalidated(params = use_parameters([
+	"inactive", "active",
+])) -> void:
+	var io := FakeIO.new()
+	var store := _store(io)
+	var previous := _two_generations(store)
+	if previous.is_empty():
+		return
+	var active := io.last_written
+	var inactive := _path("a") if active == _path("b") else _path("b")
+	var active_bytes: String = io.files[active]
+	io.fail_remove_path = inactive if params == "inactive" else active
+	var result := _cleared(store)
+	if result.is_empty():
+		return
+	assert_eq(result.status, "IO_ERROR")
+	assert_false(result.applied)
+	assert_false(result.saved)
+	assert_eq(result.memory, previous)
+	assert_eq(io.files.get(active), active_bytes)
+	if params == "active":
+		assert_false(io.files.has(inactive), "Fallo parcial: el primer borrado puede haber sucedido")
+	io.fail_remove_path = ""
+	var reloaded := _store(io).load_compatible(_config())
+	if not _result_shape(reloaded):
+		return
+	assert_eq(reloaded.status, "OK")
+	assert_eq(reloaded.memory, previous)
+
+
+func test_clear_rejects_reported_success_when_a_file_still_exists(params = use_parameters([
+	"inactive", "active",
+])) -> void:
+	var io := FakeIO.new()
+	var store := _store(io)
+	var previous := _two_generations(store)
+	if previous.is_empty():
+		return
+	var active := io.last_written
+	var inactive := _path("a") if active == _path("b") else _path("b")
+	io.lie_remove_path = inactive if params == "inactive" else active
+	var result := _cleared(store)
+	if result.is_empty():
+		return
+	assert_eq(result.status, "IO_ERROR")
+	assert_false(result.applied)
+	assert_false(result.saved)
+	assert_eq(result.memory, previous)
+	assert_true(io.files.has(io.lie_remove_path))
+	io.lie_remove_path = ""
+	var reloaded := _store(io).load_compatible(_config())
+	if not _result_shape(reloaded):
+		return
+	assert_eq(reloaded.status, "OK", "Reabrir valida cualquier slot restante; no asumir borrado que falló")
+	assert_eq(reloaded.memory.cells.size(), 1)
+
+
+func test_clear_verification_io_error_preserves_ram_even_if_deletion_already_happened(params = use_parameters([
+	"inactive", "active",
+])) -> void:
+	var io := FakeIO.new()
+	var store := _store(io)
+	var previous := _two_generations(store)
+	if previous.is_empty():
+		return
+	var active := io.last_written
+	var inactive := _path("a") if active == _path("b") else _path("b")
+	io.fail_verify_path = inactive if params == "inactive" else active
+	var result := _cleared(store)
+	if result.is_empty():
+		return
+	assert_eq(result.status, "IO_ERROR")
+	assert_false(result.applied)
+	assert_false(result.saved)
+	assert_eq(result.memory, previous)
+	assert_false(io.files.has(io.fail_verify_path), "El fallo de verificación ocurre después de eliminar el archivo")
+	io.fail_verify_path = ""
+	var reloaded := _store(io).load_compatible(_config())
+	if not _result_shape(reloaded):
+		return
+	assert_true(reloaded.status in ["OK", "MISSING"])
+	assert_eq(reloaded.memory.cells.size(), 1 if reloaded.status == "OK" else 0)
+
+
+func test_clear_transient_only_resets_ram_without_inspecting_or_deleting_persisted_copies() -> void:
+	var witness := _write_witness()
+	var witness_before := FileAccess.get_file_as_bytes(witness)
+	var io := FakeIO.new()
+	io.files[_path("a")] = "inaccessible persisted A"
+	io.files[_path("b")] = "inaccessible persisted B"
+	var untouched := io.files.duplicate(true)
+	io.fail_stage = "exists"
+	var store := _store(io)
+	store.transient = true
+	var neutral := _neutral(store)
+	if neutral.is_empty():
+		return
+	var saved := _save(store, _candidate(neutral), 0)
+	assert_eq(saved.get("status"), "OK")
+	var result := _cleared(store)
+	if result.is_empty():
+		return
+	assert_eq(result.status, "OK")
+	assert_true(result.applied)
+	assert_false(result.saved, "No afirmar que se borraron copias inaccesibles")
+	assert_eq(result.memory.cells, {})
+	assert_eq(result.memory.generation, 0)
+	assert_eq(io.calls, [])
+	assert_eq(io.files, untouched)
+	assert_eq(FileAccess.get_file_as_bytes(witness), witness_before)
+	var reloaded := store.load_compatible(_config())
+	assert_eq(reloaded.get("memory", {}).get("cells", {"wrong": true}), {})
