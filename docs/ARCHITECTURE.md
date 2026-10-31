@@ -32,12 +32,15 @@ res://
 │   ├── units/                  # soldado_base_stats.tres, futuras unidades
 │   ├── enemies/                # stats de cada tipo de enemigo (.tres)
 │   ├── levels/                 # LaneBoardConfig concreto por nivel (.tres)
+│   ├── director/               # CommanderConfig autorado; núcleo017-I1 aislado
 │   ├── ui/                     # Theme compartido del menú y resultado
 │   └── waves/                  # definición de oleadas por nivel (.tres)
 ├── autoloads/                   # Singletons globales (ver sección 4.1)
 ├── core/                          # Lógica compartida NO-autoload (ver sección 4.5)
 │   ├── object_pool.gd             # ObjectPool genérico para enemigos/proyectiles
-│   └── board_manager.gd           # BoardManager: ocupación de celdas del tablero, por-nivel
+│   ├── board_manager.gd           # BoardManager: ocupación de celdas del tablero, por-nivel
+│   ├── commander_session.gd       # Selector y aprendizaje017-I1, sin cableado al nivel
+│   └── commander_memory_store.gd  # Memoria JSON validada, sin autoridad sobre gameplay
 ├── assets/
 │   ├── sprites/
 │   │   ├── units/             # monte_calvo/: atlas, frames y procedencia del soldado
@@ -683,6 +686,34 @@ acreditada en esta entrega. Los [límites de014](../specs/014-sonidos-combate/re
 conservan publicación pendiente y las observaciones no certificadas, sin
 presentar la integración/CI ya aprobados como pendientes.
 
+### 4.10 Núcleo aislado del comandante con memoria (017-I1)
+
+`CommanderSession` y `CommanderMemoryStore` son servicios `RefCounted`
+instanciables en `core/`, sin autoload, Timer o conexiones al nivel. I1 está
+implementado y aprobado funcionalmente; su gate final de integración exige
+además documentación y CI de la revisión exacta. El juego mantiene el cursor
+1→5 vigente: la composición de la raíz, el spawner y el menú corresponde a I2.
+
+`CommanderConfig`, en `resources/schemas/`, sólo define campos; el `.tres` de
+`resources/director/` autora los parámetros y no contiene memoria mutable.
+La sesión copia configuración y memoria, decide entre los carriles pendientes
+del bloque global de cinco y conserva propuestas/confirmación/cancelación con
+RNG propio. Cada terminal válido consolida una media por contexto; supervivientes
+sin resultado se censuran y abandono no aprende. Los pesos están acotados, sin
+pretender que las pruebas aisladas acrediten equilibrio o ganabilidad.
+
+El almacén valida JSON, hash, esquema y compatibilidad antes de publicar memoria;
+alterna dos slots y verifica la escritura por relectura. Un borrado exitoso
+comprueba la ausencia de ambas copias antes de vaciar RAM; un fallo conserva RAM
+y obliga a revalidar el disco. Rutas, backend I/O y fuentes de compatibilidad
+son inyectables; `TRANSIENT` mantiene sólo RAM sin I/O de memoria. No carga
+Resources desde datos del usuario ni modifica progreso narrativo. El
+[modelo017](../specs/017-comandante-memoria/data-model.md) fija campos y formato
+canónico; el [contrato](../specs/017-comandante-memoria/contracts/commander.md)
+distingue errores observables de `FileAccess`, fallos simulados y durabilidad.
+Persistencia Web, aplicaciones nativas, control de borrado en menú y playtesting
+conservan verificación propia; 006, #61/#53 y los gates de publicación no cambian.
+
 ## 5. Composición de escenas (ejemplo concreto)
 
 - **`Soldado.tscn`**: desde 005-I2, raíz `CharacterBody2D` en modo flotante y
@@ -1175,3 +1206,4 @@ ni renovación de excepciones beta.
 | 2026-10-30 | Actualización documental: I1/I2 de 015 integrados en `main` por PR #59 (`73c2dff`); conserva CI/QA de sus revisiones previas y pendientes de publicación/hardware, sin distribución nueva. |
 | 2026-10-31 | Adenda administrativa autorizada: cierre funcional humano de #18/#22/#55/#58 y publicación pendiente seguida en [#61](https://github.com/Juanpvivas/demons/issues/61); tareas/SC e historia conservados, sin aprobación física ni distribución. |
 | 2026-10-31 | Constitución 4.3.0: autorización acotada 1.0.3/build 6 con QA/CI de main exacto y verificadores previos por upload; firma/renderer y pendientes #61/#53/006 intactos. |
+| 2026-10-31 | 017/T022 tras QA funcional T021: §2/§4.10 describen Session, Store y CommanderConfig como núcleo aislado, memoria validada y puertos inyectables; integración jugable I2, CI/gate final y publicación conservan sus verificaciones propias. |
