@@ -78,12 +78,30 @@ func _config() -> CommanderConfig:
 
 
 func _sources() -> Dictionary:
+	# duplicate(true) de WaveData conserva Resources externos anidados en entradas.
+	# Cada capa mutable tiene dueño propio, sin restaurar la caché global después.
 	var waves: Array[WaveData] = []
 	for number in range(1, 11):
-		waves.append(load("res://resources/waves/nivel_montecalvo_oleada_%02d.tres" % number).duplicate(true))
+		var authored: WaveData = load("res://resources/waves/nivel_montecalvo_oleada_%02d.tres" % number)
+		var wave := WaveData.new()
+		wave.wave_number = authored.wave_number
+		for original: WaveSpawnEntry in authored.spawn_entries:
+			var entry := WaveSpawnEntry.new()
+			entry.count = original.count
+			entry.spawn_interval = original.spawn_interval
+			entry.enemy_stats = original.enemy_stats.duplicate(true) as EnemyStats
+			wave.spawn_entries.append(entry)
+		waves.append(wave)
+	var authored_board: LaneBoardConfig = load("res://resources/levels/monte_calvo_board.tres")
+	var board := LaneBoardConfig.new()
+	board.design_rect = authored_board.design_rect
+	board.cell_size = authored_board.cell_size
+	board.defended_rect = authored_board.defended_rect
+	board.home_cells.assign(authored_board.home_cells)
+	board.spawn_positions.assign(authored_board.spawn_positions)
 	return {"waves": waves,
 		"soldier_stats": load("res://resources/units/soldado_base_stats.tres").duplicate(true),
-		"board": load("res://resources/levels/monte_calvo_board.tres").duplicate(true)}
+		"board": board}
 
 
 func _store(backend: Object = null, sources: Dictionary = {}) -> CommanderMemoryStore:
@@ -942,3 +960,39 @@ func test_clear_transient_only_resets_ram_without_inspecting_or_deleting_persist
 	assert_eq(FileAccess.get_file_as_bytes(witness), witness_before)
 	var reloaded := store.load_compatible(_config())
 	assert_eq(reloaded.get("memory", {}).get("cells", {"wrong": true}), {})
+
+
+func test_compatibility_fixtures_never_mutate_authored_wave_entries_or_combat_resources() -> void:
+	var sources := _sources()
+	var enemy_fields: Array[String] = ["max_health", "move_speed", "melee_damage", "rifle_range",
+		"rifle_damage", "rifle_interval", "ammo_drop"]
+	for number in range(1, 11):
+		var authored: WaveData = load("res://resources/waves/nivel_montecalvo_oleada_%02d.tres" % number)
+		var fixture: WaveData = sources.waves[number - 1]
+		assert_not_same(fixture, authored)
+		for index in authored.spawn_entries.size():
+			var original: WaveSpawnEntry = authored.spawn_entries[index]
+			var copy: WaveSpawnEntry = fixture.spawn_entries[index]
+			assert_not_same(copy, original, "Entradas en Array requieren copia propia")
+			assert_not_same(copy.enemy_stats, original.enemy_stats, "Los stats anidados nunca deben ser compartidos")
+			var before_count := original.count
+			var before_interval := original.spawn_interval
+			copy.count += 1
+			copy.spawn_interval += 0.1
+			assert_eq(original.count, before_count)
+			assert_eq(original.spawn_interval, before_interval)
+			for field: String in enemy_fields:
+				var before: Variant = original.enemy_stats.get(field)
+				copy.enemy_stats.set(field, copy.enemy_stats.get(field) + 1)
+				assert_eq(original.enemy_stats.get(field), before, "Fixture no altera stat autorado: " + field)
+	var soldier: UnitStats = load("res://resources/units/soldado_base_stats.tres")
+	var original_damage := soldier.damage_per_shot
+	sources.soldier_stats.damage_per_shot += 1
+	assert_eq(soldier.damage_per_shot, original_damage)
+	var board: LaneBoardConfig = load("res://resources/levels/monte_calvo_board.tres")
+	var homes_before := board.home_cells.duplicate()
+	var spawns_before := board.spawn_positions.duplicate()
+	sources.board.home_cells[0].x += 1
+	sources.board.spawn_positions[0].x += 1
+	assert_eq(board.home_cells, homes_before)
+	assert_eq(board.spawn_positions, spawns_before)
