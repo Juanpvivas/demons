@@ -39,15 +39,15 @@ Estas tareas se ejecutarán sólo tras una petición posterior de implementació
 
 - [X] T001 project-orchestrator: verificar Git y contexto en `specs/017-comandante-memoria/plan.md`, preservar `output/` y016/T009–T011; confirmar prioridad de ejecución si016 sigue pendiente, buscar/reusar un Issue único017 (incluidos cerrados), preparar rama I1 desde main actualizado o base explícita y registrar identidad de rama/Issue en documentos017. No implementar, probar ni cerrar016. Depende de autorización futura de ejecución. Cubre FR-016.
 - [X] T002 qa-validator: revisar preparación completa en `specs/017-comandante-memoria/{spec,plan,tasks}.md`, `data-model.md`, `contracts/commander.md`, `quickstart.md` y checklist; contrastar constitución y decisiones Q1/Q2; emitir veredicto sólo documental para I1, sin aprobar código inexistente o publicación. Depende T001. Cubre FR-016.
-- [ ] T003 godot-tester: comprobar runner/importación y suite base no vacía con `tools/ci/run_gut.py` y GUT existente en `tests/unit/`; confirmar motor4.7.1/GUT9.7.1 y aislamiento de rutas de memoria. Reportar errores base sin atribuirlos a017 ni declarar RED; no crear infraestructura o cambiar CI si ya funciona. Depende T002. Cubre FR-016.
+- [X] T003 godot-tester: comprobar runner/importación y suite base no vacía con `tools/ci/run_gut.py` y GUT existente en `tests/unit/`; confirmar motor4.7.1/GUT9.7.1 y aislamiento de rutas de memoria. Reportar errores base sin atribuirlos a017 ni declarar RED; no crear infraestructura o cambiar CI si ya funciona. Depende T002. Cubre FR-016.
 
 ## Fase 2: Interfaz neutral I1
 
 **Objetivo**: APIs importables que permitan RED por conducta ausente.
 
-- [ ] T004 dev-godot: declarar únicamente tipos/campos/firmas neutrales de `core/commander_session.gd`, `core/commander_memory_store.gd` y `resources/schemas/commander_config.gd`, siguiendo contrato y modelo, sin `.tres` de parámetros aún. Exportar campos neutrales, retornar null/false/datos vacíos según firma; sin RNG, selección, aprendizaje, validación/I/O o control de menú. No escribir/ejecutar tests. Depende T003. Skills: resource-pattern, save-load. Cubre FR-016.
-- [ ] T005 godot-tester: verificar carga/llamabilidad neutral de los tres scripts de T004 desde GUT y mantener `tests/unit/systems/` importable; contrastar que las pruebas futuras podrán fallar por conducta. No aprobar selección/aprendizaje ni fabricar RED desde retornos incompatibles con el parser. Depende T004. Skills: godot-testing. Cubre FR-016.
-- [ ] T006 qa-validator: revisar setup T004/T005 contra `specs/017-comandante-memoria/contracts/commander.md`; confirmar neutralidad, firmas y límites de datos sin comportamiento anticipado. Aprobar sólo infraestructura mínima. Depende T005. Skills: resource-pattern, godot-code-review. Cubre FR-016.
+- [X] T004 dev-godot: declarar únicamente tipos/campos/firmas neutrales de `core/commander_session.gd`, `core/commander_memory_store.gd` y `resources/schemas/commander_config.gd`, siguiendo contrato y modelo, sin `.tres` de parámetros aún. Exportar campos neutrales, retornar null/false/datos vacíos según firma; sin RNG, selección, aprendizaje, validación/I/O o control de menú. No escribir/ejecutar tests. Depende T003. Skills: resource-pattern, save-load. Cubre FR-016.
+- [X] T005 godot-tester: verificar carga/llamabilidad neutral de los tres scripts de T004 desde GUT y mantener `tests/unit/systems/` importable; contrastar que las pruebas futuras podrán fallar por conducta. No aprobar selección/aprendizaje ni fabricar RED desde retornos incompatibles con el parser. Depende T004. Skills: godot-testing. Cubre FR-016.
+- [X] T006 qa-validator: revisar setup T004/T005 contra `specs/017-comandante-memoria/contracts/commander.md`; confirmar neutralidad, firmas y límites de datos sin comportamiento anticipado. Aprobar sólo infraestructura mínima. Depende T005. Skills: resource-pattern, godot-code-review. Cubre FR-016.
 
 ## Fase 3: US1 — selector acotado I1 (P1)
 
