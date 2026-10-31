@@ -1,6 +1,6 @@
 # Contrato mínimo — tres cambios
 
-## Setup neutral antes de RED
+## Setup neutral antes de RED (historia T002–T003)
 
 Declarar en EnemyStats rifle_range/rifle_damage/rifle_interval en0 y en UnitStats machete_moral_per_kill/machete_heal_per_kill en0, sin cambiar recursos .tres o conducta. En Enemigo declarar `signal rifle_shot_visual_requested(snapshot: Dictionary)` sin emisiones/conexiones. Interfaces existentes _physics_process/prepare_for_spawn/take_damage/get_reload_state permiten aserciones sobre cuerpos reales; no crear getters artificiales o implementar antes del RED.
 

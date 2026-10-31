@@ -1,4 +1,6 @@
-# Verificación prevista
+# Verificación de 015-I1
+
+Comportamiento aprobado funcionalmente en T010; este recorrido conserva criterios repetibles. El [alcance ya observado y sus límites](research.md#alcance-funcional-aprobado-y-límites) distingue GUT, Web y apps. CI/gate final y publicación siguen pendientes.
 
 1. Cuerpos reales: colombiano hogarx144/enemigo entradax1008 en mismo carril, con física: tiro/daño desde864. Controles detrás, fuera del borde físico y diagonal profunda; conservar diagonal inmediata y machete.
 2. Enemigo entrada→colombiano vivo frontal mismo carril: detenerse, tiro inmediato y próximos a intervalos. Otro carril/detrás/muerto no es blanco; sin objetivo vuelve a marchar. Contacto melee no acumula fusil.

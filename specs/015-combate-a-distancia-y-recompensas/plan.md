@@ -1,12 +1,13 @@
 # Implementation Plan: Combate a distancia y recompensas
 
-**Feature ID**: `015-combate-a-distancia-y-recompensas` | **Planned Branch**: `codex/015-combate-a-distancia-y-recompensas` | **Date**: 2026-10-30 | **Spec**: [spec.md](spec.md)
+**Feature ID**: `015-combate-a-distancia-y-recompensas` | **Branch**: `codex/015-combate-a-distancia-y-recompensas` | **Date**: 2026-10-30 | **Spec**: [spec.md](spec.md)
 **Base**: main4fb1267. Preparación demons-preparation, agentes ejecutan; no speckit-implement.
 **Tracking**: [Issue #58](https://github.com/Juanpvivas/demons/issues/58)
+**Estado**: implementación y verificación funcional T008–T010 aprobadas; consolidación T011, CI/gate final y publicación siguen su flujo separado. [Alcance y límites](research.md#alcance-funcional-aprobado-y-límites).
 
 ## Summary
 
-Tres cambios coherentes: alcance colombiano864, fusil enemigo por carril con perfiles de oleada y recompensa de machete transaccional. Reutilizar física real, efectos y mezcla existentes; no framework global o assets nuevos.
+Tres cambios coherentes: alcance colombiano 864, fusil enemigo por carril con perfiles de oleada y recompensa de machete transaccional. Reutilizar física real, efectos y mezcla existentes; no framework global o assets nuevos.
 
 ## Technical Context
 
@@ -56,7 +57,7 @@ tests/unit/systems/test_combat_{audio,visual_effects}.gd
 - UnitStats agrega machete_moral_per_kill y machete_heal_per_kill; producción2/3. La transacción captura dueño vivo/target id+generación antes de take_damage y bloquea reentrada/crédito doble. Sólo killed=true recompensa al dueño que aún vive, aunque el kill active WON. Vida se limita por stats.max_health; barras/señales existentes reflejan cambios.
 - Señal enemiga rifle_shot_visual_requested(snapshot) contiene origin_world/target_world finitos y activation_generation, sin Node. Consumidores validan actor/generación antes de admitir; efecto recibe copia saneada de coordenadas, independiente del actor. Mantener payload2coords del soldado actual compatible. Audio acepta tiros de ambos bandos y conserva bus/Stream/limiter/capacidad9.
 - Reutilizar pose/contacto y destello/trazadora de fusil; no exigir atlas nuevo. Presentación no aplica daño ni guarda ownerNode.
-- Setup sólo declara nuevos campos neutros en0 y señal sin emitir. No .tres/balance, movimiento, premios o conexiones nuevas antes de RED. APIs actuales de daño/física/estado bastan; no query nueva artificial.
+- Setup histórico T002 sólo declaró nuevos campos neutros en 0 y señal sin emitir. No .tres/balance, movimiento, premios o conexiones nuevas antes de RED. APIs actuales de daño/física/estado bastan; no query nueva artificial.
 - Skills por rol: GodotPrompter resource-pattern/ai-navigation/state-machine/2d-essentials/animation-system/audio-system/input-handling/godot-testing/code-review y consultas físicas de la arquitectura vigente.
 
 ## Complexity Tracking

@@ -1,9 +1,9 @@
 # Feature Specification: Combate a distancia y recompensas de machete
 
 **Feature ID**: `015-combate-a-distancia-y-recompensas`
-**Planned Branch**: `codex/015-combate-a-distancia-y-recompensas`
+**Branch**: `codex/015-combate-a-distancia-y-recompensas`
 **Created**: 2026-10-30
-**Status**: Preparación para QA; no implementación aprobada
+**Status**: 015-I1 aprobado funcionalmente por QA T010; CI de revisión final/gate de integración T012–T013 y publicación T015 pendientes
 **Tracking**: [Issue #58](https://github.com/Juanpvivas/demons/issues/58)
 **Input**: Tres cambios autorizados: fusil colombiano hasta la entrada, enemigos con fusil de daño/frecuencia crecientes que se detienen para disparar y baja letal de machete del dueño que otorga +2 moral/+3 vida. Las reglas y la progresión siguientes fueron resueltas por la persona.
 

@@ -169,6 +169,19 @@ publicación T014. La verificación técnica no acredita audición perceptual de
 latencia/techo de mezcla Web o combate nativo/hardware.
 [Alcance y límites](specs/014-sonidos-combate/research.md#alcance-funcional-aprobado-y-límites).
 
+[015 — Combate a distancia y recompensas](specs/015-combate-a-distancia-y-recompensas/spec.md)
+está aprobado funcionalmente en su rama: el fusil colombiano cubre desde el
+hogar hasta la entrada del mismo carril (864 unidades), conservando las diagonales
+inmediatas. Los enemigos se detienen para disparar al colombiano vivo de su carril;
+sin blanco reanudan el avance y el contacto excluye el fusil. Su daño/intervalo
+progresa de 1/4 s a 3/2 s según la [tabla autorizada](specs/015-combate-a-distancia-y-recompensas/spec.md#progresión-autorizada).
+Cada baja letal de machete concede al dueño vivo +2 moral y +3 vida hasta su
+máximo; el fusil conserva +1 moral sin curación. El avance sin munición queda
+expuesto al fuego enemigo: se observaron derrotas tempranas, sin demostrar que
+sea imposible ganar ni autorizar otro ajuste de balance. CI de la revisión final
+y QA de integración siguen pendientes; publicación T015 y los pendientes anteriores
+se conservan. [Alcance verificado y límites](specs/015-combate-a-distancia-y-recompensas/research.md#alcance-funcional-aprobado-y-límites).
+
 [008 — Marcha enemiga](specs/008-marcha-enemiga/spec.md) renueva el avance con
 ocho poses de apoyos alternados y balanceo del cuerpo/equipo, conservando el
 estilo pictórico, contacto/caída y las reglas actuales. I1 tiene validación
