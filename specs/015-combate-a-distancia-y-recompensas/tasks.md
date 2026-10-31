@@ -7,8 +7,8 @@
 ## Preparación y setup mínimo
 
 - [X] T001 project-orchestrator con qa-validator: revisar preparación `specs/015-combate-a-distancia-y-recompensas/`, tres reglas humanas/tabla exacta, límites y dependencia TDD; aprobar antes de código o balance.
-- [ ] T002 dev-godot: declarar sólo campos nuevos neutros0 en `resources/schemas/enemy_stats.gd` y `unit_stats.gd` y señal `rifle_shot_visual_requested(snapshot)` en `scenes/enemies/enemigo.gd`, según contrato. Sin emisiones/conexiones/consultas/ataques/premios ni modificar .tres/balance. Depende T001.
-- [ ] T003 godot-tester con qa-validator: confirmar importación/carga de interfaces T002 y neutralidad contra base; QA aprueba sólo setup. APIs actuales bastan para RED físico; parser/import roto no vale fallo esperado. Depende T002.
+- [X] T002 dev-godot: declarar sólo campos nuevos neutros0 en `resources/schemas/enemy_stats.gd` y `unit_stats.gd` y señal `rifle_shot_visual_requested(snapshot)` en `scenes/enemies/enemigo.gd`, según contrato. Sin emisiones/conexiones/consultas/ataques/premios ni modificar .tres/balance. Depende T001.
+- [X] T003 godot-tester con qa-validator: confirmar importación/carga de interfaces T002 y neutralidad contra base; QA aprueba sólo setup. APIs actuales bastan para RED físico; parser/import roto no vale fallo esperado. Depende T002.
 
 ## RED de las tres historias
 
