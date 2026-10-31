@@ -4,7 +4,7 @@
 **Branch**: `codex/015-combate-a-distancia-y-recompensas`
 **Created**: 2026-10-30
 **Status**: 015-I1 APROBADO PARA INTEGRACIÓN por QA con CI de `2351798`; [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59) en su rama, sin fusionar. Publicación T015/SC-008 pendiente
-**Revisión vigente**: 015-I2 aprobado funcionalmente por QA T021 en `b4fbaf8`: dos asaltantes por fusilero; CI/gate final T023–T024 pendientes. I1 conserva su aprobación e historial; las reglas de composición siguientes sustituyen sólo la uniformidad de fusileros de I1.
+**Revisión vigente**: 015-I2 APROBADO PARA INTEGRACIÓN por QA con CI de `d8826e2`: dos asaltantes por fusilero, en rama/PR59 en borrador, sin merge. I1 conserva su aprobación e historial; las reglas de composición siguientes sustituyen sólo la uniformidad de fusileros de I1.
 **Tracking**: [Issue #58](https://github.com/Juanpvivas/demons/issues/58)
 **Input**: Tres cambios autorizados: fusil colombiano hasta la entrada, enemigos con fusil de daño/frecuencia crecientes que se detienen para disparar y baja letal de machete del dueño que otorga +2 moral/+3 vida. Las reglas y la progresión siguientes fueron resueltas por la persona.
 

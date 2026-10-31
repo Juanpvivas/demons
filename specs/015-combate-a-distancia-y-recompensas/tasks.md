@@ -1,8 +1,8 @@
 # Tasks: Combate a distancia y recompensas
 
 **Input**: [spec](spec.md), [plan](plan.md), [contrato](contracts/ranged-combat.md), [datos](data-model.md), [quickstart](quickstart.md).
-**Entrega**: 015-I1 completo, tres cambios; rama `codex/015-combate-a-distancia-y-recompensas`, base main4fb1267; [Issue #58](https://github.com/Juanpvivas/demons/issues/58), [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59). Integración aprobada sobre `2351798`; sin merge ni publicación.
-**Incremento siguiente**: 015-I2 en preparación; T016–T025 pendientes. I1/T001–T014 y sus aprobaciones se conservan; T015 publicación sigue pendiente.
+**Entrega**: 015-I1 completo, tres cambios; rama `codex/015-combate-a-distancia-y-recompensas`, base main4fb1267; [Issue #58](https://github.com/Juanpvivas/demons/issues/58), [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59). I1 e I2 aprobados para integración (I2 sobre `d8826e2`); sin merge ni publicación.
+**Ajuste I2**: T016–T025 completos y aprobados para integración sobre `d8826e2`. I1/T001–T014 y sus aprobaciones se conservan; T015 publicación sigue pendiente.
 **Flujo**: [roles/TDD](../../docs/DEVELOPMENT_WORKFLOW.md); Spec Kit prepara, agentes ejecutan. Sólo orquestador marca [X] tras QA. Sin nuevas evidencias Git.
 
 ## Preparación y setup mínimo
@@ -47,9 +47,9 @@ FR001/SC001→T004,T008–T010; FR002–004/SC002–003→T005,T008–T010; FR00
 - [X] T020 [US4] godot-tester: GREEN T017 y regresión GUT pertinente/completa, import/build de fuente estable; en `tests/unit/levels/test_combat_ranged_integration.gd` y pruebas de enemigo/spawner cubrir física mixta A avanza con blanco/R parado dispara y avanza sin blanco/contacto/pool R→A→R sin restos. Playtesting de balance, único Web final para8813 y APK QA `PR59-S24-prueba2.apk` con package/firma anteriores según plan; declarar entorno/gestos/latencia/hardware no observados, sin nuevas evidencias Git. Depende T019.
 - [X] T021 qa-validator: revisar datos, GREEN/regresión/build y playtesting T020 frente a tabla/contrato de `specs/015-combate-a-distancia-y-recompensas/`; aprobar funcionalidad I2 sólo con límites explícitos y sin cerrar T015. Depende T020.
 - [X] T022 docs-writer: consolidar comportamiento I2 aprobado en `README.md`, `docs/SPEC.md`, `docs/ARCHITECTURE.md` y specs015 pertinentes, conservando historia I1/013/014, pausa006 y pendientes; sin fuente/tests/tasks o logs nuevos. Depende T021.
-- [ ] T023 project-orchestrator con godot-tester: publicar revisión consolidada y verificar CI del head exacto, según `docs/DEVELOPMENT_WORKFLOW.md`; repetir sólo checks invalidados. Sin merge/promoción/distribución automática. Depende T022.
-- [ ] T024 qa-validator: contrastar documentación, CI y revisión exacta T023 con `specs/015-combate-a-distancia-y-recompensas/spec.md`; emitir APROBADO PARA INTEGRACIÓN I2 con límites físicos/publicación intactos. Depende T023.
-- [ ] T025 project-orchestrator: actualizar mismo PR59 en borrador/Issue58 con Refs#58, trazabilidad y límites conforme `docs/DEVELOPMENT_WORKFLOW.md`; sólo root entrega APK personal autorizado en borrador privado429670877. No marcar T015/SC008 ni promover/fusionar/publicar otros destinos. Depende T024.
+- [X] T023 project-orchestrator con godot-tester: publicar revisión consolidada y verificar CI del head exacto, según `docs/DEVELOPMENT_WORKFLOW.md`; repetir sólo checks invalidados. Sin merge/promoción/distribución automática. Depende T022.
+- [X] T024 qa-validator: contrastar documentación, CI y revisión exacta T023 con `specs/015-combate-a-distancia-y-recompensas/spec.md`; emitir APROBADO PARA INTEGRACIÓN I2 con límites físicos/publicación intactos. Depende T023.
+- [X] T025 project-orchestrator: actualizar mismo PR59 en borrador/Issue58 con Refs#58, trazabilidad y límites conforme `docs/DEVELOPMENT_WORKFLOW.md`; sólo root entrega APK personal autorizado en borrador privado429670877. No marcar T015/SC008 ni promover/fusionar/publicar otros destinos. Depende T024.
 
 Dependencias I2: T016→T017→T018→T019→T020→T021→T022→T023→T024→T025.
 FR011–014/SC009–010→T017,T019–T021; SC011→T016–T025. T015 sigue separado.

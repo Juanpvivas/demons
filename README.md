@@ -181,8 +181,8 @@ Cada baja letal de machete concede al dueño vivo +2 moral y +3 vida hasta su
 máximo; el fusil conserva +1 moral sin curación. El avance sin munición queda
 expuesto al fuego enemigo: se observaron derrotas tempranas, sin demostrar que
 sea imposible ganar ni autorizar otro ajuste de balance. I1 conserva CI/QA de
-integración de `2351798`; I2 está aprobado funcionalmente en `b4fbaf8`, con CI
-y QA final de integración todavía pendientes. Ambos siguen en su rama y
+integración de `2351798`; I2 cuenta con CI y QA `APROBADO PARA INTEGRACIÓN`
+de `d8826e2`. Ambos siguen en su rama y
 [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59), sin fusionar;
 publicación T015 y los pendientes anteriores se conservan. [Alcance verificado y límites](specs/015-combate-a-distancia-y-recompensas/research.md#alcance-funcional-aprobado-y-límites).
 

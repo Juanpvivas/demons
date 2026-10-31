@@ -1,6 +1,6 @@
 # Verificación de 015
 
-I2 está aprobado funcionalmente en T021 (`b4fbaf8`), con CI/gate final pendientes. Verificar además la secuencia global 99 WAVE=66 A/33 R, inicial R1 independiente, tabla por ola/tiempos/carriles; cuerpos mixtos y reset R→A→R conservan avance A, parada/tiro R, contacto y limpieza. [Alcance y límites I2](research.md#i2-vigente-aprobado-funcionalmente).
+I2 cuenta con CI y QA APROBADO PARA INTEGRACIÓN sobre `d8826e2`, en rama/PR59 en borrador, sin merge ni publicación. Verificar además la secuencia global 99 WAVE=66 A/33 R, inicial R1 independiente, tabla por ola/tiempos/carriles; cuerpos mixtos y reset R→A→R conservan avance A, parada/tiro R, contacto y limpieza. [Alcance y límites I2](research.md#i2-vigente-aprobado-funcionalmente).
 
 ## Recorrido I1 conservado
 

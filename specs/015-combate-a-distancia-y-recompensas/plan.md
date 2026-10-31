@@ -66,7 +66,7 @@ Sin autoload, nuevo backend o motor de IA. Tres cambios usan sistemas actuales; 
 
 ## Enmienda 015-I2 — Composición por datos (aprobación funcional T021)
 
-Implementada en `b4fbaf8`; CI/gate final I2 T023–T024 pendientes. I1 conserva su aprobación histórica.
+Implementada en `b4fbaf8`; I2 cuenta con CI y APROBADO PARA INTEGRACIÓN de QA sobre `d8826e2`, en rama/PR59 en borrador, sin merge ni publicación. I1 conserva su aprobación histórica.
 
 Misma rama/PR59/Issue58; I1 intacto. Se añadió únicamente
 `resources/enemies/enemigo_asaltante_base.tres`, con rifle_range/rifle_damage/

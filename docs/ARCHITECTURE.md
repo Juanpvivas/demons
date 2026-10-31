@@ -339,8 +339,8 @@ intactos. Los arrays de `WaveData.spawn_entries` intercalan A,A,R globalmente
 (A/count2, R/count1 y parcial A/count1). `WaveSpawner` aplana estos datos sin
 cursor de tipo, RNG o IA nuevos; conserva tiempos/carriles y el inicial R1
 independiente. El mismo pool restaura R→A→R con sus hooks existentes, sin nuevas
-colisiones. I2 está aprobado funcionalmente en `b4fbaf8`; su CI/gate final
-T023–T024 siguen pendientes.
+colisiones. I2 cuenta con CI y QA de integración aprobados en `d8826e2`,
+en su rama/PR59 en borrador, sin merge ni cierre de publicación.
 
 ### 4.4 Modo fusil / modo machete como estado simple
 

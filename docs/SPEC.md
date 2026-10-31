@@ -213,8 +213,8 @@ la derrota sigue dependiendo del cruce de PosicionDefendida, no del último sold
 El avance a machete está expuesto al fusil enemigo y se observaron derrotas tempranas;
 esto es un riesgo táctico, sin conclusión de imposibilidad de victoria ni nuevo
 balance autorizado. [Verificación y límites](../specs/015-combate-a-distancia-y-recompensas/research.md#alcance-funcional-aprobado-y-límites):
-I1 conserva CI/QA de integración de `2351798`; I2 tiene aprobación funcional
-T021 en `b4fbaf8`, con CI/gate final de integración pendientes, en la rama del
+I1 conserva CI/QA de integración de `2351798`; I2 cuenta con CI y QA de
+integración aprobados en `d8826e2`, en la rama del
 [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59), aún sin fusionar;
 publicación T015 sigue pendiente.
 

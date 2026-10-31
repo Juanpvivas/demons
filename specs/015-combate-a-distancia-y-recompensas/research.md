@@ -14,13 +14,15 @@
 QA T021 aprueba `b4fbaf8`: A,A,R continuo entre 99 WAVE (66 A/33 R), inicial R1
 independiente, stats/tabla/ritmos/carriles conservados y hasta tres entradas
 inmutables reutilizadas por oleada. No hay nueva IA o colisiones. GREEN/regresión,
-import y export Web están verificados; CI/gate final T023–T024 siguen pendientes.
+import y export Web están verificados. CI de `d8826e2` y QA final aprobaron
+integración I2, en rama/PR59 en borrador, sin merge. La comprobación de esa
+revisión no se atribuye automáticamente a cambios documentales posteriores.
 Chrome en macOS observó asaltantes avanzando, fusileros detenidos, transición
 a machete, derrota real al cruzar la defensa, Retry limpio y salida al menú
 durante combate activo, ahora observado manualmente en I2.
 
-El APK QA2 está preparado con el mismo paquete/firma de prueba; QA autoriza sólo
-su entrega personal por root en el borrador privado existente. No se ha observado
+El APK QA2 conserva el mismo paquete/firma de prueba y root ya realizó su entrega
+personal autorizada en el mismo borrador privado existente. No se ha observado
 su instalación en el S24 ni se certifica victoria de producción en diez oleadas,
 conteo manual de 99 bajas, audición, latencia Web, FPS/hardware o paquete final.
 La mezcla no cierra T015/SC008, pendientes 004/005/013/014 ni pausa 006; release 1.0.2
