@@ -62,7 +62,7 @@ func load_compatible(config: CommanderConfig) -> Dictionary:
 func save(candidate: Dictionary, expected_generation: int) -> Dictionary:
 	if not _loaded or _config == null or not _valid_candidate(candidate):
 		return _save_result("INVALID")
-	var next_memory: Dictionary = candidate.memory.duplicate(true)
+	var next_memory := _normalized_memory(candidate.memory)
 	if next_memory.compatibility_id != _compatibility_id:
 		return _save_result("INCOMPATIBLE")
 	if expected_generation != _memory.generation \
@@ -176,18 +176,36 @@ func _read_slot(path: String) -> Dictionary:
 	var result := {"status": "INVALID", "signature": text.sha256_text()}
 	if text.to_utf8_buffer().size() != size_bytes:
 		return result
-	var outer: Variant = JSON.parse_string(text)
+	var envelope_json := JSON.new()
+	if envelope_json.parse(text) != OK:
+		return result
+	var outer: Variant = envelope_json.data
 	if not _exact_fields(outer, ["payload", "sha256"]):
 		return result
 	if not outer.payload is String or not _valid_hash(outer.sha256) \
 			or outer.payload.sha256_text() != outer.sha256:
 		return result
-	var payload: Variant = JSON.parse_string(outer.payload)
+	var payload_json := JSON.new()
+	if payload_json.parse(outer.payload) != OK:
+		return result
+	var payload: Variant = payload_json.data
 	if not _valid_memory(payload):
 		return result
 	result.status = "OK"
-	result.memory = payload
+	result.memory = _normalized_memory(payload)
 	return result
+
+
+func _normalized_memory(value: Dictionary) -> Dictionary:
+	# Sólo después de validar: JSON representa todos los números como float.
+	# La representación interna conserva enteros exactos y evidencia fraccionaria.
+	var memory := value.duplicate(true)
+	for field: String in ["schema_version", "policy_version", "generation"]:
+		memory[field] = int(memory[field])
+	for cell: Dictionary in memory.cells.values():
+		cell.q = float(cell.q)
+		cell.n = float(cell.n)
+	return memory
 
 
 func _valid_candidate(candidate: Dictionary) -> bool:
