@@ -90,7 +90,7 @@ TRANSIENT sólo modifica RAM. Fallos no se comunican como éxito.
 **I1** termina el módulo interno T001–T025, no la aceptación jugable de US1–US3.
 No publicar un PR de implementación con RED o comportamiento interno pendientes.
 
-- [ ] T022 docs-writer: documentar sólo módulo I1 aprobado y límites en `docs/ARCHITECTURE.md` y `specs/017-comandante-memoria/plan.md`; no afirmar que cambia las oleadas o que el menú ya borra memoria. Dependencia T021. No pruebas. Cubre FR-016.
+- [X] T022 docs-writer: documentar sólo módulo I1 aprobado y límites en `docs/ARCHITECTURE.md` y `specs/017-comandante-memoria/plan.md`; no afirmar que cambia las oleadas o que el menú ya borra memoria. Dependencia T021. No pruebas. Cubre FR-016.
 - [ ] T023 project-orchestrator: publicar rama I1 y comprobar CI del head exacto en `.github/workflows/ci.yml` con reportes de godot-tester/GREEN y documentación T022; conservar workflows/guards existentes y solicitar revisión documental de docs por QA. No ejecutar pruebas ni modificar CI. Depende T022. Cubre FR-016.
 - [ ] T024 qa-validator: revisar documentación T022, alcance I1, fuente, suites y CI del SHA exacto contra `specs/017-comandante-memoria/plan.md`; emitir APROBADO PARA INTEGRACIÓN sólo del núcleo aislado si procede, sin acreditar juego, móvil, hardware o distribución. Depende T023. Skills: godot-code-review. Cubre FR-016.
 - [ ] T025 project-orchestrator: actualizar Issue017 y crear/adjuntar PR borrador I1 según `docs/DEVELOPMENT_WORKFLOW.md`, con Refs, IDs T001–T024, RED/GREEN/CI/QA/límites en cuerpo breve; todos los SC jugables/publicación pendientes conservados. No promover, fusionar, subir builds ni reescribir historia. Depende T024. Cubre FR-016.
