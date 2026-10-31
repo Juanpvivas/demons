@@ -47,6 +47,7 @@ func _enemy(position: Vector2) -> Enemigo:
 	enemy.stats = enemy.stats.duplicate()
 	enemy.stats.max_health = 500
 	enemy.stats.move_speed = 0.0
+	enemy.stats.rifle_damage = 0 # El retorno conserva vida sin un tiro colateral.
 	enemy.position = position
 	_world.add_child(enemy)
 	enemy.prepare_for_spawn(enemy.stats, position, 2, Enemigo.SpawnOrigin.INITIAL)

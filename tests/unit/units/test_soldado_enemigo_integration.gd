@@ -187,6 +187,8 @@ func test_real_soldado_fires_depletes_ammo_and_finishes_a_real_enemigo_with_mach
 	unit_stats.machete_base_damage = 5
 	unit_stats.machete_moral_multiplier = 1.0
 	unit_stats.moral_per_kill = 1.0
+	unit_stats.machete_moral_per_kill = 2.0
+	unit_stats.machete_heal_per_kill = 3
 	unit_stats.deploy_ammo_cost = 2
 
 	_soldado = load(SOLDADO_SCENE_PATH).instantiate()
@@ -244,10 +246,8 @@ func test_real_soldado_fires_depletes_ammo_and_finishes_a_real_enemigo_with_mach
 		_enemy_defeated_ammo_dropped, expected_ammo_drop,
 		"enemy_defeated debe reportar exactamente el ammo_drop configurado del enemigo"
 	)
-	assert_signal_not_emitted(
-		_soldado, "moral_changed",
-		"una eliminación en modo MELEE (machete) no debe acumular moral, incluso contra un enemigo real (FR-006)"
-	)
+	assert_signal_emitted_with_parameters(_soldado, "moral_changed", [2.0])
+	assert_eq(_soldado.get_reload_state().morale, 2.0, "Única baja real de machete concede2")
 	assert_false(
 		is_instance_valid(enemy),
 		"el enemigo real debe quedar liberado del árbol tras ser derrotado a machetazos"

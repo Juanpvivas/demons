@@ -62,6 +62,7 @@ func _enemy_at(position: Vector2, lane: int, parent: Node, speed := 120.0) -> En
 	var enemy := EnemyScene.instantiate() as Enemigo
 	enemy.stats = enemy.stats.duplicate()
 	enemy.stats.move_speed = speed
+	enemy.stats.rifle_damage = 0 # Fixture de bloqueo físico, no combate a distancia.
 	enemy.position = position
 	parent.add_child(enemy)
 	enemy.prepare_for_spawn(enemy.stats, position, lane, Enemigo.SpawnOrigin.WAVE)
