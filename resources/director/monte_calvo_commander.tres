@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CommanderConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/schemas/commander_config.gd" id="1_config"]
+
+[resource]
+script = ExtResource("1_config")
+schema_version = 1
+policy_version = 1
+phase_end_waves = Array[int]([3, 7, 10])
+prior_score = 0.5
+learning_rate = 0.15
+retention_per_match = 0.98
+confidence_visits = 3.0
+max_effective_visits = 20.0
+exploration_share = 0.25
+weight_gain = 0.25
