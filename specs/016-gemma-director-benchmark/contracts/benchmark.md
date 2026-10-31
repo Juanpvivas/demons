@@ -62,7 +62,9 @@ otros casos elige entre planes no pausa legales; si no hay, pause. Minimiza en
 orden `(repite_previo, suma_cuadrados_cargas_proyectadas, suma_defensa_en_spawns,
 action_id)`; sin RNG. La legalidad debe contrastarse sin llamar al selector.
 La coincidencia Gemma/baseline se muestra descriptivamente, nunca como score
-principal ni como definición del conjunto correcto.
+principal ni como definición del conjunto correcto. En strong_defense la
+fórmula prioriza `center` (carga² 3 frente a 5 de `right`); puede no acertar el conjunto
+suave `right`/`delayed_right` sin ser ilegal. No ajustar la fórmula para forzar 100%.
 
 ## API neutral para RED y CLI posterior
 
@@ -91,6 +93,23 @@ Una decisión parseable pero ilegal conserva su ID; fallo de transporte no lo
 inventa. `run` retorna resumen/reporte; `main` devuelve 0 si completó 24 intentos,
 1 ante preflight/identidad/IO fallido (reportado),2 por argumentos inválidos.
 Una corrida completa con intentos inválidos no se declara 24 éxitos.
+
+Formas públicas mínimas, sin APIs nuevas:
+
+```text
+verify_identity -> {status: 'ok'|'identity_error', error: null|string, metadata: dict}
+run -> {attempts: list, warmup: dict|null,
+        summary: {total_attempts: int, legal_count: int, evaluable_count: int,
+                  oracle_hit_count: int, status_counts: dict}, metadata: dict,
+        outputs: {json: path|null, markdown: path|null},
+        error: null|{status: string, message: string}}
+```
+
+Si falla preflight, `run` devuelve attempts=[], warmup=null y ambos paths de
+outputs=null, con error clasificado; CLI devuelve 1. No inventa decisiones,
+latencias o metadata ausentes. Las causas HTTP de GET models pueden conservarse
+en error de verify_identity con status identity_error; no se cuentan como una
+decisión ilegal del modelo.
 
 `opener` sólo permite doubles explícitos inyectados por unittest, no por CLI.
 Mismos guards de URL y límites preceden a todo envío; no representa Gemma real.
