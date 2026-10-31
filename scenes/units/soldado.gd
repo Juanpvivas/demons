@@ -170,6 +170,7 @@ const _INCOMING_MELEE_ATTACK_INTERVAL: float = 1.0
 
 func _ready() -> void:
 	assert(stats != null, "Soldado requiere un UnitStats asignado en 'stats'")
+	add_to_group(&"soldiers")
 	_home_position = global_position
 	_current_ammo = stats.max_ammo
 	_current_health = stats.max_health

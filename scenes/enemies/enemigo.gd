@@ -54,6 +54,7 @@ enum CombatPhase { MARCH, RIFLE, CONTACT }
 ## Grupo que identifica a todo `Enemigo` ante los sistemas de detección de
 ## `Soldado` (`Soldado.ENEMY_GROUP`, mismo literal).
 const ENEMY_GROUP: String = "enemies"
+const _SOLDIER_GROUP: StringName = &"soldiers"
 
 ## T032: escena de la pickup de munición que se instancia al morir
 ## (`_die()`), según `research.md` §3 (recolección explícita por tap/click,
@@ -104,7 +105,8 @@ var _current_health: int = 0
 ## Pool propietario o null para un enemigo aislado. Monte Calvo comparte
 ## el pool para el inicial y las oleadas sin cambiar la API genérica.
 var _pool: ObjectPool = null
-var _rifle_target: Soldado
+## Contrato por grupo/capacidades para evitar dependencia circular de scripts.
+var _rifle_target: CharacterBody2D
 var _rifle_cooldown: float = 0.0
 var _combat_phase: CombatPhase = CombatPhase.MARCH
 var _attack_in_progress: bool = false
@@ -141,8 +143,8 @@ func _physics_process(delta: float) -> void:
 	var before := global_position
 	if stats.rifle_range > 0.0 and stats.rifle_damage > 0 and stats.rifle_interval > 0.0:
 		var targets := _find_rifle_candidates()
-		for candidate: Soldado in targets:
-			if candidate.is_in_melee_contact_with(self):
+		for candidate: CharacterBody2D in targets:
+			if candidate.call("is_in_melee_contact_with", self):
 				_reset_rifle()
 				_combat_phase = CombatPhase.CONTACT
 				velocity = Vector2.ZERO
@@ -150,7 +152,7 @@ func _physics_process(delta: float) -> void:
 				return
 		if not _is_rifle_target_valid(_rifle_target):
 			_reset_rifle()
-			for candidate: Soldado in targets:
+			for candidate: CharacterBody2D in targets:
 				if _is_rifle_target_valid(candidate) and (_rifle_target == null \
 						or candidate.global_position.x > _rifle_target.global_position.x):
 					_rifle_target = candidate
@@ -168,7 +170,7 @@ func _physics_process(delta: float) -> void:
 	_sprite.observe_displacement(global_position - before)
 
 
-func _find_rifle_candidates() -> Array[Soldado]:
+func _find_rifle_candidates() -> Array[CharacterBody2D]:
 	# El margen derecho incluye contacto durante el regreso de un soldado.
 	var margin := float(board_config.cell_size.x)
 	_search_shape.size = Vector2(stats.rifle_range + margin, board_config.cell_size.y)
@@ -181,17 +183,19 @@ func _find_rifle_candidates() -> Array[Soldado]:
 	while hits.size() == limit:
 		limit *= 2
 		hits = space.intersect_shape(_search_query, limit)
-	var result: Array[Soldado] = []
+	var result: Array[CharacterBody2D] = []
 	for hit: Dictionary in hits:
-		var soldier := hit.collider as Soldado
-		if is_instance_valid(soldier) and soldier.get_reload_state().alive and not result.has(soldier):
+		var soldier := hit.collider as CharacterBody2D
+		if is_instance_valid(soldier) and soldier.is_in_group(_SOLDIER_GROUP) \
+				and soldier.call("get_reload_state").alive and not result.has(soldier):
 			result.append(soldier)
 	return result
 
 
-func _is_rifle_target_valid(target: Soldado) -> bool:
+func _is_rifle_target_valid(target: CharacterBody2D) -> bool:
 	if not is_instance_valid(target) or not target.is_inside_tree() \
-			or not target.get_reload_state().alive or target.global_position.x >= global_position.x:
+			or not target.is_in_group(_SOLDIER_GROUP) or not target.call("get_reload_state").alive \
+			or target.global_position.x >= global_position.x:
 		return false
 	if floori(target.global_position.y / board_config.cell_size.y) \
 			!= floori(global_position.y / board_config.cell_size.y):
@@ -211,7 +215,7 @@ func _is_rifle_target_valid(target: Soldado) -> bool:
 
 func _fire_rifle() -> void:
 	var target := _rifle_target
-	if _attack_in_progress or not _is_rifle_target_valid(target) or target.is_in_melee_contact_with(self):
+	if _attack_in_progress or not _is_rifle_target_valid(target) or target.call("is_in_melee_contact_with", self):
 		return
 	var generation := activation_generation
 	var target_id := target.get_instance_id()
@@ -225,9 +229,9 @@ func _fire_rifle() -> void:
 	if not _closing and is_targetable() and activation_generation == generation \
 			and GameStateManager._current_state == GameStateManager.GameState.PLAYING \
 			and _is_rifle_target_valid(target) and target.get_instance_id() == target_id \
-			and not target.is_in_melee_contact_with(self):
+			and not target.call("is_in_melee_contact_with", self):
 		_sprite.play_confirmed_rifle()
-		target.take_damage(damage)
+		target.call("take_damage", damage)
 	_attack_in_progress = false
 
 
