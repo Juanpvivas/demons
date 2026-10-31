@@ -11,7 +11,9 @@
 
 ## Alcance funcional aprobado y límites
 
-T009 aprueba cinco cues/nueve variantes de014-I1, pool local8+1, routing Stream
+014-I1 está integrado en `main` por [PR #56](https://github.com/Juanpvivas/demons/pull/56)
+(`45cd83a`), con QA de integración T012 y CI de la revisión aprobada.
+El alcance incluye cinco cues/nueve variantes, pool local8+1, routing Stream
 y GameplaySFX aislado, RNG cosmético, eventos reales y cierre de sesión. Las
 bajas exigen transacción letal, no sólo actor inactivo: la consulta de sólo
 lectura has_confirmed_defeat y la identidad/generación excluyen cleanup vivo.
@@ -20,8 +22,9 @@ Medios/atribución están en [SOURCES](../../assets/audio/combat/SOURCES.md).
 
 Las pruebas de audio y regresiones afectadas pasan; se ajustó el oráculo legado
 que contaba todos los listeners en vez del consumidor visual, sin relajar su
-unicidad. La suite completa de la revisión final queda a CI/T011 antes del gate
-T012; no se declara una ejecución completa local sin fallos. Captura software
+unicidad. Esa ejecución local inicial no fue completa sin fallos; posteriormente
+CI pasó la suite completa de la revisión aprobada para integración T012.
+Captura software
 con nueve voces confirmó contención de mezcla y silencio al cerrar; no es
 audición perceptual ni certificación del techo Web o hardware.
 
@@ -34,6 +37,6 @@ especialmente con un hilo, y aquí no se midió. Una muestra headless mostró
 mayor memoria estática/nodos; caché y concurrencia impiden atribuir coste causal,
 optimización, RSS o GPU. No reabre la campaña006.
 
-CI/head exacto y T012 siguen pendientes; T014/SC-007, hardware/60FPS/paquete final
+CI de la revisión aprobada y T012 están completos; T014/SC-007, hardware/60FPS/paquete final
 y pendientes de004/005/013 permanecen abiertos. Resultados/comandos/CI exactos
 se reportan en el PR del Issue55, sin nuevos logs o evidencias versionados.

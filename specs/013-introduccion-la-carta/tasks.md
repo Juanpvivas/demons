@@ -1,7 +1,7 @@
 # Tasks: La carta — introducción narrativa
 
 **Input**: [spec.md](spec.md), [plan.md](plan.md), [contrato](contracts/intro-flow.md), [guion](guion.md), [quickstart](quickstart.md).  
-**Entrega**: 013-I1; rama `codex/013-introduccion-la-carta`; [Issue #53](https://github.com/Juanpvivas/demons/issues/53); [PR #54 en borrador](https://github.com/Juanpvivas/demons/pull/54).  
+**Entrega**: 013-I1 integrado en `main` por [PR #54 fusionado](https://github.com/Juanpvivas/demons/pull/54) (`77be629`); rama de implementación `codex/013-introduccion-la-carta`; [Issue #53](https://github.com/Juanpvivas/demons/issues/53) abierto por publicación T014.
 **Flujo**: Spec Kit prepara, roles ejecutan según [workflow](../../docs/DEVELOPMENT_WORKFLOW.md). Sólo orquestador marca [X] tras QA. Sin nuevas evidencias versionadas.
 
 ## Fase 1: Preparación e interfaces neutrales

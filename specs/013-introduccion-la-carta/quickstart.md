@@ -5,6 +5,9 @@ compañero sintético Qwen definitivo, aceptado expresamente por la persona
 según [SOURCES](../../assets/audio/narrative/la_carta/SOURCES.md). Las menciones
 Ald/candidata y sus pendientes en pasos de I1–R3 son historia de esos medios;
 no son el estado actual ni una nueva audición atribuida al agente.
+La implementación está integrada en `main` por [PR #54](https://github.com/Juanpvivas/demons/pull/54)
+(`77be629`); los gates/esperas mencionados en enmiendas históricas no son
+pendientes actuales de integración. T014 sigue pendiente de publicación.
 
 ## Escenarios históricos de I1
 
