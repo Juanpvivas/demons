@@ -1,6 +1,6 @@
 # Tasks: Combate a distancia y recompensas
 
-**Input**: [spec](spec.md), [plan](plan.md), [contrato](contracts/ranged-combat.md), [datos](data-model.md), [quickstart](quickstart.md).  
+**Input**: [spec](spec.md), [plan](plan.md), [contrato](contracts/ranged-combat.md), [datos](data-model.md), [quickstart](quickstart.md).
 **Entrega**: 015-I1 completo, tres cambios; rama `codex/015-combate-a-distancia-y-recompensas`, base main4fb1267; [Issue #58](https://github.com/Juanpvivas/demons/issues/58), PR por orquestador.
 **Flujo**: [roles/TDD](../../docs/DEVELOPMENT_WORKFLOW.md); Spec Kit prepara, agentes ejecutan. Sólo orquestador marca [X] tras QA. Sin nuevas evidencias Git.
 
@@ -19,13 +19,13 @@
 
 ## Implementación y GREEN
 
-- [ ] T008 [US1] dev-godot: implementar tres cambios en `scenes/units/soldado.gd`, `scenes/enemies/enemigo.gd`, Resources de soldado/enemigos/oleadas, adaptadores `scenes/visuals/combat_visual_effects.gd` y `scenes/audio/combat_audio.gd`, contexto de spawner/nivel sólo si necesario. Alcance864 real, perfiles exactos inmutables, enemigo marcha/fusil/contacto excluyente y premio machete transaccional con cap/vida; snapshot validado por generación y presentación independiente. Reusar arte/audio existentes, sin pruebas, otras mecánicas/UI/persistencia/red, renderer/release o mezcla013/014. Depende T007; requiere T009–T010 para aprobación.
-- [ ] T009 [US1] godot-tester: confirmar GREEN T004–T006, regresión pertinente y suite GUT completa, import/build/CI aplicables y playtesting de balance según quickstart; generar un único export Web final para preview8813 y observar tres cambios/visual/audio/menú/retry en computador y apps disponibles. Distinguir física real/callback, fixture/producción, medios/gestos/renderer/FPS no observados y riesgos, sin nuevas evidencias Git o campaña006. Depende T008.
-- [ ] T010 qa-validator: contrastar fuente/Resources, RED/GREEN/regresión/build y playtesting T009 con tres reglas humanas/tabla; aprobar funcionalidad sólo con evidencia suficiente, especificar límites y devolver fallos al rol dueño. No certificar publicación o hardware ni observación no realizada. Depende T009.
+- [X] T008 [US1] dev-godot: implementar tres cambios en `scenes/units/soldado.gd`, `scenes/enemies/enemigo.gd`, Resources de soldado/enemigos/oleadas, adaptadores `scenes/visuals/combat_visual_effects.gd` y `scenes/audio/combat_audio.gd`, contexto de spawner/nivel sólo si necesario. Alcance864 real, perfiles exactos inmutables, enemigo marcha/fusil/contacto excluyente y premio machete transaccional con cap/vida; snapshot validado por generación y presentación independiente. Reusar arte/audio existentes, sin pruebas, otras mecánicas/UI/persistencia/red, renderer/release o mezcla013/014. Depende T007; requiere T009–T010 para aprobación.
+- [X] T009 [US1] godot-tester: confirmar GREEN T004–T006, regresión pertinente y suite GUT completa, import/build/CI aplicables y playtesting de balance según quickstart; generar un único export Web final para preview8813 y observar tres cambios/visual/audio/menú/retry en computador y apps disponibles. Distinguir física real/callback, fixture/producción, medios/gestos/renderer/FPS no observados y riesgos, sin nuevas evidencias Git o campaña006. Depende T008.
+- [X] T010 qa-validator: contrastar fuente/Resources, RED/GREEN/regresión/build y playtesting T009 con tres reglas humanas/tabla; aprobar funcionalidad sólo con evidencia suficiente, especificar límites y devolver fallos al rol dueño. No certificar publicación o hardware ni observación no realizada. Depende T009.
 
 ## Documentación, CI y entrega
 
-- [ ] T011 docs-writer: consolidar sólo comportamiento aprobado en `README.md`, `docs/SPEC.md`, `docs/ARCHITECTURE.md` y specs015, distinguiendo nuevos cambios intencionales de historia anterior. Conservar013/014, pausa006 y pendientes004/005/013/014; sin tareas/fuente/tests o logs nuevos. Depende T010.
+- [X] T011 docs-writer: consolidar sólo comportamiento aprobado en `README.md`, `docs/SPEC.md`, `docs/ARCHITECTURE.md` y specs015, distinguiendo nuevos cambios intencionales de historia anterior. Conservar013/014, pausa006 y pendientes004/005/013/014; sin tareas/fuente/tests o logs nuevos. Depende T010.
 - [ ] T012 project-orchestrator con godot-tester: revisar diff/commits por resultado, publicar revisión consolidada y verificar CI del head exacto, reutilizando comprobaciones válidas y repitiendo sólo invalidadas; sin promoción/merge/distribución. Depende T011.
 - [ ] T013 qa-validator: revisar documentación/CI/revisión exacta T012; emitir APROBADO PARA INTEGRACIÓN sólo con fuente, GREEN/regresión/build y balance suficientemente verificados, con límites físicos/publicación intactos. Depende T012.
 - [ ] T014 project-orchestrator: consolidar Issue único y PR borrador con `Refs #<issue>`, tres cambios/IDs/RED/GREEN/QA/límites y adjuntarlo al chat; marcar sólo alcance aprobado, sin promoción/merge/distribución. Depende T013.
