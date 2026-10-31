@@ -84,11 +84,22 @@ func test_ten_authorized_profiles_and_spawn_timing_are_immutable() -> void:
 	for index in 10:
 		var wave: WaveData = load("res://resources/waves/nivel_montecalvo_oleada_%02d.tres" % (index + 1))
 		assert_eq(wave.wave_number, index + 1)
-		assert_eq(wave.spawn_entries.size(), 1)
-		var entry := wave.spawn_entries[0]
-		assert_eq(entry.count, counts[index], "No cambiar cantidad de spawn")
-		assert_almost_eq(entry.spawn_interval, spawn_intervals[index], 0.0001)
-		var profile := entry.enemy_stats
+		var total := 0
+		var rifle_profiles: Array[EnemyStats] = []
+		for entry: WaveSpawnEntry in wave.spawn_entries:
+			total += entry.count
+			assert_almost_eq(entry.spawn_interval, spawn_intervals[index], 0.0001)
+			assert_eq([entry.enemy_stats.max_health, entry.enemy_stats.move_speed,
+				entry.enemy_stats.melee_damage, entry.enemy_stats.ammo_drop], [15, 40.0, 5, 3])
+			if entry.enemy_stats.rifle_damage > 0:
+				if not rifle_profiles.has(entry.enemy_stats): rifle_profiles.append(entry.enemy_stats)
+			else:
+				assert_eq([entry.enemy_stats.rifle_range, entry.enemy_stats.rifle_damage,
+					entry.enemy_stats.rifle_interval], [0.0, 0, 0.0], "Asaltante sin fusil")
+		assert_eq(total, counts[index], "No cambiar cantidad de spawn al intercalar tipos")
+		assert_eq(rifle_profiles.size(), 1, "Cada ola conserva un único perfilR I1 inmutable")
+		if rifle_profiles.size() != 1: return
+		var profile := rifle_profiles[0]
 		assert_eq(profile.rifle_range, 864.0)
 		assert_eq(profile.rifle_damage, expected_damage[index], "Tabla humana por oleada")
 		assert_almost_eq(profile.rifle_interval, expected_interval[index], 0.0001)
@@ -184,3 +195,118 @@ func test_melee_reentry_and_recycled_target_credit_only_the_original_kill(
 		else:
 			assert_eq(enemy.activation_generation, 1)
 			assert_eq(enemy.get("_current_health"), 3, "Activación nueva intacta")
+
+
+# 015-I2/T017: el recurso de A todavía no se requiere para cargar RED.
+# La composición se observa desde el nivel real y sus Resources actuales.
+func test_production_waves_form_continuous_two_assaults_one_rifle_sequence() -> void:
+	var level := LEVEL.instantiate()
+	var waves: Array[WaveData] = level.waves.duplicate()
+	var initial: EnemyStats = level.initial_enemy_stats
+	_dispose_unready_level(level)
+	var counts := [3, 4, 5, 6, 8, 10, 12, 14, 17, 20]
+	var expected_pairs := [Vector2i(2, 1), Vector2i(3, 1), Vector2i(3, 2),
+		Vector2i(4, 2), Vector2i(6, 2), Vector2i(6, 4), Vector2i(8, 4),
+		Vector2i(10, 4), Vector2i(11, 6), Vector2i(13, 7)]
+	var spawn_intervals := [1.5, 1.4, 1.3, 1.2, 1.1, 1.0, 0.9, 0.8, 0.7, 0.6]
+	assert_eq(waves.size(), 10)
+	var roles := ""
+	var total_a := 0
+	var total_r := 0
+	for index in waves.size():
+		var pair := Vector2i.ZERO
+		for entry: WaveSpawnEntry in waves[index].spawn_entries:
+			assert_gt(entry.count, 0)
+			assert_almost_eq(entry.spawn_interval, spawn_intervals[index], 0.0001,
+				"Ambos tipos conservan el intervalo original de la ola")
+			var is_rifle := entry.enemy_stats.rifle_damage > 0
+			for unused in entry.count:
+				roles += "R" if is_rifle else "A"
+				if is_rifle: pair.y += 1
+				else: pair.x += 1
+		assert_eq(pair.x + pair.y, counts[index])
+		assert_eq(pair, expected_pairs[index], "Reparto autorado de la ola%d" % (index + 1))
+		total_a += pair.x
+		total_r += pair.y
+	assert_eq(roles.length(), 99, "Sólo WAVE; el inicial independiente no consume el patrón")
+	assert_eq(roles, "AAR".repeat(33), "A,A,R CONTINUO, sin reiniciar el índice en cada ola")
+	assert_eq(Vector2i(total_a, total_r), Vector2i(66, 33))
+	var wave_one_rifle: EnemyStats
+	for entry: WaveSpawnEntry in waves[0].spawn_entries:
+		if entry.enemy_stats.rifle_damage > 0: wave_one_rifle = entry.enemy_stats
+	assert_same(initial, wave_one_rifle, "Inicial R/perfil1 independiente de la secuencia WAVE")
+
+
+# Controles de IA existente: deben estar GREEN antes de autorar la mezcla.
+func test_unarmed_assault_advances_from_rifleman_occupied_spawn_with_live_target() -> void:
+	var target: Soldado = SOLDIER.instantiate()
+	target.stats = target.stats.duplicate()
+	target.stats.max_health = 1000
+	target.position = Vector2(144, 336)
+	target.set_grid_cell(Vector2i(1, 3))
+	_world.add_child(target)
+	target.set_physics_process(false)
+	var rifle: EnemyStats = load("res://resources/enemies/enemigo_infanteria_base.tres")
+	var stationary := _enemy(rifle, Vector2(1008, 336))
+	watch_signals(stationary)
+	await wait_physics_frames(3)
+	assert_signal_emit_count(stationary, "rifle_shot_visual_requested", 1, "Control: blanco válido desde aparición")
+	assert_eq(stationary.position, Vector2(1008, 336))
+	var unarmed := rifle.duplicate() as EnemyStats
+	unarmed.rifle_range = 0.0
+	unarmed.rifle_damage = 0
+	unarmed.rifle_interval = 0.0
+	var assault := _enemy(unarmed, Vector2(1008, 336))
+	watch_signals(assault)
+	var original_layer := assault.collision_layer
+	var original_mask := assault.collision_mask
+	await wait_physics_frames(5)
+	var after_recovery := assault.position
+	await wait_physics_frames(30)
+	assert_lt(assault.position.x, after_recovery.x - 10.0, "Avanza de verdad después de resolver el solape")
+	assert_almost_eq(assault.position.y, 336.0, 0.01, "Conserva su carril")
+	assert_eq(stationary.position, Vector2(1008, 336), "El fusilero sigue fijado al mismo blanco válido")
+	assert_signal_not_emitted(assault, "rifle_shot_visual_requested")
+	assert_eq([assault.collision_layer, assault.collision_mask], [original_layer, original_mask])
+
+
+func test_same_pool_actor_switches_rifle_assault_rifle_without_inherited_target_or_cooldown() -> void:
+	var target: Soldado = SOLDIER.instantiate()
+	target.stats = target.stats.duplicate()
+	target.stats.max_health = 1000
+	target.position = Vector2(144, 336)
+	target.set_grid_cell(Vector2i(1, 3))
+	_world.add_child(target)
+	target.set_physics_process(false)
+	var rifle := load("res://resources/enemies/enemigo_infanteria_base.tres").duplicate() as EnemyStats
+	var assault := rifle.duplicate() as EnemyStats
+	assault.rifle_range = 0.0
+	assault.rifle_damage = 0
+	assault.rifle_interval = 0.0
+	var pool := ObjectPool.new()
+	_world.add_child(pool)
+	pool.setup(ENEMY, 1)
+	var actor := pool.acquire() as Enemigo
+	actor.set_pool(pool)
+	actor.prepare_for_spawn(rifle, Vector2(1008, 336), 2)
+	watch_signals(actor)
+	await wait_physics_frames(3)
+	assert_signal_emit_count(actor, "rifle_shot_visual_requested", 1)
+	var first_generation := actor.activation_generation
+	pool.release(actor)
+	var reused := pool.acquire() as Enemigo
+	assert_same(reused, actor, "Un mismo cuerpo físico cambia de rol")
+	reused.prepare_for_spawn(assault, Vector2(1008, 336), 2)
+	await wait_physics_frames(10)
+	assert_gt(reused.activation_generation, first_generation)
+	assert_lt(reused.position.x, 1008.0, "A no conserva la fase estacionaria de R")
+	assert_signal_emit_count(reused, "rifle_shot_visual_requested", 1, "A no hereda ningún disparo de R")
+	pool.release(reused)
+	var third := pool.acquire() as Enemigo
+	assert_same(third, actor)
+	third.prepare_for_spawn(rifle, Vector2(1008, 336), 2)
+	await wait_physics_frames(3)
+	assert_signal_emit_count(third, "rifle_shot_visual_requested", 2, "R readquiere de inmediato sin esperar el cooldown viejo")
+	assert_eq(third.position, Vector2(1008, 336))
+	assert_eq([rifle.rifle_range, rifle.rifle_damage, rifle.rifle_interval], [864.0, 1, 4.0])
+	assert_eq([assault.rifle_range, assault.rifle_damage, assault.rifle_interval], [0.0, 0, 0.0])
