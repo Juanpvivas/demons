@@ -8,6 +8,8 @@
 **Tracking**: [Issue #58](https://github.com/Juanpvivas/demons/issues/58)
 **Input**: Tres cambios autorizados: fusil colombiano hasta la entrada, enemigos con fusil de daño/frecuencia crecientes que se detienen para disparar y baja letal de machete del dueño que otorga +2 moral/+3 vida. Las reglas y la progresión siguientes fueron resueltas por la persona.
 
+**Adenda administrativa — 2026-10-31**: aceptación funcional humana y cierre autorizado de #58 después de crear [#61](https://github.com/Juanpvivas/demons/issues/61) abierto. Publicación T015/SC-008 pasa a ese seguimiento y permanece incumplida; conserva literalmente criterios y tareas originales sin dar por aprobados hardware/60 FPS, renderer/paquete final o distribución. Esta reorganización específica no cambia la política global ni la historia funcional.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Defender desde la entrada (Priority: P1)
@@ -67,7 +69,7 @@ Como jugador quiero que una baja letal a machete refuerce al soldado que la cons
 - **FR-005**: Baja letal de machete concede al dueño vivo +2 moral/+3 vida limitada por su max_health; no concede por impacto no letal, fusil, callback repetido o cleanup ni resucita.
 - **FR-006**: Fusil colombiano conserva +1 moral por baja, daño5/cadencia1.5, ammo10/HP30 y demás reglas; el machete sigue base3+moral×1 y su nueva moral afecta ataques posteriores.
 - **FR-007**: Separar estado por activación del enemigo y validar identidad/generación antes de daño/presentación; pausa/terminal/cierre/pool no heredan targets/relojes o disparos atrasados.
-- **FR-008**: Tiros enemigos usan presentación y audio de fusil existentes una vez por confirmación, con snapshots de datos sin dueño Node y generación validada. Preservar013 y mezcla Stream/GameplaySFX de014.
+- **FR-008**: Tiros enemigos usan presentación y audio de fusil existentes una vez por confirmación, con snapshots de datos sin dueño Node y generación validada. Preservar013 y mezcla Stream/GameplaySFX de 014.
 - **FR-009**: Recompensa actualiza barras/estado observador existentes sin UI/persistencia/red nuevas. Datos de balance en perfiles autorados, sin mutación compartida o RNG jugable nuevo.
 - **FR-010**: Validar tres cambios con TDD, regresión y playtesting de balance; separar integración de publicación/hardware y conservar pausa006/pendientes anteriores.
 

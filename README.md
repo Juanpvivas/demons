@@ -74,7 +74,8 @@ respecto a la versión con brillo. Conserva el pulso suave de 1,4 s, sin
 desaparecer. La envolvente visual máxima es 60×60; conserva radio de recolección
 20, valor y precedencia del gesto. Su
 [seguimiento](specs/004-personajes-municion-monte-calvo/tasks.md) concentra entrega y PR.
-Las features 004/005 y la publicación permanecen abiertas en T039/T071:
+La persona autorizó cerrar funcionalmente los Issues #18/#22 (004/005); publicación T039/T071
+permanece pendiente en [#61](https://github.com/Juanpvivas/demons/issues/61):
 esta integración no acredita 60 FPS físicos, renderer
 Mobile, hardware ni empaquetado final. Android software mostró una regresión;
 iOS software conserva rendimiento muy limitado.
@@ -164,8 +165,8 @@ partida cierran el audio del intento anterior. La introducción y sus voces
 definitivas permanecen intactas.
 
 QA de integración T012 y CI de la revisión aprobada están completos; el
-[Issue #55](https://github.com/Juanpvivas/demons/issues/55) sigue abierto por
-publicación T014. La verificación técnica no acredita audición perceptual de SFX,
+[Issue #55](https://github.com/Juanpvivas/demons/issues/55) tiene cierre funcional humano
+autorizado; publicación T014 sigue pendiente en [#61](https://github.com/Juanpvivas/demons/issues/61). La verificación técnica no acredita audición perceptual de SFX,
 latencia/techo de mezcla Web o combate nativo/hardware.
 [Alcance y límites](specs/014-sonidos-combate/research.md#alcance-funcional-aprobado-y-límites).
 
@@ -224,6 +225,16 @@ convertir las pruebas nativas en pruebas de navegador. Su
 el [informe de integración](specs/003-web-itchio/evidence/main-integration.md)
 registra el nuevo paquete aprobado por QA desde `7309d8f`, su equivalencia con
 la entrega anterior y los límites que se conservan.
+
+## Reorganización administrativa — 2026-10-31
+
+La persona validó la funcionalidad y autorizó cerrar #18, #22, #55 y #58 tras
+crear [#61](https://github.com/Juanpvivas/demons/issues/61) abierto para los cuatro gates de publicación. T039 de 004,
+T071 de 005, T014 de 014 y T015 de 015 mantienen casillas y requisitos pendientes;
+el cierre funcional no certifica publicación, hardware/60 FPS o paquetes finales
+ni autoriza envíos. Sólo cambia el seguimiento de esos cuatro Issues. #53 queda
+abierto y es dependencia si el paquete incluye 013; #30 sigue pausado. La historia,
+release 1.0.2 y las excepciones beta no se modifican ni renuevan.
 
 ## Requisitos
 

@@ -1081,6 +1081,14 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
   envío previo, o falla API/JSON/Git, bloquea distribución. El operador debe
   resolver el historial antes de reintentar, sin desactivar el guard.
 
+**Adenda administrativa — 2026-10-31**: la aceptación funcional humana autoriza
+cerrar únicamente #18, #22, #55 y #58 tras crear [#61](https://github.com/Juanpvivas/demons/issues/61) abierto. Los gates
+004/T039/SC-007, 005/T071/SC-007, 014/T014/SC-007 y 015/T015/SC-008 siguen pendientes
+con todos sus requisitos, sin marcarse completos por cierre o merge. El cambio
+es de seguimiento, no de política global ni certificación/publicación. #53 sigue
+abierto si el paquete incluye 013; #30 permanece pausado. Sin cambio de release 1.0.2
+ni renovación de excepciones beta.
+
 ## 8. Relación con Spec Kit y los agentes
 
 - Spec Kit prepara la especificación, el plan, contratos y tareas. Su
@@ -1160,3 +1168,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-30 | 015/T011 tras QA funcional T010: perfiles de fusil enemigo, alcance864 y premio transaccional; snapshot por generación previo al daño y consulta por grupo sin ciclo de scripts. CI/integración final y publicación pendientes. |
 | 2026-10-30 | 015/T022 tras QA funcional T021: mezcla continua de 66 asaltantes/33 fusileros WAVE por datos, inicial R1 independiente y tiempos/carriles conservados; CI/integración final I2 y publicación pendientes. |
 | 2026-10-30 | Actualización documental: I1/I2 de 015 integrados en `main` por PR #59 (`73c2dff`); conserva CI/QA de sus revisiones previas y pendientes de publicación/hardware, sin distribución nueva. |
+| 2026-10-31 | Adenda administrativa autorizada: cierre funcional humano de #18/#22/#55/#58 y publicación pendiente seguida en [#61](https://github.com/Juanpvivas/demons/issues/61); tareas/SC e historia conservados, sin aprobación física ni distribución. |

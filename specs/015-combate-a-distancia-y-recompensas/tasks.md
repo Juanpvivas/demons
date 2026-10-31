@@ -5,6 +5,8 @@
 **Ajuste I2**: T016–T025 completos; aprobación final de integración en `c6bd482`, integrado por PR #59 (`73c2dff`). I1/T001–T014 y sus aprobaciones se conservan; T015 publicación sigue pendiente.
 **Flujo**: [roles/TDD](../../docs/DEVELOPMENT_WORKFLOW.md); Spec Kit prepara, agentes ejecutan. Sólo orquestador marca [X] tras QA. Sin nuevas evidencias Git.
 
+**Adenda administrativa — 2026-10-31**: la persona acepta la funcionalidad y autoriza el cierre de #58 una vez creado y abierto [#61](https://github.com/Juanpvivas/demons/issues/61). T015/SC-008 conserva su casilla `[ ]` y todos sus requisitos, con publicación seguida en ese nuevo Issue; no se modifica el texto de tareas o criterios. La decisión supera sólo la anterior condición de mantener abierto este Issue funcional, sin cambiar política global, QA histórica o certificaciones. #53 sigue abierto si el paquete incluye 013; #30 permanece pausado.
+
 ## Preparación y setup mínimo
 
 - [X] T001 project-orchestrator con qa-validator: revisar preparación `specs/015-combate-a-distancia-y-recompensas/`, tres reglas humanas/tabla exacta, límites y dependencia TDD; aprobar antes de código o balance.

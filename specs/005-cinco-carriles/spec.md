@@ -3,7 +3,7 @@
 **Feature ID**: `005-cinco-carriles`
 **Planned Branch**: `codex/005-cinco-carriles-preparacion`
 **Created**: 2026-10-19
-**Status**: Preparación aprobada. I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 integrado mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`), I3 mediante [PR #26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`) e I4 mediante [PR #27](https://github.com/Juanpvivas/demons/pull/27) (`cffb2ec`). I5 consolida el alcance funcional verificado con APROBADO PARA INTEGRACIÓN T062; consultar [tareas](tasks.md) para el estado de entrega y PR. Publicación T071/SC-007 y cierre completo de la feature pendientes.
+**Status**: Preparación aprobada. I1 y 004-I2 integrados en `main` mediante PR #24 (`658dd7e`). I2 integrado mediante [PR #25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`), I3 mediante [PR #26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`) e I4 mediante [PR #27](https://github.com/Juanpvivas/demons/pull/27) (`cffb2ec`). I5 consolida el alcance funcional verificado con APROBADO PARA INTEGRACIÓN T062; consultar [tareas](tasks.md) para el estado de entrega y PR. Cierre funcional humano autorizado de #22; publicación T071/SC-007 pendiente en [#61](https://github.com/Juanpvivas/demons/issues/61).
 
 **Input**: Cinco filas horizontales, con cinco trincheras a la izquierda,
 soldados colombianos disparando hacia la derecha desde ellas y enemigos de
@@ -26,6 +26,8 @@ y cobro único, y regreso físico vulnerable a `return_speed=40`, sin ofensiva
 hasta llegar a HOME. I4 añade composición y poses laterales observadoras,
 integradas mediante PR #27. Las [tareas](tasks.md) mantienen el estado de
 entrega y PR; publicación sigue pendiente.
+
+**Adenda administrativa — 2026-10-31**: aceptación funcional humana y cierre autorizado de #22 después de crear [#61](https://github.com/Juanpvivas/demons/issues/61) abierto. Publicación T071/SC-007 pasa a ese seguimiento y permanece incumplida; conserva literalmente criterios y tareas originales sin dar por aprobados hardware/60 FPS, renderer/paquete final o distribución. Esta reorganización específica no cambia la política global ni la historia funcional.
 
 ## Clarifications
 

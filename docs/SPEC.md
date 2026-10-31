@@ -401,7 +401,8 @@ audio futuro fuera de013/014 sigue pendiente; la introducción y los cinco cues
 de combate ya están integrados. I5 consolida el alcance funcional integrado mediante
 [PR #28](https://github.com/Juanpvivas/demons/pull/28); las
 [tareas de 005](../specs/005-cinco-carriles/tasks.md) mantienen el estado de
-entrega y PR. La publicación, las features 004/005 y el MVP siguen abiertos.
+entrega y PR. La publicación y el resto del MVP siguen pendientes; los cierres funcionales
+de 004/005 se rigen por la adenda administrativa del 2026-10-31 y [#61](https://github.com/Juanpvivas/demons/issues/61).
 
 [007 — Menú de inicio y nueva partida](../specs/007-menu-inicio-reinicio/spec.md),
 integrado mediante el [PR #34](https://github.com/Juanpvivas/demons/pull/34),
@@ -554,6 +555,15 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 
 ## 10. Preguntas abiertas / decisiones pendientes
 
+**Adenda administrativa — 2026-10-31**: por aceptación funcional humana se
+autoriza cerrar #18/004, #22/005, #55/014 y #58/015 después de crear [#61](https://github.com/Juanpvivas/demons/issues/61)
+abierto para publicación. T039/SC-007 de 004, T071/SC-007 de 005, T014/SC-007 de 014
+y T015/SC-008 de 015 conservan sus criterios y casillas pendientes, ahora enlazados
+al nuevo seguimiento. Se supera sólo la antigua condición de cierre de esos
+cuatro Issues; no cambia la política global ni se certifica rendimiento físico,
+renderer, artefacto final o distribución. #53 permanece abierto y es dependencia
+si el paquete incluye 013; #30 sigue pausado. Release 1.0.2 y excepciones beta intactas.
+
 - Publicación de [005](../specs/005-cinco-carriles/tasks.md), T071/SC-007: rendimiento físico, renderer y artefacto final, firma/instalación/versionado y matriz de destino. I1–I4 están integrados en `main` mediante los PR #24–#27 e I5 consolida el alcance funcional aprobado; las tareas mantienen el estado de entrega. No deducir balance de la imagen.
 - Acabado adicional de interfaz, audio futuro fuera de013/014 y demás alcance del MVP, siguiendo §8; HUD/recarga/resultados de005, introducción013 y cinco cues014 ya están integrados. Esto no completa el MVP ni SC-007/certificaciones de publicación.
 - ¿Habrá progresión entre niveles (más batallas históricas) o es un solo escenario?
@@ -645,3 +655,4 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 | 2026-10-30 | 015/T011 tras QA funcional T010: alcance864, fusil enemigo por carril/perfiles y recompensa machete +2/+3; riesgo táctico y límites por destino explícitos, CI/integración final y publicación pendientes. |
 | 2026-10-30 | 015/T022 tras QA funcional T021: mezcla continua de 66 asaltantes/33 fusileros WAVE por datos, inicial R1 independiente y tiempos/carriles conservados; CI/integración final I2 y publicación pendientes. |
 | 2026-10-30 | Actualización documental: I1/I2 de 015 integrados en `main` por PR #59 (`73c2dff`); conserva CI/QA de sus revisiones previas y pendientes de publicación/hardware, sin distribución nueva. |
+| 2026-10-31 | Adenda administrativa autorizada: cierre funcional humano de #18/#22/#55/#58 y publicación pendiente seguida en [#61](https://github.com/Juanpvivas/demons/issues/61); tareas/SC e historia conservados, sin aprobación física ni distribución. |

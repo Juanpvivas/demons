@@ -4,8 +4,10 @@
 **Planned Branch**: `codex/014-sonidos-combate`
 **Created**: 2026-10-30
 **Status**: Implementación integrada en `main` por PR #56 (`45cd83a`), con QA T012 y CI/suite completa de la revisión aprobada. Publicación T014/SC-007 pendiente
-**Tracking**: [PR #56 fusionado](https://github.com/Juanpvivas/demons/pull/56); [Issue #55](https://github.com/Juanpvivas/demons/issues/55) abierto por publicación
+**Tracking**: [PR #56 fusionado](https://github.com/Juanpvivas/demons/pull/56); [Issue #55](https://github.com/Juanpvivas/demons/issues/55) con cierre funcional humano autorizado; publicación pendiente en [#61](https://github.com/Juanpvivas/demons/issues/61)
 **Input**: Incorporar cinco sonidos offline: disparo de fusil confirmado, muerte enemiga, muerte del soldado colombiano, victoria y derrota. La persona eligió para ambas bajas una exclamación breve acompañada de caída; no voces largas ni narración nueva.
+
+**Adenda administrativa — 2026-10-31**: aceptación funcional humana y cierre autorizado de #55 después de crear [#61](https://github.com/Juanpvivas/demons/issues/61) abierto. Publicación T014/SC-007 pasa a ese seguimiento y permanece incumplida; conserva literalmente criterios y tareas originales sin dar por aprobados hardware/60 FPS, renderer/paquete final o distribución. Esta reorganización específica no cambia la política global ni la historia funcional.
 
 ## User Scenarios & Testing *(mandatory)*
 

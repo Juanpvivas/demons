@@ -3,7 +3,7 @@
 **Estado**: I1 y corrección UX T031–T038 aprobados e integrados en `main`. I2 y su documentación integrados junto con 005-I1 mediante el PR #24 (`658dd7e`). I3 (T023–T030), la corrección de legibilidad (T040–T046) y la ampliación adicional (T047–T051) están aprobadas e integradas en `main` mediante el PR #29 (`5d50cb0`). Publicación T039 permanece pendiente.
 **PR conjunto integrado**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; publicación pendiente.
 **Issue**: [#18](https://github.com/Juanpvivas/demons/issues/18).
-**PR I3 integrado**: [#29](https://github.com/Juanpvivas/demons/pull/29), `5d50cb0`, `Refs #18`; el Issue permanece abierto y la integración no publica.
+**PR I3 integrado**: [#29](https://github.com/Juanpvivas/demons/pull/29), `5d50cb0`, `Refs #18`; cierre funcional autorizado por la persona; publicación pendiente en [#61](https://github.com/Juanpvivas/demons/issues/61).
 **Incremento de esta entrega**: I3 / US3, caja de munición e integración visual funcional (T023–T030), desde `main` actualizado con el PR #28 (`163a2dc`), en `codex/004-i3-municion`. El diseño horizontal, HUD y controles ya entregados por 005 conservan su alcance; no se cambia lógica ni balance.
 **Rama histórica de integración**: `codex/005-i1-tablero` para transición conjunta autorizada 004-I2 + 005-I1, contra `main` en `2dc532d`; contenido integrado mediante PR #24.
 **Base histórica del PR conjunto #24**: `main`, con I1 del [PR #20](https://github.com/Juanpvivas/demons/pull/20)
@@ -42,6 +42,8 @@ Los resultados se entregan al orquestador para el PR; logs, mediciones, capturas
 e informes nuevos permanecen en temporales o CI, nunca en Git ni volcados en
 estos documentos. Las pruebas, arte, procedencia y documentación útil sí se
 versionan. Cada incremento incluye sus verificaciones, QA y documentación.
+
+**Adenda administrativa — 2026-10-31**: la persona acepta la funcionalidad y autoriza el cierre de #18 una vez creado y abierto [#61](https://github.com/Juanpvivas/demons/issues/61). T039/SC-007 conserva su casilla `[ ]` y todos sus requisitos, con publicación seguida en ese nuevo Issue; no se modifica el texto de tareas o criterios. La decisión supera sólo la anterior condición de mantener abierto este Issue funcional, sin cambiar política global, QA histórica o certificaciones. #53 sigue abierto si el paquete incluye 013; #30 permanece pausado.
 
 ## Fase 1: Preparación de la ejecución
 
