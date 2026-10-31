@@ -30,3 +30,22 @@ fixture/observador que use esa autoridad real.
 ## Datos y tests
 
 Perfil inicial y ola1 iguales a tabla1; ola2–10 refs distintas con sus campos exactos. Test comparar recursos/spawn entries y que activar otra ola no muta un enemigo vivo. Fixtures simulan física real y estado completo además de pruebas puntuales; reset de Managers/pools/actores y contexto de intro controlado, no tocar preferencias reales. Parser/import error no vale RED. Arte reutilizado se revisa proporcionalmente.
+
+## Enmienda 015-I2 — Contrato de composición
+
+A = `enemigo_asaltante_base.tres` (tres campos rifle0, HP15/speed40/melee5/drop3);
+R = perfil de fusilero I1 de su oleada (alcance864/tabla exacta). A no requiere
+una clase o modo de IA nuevo. Estado por activación, contacto y callbacks siguen
+el contrato anterior; el inicial siempre usa R/perfil1.
+
+Expandir cada spawn_entry por count y concatenar las diez oleadas: el índice
+WAVE base0 es R sólo cuando índice%3=2, A en los otros dos casos. El cursor no se
+reinicia entre olas ni incluye INITIAL. Cada entrada mantiene el intervalo
+original de su ola; el cursor de carriles y la lógica de Timer no se modifican.
+No agrupar tipos fuera de orden; count1/2 puede compactar sólo iguales adyacentes.
+La [tabla I2](../spec.md#enmienda-015-i2--dos-asaltantes-por-fusilero) fija totales.
+
+Verificación física: A avanza con blanco colombiano válido; R dispara/parado y
+reanuda sin blanco, preservando contacto/colisiones. Reusar un actor R→A→R
+limpia objetivo/cooldown y evita tiros/eventos viejos. Estas regresiones no
+constituyen una solicitud de nuevo pathfinding o un supuesto bug de colisión.

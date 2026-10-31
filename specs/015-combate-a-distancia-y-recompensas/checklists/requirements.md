@@ -1,4 +1,4 @@
-# Calidad de preparación015
+# Calidad de preparación015-I1 (historia)
 
 Sólo documento, no implementación. [Spec](../spec.md).
 
@@ -9,4 +9,4 @@ Sólo documento, no implementación. [Spec](../spec.md).
 - [X] Setup neutral mínimo antes de RED y roles separados; presentación/audio son cosméticos.
 - [X] Integración/playtesting de balance y publicación física se mantienen separados; historia/pausa006 intactas.
 
-Implementación y revisión QA de preparación aún pendientes.
+La preparación e implementación I1 conservan sus aprobaciones históricas en tasks.md. La enmienda I2 tiene alcance/tabla/contrato/TDD explícitos y permanece pendiente de QA T016; ninguna marca de esta lista acredita I2.

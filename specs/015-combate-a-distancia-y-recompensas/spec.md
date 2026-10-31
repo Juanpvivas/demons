@@ -4,6 +4,7 @@
 **Branch**: `codex/015-combate-a-distancia-y-recompensas`
 **Created**: 2026-10-30
 **Status**: 015-I1 APROBADO PARA INTEGRACIÓN por QA con CI de `2351798`; [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59) en su rama, sin fusionar. Publicación T015/SC-008 pendiente
+**Revisión vigente**: 015-I2 en preparación para QA: dos asaltantes por fusilero. I1 conserva su aprobación e historial; las reglas de composición siguientes sustituyen sólo la uniformidad de fusileros de I1.
 **Tracking**: [Issue #58](https://github.com/Juanpvivas/demons/issues/58)
 **Input**: Tres cambios autorizados: fusil colombiano hasta la entrada, enemigos con fusil de daño/frecuencia crecientes que se detienen para disparar y baja letal de machete del dueño que otorga +2 moral/+3 vida. Las reglas y la progresión siguientes fueron resueltas por la persona.
 
@@ -107,3 +108,42 @@ Perfil de enemigo por oleada, activación con blanco/reloj propio, transacción 
 ## Assumptions
 
 Las reglas materiales están resueltas por la persona; las decisiones técnicas concretas constan en plan/contrato. Un incremento entrega los tres cambios. Sin recursos artísticos nuevos imprescindibles; se reutilizan fusil/audio/efectos existentes. No cambia publicación, versiones o pendientes004/005/013/014 y006.
+
+## Enmienda 015-I2 — Dos asaltantes por fusilero
+
+### User Story 4 - Alternar avance y fuego (Priority: P1)
+
+Como jugador quiero dos asaltantes que avancen por cada fusilero, conservando
+la progresión de los fusileros y los ritmos de aparición aprobados.
+
+**Acceptance Scenarios**:
+
+1. Los 99 enemigos WAVE forman una secuencia global A,A,R repetida33 veces,
+   continua entre oleadas; el inicial es R de perfil1 y no consume tipo ni carril WAVE.
+2. Un A sin fusil avanza aun con colombiano frontal vivo válido; R conserva el
+   tiro/parada de I1 y vuelve a avanzar sin blanco. Contacto y colisiones vigentes
+   permanecen, incluso al aparecer detrás de un R detenido.
+3. Al reutilizar el mismo actor R→A→R no quedan blancos, relojes, presentación
+   o callbacks de otra activación. La mezcla no cambia otros stats ni recursos compartidos.
+
+- **FR-011**: Autorizar exactamente66 A y33 R WAVE, en orden global A,A,R sin reinicio por oleada; inicial independiente R/perfil1.
+- **FR-012**: A tiene fusil desactivado y HP15/velocidad40/melee5/drop3. R conserva alcance864 y tabla de daño/intervalo I1 según la oleada en que aparece. No nueva IA, arte, UI o mutación de stats.
+- **FR-013**: Conservar cantidades, cada intervalo de aparición y cursor continuo de cinco carriles. La intercalación no puede agrupar todos los A y después todos los R.
+- **FR-014**: Preservar física/contacto y reset del pool existentes. Validar composición nueva con RED y el resto con regresión proporcional; no inventar fallo de colisiones ni cambiar reglas ya aprobadas sin defecto real.
+
+| Oleada | Total WAVE | A | R | Intervalo de aparición(s) |
+|---|---:|---:|---:|---:|
+| 1 | 3 | 2 | 1 | 1.5 |
+| 2 | 4 | 3 | 1 | 1.4 |
+| 3 | 5 | 3 | 2 | 1.3 |
+| 4 | 6 | 4 | 2 | 1.2 |
+| 5 | 8 | 6 | 2 | 1.1 |
+| 6 | 10 | 6 | 4 | 1.0 |
+| 7 | 12 | 8 | 4 | 0.9 |
+| 8 | 14 | 10 | 4 | 0.8 |
+| 9 | 17 | 11 | 6 | 0.7 |
+| 10 | 20 | 13 | 7 | 0.6 |
+
+- **SC-009**: Secuencia aplanada exacta de99 WAVE =66 A/33 R; inicial R/perfil1 excluido y composición por oleada igual a tabla, sin cambiar intervalos/carriles.
+- **SC-010**: Cuerpos reales mixtos acreditan avance A, parada/tiro y reanudación R, contacto vigente y reset R→A→R sin restos; reglas I1/013/014 conservadas.
+- **SC-011**: RED/GREEN, regresión, build/preview y QA/CI exactos sustentan I2 en el mismo PR59 en borrador/Issue58. La entrega personal del APK de prueba autorizada se gestiona por root; no completa publicación T015/SC-008 ni autoriza otros destinos.

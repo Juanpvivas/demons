@@ -2,6 +2,7 @@
 
 **Input**: [spec](spec.md), [plan](plan.md), [contrato](contracts/ranged-combat.md), [datos](data-model.md), [quickstart](quickstart.md).
 **Entrega**: 015-I1 completo, tres cambios; rama `codex/015-combate-a-distancia-y-recompensas`, base main4fb1267; [Issue #58](https://github.com/Juanpvivas/demons/issues/58), [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59). Integración aprobada sobre `2351798`; sin merge ni publicación.
+**Incremento siguiente**: 015-I2 en preparación; T016–T025 pendientes. I1/T001–T014 y sus aprobaciones se conservan; T015 publicación sigue pendiente.
 **Flujo**: [roles/TDD](../../docs/DEVELOPMENT_WORKFLOW.md); Spec Kit prepara, agentes ejecutan. Sólo orquestador marca [X] tras QA. Sin nuevas evidencias Git.
 
 ## Preparación y setup mínimo
@@ -36,3 +37,20 @@
 T001→T002→T003→T004→T005→T006→T007→T008→T009→T010→T011→T012→T013→T014. T015 es gate futuro separado. Sin [P] por archivos compartidos; un incremento entrega las tres historias, no RED sin GREEN.
 
 FR001/SC001→T004,T008–T010; FR002–004/SC002–003→T005,T008–T010; FR005–006/SC004→T006,T008–T010; FR007–009/SC005–006→T005–T006,T008–T010; FR010/SC007→T004–T014; SC008→T015. Documentación y arte proporcional sin tests artificiales; balance sí requiere playtesting.
+
+## 015-I2 — Dos asaltantes por fusilero (US4)
+
+- [ ] T016 docs-writer con project-orchestrator/qa-validator: preparar y revisar enmienda mínima `specs/015-combate-a-distancia-y-recompensas/{spec,plan,tasks}.md` y `contracts/ranged-combat.md`; confirmar A,A,R continuo, tabla por ola y límites antes de implementación. Sin nueva rama/Issue/setup o cambios de recursos.
+- [ ] T017 [US4] godot-tester: RED válido en `tests/unit/levels/test_combat_ranged_integration.gd` y pruebas de `WaveSpawner` pertinentes para composición global99/66A33R, orden continuo entre olas, inicialR1 independiente, tabla por ola e intervalos/carriles conservados. Cargar recursos actuales y fallar por composición, no por archivo nuevo ausente/parser. Adaptar bajo QA la expectativa I1 de entrada única/todosR para inspeccionar el perfilR de cada ola, conservando sus17 oráculos. Planificar regresión física mixta/pool del contrato sin exigir RED artificial de IA existente. Depende T016.
+- [ ] T018 qa-validator: validar RED T017 y alcance en `specs/015-combate-a-distancia-y-recompensas/`, separando fallo de composición nueva de regresión existente; no aprobar implementación. Depende T017.
+- [ ] T019 [US4] dev-godot: crear `resources/enemies/enemigo_asaltante_base.tres` rifle0 con otros stats intactos y autorar intercalación global A,A,R mediante count1/2 en `resources/waves/nivel_montecalvo_oleada_01.tres`…`_10.tres`; reusar entradas inmutables A/count2,R/count1 y parciales sin99 subrecursos; conservar perfilesR/tabla/inicial/tiempos/carriles sin mutación. Sin nueva IA; fuente sólo si defecto real demostrado lo exige. No tocar tests. Depende T018.
+- [ ] T020 [US4] godot-tester: GREEN T017 y regresión GUT pertinente/completa, import/build de fuente estable; en `tests/unit/levels/test_combat_ranged_integration.gd` y pruebas de enemigo/spawner cubrir física mixta A avanza con blanco/R parado dispara y avanza sin blanco/contacto/pool R→A→R sin restos. Playtesting de balance, único Web final para8813 y APK QA `PR59-S24-prueba2.apk` con package/firma anteriores según plan; declarar entorno/gestos/latencia/hardware no observados, sin nuevas evidencias Git. Depende T019.
+- [ ] T021 qa-validator: revisar datos, GREEN/regresión/build y playtesting T020 frente a tabla/contrato de `specs/015-combate-a-distancia-y-recompensas/`; aprobar funcionalidad I2 sólo con límites explícitos y sin cerrar T015. Depende T020.
+- [ ] T022 docs-writer: consolidar comportamiento I2 aprobado en `README.md`, `docs/SPEC.md`, `docs/ARCHITECTURE.md` y specs015 pertinentes, conservando historia I1/013/014, pausa006 y pendientes; sin fuente/tests/tasks o logs nuevos. Depende T021.
+- [ ] T023 project-orchestrator con godot-tester: publicar revisión consolidada y verificar CI del head exacto, según `docs/DEVELOPMENT_WORKFLOW.md`; repetir sólo checks invalidados. Sin merge/promoción/distribución automática. Depende T022.
+- [ ] T024 qa-validator: contrastar documentación, CI y revisión exacta T023 con `specs/015-combate-a-distancia-y-recompensas/spec.md`; emitir APROBADO PARA INTEGRACIÓN I2 con límites físicos/publicación intactos. Depende T023.
+- [ ] T025 project-orchestrator: actualizar mismo PR59 en borrador/Issue58 con Refs#58, trazabilidad y límites conforme `docs/DEVELOPMENT_WORKFLOW.md`; sólo root entrega APK personal autorizado en borrador privado429670877. No marcar T015/SC008 ni promover/fusionar/publicar otros destinos. Depende T024.
+
+Dependencias I2: T016→T017→T018→T019→T020→T021→T022→T023→T024→T025.
+FR011–014/SC009–010→T017,T019–T021; SC011→T016–T025. T015 sigue separado.
+Sin [P] por archivos compartidos; ningún ID o aprobación I1 se renumera/reabre.

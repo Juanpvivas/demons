@@ -63,3 +63,35 @@ tests/unit/systems/test_combat_{audio,visual_effects}.gd
 ## Complexity Tracking
 
 Sin autoload, nuevo backend o motor de IA. Tres cambios usan sistemas actuales; ampliación de snapshots se valida en adaptadores manteniendo contratos anteriores.
+
+## Enmienda 015-I2 — Composición por datos (preparación)
+
+Misma rama/PR59/Issue58; no reabrir I1. Añadir únicamente
+`resources/enemies/enemigo_asaltante_base.tres`, con rifle_range/rifle_damage/
+rifle_interval=0 y HP15/move_speed40/melee_damage5/ammo_drop3. Los diez perfiles
+R de I1 no cambian; el inicial sigue referenciando perfil1.
+
+`WaveSpawner` ya aplana `WaveData.spawn_entries` en orden. Autorizar los diez
+`resources/waves/nivel_montecalvo_oleada_01.tres`…`_10.tres` como entradas
+intercaladas A,A,R según índice global WAVE, usando count1 o2 para compactar sólo
+runas consecutivas iguales dentro de cada oleada; el array puede reusar los
+mismos WaveSpawnEntry inmutables A/count2 y R/count1, más parciales A/count1,
+sin99 subrecursos ni nuevo contador runtime. Cada entrada conserva el
+spawn_interval original de su oleada; primer spawn y separaciones temporales,
+cursor1→5 e inicial independiente conservan la autoridad actual. Sin cursor de
+tipo runtime, selector aleatorio o mutación de Resource.
+
+No setup: las APIs y recursos existentes bastan para RED de orden/composición.
+El tester carga las oleadas actuales y compara sus datos aplanados; la ausencia
+de un nuevo archivo no debe producir un fallo de import/parser usado como RED.
+Avance/tiro, contacto mixto y pool se verifican por física/regresión existentes;
+no requieren simular RED artificial de IA ya aprobada. Desarrollo previsto sólo
+Resources; fuente únicamente si un defecto real comprobado lo exige.
+
+T016–T025 cubren preparación→RED→QA→datos→GREEN/build/preview→QA→docs→CI→QA final→
+cierre del mismo borrador. Un export Web final para8813 y APK QA de fuente final
+estable: paquete `com.juanpvivas.demons.ranged015qa`, firma debug anterior,
+archivo `PR59-S24-prueba2.apk`. Sólo root gestiona la entrega personal autorizada
+en el borrador privado existente429670877, sin distribución automática ni cierre
+T015. Reutilizar reglas I1/013/014; release1.0.2, pendientes004/005/013/014 y006
+pausada permanecen. Sin logs o evidencias nuevas en Git.
