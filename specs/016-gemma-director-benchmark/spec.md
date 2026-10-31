@@ -2,7 +2,7 @@
 
 **Fecha**: 2026-10-31 · **Rama**: `codex/016-gemma-director-benchmark` · **Base**: main `e8407ec`.
 **Estado**: preparación para QA; spike de PC, sin implementación aprobada.
-**Tracking**: Issue único por crear por el orquestador tras revisar esta preparación.
+**Tracking**: [Issue #63](https://github.com/Juanpvivas/demons/issues/63).
 
 ## Alcance y escenarios
 
@@ -51,7 +51,10 @@ modelos o informes en Git.
   tolerar fences, extraer JSON de prosa o sustituir silenciosamente una decisión.
 - **FR-004**: Baseline determinista legible y nuevo, con alivio ante baja/presión,
   selección legal poco repetida/apilada y desempate estable; no es verdad óptima.
-  Oráculos por conjuntos aceptables se revisan por QA y se puntúan separadamente.
+  Oráculos por conjuntos aceptables se revisan por QA y se puntúan sólo después
+  de decidir. case_id/oráculos/metadata de reporte no son observables tácticos:
+  ambos directores reciben la misma whitelist del contrato, sin respuestas
+  aceptables ni nombres de casos en prompts o ramas del baseline.
 - **FR-005**: Gemma usa el modelo/manifest verificado, alias y parámetros reales
   del contrato. JSON-schema estructurado sin enum del catálogo permite evaluar
   IDs ilegales. Registrar semillas/parámetros como solicitados, no garantizados.

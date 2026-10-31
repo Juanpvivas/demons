@@ -22,6 +22,12 @@ Snapshot: `case_id`, `terminal` bool, `budget_slots` entero≥0,
 `lane_loads`/`lane_caps` cinco enteros≥0, `defense` cinco números finitos 0–1,
 `recent_death`/`high_pressure` bool, `previous_action_id` string|null y
 `allowed_actions` lista de IDs. Nunca se importa WaveData ni estado real.
+`case_id`, los conjuntos aceptables y cualquier metadata de oráculo/reporte se
+usan sólo para identificar/evaluar resultados después de decidir. Baseline y
+Gemma reciben la **misma proyección whitelist**: terminal, budget_slots,
+lane_loads, lane_caps, defense, recent_death, high_pressure, previous_action_id
+y allowed_actions, más el catálogo. El selector no lee ni ramifica por case_id,
+acceptable_actions o metadata de evaluación.
 Defaults de los ocho casos: terminal=false, budget 3, loads[0,0,0,0,0],
 caps[3,3,3,3,3], defense[.5,.5,.5,.5,.5], flags=false, previous=null,
 allowed=los siete IDs. Cambios respecto al default y oráculos **suaves**:
@@ -131,8 +137,10 @@ seed 42/43/44 solicitada. `response_format`:
 ```
 
 Sin enum de IDs. Mensajes consistentes: instrucción de devolver sólo ese objeto
-JSON, reglas duras/oráculos contextuales, snapshot y catálogo canónicos de la
-misma entrada. No se pide chain-of-thought ni texto libre. Envelope espera
+JSON, reglas duras y objetivos tácticos **generales** (alivio, menor apilado y
+repetición), proyección táctica whitelist y catálogo canónicos. No incluyen
+nombres/IDs de caso, conjuntos de respuestas aceptables ni claves de metadata
+del oráculo/reporte. Los conjuntos se comparan sólo después de la decisión. No se pide chain-of-thought ni texto libre. Envelope espera
 `choices[0].message.content` string y metadata disponible; no depender de tokens
 reportados ni aceptar truncamiento `finish_reason=length` como éxito. Registrar
 structuredmode y parámetros como **solicitados**, no como garantía del motor.
@@ -146,10 +154,16 @@ cuentan como decisiones. Preflight fallido impide declarar batch real completo.
 
 JSON conserva caso/seed solicitada/orden/backend/status/raw acotado/ID/razón/
 legalidad/oráculo/latencia y metadata disponible, más hashes SHA256 de catálogo,
-fixtures, prompt canónico por entrada y manifest/modelo, versiones Python/OS/
+fixtures, prompt canónico por proyección táctica y manifest/modelo, versiones Python/OS/
 runtime declaradas y parámetros. No inventar consumo de memoria: 24GB es
 capacidad del host. El runtime 0.19/API 0.19 se registra con procedencia declarada,
 no como valor devuelto por GET si ese endpoint no lo devuelve.
+
+Controles de no filtración: renombrar case_id o cambiar sólo metadata del oráculo
+no altera baseline, prompt táctico, su hash ni el cuerpo HTTP para el mismo
+estado/semilla. El hash de procedencia del fixture completo sí puede cambiar;
+no se confunde con el hash del prompt. Unittest inspecciona el body HTTP para
+excluir case_id, acceptable_actions y metadata de evaluación, sin añadir APIs.
 
 Resumen: válidos/24 y válidos/respuestas evaluables, fallos por status separados,
 aciertos_oráculo/24 y /legales, IDs distintos por caso entre ≤3 respuestas válidas
