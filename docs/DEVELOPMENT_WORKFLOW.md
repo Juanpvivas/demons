@@ -35,7 +35,7 @@ checklist de especificación no equivalen a validación de una implementación.
 Las consultas y correcciones documentales puntuales mantienen su alcance;
 no disparan por sí solas la implementación de una feature, Issues o un PR.
 
-La matriz vigente sigue la constitución 4.2.0: Web solo en navegador de
+La matriz vigente sigue la constitución 4.3.0: Web solo en navegador de
 computador; Android/iOS como apps instaladas. No continuar pruebas Web en
 navegadores móviles, tampoco en emulador/simulador. Conservar las evidencias
 históricas sin convertirlas en pruebas de apps ni reabrir features anteriores.
@@ -44,7 +44,7 @@ de rendimiento físico.
 
 ## Gate de integración y gate de publicación
 
-La constitución 4.2.0 distingue el código funcional integrado en `main` de un
+La constitución 4.3.0 distingue el código funcional integrado en `main` de un
 artefacto aprobado para distribuir. El orquestador declara qué gate se revisa.
 
 | Gate | Requisitos y resultado de QA |
@@ -77,6 +77,12 @@ exacta de `main` y verificaciones previas de firma/empaquetado/versionado.
 Sólo difiere los requisitos físicos delimitados allí; no constituye un
 veredicto de publicación ni acredita envíos ejecutados. 004/T039, 005/T071 y
 SC-007 siguen pendientes; 006 permanece pausada.
+La excepción 1.0.2 también está consumida. La [beta 1.0.3/build 6 autorizada](../.specify/memory/constitution.md#excepción-autorizada-beta-103-build-6)
+se limita a Firebase/grupo `demons` y TestFlight/carga y `VALID`, sin invitaciones
+ni revisión externa: un upload exitoso por destino desde el SHA nuevo de `main`
+con QA/CI, firma/empaquetado/versión obligatorios antes de cada upload. Sólo se
+difieren los requisitos físicos expresos; #61/#53 permanecen y 006 sigue pausada.
+La autorización no sustituye QA de publicación ni acredita envíos o IPA final.
 No fabricar una prueba física, cerrar SC-007 ni completar una feature por haber
 integrado un incremento. Mantener IDs y pendientes de publicación identificados;
 si una tarea cubre ambos gates, una aprobación parcial no marca toda su casilla.
@@ -303,3 +309,4 @@ comprobar que sus comandos y plantillas siguen activos tras una actualización.
 | 2026-10-29 | Constitución 4.1.1 aclara el reintento de la misma beta tras corregir sus filtros nativos: revisión exacta, nueva QA/CI y verificaciones previas al upload; sin heredar aprobaciones anteriores. |
 | 2026-10-29 | Documenta firma beta Android estable, preflight protegido, verificación de huella sin fallback y aviso de reinstalación manual única; sin modificar los gates. |
 | 2026-10-30 | Referencia vigente a constitución 4.2.0 y excepción acotada de beta 1.0.2/build 5; QA, CI y verificaciones previas conservados, sin aprobar requisitos físicos ni afirmar envíos. |
+| 2026-10-31 | Referencia a constitución 4.3.0: excepción consumible 1.0.3/build 6, revisión nueva exacta de main/QA/CI y comprobaciones previas conservadas, sin acreditar envíos ni cerrar publicación #61/#53. |

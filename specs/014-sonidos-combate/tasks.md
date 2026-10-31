@@ -1,8 +1,10 @@
 # Tasks: Sonidos de combate
 
 **Input**: [spec.md](spec.md), [plan.md](plan.md), [contrato](contracts/combat-audio.md), [datos](data-model.md), [quickstart](quickstart.md).  
-**Entrega**: 014-I1 integrado en `main` por [PR #56 fusionado](https://github.com/Juanpvivas/demons/pull/56) (`45cd83a`), cinco cues/nueve WAV; rama de implementación `codex/014-sonidos-combate`, base main77be629; [Issue #55](https://github.com/Juanpvivas/demons/issues/55) abierto por publicación T014.
+**Entrega**: 014-I1 integrado en `main` por [PR #56 fusionado](https://github.com/Juanpvivas/demons/pull/56) (`45cd83a`), cinco cues/nueve WAV; rama de implementación `codex/014-sonidos-combate`, base main77be629; [Issue #55](https://github.com/Juanpvivas/demons/issues/55) con cierre funcional humano autorizado; publicación T014 seguida en [#61](https://github.com/Juanpvivas/demons/issues/61).
 **Flujo**: [roles/TDD](../../docs/DEVELOPMENT_WORKFLOW.md); Spec Kit prepara, agentes ejecutan. Sólo orquestador marca [X] tras QA. Sin evidencias nuevas Git.
+
+**Adenda administrativa — 2026-10-31**: la persona acepta la funcionalidad y autoriza el cierre de #55 una vez creado y abierto [#61](https://github.com/Juanpvivas/demons/issues/61). T014/SC-007 conserva su casilla `[ ]` y todos sus requisitos, con publicación seguida en ese nuevo Issue; no se modifica el texto de tareas o criterios. La decisión supera sólo la anterior condición de mantener abierto este Issue funcional, sin cambiar política global, QA histórica o certificaciones. #53 sigue abierto si el paquete incluye 013; #30 permanece pausado.
 
 ## Fase 1: Preparación y contrato neutral
 

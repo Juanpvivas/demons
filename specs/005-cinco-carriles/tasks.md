@@ -2,7 +2,7 @@
 
 **Feature**: `005-cinco-carriles` · **Issue**: [#22](https://github.com/Juanpvivas/demons/issues/22) · **Rama de preparación**: `codex/005-cinco-carriles-preparacion`.
 **Input**: [spec](spec.md), [plan aprobado documentalmente](plan.md), [modelo](data-model.md), [contrato](contracts/horizontal-combat.md), [quickstart](quickstart.md) y [flujo](../../docs/DEVELOPMENT_WORKFLOW.md).
-**Estado**: I1 y 004-I2 integrados en `main` mediante Squash and merge del PR #24 (`658dd7e`). I2 integrado mediante el PR [#25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`) e I3 mediante el PR [#26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`). I4 integrado mediante el PR [#27](https://github.com/Juanpvivas/demons/pull/27) (`cffb2ec`), con T046–T058 aprobadas. I5 integrado mediante Squash and merge del PR [#28](https://github.com/Juanpvivas/demons/pull/28) (`163a2dc`) el 2026-10-21, con T059–T065 completas. El alcance funcional I1–I4 y su consolidación documental I5 están integrados en `main`. Publicación T071 y el Issue #22 permanecen abiertos.
+**Estado**: I1 y 004-I2 integrados en `main` mediante Squash and merge del PR #24 (`658dd7e`). I2 integrado mediante el PR [#25](https://github.com/Juanpvivas/demons/pull/25) (`c1f43d2`) e I3 mediante el PR [#26](https://github.com/Juanpvivas/demons/pull/26) (`8c4cab4`). I4 integrado mediante el PR [#27](https://github.com/Juanpvivas/demons/pull/27) (`cffb2ec`), con T046–T058 aprobadas. I5 integrado mediante Squash and merge del PR [#28](https://github.com/Juanpvivas/demons/pull/28) (`163a2dc`) el 2026-10-21, con T059–T065 completas. El alcance funcional I1–I4 y su consolidación documental I5 están integrados en `main`. Cierre funcional de #22 autorizado por la persona; publicación T071 permanece abierta en [#61](https://github.com/Juanpvivas/demons/issues/61).
 **PR conjunto integrado**: [#24](https://github.com/Juanpvivas/demons/pull/24), `Refs #18` y `Refs #22`; integración realizada el 2026-10-20, publicación pendiente.
 
 Transición completada: el PR #24 reunió 004-I2 y 005-I1 desde
@@ -17,6 +17,8 @@ integrado; la publicación conserva su gate en T071.
 Durante I2, la API de recarga se conservó dentro del hogar y rechazó la orden
 fuera de él sin gasto; I3 incorporó después el regreso, guiado por RED. El
 fusil sigue limitado a HOME.
+
+**Adenda administrativa — 2026-10-31**: la persona acepta la funcionalidad y autoriza el cierre de #22 una vez creado y abierto [#61](https://github.com/Juanpvivas/demons/issues/61). T071/SC-007 conserva su casilla `[ ]` y todos sus requisitos, con publicación seguida en ese nuevo Issue; no se modifica el texto de tareas o criterios. La decisión supera sólo la anterior condición de mantener abierto este Issue funcional, sin cambiar política global, QA histórica o certificaciones. #53 sigue abierto si el paquete incluye 013; #30 permanece pausado.
 
 ## Reglas de ejecución y gates
 

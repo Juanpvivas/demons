@@ -1,5 +1,25 @@
 <!--
 Sync Impact Report
+- Version change: 4.2.0 → 4.3.0 (MINOR).
+- Motivo: confirmación humana explícita del 2026-10-31 de la beta acotada
+  1.0.3/build 6, preparación en PR #62 y seguimiento en Issue #61.
+- MINOR: añade una autorización consumible a V sin sustituir II/IV/V ni
+  reutilizar las excepciones ya consumidas de 1.0.1/build 4 y 1.0.2/build 5.
+- Sólo difiere instalación/smoke físicos completos y medición de 60 FPS y
+  referencias físicas aplicables; conserva pendientes de #61 y #53 y pausa 006.
+- Autoriza integrar PR #62 tras QA y un upload exitoso por destino sobre el
+  SHA nuevo exacto de main con QA/CI: Firebase grupo demons; TestFlight sólo
+  carga/procesamiento VALID, sin correos, invitaciones o revisión externa.
+- Fuente/GREEN/regresión/build, configuración/renderer, firma/empaquetado/
+  identificadores/versión y guards siguen obligatorios antes de cada upload.
+- No registra QA de publicación, IPA aprobado o envíos todavía inexistentes.
+  Referencias proporcionales en AGENTS, flujo, arquitectura y notas 1.0.3.
+- Secciones anteriores y sus informes históricos conservados literalmente;
+  sin cambios de fuente, workflows, secretos, pruebas, tareas o renderer.
+-->
+
+<!--
+Sync Impact Report
 - Version change: 4.1.1 → 4.2.0 (MINOR).
 - Motivo: autorización explícita de la persona el 2026-10-30 para la beta
   excepcional 1.0.2/build 5, integración por Squash and merge del PR #52 y
@@ -320,6 +340,62 @@ features 004/005. La regla general de II/IV/V permanece vigente fuera de este
 alcance. Esta autorización no constituye por sí misma un veredicto de QA ni
 afirma que los envíos se hayan ejecutado.
 
+#### Excepción autorizada: beta 1.0.3 (build 6)
+
+Por confirmación explícita de la persona del **2026-10-31**, se autoriza la beta
+acotada **1.0.3 (build 6)**, preparada en [PR #62](https://github.com/Juanpvivas/demons/pull/62)
+y seguida en [Issue #61](https://github.com/Juanpvivas/demons/issues/61). Incluye
+integrar esa preparación tras QA y efectuar manualmente **un upload exitoso por
+destino**, sobre el **SHA exacto nuevo de `main` resultante del merge**, con QA
+independiente y CI pertinentes a esa revisión. Las aprobaciones/CI de la rama
+no certifican automáticamente el SHA resultante ni constituyen por sí solas
+`APROBADO PARA PUBLICACIÓN`.
+
+Los destinos se limitan a **Android/Firebase App Distribution, grupo `demons`**,
+e **iOS/TestFlight, sólo carga y procesamiento hasta `VALID`**, sin correos,
+invitaciones, revisión externa o destinatarios nuevos. Se conservan las
+preferencias persistentes del Issue #51. No autoriza itch.io, tiendas, otro
+canal, versión/build futuro o cambios de gameplay/renderer.
+
+Exclusivamente para esta beta se **difieren** instalación y smoke físicos
+completos de II/V y las mediciones de rendimiento/60 FPS y referencias físicas
+aplicables de IV/005. No se aprueban: **004/T039/SC-007, 005/T071/SC-007,
+014/T014/SC-007 y 015/T015/SC-008** conservan seguimiento en #61. La introducción
+incluida conserva **013/SC-006 y T014/SC-008 en #53**; esta excepción no certifica
+sus destinos no acreditados ni sus criterios como completados. **006 sigue
+pausada**. La referencia provisional Xiaomi de 002/004 no se amplía a 005, iOS u
+otros equipos. CI, simulación y feedback humano de una app QA no acreditan el
+artefacto beta final, rendimiento físico o 60 FPS.
+
+Siguen obligatorios fuente funcional, GREEN/regresión pertinente, build/CI,
+configuración y renderer de cada destino. **Antes de cada upload** se verifican
+firma, empaquetado, identificadores y versión exactos del APK/IPA. Android usa
+el mismo certificado fijo de 1.0.2, contrastado con la huella esperada; no hay
+fallback a otra firma. iOS se firma con el certificado Distribution y perfil
+actuales mediante el runner existente y debe superar el verificador obligatorio
+del IPA antes de subir. Exportar un proyecto Xcode no acredita un IPA firmado
+y verificado. No se modifica el workflow ni se dispensa un fallo real de
+fuente, build, firmante, paquete, versión o funcionamiento conocido, ni se cambia
+Mobile por Compatibility de QA. Todo control fallido bloquea ese envío.
+
+QA independiente puede emitir **APROBADO PARA PUBLICACIÓN — beta excepcional
+1.0.3 (build 6)** identificando el SHA exacto de `main`, los artefactos y el alcance
+físico diferido. Puede condicionar el envío a las comprobaciones previas; su
+incumplimiento invalida ese envío. Se conservan despacho manual desde `main`,
+guards de versión y confirmaciones QA/humanas; no se inventa un veredicto o
+resultado de distribución desde esta autorización.
+
+La excepción se consume con **un upload exitoso por destino**. Un fallo previo
+al upload no la consume; sólo se reintenta mientras no exista una subida exitosa
+confirmada en ese destino, con la revisión/QA vigentes y comprobaciones previas
+aplicables. Procesar la carga de TestFlight hasta `VALID` no autoriza una segunda
+subida exitosa ni ampliar su distribución. Las excepciones anteriores de
+**1.0.1/build 4 y 1.0.2/build 5 están consumidas**, con los envíos anteriores
+seguidos en sus Issues, incluido #51; no se reutilizan ni renuevan. Los cierres
+funcionales de #18/#22/#55/#58 no completan publicación: #61 y #53 siguen abiertos.
+La política general II/IV/V rige íntegramente fuera de este alcance; autorizar
+esta beta no afirma que se haya enviado.
+
 ## Restricciones Técnicas
 
 - Motor: Godot 4.x, licencia MIT — no se introduce dependencia de pago
@@ -374,4 +450,4 @@ listo para implementar. Cualquier complejidad técnica que viole un principio
 DEBE justificarse explícitamente en el documento correspondiente (plan o spec)
 o rechazarse.
 
-**Version**: 4.2.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-30
+**Version**: 4.3.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-31

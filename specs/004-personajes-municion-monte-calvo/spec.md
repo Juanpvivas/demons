@@ -9,7 +9,8 @@
 **Status**: I1 y su corrección aprobados e integrados; I2 integrado junto con
 005-I1 mediante [PR #24](https://github.com/Juanpvivas/demons/pull/24).
 I3 aprobado para integración funcional en T027. Las [tareas](tasks.md)
-mantienen el estado de entrega y PR; SC-007/publicación T039 y el Issue siguen abiertos.
+mantienen el estado de entrega y PR; cierre funcional del Issue autorizado por
+la persona y SC-007/publicación T039 pendientes en [#61](https://github.com/Juanpvivas/demons/issues/61).
 La corrección T040 de tamaño/brillo tiene aprobación funcional para integración
 T043; la aprobación anterior conserva su alcance original.
 La ampliación adicional solicitada en T047 tiene aprobación funcional T049;
@@ -46,6 +47,8 @@ FR-012 prohíben añadirlos en este incremento, sin retirar los ya integrados.
 El alcance de I3 aprobado antes de T040 limita la imagen de la caja a 32×32,
 con radio 20 y sin cambiar código, economía, picking o reglas. La corrección
 T040 lo amplió a 40×40; T047 sustituye ahora sólo ese límite visual por 60×60.
+
+**Adenda administrativa — 2026-10-31**: aceptación funcional humana y cierre autorizado de #18 después de crear [#61](https://github.com/Juanpvivas/demons/issues/61) abierto. Publicación T039/SC-007 pasa a ese seguimiento y permanece incumplida; conserva literalmente criterios y tareas originales sin dar por aprobados hardware/60 FPS, renderer/paquete final o distribución. Esta reorganización específica no cambia la política global ni la historia funcional.
 
 ## User Scenarios & Testing *(mandatory)*
 
