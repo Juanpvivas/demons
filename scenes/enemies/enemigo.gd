@@ -72,6 +72,9 @@ signal enemy_defeated(ammo_dropped: int, position: Vector2)
 ## Snapshot neutro anterior a cualquier retiro/reciclado síncrono.
 signal defeat_visual_requested(snapshot: Dictionary)
 
+## Contrato de presentación del fusil; todavía no se emite ni se conecta.
+signal rifle_shot_visual_requested(snapshot: Dictionary)
+
 ## T043 (`contracts/signals.md`, FR-013): este enemigo alcanzó la "posición
 ## defendida" sin haber sido detenido por ningún soldado. No la emite este
 ## script por sí solo — la detección de la zona vive en el nivel

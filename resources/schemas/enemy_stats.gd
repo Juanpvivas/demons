@@ -19,6 +19,11 @@ extends Resource
 ## cuerpo (`spec.md` Edge Case: soldado derrotado en cuerpo a cuerpo).
 @export_range(1, 100, 1) var melee_damage: int = 10
 
+## Parámetros de fusil neutros hasta autorar e implementar el ataque a distancia.
+@export var rifle_range: float = 0.0
+@export var rifle_damage: int = 0
+@export var rifle_interval: float = 0.0
+
 ## Munición que suelta el enemigo al ser derrotado, recolectable por el
 ## jugador (FR-007).
 @export_range(0, 50, 1) var ammo_drop: int = 5
