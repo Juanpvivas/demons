@@ -102,8 +102,50 @@ func save(candidate: Dictionary, expected_generation: int) -> Dictionary:
 	return _save_result("OK", true, true)
 
 
+## El llamador garantiza que no hay una partida activa; Store no conoce escenas.
 func clear() -> Dictionary:
-	return {} # El borrado se implementa en T019, tras su propio RED.
+	if not _loaded or _config == null:
+		return _save_result("INVALID")
+	if transient:
+		_memory = _neutral()
+		_load_status = "TRANSIENT"
+		return _save_result("OK", true, false)
+	# Revalidar qué copia es la activa, también tras un intento parcialmente fallido.
+	var disk := _scan_slots()
+	if disk.status == "IO_ERROR":
+		return _clear_failure()
+	var active: String = disk.get("path", "")
+	var order: Array[String] = [_path("a"), _path("b")]
+	if active == _path("a"):
+		order.reverse()
+	for path: String in order:
+		var exists := _io_exists(path)
+		if exists.get("error", FAILED) != OK:
+			return _clear_failure()
+		if exists.get("value", false):
+			var removed := _io_remove(path)
+			if removed.get("error", FAILED) != OK:
+				return _clear_failure()
+		var checked := _io_exists(path)
+		if checked.get("error", FAILED) != OK or checked.get("value", true):
+			return _clear_failure()
+	# Comprobar ambos al finalizar; un OK de remove por sí solo no acredita borrado.
+	for path: String in order:
+		var checked := _io_exists(path)
+		if checked.get("error", FAILED) != OK or checked.get("value", true):
+			return _clear_failure()
+	_memory = _neutral()
+	_active_path = ""
+	_disk_signature = ["MISSING", "MISSING"]
+	_load_status = "MISSING"
+	return _save_result("OK", true, true)
+
+
+func _clear_failure() -> Dictionary:
+	# No publicar neutral ni permitir save sobre un disco parcialmente modificado.
+	# La próxima carga (o un nuevo clear) inspecciona nuevamente ambos slots.
+	_load_status = "IO_ERROR"
+	return _save_result("IO_ERROR")
 
 
 func _neutral() -> Dictionary:
@@ -420,3 +462,9 @@ func _io_write(path: String, text: String) -> Dictionary:
 		return {"error": error, "stage": "flush"}
 	# close() no ofrece Error en Godot; su efecto y la relectura se verifican.
 	return {"error": ERR_FILE_CANT_WRITE if file.is_open() else OK, "stage": "close"}
+
+
+func _io_remove(path: String) -> Dictionary:
+	if io_backend != null:
+		return io_backend.call("remove", path)
+	return {"error": DirAccess.remove_absolute(path)}
