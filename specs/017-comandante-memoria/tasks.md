@@ -4,7 +4,7 @@
 **Input**: [spec](spec.md), [plan](plan.md), [investigación](research.md),
 [modelo](data-model.md), [contrato](contracts/commander.md), [guía](quickstart.md).
 **Flujo**: [DEVELOPMENT_WORKFLOW](../../docs/DEVELOPMENT_WORKFLOW.md).
-**Estado**: I1 (T001–T025) autorizado; marcado sólo tras QA del alcance. I2 y publicación continúan pendientes.
+**Estado**: I1 (T001–T025) realizado, con aprobaciones de alcance registradas. QA/CI finales se identifican por SHA en el PR; I2 y publicación continúan pendientes.
 **Tracking**: [Issue #65](https://github.com/Juanpvivas/demons/issues/65); rama I1 `codex/017-i1-comandante-memoria` desde `main` / `e8407ec`.
 No se reutiliza ni cierra el Issue #63 de016.
 
@@ -91,9 +91,9 @@ TRANSIENT sólo modifica RAM. Fallos no se comunican como éxito.
 No publicar un PR de implementación con RED o comportamiento interno pendientes.
 
 - [X] T022 docs-writer: documentar sólo módulo I1 aprobado y límites en `docs/ARCHITECTURE.md` y `specs/017-comandante-memoria/plan.md`; no afirmar que cambia las oleadas o que el menú ya borra memoria. Dependencia T021. No pruebas. Cubre FR-016.
-- [ ] T023 project-orchestrator: publicar rama I1 y comprobar CI del head exacto en `.github/workflows/ci.yml` con reportes de godot-tester/GREEN y documentación T022; conservar workflows/guards existentes y solicitar revisión documental de docs por QA. No ejecutar pruebas ni modificar CI. Depende T022. Cubre FR-016.
-- [ ] T024 qa-validator: revisar documentación T022, alcance I1, fuente, suites y CI del SHA exacto contra `specs/017-comandante-memoria/plan.md`; emitir APROBADO PARA INTEGRACIÓN sólo del núcleo aislado si procede, sin acreditar juego, móvil, hardware o distribución. Depende T023. Skills: godot-code-review. Cubre FR-016.
-- [ ] T025 project-orchestrator: actualizar Issue017 y crear/adjuntar PR borrador I1 según `docs/DEVELOPMENT_WORKFLOW.md`, con Refs, IDs T001–T024, RED/GREEN/CI/QA/límites en cuerpo breve; todos los SC jugables/publicación pendientes conservados. No promover, fusionar, subir builds ni reescribir historia. Depende T024. Cubre FR-016.
+- [X] T023 project-orchestrator: publicar rama I1 y comprobar CI del head exacto en `.github/workflows/ci.yml` con reportes de godot-tester/GREEN y documentación T022; conservar workflows/guards existentes y solicitar revisión documental de docs por QA. No ejecutar pruebas ni modificar CI. Depende T022. Cubre FR-016.
+- [X] T024 qa-validator: revisar documentación T022, alcance I1, fuente, suites y CI del SHA exacto contra `specs/017-comandante-memoria/plan.md`; emitir APROBADO PARA INTEGRACIÓN sólo del núcleo aislado si procede, sin acreditar juego, móvil, hardware o distribución. Depende T023. Skills: godot-code-review. Cubre FR-016.
+- [X] T025 project-orchestrator: actualizar Issue017 y crear/adjuntar PR borrador I1 según `docs/DEVELOPMENT_WORKFLOW.md`, con Refs, IDs T001–T024, RED/GREEN/CI/QA/límites en cuerpo breve; todos los SC jugables/publicación pendientes conservados. No promover, fusionar, subir builds ni reescribir historia. Depende T024. Cubre FR-016.
 - [ ] T026 project-orchestrator: preparar rama I2 y base en `specs/017-comandante-memoria/plan.md`; partir de main actualizado con I1 integrado por la persona o declarar explícitamente dependencia apilada/base SHA de su PR, sin merge automático. Verificar diff y transferir contexto aprobado a roles antes de continuar. Depende T025. Cubre FR-016.
 - [ ] T027 dev-godot: añadir sólo firmas/propiedades/señales neutrales necesarias en `scenes/game/game_root.gd`, `scenes/levels/nivel_monte_calvo.gd`, `scenes/levels/wave_spawner.gd` y `scenes/ui/main_menu.gd` para inyección de Store/seed/Session y llamada de intención/feedback del contrato. No conectarlas, crear UI, cargar/escribir archivos o cambiar carril/Timer/terminal. Mantener firmas existentes compatibles; sin tests/runs. Depende T026. Skills: event-bus, resource-pattern, godot-ui. Cubre FR-016.
 - [ ] T028 godot-tester: comprobar carga neutral y regresión base de I2 en `tests/unit/game/test_game_root.gd`, `tests/unit/ui/test_main_menu.gd` y `tests/unit/levels/test_horizontal_wave_spawner.gd`; confirmar APIs para RED semántico sin alterar fakes para simular conducta inexistente. Depende T027. Skills: godot-testing. Cubre FR-016.
