@@ -988,7 +988,7 @@ el instrumento y diagnóstico limitado, sin parche ni cierre de bases nativas.
   solo ese entorno; Compatibility temporal no certifica Mobile.
 - Presets de exportación por plataforma se versionan en
   `export_presets.cfg`, sin credenciales ni keystores/certificados dentro
-  del repositorio. Según constitución 4.2.0, merge/push a `main` integra
+  del repositorio. Según constitución 4.3.0, merge/push a `main` integra
   desarrollo y no dispara distribución externa. Los workflows
   **Android/Firebase App Distribution** (`.github/workflows/deploy-android-testers.yml`)
   e **iOS/TestFlight** (`.github/workflows/deploy-ios-testflight.yml`) se ejecutan
@@ -1012,6 +1012,11 @@ el instrumento y diagnóstico limitado, sin parche ni cierre de bases nativas.
   controles previos de firma/empaquetado/versionado, los pendientes
   004/T039, 005/T071 y SC-007 y la pausa de 006. No acredita un veredicto de
   publicación ni envíos ejecutados.
+  La excepción 1.0.2 también está consumida. La [excepción 1.0.3/build 6](../.specify/memory/constitution.md#excepción-autorizada-beta-103-build-6)
+  autoriza un upload exitoso por destino acotado desde el nuevo SHA exacto de
+  `main` con QA/CI; firma/paquete/versión se verifican antes de cada upload y
+  cualquier fallo bloquea el envío. Sólo se difiere lo físico indicado; #61/#53
+  y 006 siguen pendientes/pausada. No afirma QA de publicación, IPA o envío.
 - **Firma beta estable de Android:** el workflow conserva un único firmante
   mediante los secrets `ANDROID_BETA_KEYSTORE_BASE64`,
   `ANDROID_BETA_KEYSTORE_PASSWORD` y `ANDROID_BETA_KEYSTORE_ALIAS`; la variable
@@ -1169,3 +1174,4 @@ ni renovación de excepciones beta.
 | 2026-10-30 | 015/T022 tras QA funcional T021: mezcla continua de 66 asaltantes/33 fusileros WAVE por datos, inicial R1 independiente y tiempos/carriles conservados; CI/integración final I2 y publicación pendientes. |
 | 2026-10-30 | Actualización documental: I1/I2 de 015 integrados en `main` por PR #59 (`73c2dff`); conserva CI/QA de sus revisiones previas y pendientes de publicación/hardware, sin distribución nueva. |
 | 2026-10-31 | Adenda administrativa autorizada: cierre funcional humano de #18/#22/#55/#58 y publicación pendiente seguida en [#61](https://github.com/Juanpvivas/demons/issues/61); tareas/SC e historia conservados, sin aprobación física ni distribución. |
+| 2026-10-31 | Constitución 4.3.0: autorización acotada 1.0.3/build 6 con QA/CI de main exacto y verificadores previos por upload; firma/renderer y pendientes #61/#53/006 intactos. |
