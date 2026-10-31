@@ -327,7 +327,9 @@ La consulta física enemiga valida frente, carril, vida y solape real; marcha,
 fusil y contacto se excluyen. `Enemigo` reconoce el grupo `soldiers` y el
 contrato consultable del actor sin depender de la clase `Soldado`, evitando
 una referencia circular entre scripts. Generación, objetivo y reloj son propios
-de cada activación. La recompensa de machete captura identidad/generación antes
+de cada activación. 015-I1 cuenta con CI y QA de integración aprobados en
+`2351798`, en la rama del [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59),
+sin fusionar ni cerrar publicación. La recompensa de machete captura identidad/generación antes
 del daño y bloquea reentrada: sólo la baja confirmada acredita +2 moral/+3 vida
 limitada al máximo del dueño aún vivo, incluso con victoria síncrona.
 

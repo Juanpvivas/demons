@@ -213,7 +213,9 @@ la derrota sigue dependiendo del cruce de PosicionDefendida, no del último sold
 El avance a machete está expuesto al fusil enemigo y se observaron derrotas tempranas;
 esto es un riesgo táctico, sin conclusión de imposibilidad de victoria ni nuevo
 balance autorizado. [Verificación y límites](../specs/015-combate-a-distancia-y-recompensas/research.md#alcance-funcional-aprobado-y-límites):
-CI/gate final de integración y publicación T015 siguen pendientes.
+CI y QA de integración están aprobados para `2351798`, en la rama del
+[PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59), aún sin fusionar;
+publicación T015 sigue pendiente.
 
 ## 7. Estructura técnica en Godot (borrador)
 
@@ -551,7 +553,7 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 
 ### Resueltas (graduadas desde specs de feature)
 
-- ✅ Alcance colombiano 864, fusil enemigo estacionario por carril con progresión autorada y baja de machete +2 moral/+3 vida limitada al máximo del dueño vivo: 015/T008–T010, aprobado funcionalmente. Se conservan diagonales inmediatas, contacto excluyente, reglas de derrota y resto de stats; CI/integración final y publicación siguen separados.
+- ✅ Alcance colombiano 864, fusil enemigo estacionario por carril con progresión autorada y baja de machete +2 moral/+3 vida limitada al máximo del dueño vivo: 015/T008–T010, aprobado funcionalmente. Se conservan diagonales inmediatas, contacto excluyente, reglas de derrota y resto de stats; CI/QA de integración aprobados en rama (PR #59 en borrador, sin merge), con publicación pendiente.
 
 - ✅ Narrativa dentro del juego mediante La carta: 013-I1 integrado por PR #54 (`77be629`), con siete escenas, narrador humano toma3 y compañero sintético definitivo aceptados por la persona, subtítulos y recuerdo local. Tras Jugar o Ver introducción espera Comenzar antes del combate. Es ficción inspirada en el contexto histórico; publicación T014 sigue pendiente.
 

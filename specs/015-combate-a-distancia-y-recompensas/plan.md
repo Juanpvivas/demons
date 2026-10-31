@@ -3,7 +3,7 @@
 **Feature ID**: `015-combate-a-distancia-y-recompensas` | **Branch**: `codex/015-combate-a-distancia-y-recompensas` | **Date**: 2026-10-30 | **Spec**: [spec.md](spec.md)
 **Base**: main4fb1267. Preparación demons-preparation, agentes ejecutan; no speckit-implement.
 **Tracking**: [Issue #58](https://github.com/Juanpvivas/demons/issues/58)
-**Estado**: implementación y verificación funcional T008–T010 aprobadas; consolidación T011, CI/gate final y publicación siguen su flujo separado. [Alcance y límites](research.md#alcance-funcional-aprobado-y-límites).
+**Estado**: funcionalidad, documentación y CI de `2351798` aprobadas por QA para integración; [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59), sin merge. Publicación T015 pendiente. [Alcance y límites](research.md#alcance-funcional-aprobado-y-límites).
 
 ## Summary
 

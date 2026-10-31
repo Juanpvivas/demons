@@ -1,7 +1,7 @@
 # Tasks: Combate a distancia y recompensas
 
 **Input**: [spec](spec.md), [plan](plan.md), [contrato](contracts/ranged-combat.md), [datos](data-model.md), [quickstart](quickstart.md).
-**Entrega**: 015-I1 completo, tres cambios; rama `codex/015-combate-a-distancia-y-recompensas`, base main4fb1267; [Issue #58](https://github.com/Juanpvivas/demons/issues/58), PR por orquestador.
+**Entrega**: 015-I1 completo, tres cambios; rama `codex/015-combate-a-distancia-y-recompensas`, base main4fb1267; [Issue #58](https://github.com/Juanpvivas/demons/issues/58), [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59). Integración aprobada sobre `2351798`; sin merge ni publicación.
 **Flujo**: [roles/TDD](../../docs/DEVELOPMENT_WORKFLOW.md); Spec Kit prepara, agentes ejecutan. Sólo orquestador marca [X] tras QA. Sin nuevas evidencias Git.
 
 ## Preparación y setup mínimo
@@ -26,9 +26,9 @@
 ## Documentación, CI y entrega
 
 - [X] T011 docs-writer: consolidar sólo comportamiento aprobado en `README.md`, `docs/SPEC.md`, `docs/ARCHITECTURE.md` y specs015, distinguiendo nuevos cambios intencionales de historia anterior. Conservar013/014, pausa006 y pendientes004/005/013/014; sin tareas/fuente/tests o logs nuevos. Depende T010.
-- [ ] T012 project-orchestrator con godot-tester: revisar diff/commits por resultado, publicar revisión consolidada y verificar CI del head exacto, reutilizando comprobaciones válidas y repitiendo sólo invalidadas; sin promoción/merge/distribución. Depende T011.
-- [ ] T013 qa-validator: revisar documentación/CI/revisión exacta T012; emitir APROBADO PARA INTEGRACIÓN sólo con fuente, GREEN/regresión/build y balance suficientemente verificados, con límites físicos/publicación intactos. Depende T012.
-- [ ] T014 project-orchestrator: consolidar Issue único y PR borrador con `Refs #<issue>`, tres cambios/IDs/RED/GREEN/QA/límites y adjuntarlo al chat; marcar sólo alcance aprobado, sin promoción/merge/distribución. Depende T013.
+- [X] T012 project-orchestrator con godot-tester: revisar diff/commits por resultado, publicar revisión consolidada y verificar CI del head exacto, reutilizando comprobaciones válidas y repitiendo sólo invalidadas; sin promoción/merge/distribución. Depende T011.
+- [X] T013 qa-validator: revisar documentación/CI/revisión exacta T012; emitir APROBADO PARA INTEGRACIÓN sólo con fuente, GREEN/regresión/build y balance suficientemente verificados, con límites físicos/publicación intactos. Depende T012.
+- [X] T014 project-orchestrator: consolidar Issue único y PR borrador con `Refs #<issue>`, tres cambios/IDs/RED/GREEN/QA/límites y adjuntarlo al chat; marcar sólo alcance aprobado, sin promoción/merge/distribución. Depende T013.
 - [ ] T015 project-orchestrator con roles responsables: sólo con autorización futura, cumplir SC008/publicación de artefacto/renderer/firma/versión/instalación/smoke/hardware/60FPS y QA de publicación. Pendiente sin bloquear integración aprobada y sin heredar excepciones previas.
 
 ## Dependencias y cobertura

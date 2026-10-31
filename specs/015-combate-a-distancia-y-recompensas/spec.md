@@ -3,7 +3,7 @@
 **Feature ID**: `015-combate-a-distancia-y-recompensas`
 **Branch**: `codex/015-combate-a-distancia-y-recompensas`
 **Created**: 2026-10-30
-**Status**: 015-I1 aprobado funcionalmente por QA T010; CI de revisión final/gate de integración T012–T013 y publicación T015 pendientes
+**Status**: 015-I1 APROBADO PARA INTEGRACIÓN por QA con CI de `2351798`; [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59) en su rama, sin fusionar. Publicación T015/SC-008 pendiente
 **Tracking**: [Issue #58](https://github.com/Juanpvivas/demons/issues/58)
 **Input**: Tres cambios autorizados: fusil colombiano hasta la entrada, enemigos con fusil de daño/frecuencia crecientes que se detienen para disparar y baja letal de machete del dueño que otorga +2 moral/+3 vida. Las reglas y la progresión siguientes fueron resueltas por la persona.
 

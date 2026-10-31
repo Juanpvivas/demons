@@ -17,8 +17,10 @@ activaciones, y la consulta por grupo evita dependencia circular entre scripts.
 Intro 013, voces definitivas, mezcla 014 y demás reglas se conservan.
 
 GREEN dirigido y regresión afectada están verificados tras corregir expectativas
-históricas incompatibles con las nuevas reglas; la suite completa de CI del head
-final sigue pendiente. Chrome en macOS observó tiros desde la entrada, enemigos
+históricas incompatibles con las nuevas reglas. CI de `2351798` confirmó la suite
+completa, imports, guard y export Web; QA emitió `APROBADO PARA INTEGRACIÓN`
+para esa revisión. Esta comprobación no se atribuye automáticamente a cambios
+documentales posteriores. Chrome en macOS observó tiros desde la entrada, enemigos
 que paran/reanudan marcha, aumento de moral 3→5 tras baja de machete, derrota real,
 Retry y regreso al menú/nuevo intento limpio. La curación exacta y su cap se
 acreditan por GUT; la barra manual sólo cualitativamente. Pausa se cubre por GUT,
@@ -32,4 +34,5 @@ munición deben cruzar bajo fuego y pueden morir antes del contacto: se observar
 derrotas tempranas, sin demostrar imposibilidad de ganar ni autorizar un nerf.
 Las muestras de coste son descriptivas, sin benchmark ni causalidad de RSS/GPU.
 Publicación T015/SC008, pendientes 004/005/013/014 y pausa 006 permanecen; release 1.0.2
-no cambia. CI/gate final T012–T013 aún no están aprobados.
+no cambia. La entrega sigue en su rama mediante [PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59),
+aprobada para integración y aún sin fusionar ni publicar.

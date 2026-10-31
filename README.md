@@ -178,9 +178,10 @@ progresa de 1/4 s a 3/2 s según la [tabla autorizada](specs/015-combate-a-dista
 Cada baja letal de machete concede al dueño vivo +2 moral y +3 vida hasta su
 máximo; el fusil conserva +1 moral sin curación. El avance sin munición queda
 expuesto al fuego enemigo: se observaron derrotas tempranas, sin demostrar que
-sea imposible ganar ni autorizar otro ajuste de balance. CI de la revisión final
-y QA de integración siguen pendientes; publicación T015 y los pendientes anteriores
-se conservan. [Alcance verificado y límites](specs/015-combate-a-distancia-y-recompensas/research.md#alcance-funcional-aprobado-y-límites).
+sea imposible ganar ni autorizar otro ajuste de balance. Cuenta con CI y QA
+`APROBADO PARA INTEGRACIÓN` de la revisión `2351798`, en su rama y
+[PR #59 en borrador](https://github.com/Juanpvivas/demons/pull/59), sin fusionar;
+publicación T015 y los pendientes anteriores se conservan. [Alcance verificado y límites](specs/015-combate-a-distancia-y-recompensas/research.md#alcance-funcional-aprobado-y-límites).
 
 [008 — Marcha enemiga](specs/008-marcha-enemiga/spec.md) renueva el avance con
 ocho poses de apoyos alternados y balanceo del cuerpo/equipo, conservando el
