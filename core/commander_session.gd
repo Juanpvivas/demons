@@ -111,20 +111,71 @@ func cancel_proposal(token: Variant) -> bool:
 	return true
 
 
-func record_defeat(_actor_id: int, _generation: int, _death_x: float) -> void:
-	pass
+func record_defeat(actor_id: int, generation: int, death_x: float) -> void:
+	if not is_finite(death_x):
+		return
+	var key := "%d:%d" % [actor_id, generation]
+	if _state != "ACTIVE" or not _records.has(key) or _records[key].status != "OPEN":
+		return
+	var record: Dictionary = _records[key]
+	record.reward = clampf((record.spawn_x - death_x) / (record.spawn_x - record.defended_right), 0.0, 1.0)
+	record.status = "DEFEATED"
 
 
-func record_breach(_actor_id: int, _generation: int) -> void:
-	pass
+func record_breach(actor_id: int, generation: int) -> void:
+	var key := "%d:%d" % [actor_id, generation]
+	if _state != "ACTIVE" or not _records.has(key) or _records[key].status != "OPEN":
+		return
+	_records[key].reward = 1.0
+	_records[key].status = "BREACHED"
 
 
-func finish(_result: Variant) -> Dictionary:
-	return {}
+func finish(result: Variant) -> Dictionary:
+	var unchanged := {"changed": false, "memory": _memory.duplicate(true), "match_id": _match_id}
+	if _state != "ACTIVE" or not result is int \
+			or result not in [GameStateManager.GameState.WON, GameStateManager.GameState.LOST]:
+		return unchanged
+	# Cerrar antes de procesar cualquier resultado: los callbacks tardíos no consolidan dos veces.
+	_state = "FINALIZED"
+	_proposal.clear()
+	_probabilities.clear()
+	var totals: Dictionary = {}
+	for record: Dictionary in _records.values():
+		if record.status == "OPEN":
+			record.status = "CENSORED"
+			continue
+		if record.status not in ["DEFEATED", "BREACHED"]:
+			continue
+		var context: String = record.context
+		if not totals.has(context):
+			totals[context] = {"sum": 0.0, "count": 0}
+		totals[context].sum += record.reward
+		totals[context].count += 1
+	if totals.is_empty():
+		return unchanged
+	var candidate := _memory.duplicate(true)
+	var cells: Dictionary = candidate.get("cells", {})
+	for cell: Dictionary in cells.values():
+		cell.q = _config.prior_score + _config.retention_per_match * (float(cell.q) - _config.prior_score)
+		cell.n = _config.retention_per_match * float(cell.n)
+	for context: String in totals:
+		var cell: Dictionary = cells.get(context, {"q": _config.prior_score, "n": 0.0})
+		var mean_reward: float = float(totals[context].sum) / int(totals[context].count)
+		cell.q = float(cell.q) + _config.learning_rate * (mean_reward - float(cell.q))
+		cell.n = minf(_config.max_effective_visits, float(cell.n) + 1.0)
+		cells[context] = cell
+	candidate.cells = cells
+	candidate.last_match_id = _match_id
+	return {"changed": true, "memory": candidate, "match_id": _match_id}
 
 
 func abandon() -> void:
-	pass
+	if _state != "ACTIVE":
+		return
+	_state = "ABANDONED"
+	_records.clear()
+	_proposal.clear()
+	_probabilities.clear()
 
 
 func get_decision_snapshot() -> Dictionary:
