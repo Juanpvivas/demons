@@ -1,7 +1,7 @@
 # 016 — Benchmark aislado de Gemma y director local
 
 **Fecha**: 2026-10-31 · **Rama**: `codex/016-gemma-director-benchmark` · **Base**: main `e8407ec`.
-**Estado**: spike PC aprobado funcionalmente por QA T007 sobre `b30f9a6`; documentación T008 y CI/gate final T009–T010 pendientes.
+**Estado**: spike PC aprobado funcionalmente por QA T007 sobre `b30f9a6`; CI y revisión final se registran por SHA en el Issue/PR.
 **Tracking**: [Issue #63](https://github.com/Juanpvivas/demons/issues/63).
 
 ## Alcance y escenarios

@@ -1,7 +1,7 @@
 # Plan016 — Spike local de comparación
 
 **Base/rama**: main `e8407ec` / `codex/016-gemma-director-benchmark`.
-**Estado**: implementación/batch real aprobados por QA T007 sobre `b30f9a6`; CI/gate final pendientes. [Issue #63](https://github.com/Juanpvivas/demons/issues/63).
+**Estado**: implementación/batch real aprobados por QA T007 sobre `b30f9a6`; CI y revisión final se registran por SHA en el Issue/PR. [Issue #63](https://github.com/Juanpvivas/demons/issues/63).
 **Entradas**: [spec](spec.md), [contrato y ejecución](contracts/benchmark.md), [tareas](tasks.md).
 
 ## Decisión y arquitectura

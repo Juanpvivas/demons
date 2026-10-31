@@ -4,9 +4,9 @@ Compara una heurística local nueva con Gemma 4 E2B real sobre ocho snapshots
 sintéticos y siete planes permitidos. Es una herramienta de PC: no controla
 Godot ni modifica oleadas, gameplay, apps móviles o releases.
 
-El comportamiento está aprobado funcionalmente por QA T007 sobre `b30f9a6`.
-La consolidación documental y CI/gate final de integración siguen pendientes en
-[Issue #63](https://github.com/Juanpvivas/demons/issues/63). [Especificación y contrato](../../specs/016-gemma-director-benchmark/contracts/benchmark.md).
+QA T007 sobre `b30f9a6` acredita funcionalidad y comparación acotada.
+El estado de CI y revisión final por SHA se registra en
+[Issue #63](https://github.com/Juanpvivas/demons/issues/63) y su PR. [Especificación y contrato](../../specs/016-gemma-director-benchmark/contracts/benchmark.md).
 
 ## Preparación y ejecución
 
@@ -114,8 +114,8 @@ python3 -B -m unittest discover -s tests/director_benchmark -p 'test_*.py' -v
 
 La validación aprobada incluye 19 unittest offline, 41 controles CI existentes y
 el batch real; los dobles de transporte en unittest sólo prueban el adaptador.
-El paso CI nuevo conserva GUT/importación del juego; el CI de la revisión final
-y QA de integración aún están pendientes. Los informes completos y sus raw
+El paso CI nuevo conserva GUT/importación del juego; su estado y el de QA de
+integración se registran por SHA en el Issue/PR. Los informes completos y sus raw
 escapados permanecen temporales externos, sin copiarlos aquí.
 
 #61/#53 conservan publicación/físicos pendientes, 006 sigue pausada y beta 1.0.3

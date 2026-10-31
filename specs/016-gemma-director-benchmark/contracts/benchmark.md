@@ -70,8 +70,8 @@ suave `right`/`delayed_right` sin ser ilegal. No ajustar la fórmula para forzar
 
 En `tools/director_benchmark/benchmark.py` se declaran estas funciones con
 retorno neutral `None` en el setup histórico T002 (sin comportamiento). El spike
-implementado quedó aprobado funcionalmente en T007 sobre `b30f9a6`; CI/gate final
-pendientes. [Uso, configuración declarada y límites](../../../tools/director_benchmark/README.md). Todos los datos finales
+implementado quedó aprobado funcionalmente en T007 sobre `b30f9a6`; CI y revisión
+final se registran por SHA en el Issue #63/PR. [Uso, configuración declarada y límites](../../../tools/director_benchmark/README.md). Todos los datos finales
 usan dict/list estándar; no framework ni nuevas clases obligatorias:
 
 ```text
