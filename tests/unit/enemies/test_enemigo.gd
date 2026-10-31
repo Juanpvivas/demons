@@ -202,3 +202,138 @@ func test_enemy_is_removed_from_the_scene_tree_after_being_defeated() -> void:
 		is_instance_valid(enemy),
 		"el enemigo debe quedar liberado (queue_free) tras ser derrotado"
 	)
+
+
+# 015/T005: escenario aislado, actores de producción y World2D propio.
+func _ranged_fixture(target_position := Vector2(144, 336), contact := false) -> Dictionary:
+	var viewport := SubViewport.new()
+	viewport.size = Vector2i(1152, 648)
+	viewport.world_2d = World2D.new()
+	add_child_autofree(viewport)
+	var soldier: Soldado = load("res://scenes/units/Soldado.tscn").instantiate()
+	soldier.stats = soldier.stats.duplicate()
+	soldier.stats.damage_per_shot = 0 # Blanco vivo; la prueba no mide el fusil colombiano.
+	soldier.set_grid_cell(Vector2i(1, 3))
+	soldier.position = target_position
+	viewport.add_child(soldier)
+	soldier.set_physics_process(contact)
+	var enemy: Enemigo = load(ENEMY_SCENE_PATH).instantiate()
+	enemy.stats = enemy.stats.duplicate()
+	enemy.stats.max_health = 1000
+	enemy.stats.rifle_range = 864.0
+	enemy.stats.rifle_damage = 2
+	enemy.stats.rifle_interval = 0.2
+	enemy.position = Vector2(204 if contact else 1008, 336)
+	enemy.lane_id = 2
+	viewport.add_child(enemy)
+	watch_signals(enemy)
+	return {"enemy": enemy, "soldier": soldier}
+
+
+func test_enemy_rifle_acquires_stops_and_fires_at_its_interval() -> void:
+	var previous = GameStateManager._current_state
+	GameStateManager._current_state = GameStateManager.GameState.PLAYING
+	var f := _ranged_fixture()
+	await wait_physics_frames(3)
+	assert_eq(get_signal_emit_count(f.enemy, "rifle_shot_visual_requested"), 1, "Primer tiro inmediato por física real")
+	assert_eq(f.soldier.get_reload_state().health, 28, "Un tiro, un daño de perfil")
+	assert_almost_eq(f.enemy.position.x, 1008.0, 0.01, "Se detiene al adquirir blanco")
+	await wait_physics_frames(14)
+	assert_eq(get_signal_emit_count(f.enemy, "rifle_shot_visual_requested"), 2, "Segundo tiro tras intervalo0.2, sin ráfaga")
+	assert_eq(f.soldier.get_reload_state().health, 26)
+	GameStateManager._current_state = previous
+
+
+func test_enemy_rejects_nonfrontal_other_lane_out_of_range_and_dead_targets(
+	position = use_parameters([Vector2(1100, 336), Vector2(144, 240), Vector2(80, 336)])) -> void:
+	var previous = GameStateManager._current_state
+	GameStateManager._current_state = GameStateManager.GameState.PLAYING
+	var f := _ranged_fixture(position)
+	await wait_physics_frames(3)
+	assert_eq(get_signal_emit_count(f.enemy, "rifle_shot_visual_requested"), 0)
+	assert_eq(f.soldier.get_reload_state().health, 30)
+	assert_lt(f.enemy.position.x, 1008.0, "Sin blanco elegible continúa marcha")
+	GameStateManager._current_state = previous
+
+
+func test_enemy_lost_target_resumes_march_and_reacquires_a_living_replacement() -> void:
+	var previous = GameStateManager._current_state
+	GameStateManager._current_state = GameStateManager.GameState.PLAYING
+	var f := _ranged_fixture()
+	await wait_physics_frames(3)
+	f.soldier.position.y = 240
+	var before: float = f.enemy.position.x
+	await wait_physics_frames(3)
+	assert_lt(f.enemy.position.x, before, "Salir de carril libera la marcha")
+	assert_eq(get_signal_emit_count(f.enemy, "rifle_shot_visual_requested"), 1)
+	f.soldier.position = Vector2(144, 336)
+	await wait_physics_frames(3)
+	assert_eq(get_signal_emit_count(f.enemy, "rifle_shot_visual_requested"), 2, "Nueva adquisición inmediata")
+	f.soldier.take_damage(999)
+	await wait_physics_frames(2)
+	before = f.enemy.position.x
+	await wait_physics_frames(3)
+	assert_lt(f.enemy.position.x, before, "Un cadáver nunca mantiene fijado al enemigo")
+	var replacement: Soldado = load("res://scenes/units/Soldado.tscn").instantiate()
+	replacement.position = Vector2(144, 336)
+	replacement.set_grid_cell(Vector2i(1, 3))
+	f.enemy.get_parent().add_child(replacement)
+	replacement.set_physics_process(false)
+	await wait_physics_frames(3)
+	assert_eq(get_signal_emit_count(f.enemy, "rifle_shot_visual_requested"), 3, "Adquiere otro nodo vivo tras retirar el anterior")
+	assert_eq(replacement.get_reload_state().health, 28)
+	GameStateManager._current_state = previous
+
+
+func test_enemy_contact_keeps_melee_without_adding_rifle_damage() -> void:
+	var previous = GameStateManager._current_state
+	GameStateManager._current_state = GameStateManager.GameState.PLAYING
+	var f := _ranged_fixture(Vector2(144, 336), true)
+	await wait_physics_frames(5)
+	assert_eq(f.soldier.get_reload_state().health, 25, "Contacto vigente5, sin sumar fusil2")
+	assert_eq(get_signal_emit_count(f.enemy, "rifle_shot_visual_requested"), 0)
+	GameStateManager._current_state = previous
+
+
+func test_enemy_pause_terminal_and_reactivation_do_not_carry_target_or_backlog() -> void:
+	var previous = GameStateManager._current_state
+	GameStateManager._current_state = GameStateManager.GameState.PLAYING
+	var f := _ranged_fixture()
+	await wait_physics_frames(3)
+	GameStateManager._current_state = GameStateManager.GameState.PAUSED
+	var before: Vector2 = f.enemy.position
+	await wait_physics_frames(20)
+	assert_eq(f.enemy.position, before)
+	assert_eq(get_signal_emit_count(f.enemy, "rifle_shot_visual_requested"), 1)
+	GameStateManager._current_state = GameStateManager.GameState.PLAYING
+	await wait_physics_frames(2)
+	assert_eq(get_signal_emit_count(f.enemy, "rifle_shot_visual_requested"), 1, "Sin descargar ráfaga atrasada")
+	f.enemy.on_pool_released()
+	f.enemy.prepare_for_spawn(f.enemy.stats, Vector2(1008, 240), 1)
+	await wait_physics_frames(3)
+	assert_eq(get_signal_emit_count(f.enemy, "rifle_shot_visual_requested"), 1, "Activación nueva no hereda blanco del otro carril")
+	f.enemy.prepare_for_spawn(f.enemy.stats, Vector2(1008, 336), 2)
+	await wait_physics_frames(3)
+	assert_eq(get_signal_emit_count(f.enemy, "rifle_shot_visual_requested"), 2, "Activación válida empieza limpia")
+	GameStateManager._current_state = GameStateManager.GameState.WON
+	await wait_physics_frames(20)
+	assert_eq(get_signal_emit_count(f.enemy, "rifle_shot_visual_requested"), 2)
+	GameStateManager._current_state = previous
+
+
+func test_enemy_revalidates_shooter_and_target_after_synchronous_shot_listeners(
+	scenario = use_parameters(["target_moves", "shooter_recycled"])) -> void:
+	var previous = GameStateManager._current_state
+	GameStateManager._current_state = GameStateManager.GameState.PLAYING
+	var f := _ranged_fixture()
+	f.enemy.rifle_shot_visual_requested.connect(func(_snapshot: Dictionary):
+		if scenario == "target_moves":
+			f.soldier.position.y = 240
+		else:
+			f.enemy.on_pool_released()
+			f.enemy.prepare_for_spawn(f.enemy.stats, Vector2(1008, 240), 1))
+	await wait_physics_frames(3)
+	assert_eq(get_signal_emit_count(f.enemy, "rifle_shot_visual_requested"), 1, "Control: listeners síncronos se ejecutan desde el tiro real")
+	assert_eq(f.soldier.get_reload_state().health, 30, "No aplicar hitscan a contexto invalidado durante callbacks")
+	if scenario == "shooter_recycled": assert_eq(f.enemy.activation_generation, 1)
+	GameStateManager._current_state = previous

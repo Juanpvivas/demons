@@ -388,3 +388,56 @@ func test_reused_enemy_cannot_move_old_effect_or_complete_new_effect_with_stale_
 	effect.complete_activation(old_activation)
 	assert_eq(service.get_active_effect_count(), 1, "Callback viejo no libera nueva caída")
 	assert_eq(effect.global_position, Vector2(900, 100))
+
+
+func test_enemy_rifle_snapshot_uses_generation_and_rejects_old_activation_and_closed_context() -> void:
+	var viewport := SubViewport.new()
+	viewport.size = Vector2i(1152, 648)
+	viewport.world_2d = World2D.new()
+	add_child_autofree(viewport)
+	var soldier: Soldado = load("res://scenes/units/Soldado.tscn").instantiate()
+	soldier.position = Vector2(144, 336)
+	soldier.set_grid_cell(Vector2i(1, 3))
+	viewport.add_child(soldier)
+	soldier.set_physics_process(false)
+	var enemy: Enemigo = load("res://scenes/enemies/EnemigoBase.tscn").instantiate()
+	enemy.stats = enemy.stats.duplicate()
+	enemy.stats.rifle_range = 864.0
+	enemy.stats.rifle_damage = 1
+	enemy.stats.rifle_interval = 4.0
+	enemy.position = Vector2(1008, 336)
+	enemy.lane_id = 2
+	viewport.add_child(enemy)
+	var service := Service.new()
+	viewport.add_child(service)
+	service.setup(2)
+	service.register_actor(enemy)
+	service.register_actor(enemy)
+	var snapshots: Array[Dictionary] = []
+	enemy.rifle_shot_visual_requested.connect(func(snapshot: Dictionary): snapshots.append(snapshot))
+	await wait_physics_frames(3)
+	assert_eq(service.get_active_rifle_effect_count(), 1, "Tiro real representa una sola trazadora")
+	assert_eq(soldier.get_reload_state().health, 29, "El efecto nunca añade daño")
+	assert_eq(snapshots.size(), 1)
+	if snapshots.is_empty(): return
+	var callbacks: Array[Callable] = []
+	for entry: Dictionary in enemy.get_signal_connection_list("rifle_shot_visual_requested"):
+		if entry.callable.get_object() == service: callbacks.append(entry.callable)
+	assert_eq(callbacks.size(), 1)
+	if callbacks.is_empty(): return
+	var count := service.get_active_rifle_effect_count()
+	var callback := callbacks[0]
+	callback.call(snapshots[0])
+	assert_eq(service.get_active_rifle_effect_count(), count, "Duplicado no crea otra trazadora")
+	enemy.on_pool_released()
+	enemy.prepare_for_spawn(enemy.stats, Vector2(1008, 240), 1)
+	callback.call(snapshots[0])
+	assert_eq(service.get_active_rifle_effect_count(), count, "Activación vieja descartada")
+	var malformed := snapshots[0].duplicate()
+	malformed.activation_generation = enemy.activation_generation
+	malformed.origin_world = Vector2(INF, 0)
+	callback.call(malformed)
+	assert_eq(service.get_active_rifle_effect_count(), count)
+	service.close_match()
+	callback.call(snapshots[0])
+	assert_eq(service.get_active_rifle_effect_count(), 0)

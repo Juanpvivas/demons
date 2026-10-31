@@ -432,3 +432,85 @@ func test_closing_one_controller_preserves_another_and_the_intro_mix() -> void:
 		assert_true(intro_channels[index].playing, "Ni voz ni ambiente013 son propiedad de este controller")
 		assert_eq([intro_channels[index].bus, intro_channels[index].playback_type], intro_routes[index])
 	intro.close_intro()
+
+
+func test_enemy_lethal_rifle_is_admitted_before_death_and_defended_position_result() -> void:
+	var soldier := _soldier()
+	soldier.set_physics_process(false)
+	soldier.take_damage(soldier.stats.max_health - 2)
+	var enemy := _enemy()
+	enemy.position = Vector2(1008, 336)
+	enemy.lane_id = 2
+	enemy.stats.rifle_range = 864.0
+	enemy.stats.rifle_damage = 2
+	enemy.stats.rifle_interval = 4.0
+	_audio.register_actor(enemy)
+	var visuals := CombatVisualEffects.new()
+	_world.add_child(visuals)
+	visuals.setup(2)
+	visuals.register_actor(enemy)
+	# Observador síncrono declarado: usa la autoridad PosicionDefendida del
+	# nivel, no una regla inventada de derrota al morir el último soldado.
+	var authority: Node = load("res://scenes/levels/Nivel_MonteCalvo.tscn").instantiate()
+	var before_damage: Array[Dictionary] = []
+	enemy.rifle_shot_visual_requested.connect(func(snapshot: Dictionary):
+		before_damage.append({"snapshot": snapshot, "health": soldier.get_reload_state().health}))
+	var admitted_at_death: Array[int] = []
+	soldier.soldier_defeated.connect(func(_cell: Vector2i):
+		admitted_at_death.append(visuals.get_active_rifle_effect_count())
+		authority._on_posicion_defendida_body_entered(enemy))
+	await wait_physics_frames(4)
+	assert_eq(before_damage.size(), 1, "Una confirmación real antes del hitscan")
+	if not before_damage.is_empty():
+		var snapshot: Dictionary = before_damage[0].snapshot
+		assert_eq(before_damage[0].health, 2, "Presentación admitida antes de daño síncrono")
+		assert_eq(snapshot.size(), 3)
+		assert_eq(snapshot.get("activation_generation"), enemy.activation_generation)
+		assert_true(snapshot.get("origin_world") is Vector2 and snapshot.get("target_world") is Vector2)
+		for value in snapshot.values(): assert_false(value is Node or value is Callable)
+	assert_eq(admitted_at_death, [1], "El VFX del tiro ya estaba admitido al caer el blanco")
+	assert_eq(_events, [&"rifle", &"soldier_death", &"defeat"])
+	assert_eq(GameStateManager._current_state, GameStateManager.GameState.LOST)
+	assert_eq(_audio.get_active_voice_count(), 3, "Terminal no corta tiro ni baja admitidos")
+	for key: String in ["_wave_spawner", "_combat_visual_effects", "_combat_audio"]:
+		var service: Node = authority.get(key)
+		if service.get_parent() == null: authority.add_child(service)
+	authority.free()
+
+
+func test_enemy_shot_audio_validates_generation_context_and_single_delivery() -> void:
+	var soldier := _soldier()
+	soldier.set_physics_process(false)
+	var enemy := _enemy()
+	enemy.position = Vector2(1008, 336)
+	enemy.lane_id = 2
+	enemy.stats.rifle_range = 864.0
+	enemy.stats.rifle_damage = 1
+	enemy.stats.rifle_interval = 4.0
+	var snapshots: Array[Dictionary] = []
+	enemy.rifle_shot_visual_requested.connect(func(snapshot: Dictionary): snapshots.append(snapshot))
+	await wait_physics_frames(3)
+	assert_eq(_events, [&"rifle"], "Registro doble aún observa un único tiro real")
+	var callbacks := _callbacks(enemy, &"rifle_shot_visual_requested", _audio)
+	assert_eq(callbacks.size(), 1, "Consumidor enemigo conectado una vez")
+	assert_eq(snapshots.size(), 1)
+	if callbacks.is_empty() or snapshots.is_empty(): return
+	var callback := callbacks[0]
+	callback.call(snapshots[0])
+	var bad := snapshots[0].duplicate()
+	bad.activation_generation = enemy.activation_generation + 1
+	callback.call(bad)
+	assert_eq(_events, [&"rifle"], "Duplicado y generación futura rechazados")
+	enemy.on_pool_released()
+	enemy.prepare_for_spawn(enemy.stats, Vector2(1008, 240), 1)
+	callback.call(snapshots[0])
+	assert_eq(_events, [&"rifle"], "Snapshot viejo no corresponde a actor reactivado")
+	_audio.set_application_active(false)
+	bad = snapshots[0].duplicate()
+	bad.activation_generation = enemy.activation_generation
+	callback.call(bad)
+	assert_eq(_events, [&"rifle"], "Foco perdido no crea audio")
+	_audio.set_application_active(true)
+	_audio.close_match()
+	callback.call(bad)
+	assert_eq(_events, [&"rifle"], "Cierre invalida callback capturado")
