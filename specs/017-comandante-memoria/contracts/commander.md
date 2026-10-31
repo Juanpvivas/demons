@@ -1,9 +1,10 @@
 # Contrato017 — selector, aprendizaje e integración
 
-Diseño para implementación futura, sin código de sistemas o pruebas generado.
+API del núcleo I1 implementado y aprobado funcionalmente. Las secciones de
+cableado de nodos, feedback y menú describen I2, todavía pendiente.
 [Spec](../spec.md) · [Modelo](../data-model.md) · [Guía](../quickstart.md).
 
-## 1. API local prevista
+## 1. API local del núcleo I1
 
 | Componente | Operación y resultado |
 |---|---|
@@ -20,10 +21,30 @@ Diseño para implementación futura, sin código de sistemas o pruebas generado.
 | Store | `save(candidate, expected_generation) -> save_result` valida y verifica antes de publicar |
 | Store | `clear() -> clear_result` borra todas sus copias antes de comunicar éxito |
 
-Son firmas de diseño; los tipos concretos de payload se fijan al generar tareas,
-sin añadir retornos de éxito ficticios durante setup. `decision` sólo contiene
-ordinal, lane, contexto y token de propuesta de la sesión. No contiene stats,
-tiempo ni una orden de spawn. Propuestas se consumen una vez, sin reentrada.
+Los payloads públicos son `Dictionary`; `register_spawn` y `cancel_proposal`
+devuelven `bool`, y los métodos de inicio/registro/abandono no devuelven valor.
+`decision` contiene `ordinal`, `lane`, `context` (clave canónica) y `token` opaco.
+No contiene stats, tiempo ni orden de spawn. Propuestas se consumen una vez,
+sin reentrada. `finish` recibe los valores enteros públicos WON/LOST de
+GameStateManager y devuelve `{changed, memory, match_id}`. No modifica el Manager.
+
+El snapshot de entrada lleva `wave_number`, `role`, `defenders` y `lane_loads`.
+Los dos arrays tienen cinco posiciones: cada defensor declara `lane_id`,
+`alive`, `movement_state`, `ammo` y `mode`, procedentes del estado público del
+actor. La sesión extrae sólo los campos permitidos. Diagnóstico devuelve copias
+de pendientes, ordinal (`wave_index`), propuesta, estado, RNG y probabilidades;
+no expone la memoria mutable interna.
+
+`load_compatible(config)` con configuración válida prepara el almacén antes
+de save o clear; sin esa carga previa ambas operaciones devuelven INVALID.
+El almacén devuelve siempre `{status, memory}` y para save/clear añade
+`applied`/`saved`. `storage_base_path` es un directorio inyectable, vacío para
+`user://`; `transient` evita I/O de memoria. `compatibility_sources` acepta el
+bundle confiable completo descrito en el modelo. Un `io_backend` opcional
+implementa `exists(path)`/`size(path)` con `{error,value}`,
+`read(path,max_bytes)` con `{error,text}`, y `write(path,text)`/`remove(path)`
+con `{error}`. Write abarca apertura, escritura, flush y cierre; los dobles pueden
+identificar la etapa del fallo. Los datos de usuario no eligen estos puertos.
 
 ## 2. Selección, límites y RNG
 
@@ -100,7 +121,7 @@ la siguiente sólo tras save OK. A diferencia de un contador acumulativo de
 victorias, n y pesos están acotados. Es aprendizaje correlacional con censura;
 no hay garantía de estrategia óptima ni de que avance mida diversión.
 
-## 4. Orden de integración y vida de las señales
+## 4. Orden de integración y vida de las señales — I2 pendiente
 
 - `GameRoot._ready()`: preparar Store independiente de IntroProgress y conectar
   intención del menú. `_start_match()` inyecta almacén/seed antes de add_child.
@@ -143,8 +164,11 @@ tratarlo explícitamente y no ampliar alcance desde esta planificación.
 2. Save exige candidato válido, match_id no consolidado y generación esperada.
    Releer cabecera actual antes de escribir; cambio detectado→CONFLICT.
    Sobrescribir únicamente el slot inactivo con generation+1; comprobar errores
-   de apertura, escritura, flush/cierre y volver a leer/validar el archivo entero.
-   Publicar en RAM sólo al verificarlo. Mantener intacto el slot anterior.
+   observables de apertura/escritura/flush y volver a leer/validar el archivo
+   entero. Godot no devuelve Error desde `flush()` o `close()`: el backend nativo
+   comprueba `get_error()`, cierre efectivo y relectura, sin inventar un código
+   de fclose o una garantía de fsync. Publicar en RAM sólo al verificarlo.
+   Mantener intacto el slot anterior.
    En modo TRANSIENT no hay I/O: validar/publicar en RAM devuelve status=OK,
    applied=true,saved=false. El modo persistente verificado devuelve saved=true,
    que sólo describe la verificación local, no una promesa de durabilidad Web.
@@ -154,7 +178,8 @@ tratarlo explícitamente y no ampliar alcance desde esta planificación.
    activo; comprobar ambos resultados y su ausencia. No existe un tercer
    backup/temp recuperable. Sólo entonces vaciar RAM y comunicar éxito.
    Un fallo conserva RAM y comunica fallo; el disco puede haber quedado
-   parcialmente modificado, por lo que la siguiente carga siempre revalida.
+   parcialmente modificado, por lo que save queda bloqueado con IO_ERROR hasta
+   recargar; un nuevo clear también revalida ambos slots antes de actuar.
    Rama TRANSIENT: neutralizar exclusivamente RAM, applied=true,saved=false,
    sin inspeccionar rutas reales. No prometer eliminación de datos persistentes
    que el backend actual no puede acceder.
@@ -164,7 +189,7 @@ tratarlo explícitamente y no ampliar alcance desde esta planificación.
    informa almacenamiento no persistente, usar memoria TRANSIENT, avisar y
    permitir jugar. Un detector positivo sigue requiriendo prueba de recarga.
 
-## 6. Contrato del menú
+## 6. Contrato del menú — I2 pendiente
 
 Añadir a la VBox existente un botón «Borrar memoria del comandante», altura
 mínima64px, Theme y safe area vigentes. Emite `commander_reset_requested`;

@@ -6,7 +6,7 @@
 
 **Created**: 2026-10-31
 
-**Status**: Especificación preparada para planificación; decisiones de producto confirmadas, preparación aprobada independientemente; implementación pendiente.
+**Status**: I1 implementado y aprobado funcionalmente como núcleo aislado; documentación, CI y gate final de integración se revisan por separado. I2 jugable y publicación pendientes.
 
 **Input**: «Preparemos la especificación de esa primera versión del comandante con memoria, conservando los tipos, cantidades y tiempos actuales y variando solo los carriles».
 
@@ -300,9 +300,9 @@ no intervalos de disparo; los perfiles de fusil permanecen propios de cada olead
 
 ### Alcance confirmado y dependencias
 
-- La petición autoriza preparación documental de 017, no cambiar prioridades de
-  ejecución ni dar por terminada 016. Sus T009–T011 y Issue #63 conservan estado.
-  La selección de documentación activa puede apuntar a 017 sin cambiar la rama.
+- La persona autorizó la ejecución de I1 tras la preparación y su revisión
+  independiente. I2 y publicación requieren autorización propia; 016/T009–T011
+  y su Issue #63 conservan estado, sin cierre por esta entrega.
 - Se conserva el juego Godot compartido para Web de computador y Android/iOS
   nativos; PC nativo sigue reservado a desarrollo/pruebas.
 - La propuesta aceptada conserva memoria contextual, variedad, aprendizaje gradual
@@ -319,10 +319,10 @@ no intervalos de disparo; los perfiles de fusil permanecen propios de cada olead
   experimento no acredita diversión, aprendizaje, equilibrio o viabilidad móvil.
 - Cambiar carriles altera combates y puede alterar duración efectiva y ganabilidad;
   conservar recursos no sustituye playtesting ni garantiza dificultad constante.
-- Antes de implementar se cerrarán en plan/contratos la medida de resultado,
-  observaciones incompletas, granularidad de contextos, exploración, olvido,
-  parámetros y límites, compatibilidad de memoria y protocolo de equilibrio.
-  No son decisiones aprobadas ni se dejan para improvisar durante desarrollo.
+- Plan y contratos fijan medida de resultado, censura, contextos, exploración,
+  olvido, parámetros, límites y compatibilidad implementados en I1. El protocolo
+  de equilibrio está definido para I2; su ejecución y aceptación jugable siguen
+  pendientes, sin deducirlas de las pruebas aisladas.
 - Constitución 4.3.0 y flujo del proyecto vigentes: gates de integración y
   publicación separados. #61/#53 y pendientes físicos conservados; 006 sigue
   pausada. Sin nueva distribución ni renovación de excepciones beta.

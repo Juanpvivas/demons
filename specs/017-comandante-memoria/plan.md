@@ -6,8 +6,9 @@
 **Tracking**: [Issue #65](https://github.com/Juanpvivas/demons/issues/65).
 **Input**: tipos, cantidades y tiempos actuales; sólo carriles variables, bloques
 globales de cinco sin repetir y memoria local borrable que aprende de WON/LOST.
-**Estado**: ejecución de I1 autorizada; QA de preparación independiente aprobada,
-implementación/pruebas pendientes de sus gates. La feature016
+**Estado**: núcleo I1 implementado y aprobado funcionalmente hasta T021;
+consolidación documental y gate de integración por SHA separados. I2 y
+publicación permanecen pendientes. La feature016
 conserva T009–T011 pendientes y su Issue #63, sin cierre por preparar017.
 
 ## Summary
@@ -27,7 +28,8 @@ validación de equilibrio, aunque conserve cantidades.
 
 Documentación de diseño: [investigación](research.md), [modelo](data-model.md),
 [contrato](contracts/commander.md) y [validación futura](quickstart.md).
-Este plan termina antes de tareas y ejecución de agentes de implementación.
+El núcleo I1 existe en esta rama; la composición con GameRoot, nivel, spawner
+y menú descrita a continuación corresponde a I2 y todavía no está conectada.
 
 ## Technical Context
 
@@ -37,7 +39,8 @@ FileAccess/HashingContext y señales existentes; GUT9.7.1 ya instalado.
 **Storage**: dos JSON dedicados en user://, cada uno ≤128KiB, esquema1; hasta360
 celdas. Modo transitorio explícito si no hay persistencia disponible.
 **Testing**: GUT existente bajo tests/unit, runner tools/ci/run_gut.py y CI
-vigente. Sólo diseñados en esta fase; ninguna prueba o build ejecutada.
+vigente. I1 cuenta con pruebas aisladas aprobadas; matriz jugable, equilibrio
+y publicación corresponden a I2 y sus gates posteriores.
 **Target Platform**: Web sólo computador; Android/iOS apps instaladas; PC nativo
 para desarrollo. No navegadores móviles ni nuevo SDK o dependencia .NET.
 **Project Type**: juego2D compartido y offline.
@@ -82,10 +85,10 @@ specs/017-comandante-memoria/
 └── checklists/requirements.md
 ```
 
-`tasks.md` fue generado en la etapa posterior de preparación, sin ejecutar tareas.
+`tasks.md` conserva el estado autorizado por el orquestador tras cada veredicto QA.
 No guardar logs, capturas o archivos nuevos de evidencias en Git.
 
-### Source Code (repository root, cambios previstos, no realizados)
+### Source Code (repository root, I1 existente e I2 previsto)
 
 ```text
 core/commander_session.gd                        # nuevo: decisión/buffer/aprendizaje
@@ -97,7 +100,7 @@ scenes/levels/nivel_monte_calvo.gd               # observables, terminal y aband
 scenes/levels/wave_spawner.gd                    # elección lane y registro antes de notify
 scenes/ui/main_menu.gd                          # intención/estado y foco
 scenes/ui/MainMenu.tscn                         # botón, confirmación y feedback
-tests/unit/systems/test_commander_session.gd     # futuro: selector/aprendizaje
+tests/unit/systems/test_commander_session.gd     # I1: selector/aprendizaje
 tests/unit/systems/test_commander_memory_store.gd
 tests/unit/levels/test_horizontal_wave_spawner.gd
 tests/unit/levels/test_commander_integration.gd
@@ -107,12 +110,16 @@ tests/unit/ui/test_main_menu.gd
 
 **Structure Decision**: servicios RefCounted instanciables, sin árbol propio:
 la sesión no necesita frame/timers. Config Resource sólo datos; los nodos dueños
-hacen observación/cableado. Reutilizar las suites reales de raíz/menú bajo su
-ubicación existente; nombres nuevos de pruebas son previstos.
+harán observación/cableado en I2. Reutilizar las suites reales de raíz/menú bajo su
+ubicación existente; los nuevos tests de integración jugable siguen previstos
+para I2.
 No modificar project.godot, export_presets.cfg, CI/distribución, Enemigo,
 Soldado, WaveManager, GameStateManager o recursos de oleadas por esta V1.
 
 ## Arquitectura y contratos decisivos
+
+El diagrama es la integración prevista para I2; I1 entrega sólo los servicios
+y parámetros, sin modificar los nodos actuales.
 
 ```mermaid
 flowchart TD
@@ -143,15 +150,15 @@ flowchart TD
 - Web exige prueba de recarga; OK local y OS.is_userfs_persistent no certifican
   durabilidad. Un único escritor por raíz; no sincronizar pestañas/dispositivos.
 
-## Secuencia de entrega futura
+## Secuencia de entrega
 
 | Incremento propuesto | Resultado completo y límites | Skills durante ejecución |
 |---|---|---|
-| I1: núcleo aislado | config, selector, actualización y Store con RED/GREEN/QA propios; todavía no controla el nivel ni entrega el comandante jugable | resource-pattern, save-load, godot-testing, godot-code-review |
+| I1: núcleo aislado | config, selector, actualización y Store implementados con aprobación funcional; no controla el nivel ni entrega el comandante jugable | resource-pattern, save-load, godot-testing, godot-code-review |
 | I2: integración jugable | inyección, spawner, ciclo terminal/abandono, borrado y feedback; regresión, playtest, docs, CI/QA finales | event-bus, godot-ui, responsive-ui, resource-pattern, save-load, godot-testing, godot-code-review |
 
-El orquestador asignará IDs/dependencias y rama por incremento al crear tareas,
-con un Issue único. I1 no entrega un PR funcional de gameplay con RED pendiente:
+Las tareas asignan IDs y dependencias por incremento; I1 usa la rama indicada
+al inicio y el Issue único #65. I1 no entrega un PR funcional de gameplay con RED pendiente:
 termina su módulo interno probado; el alcance jugable completo depende de I2.
 Cada incremento usa tester→dev→tester→QA→docs y PR borrador. Nunca fusionar
 ni publicar automáticamente. Nuevos tipos importables pueden requerir setup
@@ -164,15 +171,13 @@ pruebas de orden de señales y matriz funcional de destino. Playtesting planific
 12 partidas comparables con semillas42/43/44, dos estilos y memoria neutral o
 acumulada genuina. Es una evaluación descriptiva, no tasa de victoria poblacional.
 El mínimo de victoria por condición y criterios de rechazo se fijan allí antes
-de ejecutar. Todo gate sigue pendiente hasta disponer de evidencia real.
+de ejecutar. Ese playtesting no se sustituye por la aprobación del núcleo I1.
 
-La etapa posterior ha generado [tasks.md](tasks.md); su análisis de consistencia
-es de sólo lectura y se presenta en conversación, sin archivos de evidencia.
-Después corresponde revisar preparación y sólo con autorización de ejecución
-entregar al project-orchestrator
-`/implementar-feature 017-comandante-memoria` o su equivalente en esta herramienta.
-No se inicia ese flujo desde esta preparación. No hay hooks before_plan/after_plan
-configurados en `.specify/extensions.yml` en la revisión inspeccionada.
+[tasks.md](tasks.md) separa el cierre de I1 de la futura ejecución de I2. El
+orquestador verifica CI y QA del head exacto antes de entregar el PR en borrador.
+I2 sólo se inicia con autorización de la persona; no se activa por aprobar I1.
+No hay hooks before_plan/after_plan configurados en `.specify/extensions.yml`
+en la revisión inspeccionada.
 
 ## Complexity Tracking
 

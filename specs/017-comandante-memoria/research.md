@@ -1,13 +1,15 @@
 # Investigación017 — decisiones de diseño
 
-**Fecha/base**: 2026-10-31 / `c227982`. Sólo lectura de fuentes y preparación;
-no implementación, pruebas, builds ni mediciones. Las decisiones siguientes
-son el diseño técnico inicial que revisará la preparación, no balance aprobado.
+**Origen del diseño**: 2026-10-31 / `c227982`; I1 parte de `main` / `e8407ec`.
+El núcleo I1 está implementado y aprobado funcionalmente; la composición de
+nodos y menú descrita para I2 sigue prevista. Los parámetros iniciales no
+acreditan equilibrio en partidas o rendimiento de destino.
 
 ## 1. Integración local y autoridad temporal
 
 **Decisión**: `CommanderSession` y `CommanderMemoryStore` instanciables, sin
-autoload o EventBus nuevos. `GameRoot` posee el almacén; lo inyecta al nivel
+autoload o EventBus nuevos. En la integración futura I2, `GameRoot` poseerá el
+almacén y lo inyectará al nivel
 antes de añadirlo al árbol. El nivel compone la sesión antes de iniciar WAVE.
 `WaveSpawner` pide únicamente un carril al dispararse su Timer actual.
 
@@ -63,8 +65,8 @@ duración, el cleanup o toda una victoria a la última aparición.
 ## 4. Persistencia versionada y borrado
 
 **Decisión**: JSON de datos primitivos, con dos slots alternados propios y
-validación completa; no cargar Resources desde `user://`. Sólo publicar en RAM
-una memoria cuyo guardado se haya verificado. El borrado elimina ambos slots,
+validación completa; no cargar Resources desde `user://`. En modo persistente,
+sólo publicar en RAM una memoria cuyo guardado se haya verificado. El borrado elimina ambos slots,
 primero el inactivo y después el activo, y verifica su ausencia antes de
 comunicar éxito y sustituir la memoria en RAM por la neutral.
 
@@ -78,7 +80,7 @@ nuevo permitiría resucitar un respaldo; eliminar todas las copias evita ese cas
 en el proyecto; aquí JSON acota explícitamente tipos y estructura. No se añade
 base de datos, migración inventada de versiones futuras o sincronización.
 
-## 5. Interfaz y plataformas
+## 5. Interfaz y plataformas — I2 pendiente
 
 **Decisión**: añadir una intención de borrado al menú existente, con confirmación
 y feedback textual; raíz autoriza sólo en MENU sin transición, nivel o intro.
@@ -105,7 +107,9 @@ Aplicar señales locales, parámetros inmutables, servicios inyectables y prueba
 GUT; las convenciones del repositorio prevalecen sobre sus ejemplos genéricos.
 La instalación se descubre en cada entorno, sin rutas personales en Git.
 
-Investigación de integración y aprendizaje contrastada por dos agentes de
-preparación en sólo lectura. No es un veredicto de `qa-validator`. No quedan
-incógnitas técnicas bloqueantes para generar tareas; los valores iniciales y el
-protocolo tienen revisión de preparación y validación futura, no aprobación actual.
+La investigación de preparación no equivale a QA de implementación. I1 ya
+cuenta con aprobación funcional independiente de sus servicios; CI y el gate
+final de integración se comprueban por separado. La conexión al nivel, el
+equilibrio del juego, los destinos y la publicación conservan sus verificaciones
+pendientes. El [contrato](contracts/commander.md) distingue la verificación local
+de archivos de la durabilidad y de los fallos simulados por etapa.

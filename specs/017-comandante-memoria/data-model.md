@@ -1,16 +1,17 @@
 # Modelo de datos017
 
-Diseño previsto; los archivos y tipos nuevos mencionados aquí aún no existen.
+Modelo del núcleo I1 implementado y aprobado funcionalmente. Los estados y
+eventos de nodos descritos para I2 siguen pendientes de integración.
 [Especificación](spec.md) · [Contrato](contracts/commander.md).
 
 ## CommanderConfig — Resource compartido de sólo lectura
 
-Ruta prevista: `resources/schemas/commander_config.gd` e instancia
+Ruta: `resources/schemas/commander_config.gd` e instancia
 `resources/director/monte_calvo_commander.tres`. Sin estado aprendido.
 
 | Campo | Valor inicial | Validación |
 |---|---:|---|
-| schema_version / policy_version | 1 / 1 | enteros positivos; no confundir con versión beta |
+| schema_version / policy_version | 1 / 1 | ambos exactamente1 en la política actual; no confundir con versión beta |
 | phase_end_waves | [3,7,10] | exactamente3 enteros positivos estrictamente crecientes; último10 |
 | prior_score | 0.5 | exactamente el prior de policy1 |
 | learning_rate | 0.15 | finito, mayor que0 y como máximo0.15 |
@@ -23,7 +24,9 @@ Ruta prevista: `resources/schemas/commander_config.gd` e instancia
 Los rangos limitan el diseño inicial; no acreditan equilibrio. Parámetros,
 categorías y orden canónico entran en `compatibility_id`. Cambiarlos invalida
 la memoria previa; no permitir que el guardado sobrescriba esta configuración.
-Usar campos tipados/exportados con rangos en el futuro schema. Número de carriles,
+El schema usa campos tipados/exportados con rangos. Una instancia vacía conserva
+valores neutrales inválidos: cargar el `.tres` autorado o inyectar configuración
+completa válida antes de usar el servicio. Número de carriles,
 bloque5 y secuencia WAVE son invariantes del spec, no controles del jugador.
 
 ## Contexto candidato
@@ -66,9 +69,34 @@ expresa del jugador, no una partida.
 
 `compatibility_id` incluye política/config, orden de tipos y tiempos aplanados,
 campos base de stats A/R y soldado que afectan combate, y LaneBoardConfig.
-Excluir rutas absolutas, UID del editor y arte/audio; documentar la serialización
-canónica de nombres/campos/valores en la prueba de compatibilidad. No usar sólo
-versión de app, SHA de Git o una fecha como proxy de balance.
+Excluir rutas absolutas, UID del editor y arte/audio. No usar sólo versión de
+app, SHA de Git o una fecha como proxy de balance.
+
+### Serialización canónica de compatibilidad
+
+Se aplica `JSON.stringify(canonical, "", true, true).sha256_text()`: JSON compacto,
+claves ordenadas y precisión completa. Los arrays mantienen el orden autorado.
+El objeto `canonical` contiene:
+
+- `config`: los diez campos públicos de la tabla anterior.
+- `categories`: listas canónicas `phase`, `role`, `lane`, `defense` y `load`,
+  con el orden definido en «Contexto candidato».
+- `waves`: cada oleada como `{wave_number, spawns}`, conservando su orden;
+  `spawns` aplana las entradas en `{role, interval, stats}`. Reagrupar entradas
+  equivalentes sin cambiar la secuencia aplanada no cambia la identidad.
+- `stats` por enemigo: `max_health`, `move_speed`, `melee_damage`, `rifle_range`,
+  `rifle_damage`, `rifle_interval` y `ammo_drop`.
+- `soldier_stats`: `max_health`, `max_ammo`, `damage_per_shot`, `fire_rate`,
+  `rifle_range`, `machete_base_damage`, `machete_moral_multiplier`,
+  `machete_moral_per_kill`, `machete_heal_per_kill`, `moral_per_kill`,
+  `advance_speed`, `return_speed` y `deploy_ammo_cost`.
+- `board`: `design_rect` y `defended_rect` como `[x,y,width,height]`, `cell_size`
+  como `[x,y]`, y `home_cells`/`spawn_positions` como arrays ordenados de pares.
+
+No se incluyen nombres de Resource, rutas o UID. La selección del rol R exige
+los tres campos de fusil activos; el resto es A. Una memoria incompatible se
+neutraliza, pero conserva la generación válida más reciente del disco para
+que el siguiente reemplazo mantenga el contador monotónico.
 
 ## Estado efímero de CommanderSession
 
@@ -88,12 +116,19 @@ No quedan referencias fuertes a actores una vez cerrado el registro.
 ## Almacenamiento y errores
 
 Dos rutas dedicadas: `user://commander_memory_a.json` y
-`user://commander_memory_b.json`; base de ruta inyectable en pruebas.
+`user://commander_memory_b.json`. `storage_base_path` permite inyectar otro
+directorio; vacío resuelve a `user://`. Los nombres de ambos slots son fijos.
+`io_backend` permite inyectar operaciones para pruebas y `compatibility_sources`
+un conjunto completo de `waves`, `soldier_stats` y `board` confiables. Vacío usa
+los Resources autorados de Monte Calvo; nunca carga Resources desde el guardado.
 Cada archivo es un sobre JSON con `payload` string y `sha256` del UTF-8 exacto
 de ese string. El payload es el objeto anterior. Rechazar archivos mayores de
 128KiB antes de leer todo, tipos extraños, campos extra, claves inválidas,
 NaN/Infinity, bool usado como entero y estructuras fuera del esquema.
 El hash detecta truncamientos/cambios accidentales, no es protección anti-cheat.
+Después de validar, el almacén normaliza los encabezados enteros exactos a `int`
+y `q/n` a `float`; el hash se verifica sobre el payload original, sin reescribirlo
+para aceptar datos inválidos. El parseo devuelve errores controlados.
 
 Resultados explícitos del almacén: OK, MISSING, INVALID, INCOMPATIBLE,
 IO_ERROR, CONFLICT, TRANSIENT. Separar `saved` (verificación local de escritura)

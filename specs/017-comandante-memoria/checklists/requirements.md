@@ -2,8 +2,9 @@
 
 **Fecha**: 2026-10-31.
 **Documento**: [spec.md](../spec.md).
-**Estado**: decisiones Q1/Q2 confirmadas, plan y tareas preparados para análisis de sólo lectura. Revisión documental de preparación;
-preparación aprobada independientemente; implementación e integración pendientes.
+**Estado**: preparación aprobada independientemente; núcleo I1 implementado y
+aprobado funcionalmente. Documentación y gate final de integración en revisión;
+I2 y publicación pendientes. Las casillas siguen refiriéndose sólo a preparación.
 
 **Planificación técnica**: [plan](../plan.md), [investigación](../research.md),
 [modelo](../data-model.md), [contrato](../contracts/commander.md) y
@@ -11,7 +12,7 @@ preparación aprobada independientemente; implementación e integración pendien
 
 Las casillas registran sólo preparación aprobada por qa-validator; no acreditan
 implementación o integración. [tasks.md](../tasks.md) contiene55 tareas propuestas,
-I1 en ejecución autorizada; I2/publicación pendientes.
+I1 en cierre del núcleo aislado; I2/publicación pendientes.
 
 ## Contenido
 
@@ -56,20 +57,21 @@ I1 en ejecución autorizada; I2/publicación pendientes.
   repetición posible en frontera y ausencia de un límite de ocupación simultánea.
 - Abandono/cierre previo al terminal descarta experiencia pendiente; terminal y
   Retry no la duplican. El borrado no afecta progreso narrativo u otros datos.
-- No quedan marcadores de aclaración de producto. Plan/contratos y tareas preparados,
-  sin aprobación independiente ni autorización para iniciar implementación.
-  No se han ejecutado pruebas del juego, builds, playtests o distribución.
+- Preparación e implementación del núcleo I1 tienen aprobación independiente.
+  No se ha integrado el comandante al juego ni acreditado playtesting, destinos
+  o publicación; los resultados de ejecución y CI se reportan en el PR.
 - Diseño técnico:360 contextos, memoria congelada por partida, resultados sólo de
   muertes/cruces WAVE confirmados, censura de vivos y consolidación única por
   terminal. Preferencia acotada, persistencia en dos slots y borrado de ambos.
 - Candidatos de balance: exploración0.25, gain0.25, aprendizaje0.15, retención0.98;
-  confianza3 y máximo20 visitas efectivas. No son balance o QA aprobados.
-- Quickstart fija semillas0–255 para selección y12 partidas comparables más
-  entrenamiento real previo. Ninguno de esos escenarios se ejecutó en preparación.
+  confianza3 y máximo20 visitas efectivas. No constituyen balance jugable
+  aprobado ni validación física.
+- Quickstart separa los escenarios aislados de selección de las12 partidas
+  comparables más entrenamiento real, que siguen pendientes para I2.
 - Plan aplica constitución antes/después del diseño; no identifica excepciones
-  necesarias. Revisión independiente de preparación sigue pendiente; las tareas
-  se han generado y su análisis se presenta en conversación, sin abrir Issue/PR
-  o cambiar de rama desde esta fase.
+  necesarias. La preparación fue revisada independientemente; [Issue #65](https://github.com/Juanpvivas/demons/issues/65)
+  y rama I1 están identificados en el plan. Los estados de tareas pertenecen al
+  orquestador y no certifican publicación.
 - Investigación y revisión cruzada documental en sólo lectura comprobaron
   integración/lifecycle y fórmulas. Se cerraron rangos de confianza compatibles,
   rollback de propuesta/RNG y borrado TRANSIENT con feedback propio. Esta revisión

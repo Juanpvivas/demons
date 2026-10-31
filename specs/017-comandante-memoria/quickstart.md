@@ -1,14 +1,17 @@
-# Validación futura017 — guía para tester y QA
+# Validación017 — guía para tester y QA
 
-**Estado**: protocolo de diseño; ningún comando, prueba, build o partida de esta
-guía se ha ejecutado al preparar el plan. [Plan](plan.md), [contrato](contracts/commander.md),
-[modelo](data-model.md). No usar esta guía como evidencia de GREEN o publicación.
+**Estado**: I1 tiene pruebas aisladas y aprobación funcional del núcleo. Los
+escenarios de integración jugable, equilibrio y destinos siguen pendientes para
+I2 y publicación. [Plan](plan.md), [contrato](contracts/commander.md),
+[modelo](data-model.md). Esta guía no es un registro de ejecución ni acredita
+por sí sola GREEN, CI o publicación.
 
 ## Preparación antes de ejecutar
 
 1. Generar/analizar `tasks.md`, revisar preparación y autorizar ejecución.
    Orquestador conserva pendientes016, crea/reutiliza un Issue único y prepara
-   rama por incremento; este plan no hace esos cambios.
+   rama por incremento. I1 ya tiene su rama e Issue #65; I2 no se inicia
+   automáticamente por quedar aprobado el núcleo.
 2. Cada rol lee su definición en `.claude/agents/` y skills GodotPrompter
    pertinentes. Tester controla RED/GREEN; dev no escribe/ejecuta pruebas;
    QA valida en sólo lectura y sólo orquestador marca tareas tras APROBADO.
@@ -23,7 +26,7 @@ guía se ha ejecutado al preparar el plan. [Plan](plan.md), [contrato](contracts
 El tester escribe RED por comportamiento ausente, con importación válida. Las
 pruebas existentes de Timer, inicial, composición, terminales, economía y pool
 se conservan. Ajustar sólo las aserciones de cursor1→5 cuando ejerciten el nuevo
-comandante; el camino de spawner legado sin sesión sigue conservando ese cursor.
+comandante en I2; I1 no toca ese spawner y el juego conserva el cursor vigente.
 
 | Grupo | Criterio y casos previstos | Spec |
 |---|---|---|
@@ -50,11 +53,12 @@ python3 tools/ci/run_gut.py --godot /ruta/al/godot-4.7.1
 ```
 
 El runner ya importa y ejecuta toda `tests/unit`; no sustituir un resumen vacío,
-fallos de importación o una salida sin pruebas por GREEN. CI vigente añade su
-guard Python y benchmark offline existente, sin modelo real; no modificar esos
-workflows por esta feature salvo defecto independiente autorizado.
+fallos de importación o una salida sin pruebas por GREEN. La CI de la base de I1
+(`e8407ec`) añade el guard Python existente; no incluye aún el paso del benchmark016.
+No incorporar ese benchmark ni modificar workflows por esta feature salvo
+defecto independiente autorizado.
 
-## Playtesting de equilibrio predefinido
+## Playtesting de equilibrio predefinido — I2 pendiente
 
 Los parámetros iniciales del modelo son candidatos de balance, sin aprobación
 actual. Con fuente estable y GREEN, aplicar este protocolo antes de integrar
@@ -96,7 +100,7 @@ real ni usar esas victorias como sustituto de las12 partidas comparables.
 No existe un límite adicional de capacidad simultánea por carril autorizado:
 si el playtest lo necesita, requiere revisión del diseño, no añadirlo en secreto.
 
-## Matriz funcional y gate
+## Matriz funcional y gate — integración jugable/publicación pendientes
 
 En cada destino disponible: primera partida neutral, terminal→Retry con memoria,
 abandono sin aprendizaje, cierre/reapertura, borrado confirmado/cancelado/fallido,
@@ -119,5 +123,5 @@ Publicación conserva artefacto firmado/versionado, verificación física/60FPS,
 APROBADO PARA PUBLICACIÓN y autorización humana; #61/#53 y006 no cambian.
 
 Resultados y veredicto breves irán al PR borrador/CI, con temporales externos
-durante ejecución. No crear archivos nuevos de evidencia en Git. El próximo
-paso de preparación es tareas/análisis, no correr esta guía ahora.
+durante ejecución. No crear archivos nuevos de evidencia en Git. El cierre de
+I1 no autoriza ejecutar la integración, el playtesting de I2 o publicación.
