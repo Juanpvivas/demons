@@ -5,8 +5,9 @@
 **Input**: Preparación `demons-preparation`; ejecución posterior por [roles](../../docs/DEVELOPMENT_WORKFLOW.md), sin `speckit-implement`.
 
 **Seguimiento**: [Issue #53](https://github.com/Juanpvivas/demons/issues/53).
-I1/R2/R3 conservan sus aprobaciones históricas y medios T026. R4 prepara sólo
-sustitución del clip sintético del compañero; publicación T014 sigue pendiente.
+Implementación013 integrada en `main` por [PR #54](https://github.com/Juanpvivas/demons/pull/54)
+(`77be629`), conservando aprobaciones I1–R4 y medios T026. El compañero
+sintético es definitivo por aceptación humana; publicación T014 sigue pendiente.
 
 ## Enmienda vigente R4 — sólo medio de compañero
 

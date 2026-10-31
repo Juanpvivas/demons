@@ -3,9 +3,9 @@
 **Feature ID**: `013-introduccion-la-carta`  
 **Planned Branch**: `codex/013-introduccion-la-carta`  
 **Created**: 2026-10-30  
-**Status**: I1/R2/R3/R4 conservan sus aprobaciones técnicas; la persona aceptó expresamente el mismo clip R4 como voz definitiva del compañero. Narrador toma3/T026 intacto y publicación T014 pendiente; PR #54 en borrador
+**Status**: Implementación integrada en `main` por PR #54 (`77be629`), con sus aprobaciones de integración conservadas. Narrador humano toma3 y compañero sintético definitivo aceptados por la persona; publicación T014 pendiente
 
-**Tracking**: [Issue #53](https://github.com/Juanpvivas/demons/issues/53), entrega intermedia `Refs #53`
+**Tracking**: [PR #54 fusionado](https://github.com/Juanpvivas/demons/pull/54); [Issue #53](https://github.com/Juanpvivas/demons/issues/53) abierto por publicación
 **Input**: Integrar el guion y las siete imágenes de La carta. La persona confirmó mostrarla automáticamente sólo la primera vez al pulsar Jugar, repetirla desde el menú e incluir voz provisional en la primera entrega.
 
 **Revisión autorizada 013-I1-R2**: voz claramente masculina, final/omisión de

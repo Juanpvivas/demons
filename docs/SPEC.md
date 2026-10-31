@@ -15,8 +15,9 @@ Juego de defensa por carriles (estilo *Plants vs. Zombies*) inspirado en la hist
 - El apodo "demonios de las trincheras" se lo dieron los propios enemigos, como reflejo del miedo y respeto que inspiraba su ferocidad en combate cuerpo a cuerpo.
 - Nota de diseño: el juego usa la versión popular de la historia (soldados que se quedan sin munición y recurren al machete) como base narrativa y mecánica, priorizando jugabilidad sobre precisión documental estricta. Tratar el tema con respeto: es un homenaje, no glorificación gratuita de violencia.
 
-**La carta** ([013](../specs/013-introduccion-la-carta/spec.md), revisión R3
-aprobada funcionalmente en T032 en rama) presenta siete escenas antes de la primera partida.
+**La carta** ([013](../specs/013-introduccion-la-carta/spec.md)), integrada en
+`main` por [PR #54](https://github.com/Juanpvivas/demons/pull/54) (`77be629`),
+presenta siete escenas antes de la primera partida.
 La carta y sus personajes son ficción inspirada en el Batallón Colombia,
 no testimonios ni retratos de veteranos identificados. Incluye subtítulos y
 siete narraciones humanas de la toma3 aportada, elegida y autorizada por la
@@ -202,7 +203,7 @@ orienta la composición lateral y no fija costos, estadísticas ni HUD final.
 
 ## 7. Estructura técnica en Godot (borrador)
 
-**Sonidos de combate (014-I1, QA funcional T009 en rama):** cinco eventos
+**Sonidos de combate (014-I1, integrado en `main` por [PR #56](https://github.com/Juanpvivas/demons/pull/56), `45cd83a`):** cinco eventos
 confirmados —fusil, baja enemiga, baja colombiana, victoria y derrota— usan
 nueve variantes locales. Las bajas incorporan exclamación breve masculina
 ficticia y caída/equipo, sin imitar las voces de La carta. La última bala letal,
@@ -212,8 +213,8 @@ La mezcla finita, variación cosmética y control de saturación son presentaci�
 sin cambiar stats, RNG jugable o reglas. Pausa/foco silencian, sin cola atrasada;
 menú/retry cierran las voces propias. Audio definitivo de013 y Master intactos.
 [Procedencia y límites](../specs/014-sonidos-combate/research.md): audición,
-latencia/techo Web y hardware no certificados; gate final T012/CI y publicación
-T014 siguen pendientes, con pausa006 y pendientes004/005/013 conservados.
+latencia/techo Web y hardware no certificados. Gate de integración T012/CI
+aprobado; publicación T014 sigue pendiente, con pausa006 y pendientes004/005/013 conservados.
 
 - **Autoload `EconomyManager`:** controla el contador global de Munición recolectada, expone señal `ammo_pool_changed`.
 - **Tablero:** `TileMap` convierte mundo↔celda; `LaneBoardConfig` define cinco plazas/entradas y zona defendida. El nivel valida esas plazas antes de cobrar y `BoardManager` mantiene su ocupación.
@@ -370,7 +371,8 @@ documenta el original y su encaje.
 
 005-I3 incorpora HUD mínimo de selección/recarga, avisos y pantalla terminal;
 I4 conserva sus controles y adaptación. El acabado adicional de interfaz y
-audio sigue pendiente. I5 consolida el alcance funcional integrado mediante
+audio futuro fuera de013/014 sigue pendiente; la introducción y los cinco cues
+de combate ya están integrados. I5 consolida el alcance funcional integrado mediante
 [PR #28](https://github.com/Juanpvivas/demons/pull/28); las
 [tareas de 005](../specs/005-cinco-carriles/tasks.md) mantienen el estado de
 entrega y PR. La publicación, las features 004/005 y el MVP siguen abiertos.
@@ -527,7 +529,7 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 ## 10. Preguntas abiertas / decisiones pendientes
 
 - Publicación de [005](../specs/005-cinco-carriles/tasks.md), T071/SC-007: rendimiento físico, renderer y artefacto final, firma/instalación/versionado y matriz de destino. I1–I4 están integrados en `main` mediante los PR #24–#27 e I5 consolida el alcance funcional aprobado; las tareas mantienen el estado de entrega. No deducir balance de la imagen.
-- Acabado adicional de interfaz, audio y demás alcance del MVP, siguiendo la dirección aprobada en §8; el HUD, la recarga y las pantallas terminales actuales están integrados por 005. SC-007 y certificaciones de publicación siguen pendientes.
+- Acabado adicional de interfaz, audio futuro fuera de013/014 y demás alcance del MVP, siguiendo §8; HUD/recarga/resultados de005, introducción013 y cinco cues014 ya están integrados. Esto no completa el MVP ni SC-007/certificaciones de publicación.
 - ¿Habrá progresión entre niveles (más batallas históricas) o es un solo escenario?
 - Balance de costos exactos de cada unidad (se define con playtesting).
 - ¿La munición cae solo de enemigos derrotados, o también se acumula pasivamente con el tiempo? (supuesto actual: solo de enemigos)
@@ -535,7 +537,7 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 
 ### Resueltas (graduadas desde specs de feature)
 
-- ✅ Narrativa dentro del juego mediante La carta: 013-I1/T007–T009 añade siete escenas ilustradas, subtítulos y voz provisional tras el primer Jugar y antes del combate, con repetición voluntaria desde el menú y recuerdo local. Es ficción inspirada en el contexto histórico; gate final de integración T012 y publicación T014 permanecen separados.
+- ✅ Narrativa dentro del juego mediante La carta: 013-I1 integrado por PR #54 (`77be629`), con siete escenas, narrador humano toma3 y compañero sintético definitivo aceptados por la persona, subtítulos y recuerdo local. Tras Jugar o Ver introducción espera Comenzar antes del combate. Es ficción inspirada en el contexto histórico; publicación T014 sigue pendiente.
 
 - ✅ Selección por dueño de trinchera, recarga única sólo con carga cero y regreso físico vulnerable sin ofensiva: 005-I3/T037–T042, integrado mediante PR #26 (`8c4cab4`). La publicación T071 sigue pendiente.
 - ✅ Composición lateral y estados observadores de marcha/espera, regreso con fusil bajo y caída orientada: 005-I4/T050–T057, integrado mediante PR #27 (`cffb2ec`). El estado de entrega y PR se mantiene en las tareas de 005. No cambia reglas, geometría ni concede cobertura.
@@ -611,3 +613,4 @@ Producto y pendientes nativos/US2/T039/T071 permanecen intactos, sin publicació
 | 2026-10-30 | 013/T041 tras QA técnica T040: sólo compañero sustituido por candidata Qwen3-TTS VoiceDesign; narrador humano y comportamiento intactos, naturalidad humana y gate final T043/publicación pendientes. |
 | 2026-10-30 | Corrección documental 013: la persona acepta expresamente el mismo clip Qwen3-TTS VoiceDesign como voz definitiva del compañero; se resuelve su aceptación perceptual humana sin modificar audio, comportamiento o gates de publicación. |
 | 2026-10-30 | 014/T010 tras QA funcional T009: cinco cues offline de hechos confirmados, bajas con exclamación breve/caída y mezcla acotada aislada de013; integración final/CI y publicación conservan sus gates y límites. |
+| 2026-10-30 | Actualización documental: 013 integrado por PR #54 (`77be629`) y 014 por PR #56 (`45cd83a`); integración/CI aprobados, publicación y requisitos físicos pendientes conservados. |

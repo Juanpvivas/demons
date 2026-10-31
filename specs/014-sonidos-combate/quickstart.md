@@ -1,9 +1,10 @@
 # Verificación prevista — Sonidos de combate
 
 Escenarios reproducibles, no afirmación de observación completa en cada destino.
-T009 aprueba función disponible con [límites explícitos](research.md#alcance-funcional-aprobado-y-límites);
-suite completa/CI del head final y gate T012, audición y publicación T014 se
-mantienen diferenciados. Una captura software no certifica mezcla Web/hardware.
+Implementación integrada por [PR #56](https://github.com/Juanpvivas/demons/pull/56),
+con QA de integración T012 y CI/suite completa de revisión aprobada. Los
+[límites](research.md#alcance-funcional-aprobado-y-límites) de audición/publicación
+T014 siguen separados; captura software no certifica mezcla Web/hardware.
 
 1. Perfil/fixtures de audio aislados: soldado con munición/blanco válido dispara y se oye una petición; última bala incluida. Sin blanco/munición, recarga y animaciones no inventan tiros.
 2. Herir sin matar a cada bando no produce baja; matar produce una, repetir daño/cleanup no otra. Reciclar enemigo y volver a matarlo sí produce una nueva. Registrar actor dos veces no duplica.

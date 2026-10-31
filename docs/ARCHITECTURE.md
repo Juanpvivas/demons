@@ -630,7 +630,8 @@ La aceptación y CI de cada revisión exacta se registran en el PR del increment
 
 ### 4.9 Audio de combate local a la sesión
 
-014-I1/T007–T009 añade `CombatAudio` como hijo del nivel y
+014-I1, integrado en `main` por [PR #56](https://github.com/Juanpvivas/demons/pull/56)
+(`45cd83a`) con QA de integración T012/CI aprobados, añade `CombatAudio` como hijo del nivel y
 `CombatAudioProfile` inmutable con cinco arrays de cues/nueve variantes. Nivel
 y spawner registran actores una sola vez. Observa las señales confirmadas de
 disparo/baja existentes, sin depender de animación visible o alterar emisores.
@@ -650,7 +651,8 @@ o afectar otra sesión/intro. Los getters cuentan combate más resultado.
 La captura software de mezcla no certifica techo/latencia Web o hardware.
 Stream Web puede añadir latencia, especialmente con un hilo; no hay medición
 acreditada en esta entrega. Los [límites de014](../specs/014-sonidos-combate/research.md#alcance-funcional-aprobado-y-límites)
-conservan gate final/CI pendiente y publicación separada.
+conservan publicación pendiente y las observaciones no certificadas, sin
+presentar la integración/CI ya aprobados como pendientes.
 
 ## 5. Composición de escenas (ejemplo concreto)
 
@@ -1125,3 +1127,4 @@ T071 de 005 conservan publicación pendiente y sus propios requisitos físicos.
 | 2026-10-30 | 013/T033 tras QA funcional T032: §4.8 documenta prompt inferior aislado por API pública, imagen estable en espera/resize y narrador humano con compañero provisional separado; audio/recuerdo/cierre y gates conservados. |
 | 2026-10-30 | Corrección documental 013: aceptación humana definitiva del clip sintético del compañero, sin cambios de recursos de audio ni lógica y con publicación pendiente. |
 | 2026-10-30 | 014/T010 tras QA funcional T009: §4.9 documenta audio local, pool8+1, señales confirmadas/consulta letal de sólo lectura y routing Stream/GameplaySFX aislado; CI/integración final, audición y publicación mantienen límites. |
+| 2026-10-30 | Actualización documental: 013 integrado por PR #54 (`77be629`) y 014 por PR #56 (`45cd83a`); estado de integración/CI vigente, con publicación y certificación física aún pendientes. |

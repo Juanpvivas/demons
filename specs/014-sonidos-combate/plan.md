@@ -4,8 +4,9 @@
 **Base**: main `77be629`, 013 integrado. Preparación Spec Kit `demons-preparation`; ejecución por roles, sin speckit-implement.
 **Tracking**: [Issue #55](https://github.com/Juanpvivas/demons/issues/55)
 
-**Estado**: T009 aprueba función disponible de014-I1; documentación se consolida
-en T010 antes de CI/head exacto y gate final T012. Publicación T014 pendiente.
+**Estado**: 014-I1 integrado en `main` por [PR #56](https://github.com/Juanpvivas/demons/pull/56)
+(`45cd83a`), con QA de integración T012 y CI de revisión aprobada. Publicación
+T014 permanece pendiente; la planificación siguiente conserva su alcance original.
 
 ## Summary
 

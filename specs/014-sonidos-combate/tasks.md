@@ -1,7 +1,7 @@
 # Tasks: Sonidos de combate
 
 **Input**: [spec.md](spec.md), [plan.md](plan.md), [contrato](contracts/combat-audio.md), [datos](data-model.md), [quickstart](quickstart.md).  
-**Entrega**: 014-I1 completo, cinco cues/nueve WAV; rama `codex/014-sonidos-combate`, base main77be629; [Issue #55](https://github.com/Juanpvivas/demons/issues/55), PR por orquestador.
+**Entrega**: 014-I1 integrado en `main` por [PR #56 fusionado](https://github.com/Juanpvivas/demons/pull/56) (`45cd83a`), cinco cues/nueve WAV; rama de implementación `codex/014-sonidos-combate`, base main77be629; [Issue #55](https://github.com/Juanpvivas/demons/issues/55) abierto por publicación T014.
 **Flujo**: [roles/TDD](../../docs/DEVELOPMENT_WORKFLOW.md); Spec Kit prepara, agentes ejecutan. Sólo orquestador marca [X] tras QA. Sin evidencias nuevas Git.
 
 ## Fase 1: Preparación y contrato neutral
@@ -25,9 +25,9 @@
 ## Fase final: Documentación, CI e integración
 
 - [X] T010 docs-writer: consolidar sólo comportamiento aprobado en `README.md`, `docs/SPEC.md`, `docs/ARCHITECTURE.md` y specs014 pertinentes; conservar tono, audio013 definitivo e historia, pausa006 y pendientes004/005/013. No tareas/fuente/tests ni logs/evidencias nuevos. Depende T009.
-- [ ] T011 project-orchestrator con godot-tester: revisar diff/commits por resultado, publicar revisión consolidada de rama y comprobar CI de head exacto; reutilizar verificaciones válidas y repetir sólo invalidadas. Sin promoción/merge/distribución. Depende T010.
-- [ ] T012 qa-validator: revisar documentación/CI/revisión exacta T011 y emitir APROBADO PARA INTEGRACIÓN sólo con fuente, GREEN/regresión, medios/build suficientes y límites explícitos; T014 sigue pendiente de publicación. Depende T011.
-- [ ] T013 project-orchestrator: consolidar Issue único y PR borrador 014-I1 con `Refs #<issue>`, trazabilidad RED/GREEN/QA y límites, adjuntar PR; marcar sólo alcance aprobado, sin promoción/merge/distribución. Depende T012.
+- [X] T011 project-orchestrator con godot-tester: revisar diff/commits por resultado, publicar revisión consolidada de rama y comprobar CI de head exacto; reutilizar verificaciones válidas y repetir sólo invalidadas. Sin promoción/merge/distribución. Depende T010.
+- [X] T012 qa-validator: revisar documentación/CI/revisión exacta T011 y emitir APROBADO PARA INTEGRACIÓN sólo con fuente, GREEN/regresión, medios/build suficientes y límites explícitos; T014 sigue pendiente de publicación. Depende T011.
+- [X] T013 project-orchestrator: consolidar Issue único y PR borrador 014-I1 con `Refs #<issue>`, trazabilidad RED/GREEN/QA y límites, adjuntar PR; marcar sólo alcance aprobado, sin promoción/merge/distribución. Depende T012.
 - [ ] T014 project-orchestrator con roles responsables: sólo con autorización futura de publicación, verificar SC007 (artefacto/renderer/firma/versión/instalación/smoke/hardware/60FPS y QA de publicación). Permanece pendiente sin bloquear integración funcional aprobada ni heredar excepciones beta.
 
 ## Dependencias y cobertura

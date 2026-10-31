@@ -117,7 +117,8 @@ identifican el veredicto y CI de su revisión exacta. Los
 [límites de las variantes nativas](docs/SPEC.md#8-arte-y-estilo-visual),
 los pendientes de 006 y la publicación se conservan.
 
-[013 — La carta](specs/013-introduccion-la-carta/spec.md) añade en su rama
+[013 — La carta](specs/013-introduccion-la-carta/spec.md), integrada en `main`
+mediante el [PR #54](https://github.com/Juanpvivas/demons/pull/54) (`77be629`), añade
 una introducción ilustrada con subtítulos, narración humana de la toma3 elegida
 y autorizada por la persona autora, y ambiente original discreto. El compañero
 usa una voz sintética Qwen3-TTS VoiceDesign que la persona ha aceptado como
@@ -147,11 +148,13 @@ las comprobaciones de incorporación/reproducción son técnicas y no una escuch
 propia de los agentes. El compañero sigue siendo sintético; toque iOS, paquete final
 y rendimiento físico no se certifican.
 [Alcance y límites](specs/013-introduccion-la-carta/research.md#alcance-funcional-r3-y-límites).
-CI/gate final de integración y publicación conservan su
-[seguimiento separado](specs/013-introduccion-la-carta/tasks.md); 006 sigue pausada
+La integración está aprobada y fusionada; el [Issue #53](https://github.com/Juanpvivas/demons/issues/53)
+permanece abierto por publicación T014. Su [seguimiento](specs/013-introduccion-la-carta/tasks.md)
+conserva esos pendientes; 006 sigue pausada
 y los pendientes 004/005 no se cierran por esta entrega.
 
-[014 — Sonidos de combate](specs/014-sonidos-combate/spec.md) añade en su rama
+[014 — Sonidos de combate](specs/014-sonidos-combate/spec.md), integrada en `main`
+mediante el [PR #56](https://github.com/Juanpvivas/demons/pull/56) (`45cd83a`), añade
 sonidos de fusil, baja enemiga, baja colombiana, victoria y derrota, con nueve
 variantes offline. Ambas bajas combinan una exclamación breve ficticia con
 caída/equipo. Sólo suenan por hechos confirmados: no por daño no letal, limpieza
@@ -160,8 +163,9 @@ foco las silencia y no reproduce eventos atrasados al volver. Menú y nueva
 partida cierran el audio del intento anterior. La introducción y sus voces
 definitivas permanecen intactas.
 
-T009 aprueba la función disponible; CI/gate final T011–T012 y publicación T014
-siguen separados. La verificación técnica no acredita audición perceptual,
+QA de integración T012 y CI de la revisión aprobada están completos; el
+[Issue #55](https://github.com/Juanpvivas/demons/issues/55) sigue abierto por
+publicación T014. La verificación técnica no acredita audición perceptual de SFX,
 latencia/techo de mezcla Web o combate nativo/hardware.
 [Alcance y límites](specs/014-sonidos-combate/research.md#alcance-funcional-aprobado-y-límites).
 
