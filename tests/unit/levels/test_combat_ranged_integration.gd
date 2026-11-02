@@ -310,3 +310,62 @@ func test_same_pool_actor_switches_rifle_assault_rifle_without_inherited_target_
 	assert_eq(third.position, Vector2(1008, 336))
 	assert_eq([rifle.rifle_range, rifle.rifle_damage, rifle.rifle_interval], [864.0, 1, 4.0])
 	assert_eq([assault.rifle_range, assault.rifle_damage, assault.rifle_interval], [0.0, 0, 0.0])
+
+
+# 017/T045: pérdida real de un blanco liberado ENTRE ticks físicos.
+# El test previo mata antes del tick enemigo: permite resetear la referencia
+# mientras aún existe y no cubre el posterior argumento tipado ya liberado.
+func test_rifle_enemy_resumes_after_freed_target_and_physically_reaches_defense() -> void:
+	# Escenario reducido: mismos actores, perfiles, velocidad y geometría reales.
+	# No se monta la campaña ni se cambia su calendario; el blanco no contraataca.
+	var target: Soldado = SOLDIER.instantiate()
+	target.position = Vector2(144, 336)
+	target.set_grid_cell(Vector2i(1, 3))
+	_world.add_child(target)
+	target.set_physics_process(false)
+	var rifle_stats: EnemyStats = load("res://resources/enemies/enemigo_infanteria_base.tres")
+	var enemy := _enemy(rifle_stats, Vector2(300, 336))
+	enemy.lane_id = 2
+	watch_signals(enemy)
+	watch_signals(GameStateManager)
+
+	# Detectar el cruce mediante el Area2D y handler productivos, sin emitirlo
+	# manualmente ni sustituir la autoridad de derrota por un doble.
+	var detector := LEVEL.instantiate()
+	autofree(detector)
+	for key: String in ["_wave_spawner", "_combat_visual_effects", "_combat_audio"]:
+		var service: Node = detector.get(key)
+		if service.get_parent() == null: detector.add_child(service)
+	var defended_area := detector.get_node("PosicionDefendida") as Area2D
+	detector.remove_child(defended_area)
+	defended_area.owner = null
+	for child: Node in defended_area.find_children("*", "", true, false): child.owner = null
+	_world.add_child(defended_area)
+	defended_area.body_entered.connect(detector._on_posicion_defendida_body_entered)
+	watch_signals(defended_area)
+
+	await wait_physics_frames(3)
+	assert_signal_emit_count(enemy, "rifle_shot_visual_requested", 1,
+		"Adquiere por IA un blanco real y realiza el tiro inmediato")
+	assert_almost_eq(enemy.position.x, 300.0, 0.01, "Se detiene dentro del alcance")
+	assert_eq(target.get_reload_state().health, target.stats.max_health - rifle_stats.rifle_damage)
+	assert_eq(GameStateManager._current_state, GameStateManager.GameState.PLAYING)
+	var stopped_x := enemy.position.x
+	# Deferred ejecuta la API pública después de los actores del tick actual;
+	# queue_free completa antes de que el siguiente tick pueda resetear el blanco.
+	target.call_deferred("take_damage", target.get_reload_state().health)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	assert_false(is_instance_valid(target), "La muerte pública completó queue_free; no queda cadáver válido")
+	await wait_physics_frames(3)
+	assert_lt(enemy.position.x, stopped_x, "Sin blanco vivo vuelve a MARCH hacia −X")
+	assert_lt(enemy.velocity.x, 0.0, "No conserva velocidad cero del fusil")
+	assert_almost_eq(enemy.position.y, 336.0, 0.01, "Conserva el carril sin reposición de soldados")
+	# Distancia300→borde96 a40/s; margen físico sin acelerar el motor.
+	await wait_physics_frames(360)
+	assert_signal_emitted(defended_area, "body_entered", "El cuerpo cruza físicamente la defensa")
+	assert_signal_emit_count(enemy, "reached_defended_position", 1)
+	assert_eq(GameStateManager._current_state, GameStateManager.GameState.LOST,
+		"El cruce real pierde la partida aunque no se reponga el defensor")
+	assert_signal_emit_count(GameStateManager, "game_lost", 1)
+	assert_engine_error_count(0, "La pérdida de un blanco liberado no debe abortar el tick con SCRIPT ERROR")
