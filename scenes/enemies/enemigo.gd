@@ -150,7 +150,7 @@ func _physics_process(delta: float) -> void:
 				velocity = Vector2.ZERO
 				_sprite.observe_displacement(Vector2.ZERO)
 				return
-		if not _is_rifle_target_valid(_rifle_target):
+		if not is_instance_valid(_rifle_target) or not _is_rifle_target_valid(_rifle_target):
 			_reset_rifle()
 			for candidate: CharacterBody2D in targets:
 				if _is_rifle_target_valid(candidate) and (_rifle_target == null \
