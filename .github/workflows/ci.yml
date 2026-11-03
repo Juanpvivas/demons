@@ -25,6 +25,9 @@ jobs:
       - name: Verificar el guard de CI
         run: python3 -B -m unittest discover -s tests/ci -p 'test_*.py' -v
 
+      - name: Verificar benchmark de directores sin modelo ni red
+        run: python3 -B -m unittest discover -s tests/director_benchmark -p 'test_*.py' -v
+
       - name: Setup Godot ${{ env.GODOT_VERSION }} (mono)
         uses: chickensoft-games/setup-godot@v2
         with:
