@@ -1,5 +1,29 @@
 <!--
 Sync Impact Report
+- Version change: 4.3.0 → 4.4.0 (MINOR).
+- Motivo: decisión explícita de la persona del 2026-11-03 de publicar un
+  primer candidato Web en itch.io, sobre la revisión exacta
+  20882a506adac5818183623c4549206e78560d28 de main.
+- MINOR: añade una autorización acotada y consumible a V para el destino
+  itch.io (nunca cubierto por las betas 1.0.1/1.0.2/1.0.3), sin sustituir
+  la regla general de Publicación ni reutilizar esas excepciones consumidas.
+- Reduce, solo para este candidato, la matriz de navegadores exigida a
+  Chrome/Chromium de escritorio, y acepta como "smoke completo" el ya
+  realizado (verificación técnica + partida manual y aval verbal de la
+  persona), sin pasada formal adicional de godot-tester.
+- Conserva obligatorios: artefacto exacto validado (manifiesto/hashes),
+  ausencia de archivos internos de desarrollo en el paquete, revisión
+  independiente de qa-validator con APROBADO PARA PUBLICACIÓN específico
+  para este candidato, y autorización humana explícita para el envío real.
+- Se agota con una publicación exitosa en itch.io; no autoriza futuros
+  builds, otros destinos o cambios de gameplay/renderer. Issue #61 sigue
+  abierto hasta completar el alcance de publicación.
+- Secciones anteriores y sus informes históricos conservados literalmente;
+  sin cambios de fuente, workflows, secretos, pruebas, tareas o renderer.
+-->
+
+<!--
+Sync Impact Report
 - Version change: 4.2.0 → 4.3.0 (MINOR).
 - Motivo: confirmación humana explícita del 2026-10-31 de la beta acotada
   1.0.3/build 6, preparación en PR #62 y seguimiento en Issue #61.
@@ -396,6 +420,40 @@ funcionales de #18/#22/#55/#58 no completan publicación: #61 y #53 siguen abier
 La política general II/IV/V rige íntegramente fuera de este alcance; autorizar
 esta beta no afirma que se haya enviado.
 
+#### Excepción autorizada: publicación Web/itch.io — primer candidato
+
+Por decisión explícita de la persona del **2026-11-03**, se permite publicar en
+**itch.io** un primer candidato de exportación Web, exportado desde la revisión
+exacta `20882a506adac5818183623c4549206e78560d28` de `main`. Esta excepción es
+independiente de las betas 1.0.1/1.0.2/1.0.3 (Firebase/TestFlight), que no
+cubren itch.io ni se reutilizan aquí.
+
+**Matriz de navegadores**: para este candidato puntual, la matriz mínima
+exigida por la regla general de Publicación (§V) se reduce a **Chrome/Chromium
+de escritorio**, sin exigir Firefox ni Safari. No se extiende a otros
+navegadores, a dispositivos móviles ni a publicaciones futuras.
+
+**Smoke aceptado como completo**: para este candidato, el smoke técnico ya
+realizado (verificación en el navegador integrado de Claude Code: menú,
+introducción, inicio de nivel, sin errores de consola) junto con la partida
+manual y el aval verbal explícito de la persona, **se aceptan como "smoke
+completo"** sin exigir una pasada formal adicional de `godot-tester`. El
+navegador exacto usado por la persona en su propia prueba no quedó
+identificado con precisión; se acepta igualmente por esta decisión puntual.
+
+Siguen siendo obligatorios: el artefacto exacto validado (manifiesto, hashes
+SHA-256), la ausencia de archivos internos de desarrollo en el paquete
+(`PROMPTS.json`/`SOURCES.md` y equivalentes), y una revisión independiente de
+`qa-validator` que emita **APROBADO PARA PUBLICACIÓN — candidato Web/itch.io**
+sobre esa revisión y artefacto exactos, identificando cualquier pendiente. La
+persona conserva la autorización explícita final para ejecutar la subida
+manual a itch.io; nada de esto la otorga por sí sola.
+
+La excepción se agota con **una publicación exitosa** en itch.io de este
+candidato. No autoriza futuros builds, otros destinos (Android/iOS/tiendas),
+cambios de gameplay/renderer, ni amplía las excepciones de beta 1.0.1/1.0.2/
+1.0.3. El Issue #61 sigue abierto hasta completar el alcance de publicación.
+
 ## Restricciones Técnicas
 
 - Motor: Godot 4.x, licencia MIT — no se introduce dependencia de pago
@@ -450,4 +508,4 @@ listo para implementar. Cualquier complejidad técnica que viole un principio
 DEBE justificarse explícitamente en el documento correspondiente (plan o spec)
 o rechazarse.
 
-**Version**: 4.3.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-10-31
+**Version**: 4.4.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-11-03

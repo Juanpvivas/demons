@@ -64,7 +64,12 @@ implica una publicación en el portal. [Alcance y evidencias](WEB_EXPORT.md).
   QA aceptó históricamente la entrega en Chrome de escritorio y Xiaomi/Chrome
   horizontal;
   rendimiento sostenido y entornos no probados conservan límites explícitos.
-  El paquete está revisado localmente y no publicado en itch.io.
+  El paquete está revisado localmente y no publicado en itch.io. La
+  constitución 4.4.0 autoriza como excepción puntual publicar en itch.io un
+  primer candidato exportado desde un SHA exacto de `main`, pendiente de
+  `APROBADO PARA PUBLICACIÓN — candidato Web/itch.io` de `qa-validator` y de
+  la autorización humana final para ejecutar esa subida; la subida real a
+  itch.io aún no ha ocurrido ([detalle](WEB_EXPORT.md)).
 
 ## 6. Mecánicas core
 

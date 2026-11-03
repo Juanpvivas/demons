@@ -210,6 +210,108 @@ consolida el alcance aceptado y los límites globales. El estado vigente de
 aprobación se consulta en [tasks.md](../specs/003-web-itchio/tasks.md); solo el
 orquestador marca tareas después de QA.
 
+### Candidato de exportación del 2026-11-03 (pendiente de revisión QA)
+
+El 2026-11-03 se generó un nuevo candidato con `tools/web/export.sh`, usando
+Godot **4.7.1 stable, oficial, self-contained**
+(`build/005-i2/web/toolchain/engine/Godot.app/Contents/MacOS/Godot`, con
+templates Web) sobre el head exacto de `main` en ese momento,
+`20882a506adac5818183623c4549206e78560d28`. Según
+[`build/web-manifest.json`](../build/web-manifest.json): `build_version`
+`"20882a5-wip"`, `source_dirty: true`, `godot_version`
+`"4.7.1.stable.official.a13da4feb"`, `export_preset` `"Web"`, `export_mode`
+`"release"`, `rendering_method` `"gl_compatibility"`, sin hilos ni extensiones
+ni PWA. El ZIP (`build/demons-web.zip`) mide **33 176 841 bytes**, SHA-256
+`5c5c59845aba778a993ea426dcabb4e457cd6311100a717ef2a27fd5369ee1be` (tamaño y
+hash verificados directamente contra el archivo y contra el manifiesto). El
+manifiesto reporta `uncompressed_size_bytes` `63 111 938` y, dentro del ZIP,
+`index.pck` con **23 161 992 bytes** y `index.wasm` con **39 513 091 bytes**.
+Esta regeneración corrigió el `exclude_filter` del preset Web: además de los
+patrones previos (`tests/*`, `addons/*`, `specs/*`, `docs/*`, `tools/*`,
+directorios de agentes, `build/*`, `AGENTS.md`, `CLAUDE.md`, `README.md` y el
+`SOURCES.md` de arte de Monte Calvo), ahora excluye también
+`assets/narrative/la_carta/PROMPTS.json` y
+`assets/narrative/la_carta/SOURCES.md`, los dos archivos internos de
+desarrollo de esa carpeta narrativa que el candidato anterior todavía incluía
+en el paquete. `qa-validator` ya verificó, montando el PCK regenerado, que
+esas dos rutas ya no están entre las 249 rutas del PCK, que el resto de
+`assets/narrative/la_carta/` sigue intacto y que el preset no excluyó de más;
+esa verificación cubre el contenido del PCK para este candidato concreto,
+aunque el campo `pck_content_validation` del manifiesto sigue señalando, como
+política general, que la lista exterior del `exclude_filter` no sustituye la
+inspección directa del PCK. La ausencia de contenido de `output/` dentro del
+PCK permanece pendiente de esa misma inspección.
+
+El marcador `source_dirty: true` y el sufijo `-wip` del `build_version` se
+deben a una carpeta `output/` sin trackear en el repositorio (contiene
+`output/storyboard-la-carta/` y `output/storyboard-la-carta.zip`, material de
+un storyboard), no a cambios de código fuente. Esa carpeta tiene su propio
+`output/.gdignore` vacío, el mecanismo de Godot para excluir un directorio del
+escaneo e importación de recursos. No es contenido del juego.
+
+**Lo que sí se probó en esta sesión (smoke técnico puntual, no validación QA
+independiente):** quien coordina el trabajo sirvió `build/web` localmente con
+`python3 -m http.server` y lo abrió en un navegador integrado. Se navegó
+menú → "Jugar" → introducción completa de "La carta" → "Comenzar" → nivel
+Monte Calvo con los cinco carriles, soldados disparando y un enemigo
+avanzando, sin errores de consola observados. Quien ejecutó este smoke no es
+tester ni QA independiente; se documenta aquí como una verificación técnica
+puntual, no como aprobación.
+
+Adicionalmente, la persona propietaria del proyecto jugó esa misma build en
+el navegador integrado y dio su aval verbal ("Sí, avalado"), confirmando que
+el juego se ve y funciona bien. Esta es una **revisión cualitativa humana**,
+no un smoke test formal de II/V ni una medición de rendimiento.
+
+**Excepción autorizada de constitución 4.4.0:** por decisión explícita de la
+persona del 2026-11-03, la constitución agregó la sección "Excepción
+autorizada: publicación Web/itch.io — primer candidato" (§V), aplicable
+exclusivamente a este candidato exportado desde `20882a506adac5818183623c4549206e78560d28`.
+Esa excepción: (1) reduce la matriz de navegadores mínima exigida por la
+regla general de Publicación a **Chrome/Chromium de escritorio**, sin exigir
+Firefox ni Safari para este candidato puntual; (2) acepta como "smoke
+completo" el ya realizado en esta sesión — la verificación técnica descrita
+arriba más la partida manual y el aval verbal explícito de la persona — sin
+exigir una pasada formal adicional de `godot-tester`; y (3) mantiene
+obligatorios el artefacto exacto validado (manifiesto, hashes SHA-256), la
+ausencia de archivos internos de desarrollo en el paquete, el veredicto
+independiente de `qa-validator` (`APROBADO PARA PUBLICACIÓN — candidato
+Web/itch.io`) y la autorización humana explícita final para ejecutar la
+subida manual. La excepción se agota con una publicación exitosa en itch.io
+de este candidato y no cubre futuros builds, otros destinos ni cambios de
+gameplay o renderer.
+
+**Qué queda fuera de esta excepción puntual, sin resultados ni cifras
+inventadas:**
+
+- Otros navegadores o combinaciones (Firefox, Safari macOS, otra
+  versión/sistema de Chrome, dispositivos móviles); la excepción solo cubre
+  Chrome/Chromium de escritorio y solo se usó el navegador integrado
+  mencionado arriba.
+- Rendimiento sostenido y FPS medidos; la constitución IV exige 60 FPS
+  estables en referencia física y ninguna medición de FPS se tomó en esta
+  sesión. La excepción no difiere este requisito.
+- Carga fría, memoria exclusiva del juego y las demás métricas W12 que ya
+  constaban como pendientes en entregas anteriores de 003.
+- Verificación GUT o de regresión automatizada; no se ejecutaron pruebas en
+  esta sesión porque no hubo cambio de comportamiento del juego, solo la
+  generación de este artefacto Web. La excepción no sustituye ni exime esta
+  verificación cuando sí haya cambios de comportamiento.
+- Revisión independiente de `qa-validator` sobre este candidato específico,
+  pendiente como siguiente paso de este flujo; la excepción no la otorga por
+  sí sola.
+- Cualquier build futuro u otro destino de publicación: la excepción se
+  agota con una publicación exitosa de este candidato puntual y no se
+  reutiliza.
+
+Este candidato no tiene, y este documento no afirma, un veredicto
+`APROBADO PARA PUBLICACIÓN`. Esa evaluación para itch.io corresponde
+exclusivamente a `qa-validator` y queda pendiente, junto con la matriz de
+publicación y los requisitos de rendimiento físico de la constitución. La
+excepción de constitución 4.4.0 reduce el alcance exigido para este
+candidato puntual, pero no reemplaza ese veredicto ni la autorización humana
+final de envío, que tampoco se ha dado todavía.
+
 ## Artefacto de CI
 
 `.github/workflows/export-web.yml` está configurado para Pull Requests y
