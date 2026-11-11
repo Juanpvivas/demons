@@ -232,6 +232,26 @@ func _single_short_wave(stats: EnemyStats) -> Array[WaveData]:
 	return waves
 
 
+## 017/I2 T038: dos entradas WAVE independientes (una por aparición) de la
+## misma oleada de prueba — usada exclusivamente para forzar un reciclaje
+## real del pool (R→A→R) entre dos bajas controladas por el propio test
+## (ver `_load_level_with_two_entry_short_wave`), sin tocar el algoritmo de
+## `CommanderSession` ni el resto de recursos de producción.
+func _two_entry_short_wave(stats: EnemyStats) -> Array[WaveData]:
+	var entries: Array[WaveSpawnEntry] = []
+	for _i in 2:
+		var entry := WaveSpawnEntry.new()
+		entry.enemy_stats = stats
+		entry.count = 1
+		entry.spawn_interval = 0.05
+		entries.append(entry)
+	var wave := WaveData.new()
+	wave.wave_number = 1
+	wave.spawn_entries = entries
+	var waves: Array[WaveData] = [wave]
+	return waves
+
+
 ## Mismo patrón ya usado por `test_nivel_montecalvo.gd` (sobreescribir `waves`
 ## ANTES de `add_child_autofree`, por lo tanto antes de `_ready()`): sustituye
 ## sólo el CONTENIDO de la única oleada real por una de un solo enemigo
@@ -243,6 +263,19 @@ func _load_level_with_single_short_wave(stats: EnemyStats, store: CommanderMemor
 		level.commander_store = store
 	level.waves = _single_short_wave(stats)
 	add_child_autofree(level)
+	return level
+
+
+## Mismo patrón que `_load_level_with_single_short_wave`, pero con el `Timer`
+## de spawns detenido tras `_ready()` (mismo criterio que `_load_level()`,
+## arriba): cada aparición se dispara de forma determinista con
+## `_expire_spawn_timer()`, para poder matar la primera ANTES de pedir la
+## segunda y así observar un reciclaje real del pool entre ambas.
+func _load_level_with_two_entry_short_wave(stats: EnemyStats) -> Node:
+	var level: Node = load(LEVEL_SCENE_PATH).instantiate()
+	level.waves = _two_entry_short_wave(stats)
+	add_child_autofree(level)
+	(level.get("_wave_spawner") as WaveSpawner)._spawn_timer.stop()
 	return level
 
 
@@ -469,3 +502,63 @@ func test_failed_save_after_a_real_victory_reports_feedback_and_leaves_the_next_
 		assert_eq(next_session.get_decision_snapshot().get("state"), "ACTIVE",
 			"La siguiente partida debe arrancar con una sesión ACTIVE normal, sin heredar el error de " +
 			"guardado del intento anterior")
+
+
+## 017/I2 T038: verificación explícita de pool R→A→R, pedida por la propia
+## tarea (no es RED: T037 ya está implementado y GREEN). `ObjectPool` reusa
+## la instancia LIFO más reciente (`_available.pop_back()`), y el nivel real
+## pre-calienta 10 copias (`nivel_monte_calvo.gd::_ENEMY_POOL_INITIAL_SIZE`);
+## con sólo dos apariciones controladas, la segunda recicla exactamente el
+## mismo nodo físico que la primera acaba de liberar. El oráculo es
+## `core/commander_session.gd` ya aprobado: su clave de registro combina
+## `actor_id` (estable, el mismo nodo) con `activation_generation` (se
+## incrementa en cada `Enemigo.prepare_for_spawn()`), así que ambas
+## apariciones del mismo nodo físico deben quedar en registros distintos,
+## cada uno cerrado de forma independiente por su propia baja real.
+func test_pool_recycle_between_two_real_wave_kills_in_the_same_lane_keeps_each_commander_record_isolated() -> void:
+	var level := _load_level_with_two_entry_short_wave(_weak_wave_stats())
+	var session: CommanderSession = level.commander_session
+	assert_not_null(session, "Precondición: sin sesión activa no hay nada que aislar")
+	if session == null:
+		return
+	_defeat_all_defenders(level)
+
+	_expire_spawn_timer(level)
+	var first := _single_wave_enemy(level)
+	assert_not_null(first, "Control: la primera entrada de la oleada de prueba produjo su WAVE real")
+	if first == null:
+		return
+	var first_id := first.get_instance_id()
+	var first_generation := first.activation_generation
+	var first_key := "%d:%d" % [first_id, first_generation]
+	assert_true((session.get("_records") as Dictionary).has(first_key),
+		"Control: la primera aparición real quedó registrada por el comandante")
+
+	first.take_damage(first.stats.max_health)
+	var records_after_first: Dictionary = session.get("_records")
+	assert_eq(String(records_after_first.get(first_key, {}).get("status", "")), "DEFEATED",
+		"La primera baja real debe cerrar su propio registro como DEFEATED antes de pedir la segunda aparición")
+
+	_expire_spawn_timer(level)
+	var second := _single_wave_enemy(level)
+	assert_not_null(second, "Control: la segunda entrada de la oleada de prueba produjo su WAVE real")
+	if second == null:
+		return
+	assert_eq(second.get_instance_id(), first_id,
+		"Control: el pool (prewarm=10, LIFO) recicla el mismo nodo físico recién liberado en vez de crear uno nuevo; " +
+		"sin este reciclaje real la prueba no verificaría R→A→R")
+	assert_gt(second.activation_generation, first_generation,
+		"Cada reactivación física (`prepare_for_spawn()`) debe invalidar la generación anterior")
+	var second_key := "%d:%d" % [second.get_instance_id(), second.activation_generation]
+	assert_true(second_key != first_key,
+		"La clave de registro del comandante debe distinguir ambas apariciones del mismo nodo físico reciclado")
+	assert_true((session.get("_records") as Dictionary).has(second_key),
+		"Control: la segunda aparición real (nodo físico reciclado) quedó registrada con su propia clave")
+
+	second.take_damage(second.stats.max_health)
+	var records_after_second: Dictionary = session.get("_records")
+	assert_eq(String(records_after_second.get(second_key, {}).get("status", "")), "DEFEATED",
+		"La segunda baja real (mismo nodo físico reciclado) debe cerrar su propio registro como DEFEATED")
+	assert_eq(String(records_after_second.get(first_key, {}).get("status", "")), "DEFEATED",
+		"El registro de la primera aparición no debe contaminarse ni perderse por el reciclaje físico del " +
+		"mismo nodo para la segunda: el pool R→A→R mantiene registros independientes por generación")
