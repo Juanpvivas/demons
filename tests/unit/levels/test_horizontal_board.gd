@@ -332,6 +332,18 @@ func _assert_new_match_clears_a_real_terminal(terminal: int) -> void:
 	assert_eq(_soldiers(_level).size(), 5)
 	for soldier: Soldado in _soldiers(_level):
 		assert_eq(soldier._current_ammo, soldier.stats.max_ammo)
+	# 017/I2 T033: el comandante real elige el primer carril WAVE por peso/azar
+	# (contrato §4, FR-004); ya no existe el cursor legado que prometía fila1.
+	# El invariante vigente es que la nueva partida reinicia el bloque global
+	# de cinco carriles completo, sin heredar el bloque de la partida anterior.
+	var commander: CommanderSession = _level.get("commander_session")
+	assert_not_null(commander, "Control: la partida real instala su propia sesión del comandante")
+	if commander != null:
+		var snapshot: Dictionary = commander.get_decision_snapshot()
+		var pending: Array = (snapshot.get("pending_lanes", []) as Array).duplicate()
+		pending.sort()
+		assert_eq(pending, [0, 1, 2, 3, 4], "La partida nueva reinicia el bloque completo de carriles")
+		assert_eq(snapshot.get("wave_index"), 0, "El contador de apariciones WAVE se reinicia en la partida nueva")
 	var spawner: WaveSpawner = _level.get("_wave_spawner")
 	var initials := spawner._enemy_pool.get_children().filter(func(node: Node):
 		return node is Enemigo and node.is_targetable() and node.spawn_origin == Enemigo.SpawnOrigin.INITIAL)
@@ -343,7 +355,8 @@ func _assert_new_match_clears_a_real_terminal(terminal: int) -> void:
 	var wave_enemies := _active_wave_enemies(spawner)
 	assert_eq(wave_enemies.size(), 1, "La nueva oleada sigue activa tras reiniciar")
 	if wave_enemies.size() == 1:
-		assert_eq(wave_enemies[0].lane_id, 0, "El primer WAVE vuelve a fila1")
+		assert_true(wave_enemies[0].lane_id in [0, 1, 2, 3, 4],
+			"El primer WAVE de la partida nueva usa uno de los cinco carriles válidos")
 	assert_signal_emit_count(GameStateManager, "game_won", won_before, "Sin victoria tardía heredada")
 	assert_signal_emit_count(GameStateManager, "game_lost", lost_before, "Sin derrota tardía heredada")
 

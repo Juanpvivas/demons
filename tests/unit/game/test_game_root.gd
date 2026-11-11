@@ -386,6 +386,18 @@ func _assert_clean_retry(level: Node, old_objects: Array[WeakRef]) -> void:
 	assert_eq(initials.size(), 1, "Retry conserva un único atacante inicial")
 	if initials.size() == 1:
 		assert_eq(initials[0].lane_id, 2)
+	# 017/I2 T033: el comandante real elige el primer carril WAVE por peso/azar
+	# (contrato §4, FR-004); ya no existe el cursor legado que prometía fila1.
+	# El invariante vigente es que cada intento nuevo reinicia el bloque global
+	# de cinco carriles completo, sin heredar el bloque del intento anterior.
+	var commander: CommanderSession = level.get("commander_session")
+	assert_not_null(commander, "Control: el intento real instala su propia sesión del comandante")
+	if commander != null:
+		var snapshot: Dictionary = commander.get_decision_snapshot()
+		var pending: Array = (snapshot.get("pending_lanes", []) as Array).duplicate()
+		pending.sort()
+		assert_eq(pending, [0, 1, 2, 3, 4], "El intento nuevo reinicia el bloque completo de carriles")
+		assert_eq(snapshot.get("wave_index"), 0, "El contador de apariciones WAVE se reinicia en un intento nuevo")
 	var old_alive := 0
 	for reference: WeakRef in old_objects:
 		if reference.get_ref() != null:
@@ -400,7 +412,8 @@ func _assert_clean_retry(level: Node, old_objects: Array[WeakRef]) -> void:
 	var enemies := _active_wave_enemies(level)
 	assert_eq(enemies.size(), 1)
 	if enemies.size() == 1:
-		assert_eq(enemies[0].lane_id, 0, "El cursor de WAVE vuelve a fila1")
+		assert_true(enemies[0].lane_id in [0, 1, 2, 3, 4],
+			"El primer WAVE del intento nuevo usa uno de los cinco carriles válidos")
 
 
 func test_three_retries_from_real_results_release_before_new_waves_and_reset_every_attempt(
