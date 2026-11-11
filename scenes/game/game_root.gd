@@ -88,6 +88,15 @@ func request_start() -> void:
 func _start_match() -> void:
 	if is_queued_for_deletion():
 		return
+	# Corrección QA (hallazgo de T044 sobre T042): este es el único punto por
+	# el que arranca cualquier intento nuevo (primera partida, Retry directo o
+	# Retry tras intro), así que es el lugar correcto para descartar el aviso
+	# de guardado de un intento anterior ya retirado. Sin esto, un Retry que
+	# nunca pasó por la rama "ir al menú" de `_finish_attempt()` dejaba vivo el
+	# `_pending_commander_feedback` de la partida descartada, y un intento
+	# siguiente sin observaciones propias que guardar terminaba mostrando ese
+	# mensaje ajeno como si fuera suyo al salir al menú.
+	_pending_commander_feedback = ""
 	_generation += 1
 	_current_level = level_scene.instantiate()
 	# Contrato §4, "`_start_match()` inyecta almacén/seed antes de
