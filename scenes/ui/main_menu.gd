@@ -21,6 +21,23 @@ signal commander_reset_requested
 ## "confirmar sólo se acepta una vez").
 var _confirm_resolved: bool = false
 
+## 017/I2 T042 (corrección post-T043): `%DeleteMemoryConfirmDialog` se centra
+## sobre la misma región de pantalla que la VBox del menú. Un doble gesto real
+## (dos clics/toques completos y rápidos) sobre "Borrar" cierra el modal de
+## forma síncrona en el primer gesto y deja expuesto, en la misma coordenada,
+## el control que quede debajo (confirmado por reproducción aislada fuera de
+## GUT: el segundo gesto llegaba a disparar `pressed` de `%PlayButton`).
+## Mientras este flag está activo, `_input()` consume cualquier evento de
+## puntero (ratón/toque) antes de que la rutina de GUI de los botones del menú
+## lo reciba, para que el resto de la ráfaga del gesto anterior no dispare
+## ningún botón expuesto por el cierre del modal. Se activa justo al cerrar
+## la confirmación (confirmar o cancelar) y se libera de forma acotada en el
+## siguiente `process_frame` (patrón de ráfaga ya usado en
+## `scenes/game/game_root.gd::request_start()`), sin depender de recibir un
+## evento de "soltar" que podría no llegar nunca (p. ej. confirmación por
+## teclado).
+var _ignoring_pointer_burst_after_dialog: bool = false
+
 
 func _ready() -> void:
 	_play_button.pressed.connect(_on_play_pressed)
@@ -77,11 +94,31 @@ func _on_delete_memory_confirmed() -> void:
 	_confirm_resolved = true
 	commander_reset_requested.emit()
 	_delete_button.grab_focus()
+	_start_pointer_burst_guard()
 
 
 func _on_delete_memory_canceled() -> void:
 	_confirm_resolved = true
 	_delete_button.grab_focus()
+	_start_pointer_burst_guard()
+
+
+## 017/I2 T042 (corrección post-T043): ver `_ignoring_pointer_burst_after_dialog`.
+func _start_pointer_burst_guard() -> void:
+	_ignoring_pointer_burst_after_dialog = true
+	_clear_pointer_burst_guard.call_deferred()
+
+
+func _clear_pointer_burst_guard() -> void:
+	_ignoring_pointer_burst_after_dialog = false
+
+
+func _input(event: InputEvent) -> void:
+	if not _ignoring_pointer_burst_after_dialog:
+		return
+	if event is InputEventMouseButton or event is InputEventMouseMotion \
+			or event is InputEventScreenTouch or event is InputEventScreenDrag:
+		get_viewport().set_input_as_handled()
 
 
 func _apply_layout() -> void:
