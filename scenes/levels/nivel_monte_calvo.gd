@@ -5,12 +5,20 @@ extends Node2D
 ## El nivel propaga intenciones; la raíz conserva la autoridad de navegación.
 signal retry_requested
 signal menu_requested
+## 017/I2 (prerrequisito T027): firma neutral para un futuro aviso de
+## éxito/fallo de guardado del comandante hacia la raíz (contrato §6, texto
+## de fallo terminal mostrado en resultado o menú). No se emite todavía;
+## T037 decidirá el momento exacto y T042 su presentación.
+signal commander_save_feedback(message: String)
 
 @export var board_config: LaneBoardConfig = preload("res://resources/levels/monte_calvo_board.tres")
 @export var soldado_scene: PackedScene = preload("res://scenes/units/Soldado.tscn")
 @export var soldado_deploy_stats: UnitStats = preload("res://resources/units/soldado_base_stats.tres")
 @export var enemy_scene: PackedScene = preload("res://scenes/enemies/EnemigoBase.tscn")
 @export var initial_enemy_stats: EnemyStats = preload("res://resources/enemies/enemigo_infanteria_base.tres")
+## 017/I2 (prerrequisito T027): mismo balance compartido referenciado por
+## `game_root.gd`; necesario para la futura `CommanderSession.begin_match()`.
+@export var commander_config: CommanderConfig = preload("res://resources/director/monte_calvo_commander.tres")
 
 @export var waves: Array[WaveData] = [
 	preload("res://resources/waves/nivel_montecalvo_oleada_01.tres"),
@@ -29,6 +37,18 @@ signal menu_requested
 @export var wave_spawn_position: Vector2 = Vector2(1008, 336)
 
 const _ENEMY_POOL_INITIAL_SIZE := 10
+
+## 017/I2 (prerrequisito T027): propiedades de inyección que `game_root.gd`
+## asignará antes de `add_child(_current_level)` (T032), siguiendo el mismo
+## patrón que `soldier.stats`/`soldier.board_config` en `_create_soldier()`.
+## Sin valor por defecto productivo todavía: `commander_store` permanece nulo
+## y `commander_seed` en 0 hasta esa integración.
+var commander_store: CommanderMemoryStore
+var commander_seed: int = 0
+## 017/I2 (prerrequisito T027): referencia a la sesión del comandante, creada
+## sólo en T032 "tras crear defensores y antes del primer WAVE" (contrato §4).
+## `_ready()` no la instancia todavía.
+var commander_session: CommanderSession
 
 var _board_manager := BoardManager.new()
 var _wave_spawner := WaveSpawner.new()
@@ -130,6 +150,18 @@ func _on_retry_requested() -> void:
 func _on_menu_requested() -> void:
 	if not _closing:
 		menu_requested.emit()
+
+
+## 017/I2 (prerrequisito T027): firmas neutrales para los futuros handlers de
+## `GameStateManager.game_won`/`game_lost` (contrato §4, "conectar una vez por
+## nivel y desconectar al cerrar"). No están conectadas en `_ready()` ni en
+## ningún otro punto todavía; T037 las cableará junto al guard de sesión.
+func _on_commander_game_won() -> void:
+	pass
+
+
+func _on_commander_game_lost() -> void:
+	pass
 
 
 ## El cierre es local: la raíz cancela los Managers antes de retirar el nivel.

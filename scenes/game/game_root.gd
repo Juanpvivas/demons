@@ -4,8 +4,16 @@ extends Node
 @export var level_scene: PackedScene = preload("res://scenes/levels/Nivel_MonteCalvo.tscn")
 @export var intro_scene: PackedScene = preload("res://scenes/ui/IntroPlayer.tscn")
 @export var intro_sequence: Resource = preload("res://resources/narrative/la_carta.tres")
+## 017/I2 (prerrequisito T027): punto de inyección del balance compartido del
+## comandante. Todavía no se lee ni se pasa a ningún nivel; T032 lo inyectará
+## en `_start_match()` antes de `add_child(_current_level)`.
+@export var commander_config: CommanderConfig = preload("res://resources/director/monte_calvo_commander.tres")
 
 var intro_progress: RefCounted
+## 017/I2 (prerrequisito T027): instancia compartida entre partidas, pensada
+## para inyectarse en el nivel antes de `add_child`. Permanece sin crear/usar
+## hasta T032; no hay I/O ni lectura de disco desde esta propiedad todavía.
+var commander_store: CommanderMemoryStore
 
 var _current_level: Node
 var _transition_pending: bool = false
@@ -116,6 +124,14 @@ func _on_level_menu_requested(generation: int) -> void:
 
 func get_current_level() -> Node:
 	return _current_level if is_instance_valid(_current_level) else null
+
+
+## 017/I2 (prerrequisito T027): firma neutral para la futura intención de
+## borrado del menú (`commander_reset_requested`, contrato §6). No está
+## conectada a ninguna señal todavía; T042 cableará la confirmación, el
+## borrado real vía `commander_store` y el feedback correspondiente.
+func _on_commander_reset_requested() -> void:
+	pass
 
 
 func request_intro() -> void:

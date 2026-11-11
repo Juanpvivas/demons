@@ -74,6 +74,12 @@ var _closing: bool = false
 var _combat_visual_effects: CombatVisualEffects
 var _combat_audio: CombatAudio
 
+## 017/I2 (prerrequisito T027): referencia neutral a la sesión del comandante,
+## inyectable desde `setup()` por el nivel dueño. Todavía no se consulta en
+## `_on_spawn_timer_timeout()`, que sigue usando el cursor `_next_lane` legado;
+## T032 sustituirá sólo esa selección de lane por `choose_lane`/`register_spawn`.
+var _commander_session: CommanderSession
+
 ## Cola de spawns pendientes de la oleada activa, ya aplanada. Vacía cuando
 ## no hay ninguna oleada en curso o cuando ya se sacó el último elemento.
 var _pending_spawns: Array[_PendingSpawn] = []
@@ -117,12 +123,17 @@ func _exit_tree() -> void:
 ## listo.
 func setup(enemy_scene: PackedScene, initial_pool_size: int, spawn_position: Vector2,
 		combat_visual_effects: CombatVisualEffects = null,
-		board_config: LaneBoardConfig = null, combat_audio: CombatAudio = null) -> void:
+		board_config: LaneBoardConfig = null, combat_audio: CombatAudio = null,
+		commander_session: CommanderSession = null) -> void:
 	_spawn_position = spawn_position
 	_board_config = board_config
 	_next_lane = 0
 	_combat_visual_effects = combat_visual_effects
 	_combat_audio = combat_audio
+	# 017/I2 (prerrequisito T027): sólo se guarda la referencia; la selección
+	# de lane de `_on_spawn_timer_timeout()` no la usa todavía (ver comentario
+	# de la declaración de `_commander_session` más arriba).
+	_commander_session = commander_session
 	_enemy_pool = ObjectPool.new()
 	add_child(_enemy_pool)
 	# Conectado ANTES de `setup()` — ver justificación en la cabecera de

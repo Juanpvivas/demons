@@ -3,6 +3,11 @@ extends Control
 
 signal play_requested
 signal intro_requested
+## 017/I2 (prerrequisito T027): intención de borrado de memoria del
+## comandante (contrato §6). Declarada para permitir RED semántico sobre su
+## emisión/guardas; todavía no la emite ningún botón ni existe UI de
+## confirmación — eso corresponde a T042 junto con `MainMenu.tscn`.
+signal commander_reset_requested
 
 @onready var _play_button: Button = %PlayButton
 @onready var _intro_button: Button = %IntroButton
