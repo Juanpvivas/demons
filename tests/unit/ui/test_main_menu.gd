@@ -131,3 +131,164 @@ func test_keyboard_can_request_replay_without_requesting_play() -> void:
 	await wait_process_frames(1)
 	assert_signal_emit_count(_menu, "intro_requested", 1)
 	assert_eq(_intents, 0)
+
+
+## 017/I2 T040: RED de la UI de borrado de memoria del comandante (contrato
+## §6, US3). Hoy `MainMenu.tscn`/`main_menu.gd` no tienen ningún botón
+## "Borrar memoria del comandante": la señal `commander_reset_requested`
+## está declarada desde T027 pero nada la emite todavía (T042 pendiente).
+## Las aserciones buscan los nodos por texto/identidad, nunca por posición o
+## tamaño de píxel exacto (layout visual = T043/QA visual), según pide la
+## tarea.
+func _delete_button() -> Button:
+	for node: Node in _menu.find_children("*", "Button", true, false):
+		if (node as Button).text == "Borrar memoria del comandante":
+			return node as Button
+	return null
+
+
+func _named_button(text: String) -> Button:
+	for node: Node in _menu.find_children("*", "Button", true, false):
+		if (node as Button).text == text:
+			return node as Button
+	return null
+
+
+## Búsqueda genérica de texto visible: cubre un Label/RichTextLabel hijo o el
+## `dialog_text` de un AcceptDialog/Window, sin asumir qué estructura exacta
+## tendrá el futuro diálogo de confirmación.
+func _visible_texts() -> Array[String]:
+	var texts: Array[String] = []
+	for node: Node in _menu.find_children("*", "", true, false):
+		if node is Label and (node as Label).is_visible_in_tree():
+			texts.append((node as Label).text)
+		elif node is RichTextLabel and (node as RichTextLabel).is_visible_in_tree():
+			texts.append((node as RichTextLabel).get_parsed_text())
+		elif node is AcceptDialog and (node as AcceptDialog).visible:
+			texts.append((node as AcceptDialog).dialog_text)
+	return texts
+
+
+func _focus_neighbor(button: Button, down: bool) -> Node:
+	var path: NodePath = button.focus_neighbor_bottom if down else button.focus_neighbor_top
+	if path.is_empty():
+		return null
+	return button.get_node_or_null(path)
+
+
+func test_delete_memory_button_exists_in_the_menu_vbox_with_minimum_touch_height() -> void:
+	var delete_button := _delete_button()
+	assert_not_null(delete_button,
+		"Contrato §6: la VBox del menú debe ofrecer un botón real «Borrar memoria del comandante»; " +
+		"hoy no existe ningún nodo con ese texto en MainMenu.tscn")
+	if delete_button == null:
+		return
+	assert_true(delete_button.is_visible_in_tree())
+	assert_false(delete_button.disabled)
+	assert_gte(delete_button.custom_minimum_size.y, 64.0, "Altura táctil mínima de 64px (contrato §6)")
+	assert_not_null(_play)
+	if _play != null:
+		assert_same(delete_button.get_parent(), _play.get_parent(),
+			"El botón de borrado vive en la misma VBox que Jugar/Ver introducción")
+
+
+func test_delete_memory_button_click_opens_confirmation_without_emitting_reset_yet() -> void:
+	var delete_button := _delete_button()
+	assert_not_null(delete_button, "Precondición del flujo: el botón de borrado debe existir")
+	if delete_button == null:
+		return
+	watch_signals(_menu)
+	_click(delete_button.get_global_rect().get_center())
+	await wait_process_frames(2)
+	assert_signal_emit_count(_menu, "commander_reset_requested", 0,
+		"Un solo clic abre la confirmación local; no borra sin confirmar (contrato §6)")
+	var texts := _visible_texts()
+	assert_true(texts.has(
+			"¿Borrar lo aprendido por el comandante? La próxima partida empezará sin memoria. Tu progreso no cambia"),
+		"Debe aparecer el texto exacto de confirmación local del contrato §6; hoy no existe ningún " +
+		"diálogo de confirmación")
+	assert_not_null(_named_button("Cancelar"), "La confirmación ofrece la acción Cancelar")
+	assert_not_null(_named_button("Borrar"), "La confirmación ofrece la acción Borrar")
+
+
+func test_confirmation_cancel_does_not_emit_reset_and_returns_focus_to_delete_button() -> void:
+	var delete_button := _delete_button()
+	assert_not_null(delete_button, "Precondición del flujo: el botón de borrado debe existir")
+	if delete_button == null:
+		return
+	watch_signals(_menu)
+	_click(delete_button.get_global_rect().get_center())
+	await wait_process_frames(2)
+	var cancel := _named_button("Cancelar")
+	assert_not_null(cancel, "Precondición del flujo: la confirmación debe ofrecer Cancelar")
+	if cancel == null:
+		return
+	_click(cancel.get_global_rect().get_center())
+	await wait_process_frames(2)
+	assert_signal_emit_count(_menu, "commander_reset_requested", 0, "Cancelar no escribe ni emite el borrado")
+	assert_false(_visible_texts().has(
+			"¿Borrar lo aprendido por el comandante? La próxima partida empezará sin memoria. Tu progreso no cambia"),
+		"Cancelar debe cerrar el modal de confirmación")
+	assert_same(_viewport.gui_get_focus_owner(), delete_button,
+		"Cancelar devuelve el foco al botón de borrado (contrato §6)")
+
+
+func test_confirmation_confirm_double_gesture_emits_reset_exactly_once_and_returns_focus() -> void:
+	var delete_button := _delete_button()
+	assert_not_null(delete_button, "Precondición del flujo: el botón de borrado debe existir")
+	if delete_button == null:
+		return
+	watch_signals(_menu)
+	_click(delete_button.get_global_rect().get_center())
+	await wait_process_frames(2)
+	var confirm := _named_button("Borrar")
+	assert_not_null(confirm, "Precondición del flujo: la confirmación debe ofrecer Borrar")
+	if confirm == null:
+		return
+	var position := confirm.get_global_rect().get_center()
+	_click(position)
+	_click(position) # Doble gesto real sobre el mismo botón de confirmación.
+	await wait_process_frames(2)
+	assert_signal_emit_count(_menu, "commander_reset_requested", 1,
+		"Confirmar sólo se acepta una vez, también ante un doble gesto (contrato §6)")
+	assert_same(_viewport.gui_get_focus_owner(), delete_button,
+		"Confirmar también devuelve el foco al botón de borrado (contrato §6)")
+
+
+func test_set_start_enabled_false_also_disables_delete_button_and_blocks_confirmation() -> void:
+	var delete_button := _delete_button()
+	assert_not_null(delete_button, "Precondición del flujo: el botón de borrado debe existir")
+	if delete_button == null:
+		return
+	_menu.set_start_enabled(false)
+	assert_true(delete_button.disabled,
+		"`set_start_enabled(false)` también debe bloquear el borrado y la confirmación (contrato §6)")
+	watch_signals(_menu)
+	_click(delete_button.get_global_rect().get_center())
+	await wait_process_frames(2)
+	assert_false(_visible_texts().has(
+			"¿Borrar lo aprendido por el comandante? La próxima partida empezará sin memoria. Tu progreso no cambia"),
+		"Un botón deshabilitado no debe abrir la confirmación")
+	assert_signal_emit_count(_menu, "commander_reset_requested", 0)
+
+
+## RED por nodo ausente, no por lógica de foco: sin el tercer botón el ciclo
+## circular hoy sigue siendo Jugar<->Ver introducción (2 nodos, T027); el
+## contrato pide Jugar->Introducción->Borrar->Jugar (3 nodos).
+func test_focus_circular_order_is_play_intro_delete_and_back_to_play() -> void:
+	var delete_button := _delete_button()
+	assert_not_null(delete_button,
+		"El ciclo de foco de 3 nodos (Jugar->Introducción->Borrar->Jugar) exige que exista el botón " +
+		"de borrado; hoy el ciclo real sigue siendo de 2 nodos")
+	if delete_button == null:
+		return
+	var intro := _replay_button()
+	assert_not_null(intro)
+	if intro == null or _play == null:
+		return
+	assert_same(_focus_neighbor(_play, true), intro, "Jugar->Introducción hacia abajo")
+	assert_same(_focus_neighbor(intro, true), delete_button, "Introducción->Borrar hacia abajo")
+	assert_same(_focus_neighbor(delete_button, true), _play, "Borrar->Jugar hacia abajo cierra el ciclo")
+	assert_same(_focus_neighbor(_play, false), delete_button, "Jugar->Borrar hacia arriba cierra el ciclo")
+	assert_same(_focus_neighbor(intro, false), _play, "Introducción->Jugar hacia arriba")
+	assert_same(_focus_neighbor(delete_button, false), intro, "Borrar->Introducción hacia arriba")

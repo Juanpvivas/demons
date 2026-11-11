@@ -39,6 +39,49 @@ class GestureObserver:
 			presses += 1
 
 
+## 017/I2 T040: doble mínimo de E/S (mismo patrón que `_FailingIO` de T035,
+## `tests/unit/levels/test_commander_integration.gd`), nunca toca disco
+## real. Instrumenta `remove()` para distinguir "clear() se ejecutó
+## realmente" de "el handler no hizo nada" sin depender del contenido
+## exacto de un archivo válido.
+class ClearProbeIO:
+	extends RefCounted
+	var files: Dictionary = {}
+	var remove_calls: Array[String] = []
+	var fail_remove: bool = false
+	func exists(path: String) -> Dictionary:
+		return {"error": OK, "value": files.has(path)}
+	func size(path: String) -> Dictionary:
+		return {"error": OK, "value": str(files.get(path, "")).to_utf8_buffer().size()}
+	func read(path: String, _max_bytes: int) -> Dictionary:
+		return {"error": OK, "text": files.get(path, "")}
+	func write(path: String, text: String) -> Dictionary:
+		files[path] = text
+		return {"error": OK}
+	func remove(path: String) -> Dictionary:
+		remove_calls.append(path)
+		if fail_remove:
+			return {"error": ERR_FILE_CANT_WRITE}
+		files.erase(path)
+		return {"error": OK}
+
+
+## Mismo patrón minimalista que `_FailingIO` de T035: todo write real falla,
+## nunca toca `user://` ni ninguna ruta real.
+class SaveFailingIO:
+	extends RefCounted
+	func exists(_path: String) -> Dictionary:
+		return {"error": OK, "value": false}
+	func size(_path: String) -> Dictionary:
+		return {"error": OK, "value": 0}
+	func read(_path: String, _max_bytes: int) -> Dictionary:
+		return {"error": OK, "text": ""}
+	func write(_path: String, _text: String) -> Dictionary:
+		return {"error": ERR_FILE_CANT_WRITE, "stage": "write"}
+	func remove(_path: String) -> Dictionary:
+		return {"error": OK}
+
+
 func before_each() -> void:
 	_intro_path = OS.get_temp_dir().path_join("demons_intro_root_%s.cfg" % str(Time.get_ticks_usec()))
 	_saved_state = GameStateManager._current_state
@@ -1144,3 +1187,161 @@ func _assert_r3_prompt_is_the_only_visible_action(intro: Node) -> void:
 		assert_false((node as AudioStreamPlayer).playing, "La espera no mantiene sonido residual")
 	assert_null(_app.get_current_level(), "Sin nivel antes del gesto nuevo")
 	assert_true(_wave_events.is_empty(), "Sin oleadas antes del gesto nuevo")
+
+
+## 017/I2 T040: RED del cableado de borrado de memoria (contrato §6, US3).
+## `game_root.gd::_on_commander_reset_requested()` sigue con `pass` (T027):
+## no llama `commander_store.clear()` ni emite ningún feedback observable.
+## Se llama al handler directamente (como pide la tarea) para aislar el
+## comportamiento de la raíz del cableado de UI, todavía ausente (ver
+## `tests/unit/ui/test_main_menu.gd`).
+func _visible_texts_in_app() -> Array[String]:
+	var texts: Array[String] = []
+	for node: Node in _app.find_children("*", "", true, false):
+		if node is Label and (node as Label).is_visible_in_tree():
+			texts.append((node as Label).text)
+		elif node is RichTextLabel and (node as RichTextLabel).is_visible_in_tree():
+			texts.append((node as RichTextLabel).get_parsed_text())
+		elif node is AcceptDialog and (node as AcceptDialog).visible:
+			texts.append((node as AcceptDialog).dialog_text)
+	return texts
+
+
+func test_commander_reset_handler_clears_a_loaded_persistent_store_and_shows_success_feedback() -> void:
+	await _mount()
+	var io := ClearProbeIO.new()
+	var base := "/virtual-017-t040-%d" % Time.get_ticks_usec()
+	var path_a := base.path_join("commander_memory_a.json")
+	# Contenido deliberadamente inválido: sólo nos interesa que exista un
+	# archivo real que `clear()` deba intentar borrar (`_io_remove`), sin
+	# depender de reconstruir a mano una memoria válida.
+	io.files[path_a] = "placeholder"
+	var store := CommanderMemoryStore.new()
+	store.storage_base_path = base
+	store.io_backend = io
+	var loaded: Dictionary = store.load_compatible(_app.commander_config)
+	assert_ne(loaded.status, "", "Control: load_compatible corrió sin bloquear la carga")
+	_app.commander_store = store
+	_app._on_commander_reset_requested()
+	assert_eq(io.remove_calls, [path_a],
+		"El handler debe llamar `commander_store.clear()`, que borra el slot con un `remove()` real; " +
+		"hoy `_on_commander_reset_requested()` sigue con `pass` (T027) y nunca invoca `clear()`")
+	var texts := _visible_texts_in_app()
+	assert_true(texts.has("Memoria del comandante borrada"),
+		"Debe mostrarse el texto de éxito persistente del contrato §6; hoy no existe ningún camino " +
+		"observable para ese mensaje")
+
+
+func test_commander_reset_handler_shows_session_only_feedback_text_for_a_transient_store() -> void:
+	await _mount()
+	var store := CommanderMemoryStore.new()
+	store.transient = true
+	var loaded: Dictionary = store.load_compatible(_app.commander_config)
+	assert_eq(loaded.status, "TRANSIENT", "Control: el almacén transitorio carga en RAM")
+	_app.commander_store = store
+	_app._on_commander_reset_requested()
+	var texts := _visible_texts_in_app()
+	assert_true(texts.has("Memoria de esta sesión borrada"),
+		"Debe mostrarse el texto TRANSIENT del contrato §6; hoy no existe ningún camino observable " +
+		"para ese mensaje")
+
+
+## Ambigüedad real (reportada, no resuelta aquí): el Store sólo distingue
+## `OK`/`IO_ERROR` para `clear()` (`core/commander_memory_store.gd`); el
+## contrato describe dos mensajes de fallo distintos ("almacenamiento
+## bloqueado" vs fallo genérico) sin especificar qué condición observable
+## del Store corresponde a cada uno. Esta prueba acepta cualquiera de los
+## dos para no presuponer esa decisión de diseño.
+func test_commander_reset_handler_shows_a_failure_feedback_text_when_clear_fails() -> void:
+	await _mount()
+	var io := ClearProbeIO.new()
+	io.fail_remove = true
+	var base := "/virtual-017-t040-fail-%d" % Time.get_ticks_usec()
+	var path_a := base.path_join("commander_memory_a.json")
+	io.files[path_a] = "placeholder"
+	var store := CommanderMemoryStore.new()
+	store.storage_base_path = base
+	store.io_backend = io
+	store.load_compatible(_app.commander_config)
+	_app.commander_store = store
+	_app._on_commander_reset_requested()
+	var texts := _visible_texts_in_app()
+	var has_failure_text := texts.has("No se pudo borrar la memoria. Puedes seguir jugando e intentarlo de nuevo") \
+		or texts.has("No se han podido borrar datos guardados anteriormente en este navegador")
+	assert_true(has_failure_text,
+		"Un fallo real de `clear()` (IO_ERROR) debe mostrar alguno de los dos mensajes de fallo del " +
+		"contrato §6; hoy no aparece ninguno porque el handler sigue con `pass`")
+
+
+## Candado/regresión (no RED de este requisito): hoy es trivialmente cierto
+## porque el handler no hace nada todavía; sirve para que T042 no rompa el
+## invariante "Tu progreso no cambia" del contrato §6 al cablear el borrado.
+func test_commander_reset_handler_never_touches_intro_progress_witness() -> void:
+	var progress := MemoryIntroProgress.new()
+	progress.seen = true
+	await _mount(ROOT_SCENE, RETRY_LEVEL, progress)
+	var writes_before := progress.writes
+	var seen_before := progress.seen
+	var store := CommanderMemoryStore.new()
+	store.transient = true
+	store.load_compatible(_app.commander_config)
+	_app.commander_store = store
+	_app._on_commander_reset_requested()
+	assert_eq(progress.writes, writes_before,
+		"Candado: borrar memoria del comandante no debe tocar IntroProgress (contrato §6, " +
+		"'Tu progreso no cambia')")
+	assert_eq(progress.seen, seen_before)
+
+
+## Contrato §6, último párrafo: un fallo de guardado terminal real
+## (`commander_save_feedback`, ya emitido desde T037) debe mostrarse como
+## aviso de menú si se sale enseguida. Hoy nadie conecta esa señal a ningún
+## texto visible (ni en el nivel ni en el menú) — `game_root.gd::_start_match()`
+## sólo conecta `retry_requested`/`menu_requested`.
+func test_terminal_save_failure_is_shown_as_a_menu_warning_after_returning_quickly() -> void:
+	await _mount(ROOT_SCENE, RETRY_LEVEL)
+	var io := SaveFailingIO.new()
+	var store := CommanderMemoryStore.new()
+	store.storage_base_path = "/virtual-017-t040-save-fail-%d" % Time.get_ticks_usec()
+	store.io_backend = io
+	_app.commander_store = store
+	_app.request_start()
+	var level: Node = await _new_level()
+	assert_not_null(level, "Control: un intento real se monta")
+	if level == null:
+		return
+	if not await _real_result(level, "won"):
+		return
+	_app.request_menu()
+	var arrived := await _wait_menu()
+	assert_true(arrived, "Control: el regreso al menú real ocurre tras el resultado")
+	if not arrived:
+		return
+	var texts := _visible_texts_in_app()
+	assert_true(texts.has("No se pudo guardar lo aprendido. Puedes seguir jugando"),
+		"Un fallo de guardado terminal real debe mostrarse como aviso de menú al salir enseguida " +
+		"(contrato §6); hoy `commander_save_feedback` se emite (T037) pero nadie lo conecta a ningún " +
+		"texto visible")
+
+
+func test_terminal_transient_save_is_shown_as_a_menu_warning_after_returning_quickly() -> void:
+	await _mount(ROOT_SCENE, RETRY_LEVEL)
+	var store := CommanderMemoryStore.new()
+	store.transient = true
+	_app.commander_store = store
+	_app.request_start()
+	var level: Node = await _new_level()
+	assert_not_null(level, "Control: un intento real se monta")
+	if level == null:
+		return
+	if not await _real_result(level, "won"):
+		return
+	_app.request_menu()
+	var arrived := await _wait_menu()
+	assert_true(arrived, "Control: el regreso al menú real ocurre tras el resultado")
+	if not arrived:
+		return
+	var texts := _visible_texts_in_app()
+	assert_true(texts.has("Lo aprendido se conservará sólo mientras esta sesión esté abierta"),
+		"Un guardado TRANSIENT real también debe avisar al volver rápido al menú (contrato §6); " +
+		"hoy no existe ningún camino observable para ese aviso")
