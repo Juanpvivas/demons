@@ -6,10 +6,11 @@
 **Tracking**: [Issue #65](https://github.com/Juanpvivas/demons/issues/65).
 **Input**: tipos, cantidades y tiempos actuales; sólo carriles variables, bloques
 globales de cinco sin repetir y memoria local borrable que aprende de WON/LOST.
-**Estado**: núcleo I1 implementado y aprobado funcionalmente hasta T021;
-consolidación documental y gate de integración por SHA separados. I2 y
-publicación permanecen pendientes. La feature016
-conserva T009–T011 pendientes y su Issue #63, sin cierre por preparar017.
+**Estado**: núcleo I1 implementado, aprobado e integrado en `main` (`7a9495c`,
+PR #66). I2 se ejecuta en la rama `codex/017-i2-comandante-memoria`, creada
+desde `main` / `d002734` (I1 ya incluido, sin merge automático adicional).
+Publicación permanece pendiente. La feature016 conserva T009–T011 pendientes
+y su Issue #63, sin cierre por preparar017.
 
 ## Summary
 
