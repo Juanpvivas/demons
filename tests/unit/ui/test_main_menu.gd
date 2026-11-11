@@ -7,14 +7,28 @@ var _menu: Control
 var _play: Button
 var _intents := 0
 var _button_activations := 0
+## 017/I2 T043 (corrección de test T040): evita que una segunda llamada de
+## `_click()` dentro del mismo test (confirmación con doble gesto, o
+## clic->cancelar) vuelva a notificar "mouse entered" sin que el ratón haya
+## salido realmente del viewport; el motor lo marca como advertencia y GUT
+## lo cuenta como error inesperado, aunque la simulación sea válida.
+var _mouse_entered_notified := false
 
 
 func before_each() -> void:
 	_intents = 0
 	_button_activations = 0
+	_mouse_entered_notified = false
 	_viewport = SubViewport.new()
 	_viewport.size = Vector2i(1152, 648)
 	_viewport.handle_input_locally = true
+	# 017/I2 T043 (corrección de test T040): el `ConfirmationDialog` del
+	# borrado de memoria es un `Window`; sin embeberlo en este `SubViewport`
+	# de prueba, `popup_centered()` no tiene dónde entregar los eventos de
+	# `push_input()` simulados más abajo (confirmado por reproducción
+	# aislada: con este flag en `false`, por defecto en un `SubViewport`
+	# nuevo, el diálogo queda en el árbol pero nunca recibe el clic).
+	_viewport.gui_embed_subwindows = true
 	add_child_autofree(_viewport)
 	_menu = MENU_SCENE.instantiate() as Control
 	_viewport.add_child(_menu)
@@ -28,7 +42,9 @@ func before_each() -> void:
 
 
 func _click(position: Vector2) -> void:
-	_viewport.notify_mouse_entered()
+	if not _mouse_entered_notified:
+		_viewport.notify_mouse_entered()
+		_mouse_entered_notified = true
 	var motion := InputEventMouseMotion.new()
 	motion.position = position
 	motion.global_position = position
@@ -41,6 +57,22 @@ func _click(position: Vector2) -> void:
 		event.button_mask = MOUSE_BUTTON_MASK_LEFT if down else 0
 		event.pressed = down
 		_viewport.push_input(event, true)
+
+
+## 017/I2 T043 (corrección de test T040): `get_global_rect()` de un control
+## dentro del `ConfirmationDialog` es relativo al `Viewport` propio de ese
+## `Window` embebido, no al `SubViewport` exterior donde `_click()` empuja
+## los eventos; hace falta sumar la posición del `Window` embebido para
+## apuntar al mismo punto de pantalla que vería un clic real. Confirmado por
+## reproducción aislada: sin esta corrección, los botones "Cancelar"/"Borrar"
+## del diálogo nunca reciben el evento simulado aunque existan y sean
+## visibles.
+func _click_control(control: Control) -> void:
+	var position := control.get_global_rect().get_center()
+	var window := control.get_window()
+	if window != null and window != _menu.get_window():
+		position += Vector2(window.position)
+	_click(position)
 
 
 func test_opening_menu_focuses_the_visible_play_action() -> void:
@@ -223,7 +255,7 @@ func test_confirmation_cancel_does_not_emit_reset_and_returns_focus_to_delete_bu
 	assert_not_null(cancel, "Precondición del flujo: la confirmación debe ofrecer Cancelar")
 	if cancel == null:
 		return
-	_click(cancel.get_global_rect().get_center())
+	_click_control(cancel)
 	await wait_process_frames(2)
 	assert_signal_emit_count(_menu, "commander_reset_requested", 0, "Cancelar no escribe ni emite el borrado")
 	assert_false(_visible_texts().has(
@@ -245,9 +277,8 @@ func test_confirmation_confirm_double_gesture_emits_reset_exactly_once_and_retur
 	assert_not_null(confirm, "Precondición del flujo: la confirmación debe ofrecer Borrar")
 	if confirm == null:
 		return
-	var position := confirm.get_global_rect().get_center()
-	_click(position)
-	_click(position) # Doble gesto real sobre el mismo botón de confirmación.
+	_click_control(confirm)
+	_click_control(confirm) # Doble gesto real sobre el mismo botón de confirmación.
 	await wait_process_frames(2)
 	assert_signal_emit_count(_menu, "commander_reset_requested", 1,
 		"Confirmar sólo se acepta una vez, también ante un doble gesto (contrato §6)")
