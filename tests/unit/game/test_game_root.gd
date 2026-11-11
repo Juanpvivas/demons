@@ -250,6 +250,61 @@ func test_start_match_injects_game_roots_commander_store_into_the_level_before_a
 		"de add_child; hoy `commander_store` del nivel permanece null")
 
 
+## 017/I2 T035: RED de ciclo real de aprendizaje a través de Retry (contrato
+## §4/§6, FR-008–011/015; SC-004/005). `game_root.gd::_start_match()` ya
+## reutiliza el mismo `CommanderMemoryStore` entre intentos (T032); lo que
+## falta es que una victoria/derrota real consolide (`finish()`) y guarde
+## (`store.save()`) esa experiencia antes de que el intento siguiente la
+## cargue — hoy ningún handler real llama `finish()` (`_on_commander_game_won()`/
+## `_on_commander_game_lost()` de `nivel_monte_calvo.gd` siguen con `pass`,
+## T027), así que la memoria del intento nuevo permanece siempre neutral
+## (generación 0, sin celdas), sin importar cuántas victorias reales ocurran.
+func test_retry_after_a_real_victory_feeds_the_next_attempts_commander_session_from_learned_memory_not_a_fresh_neutral_copy() -> void:
+	await _mount(ROOT_SCENE, RETRY_LEVEL)
+	var store := CommanderMemoryStore.new()
+	store.transient = true
+	_app.commander_store = store
+	_app.request_start()
+	var level: Node = await _new_level()
+	assert_not_null(level, "Control: un intento real se monta")
+	if level == null:
+		return
+	if not await _real_result(level, "won"):
+		return
+	var session: CommanderSession = level.get("commander_session")
+	assert_not_null(session, "Control: el intento instaló su propia sesión real del comandante")
+	if session == null:
+		return
+	var records: Dictionary = session.get("_records")
+	assert_eq(records.size(), 1, "Control: la única aparición WAVE del fixture quedó registrada por el comandante")
+	if records.size() != 1:
+		return
+	var context: String = records.values()[0].get("context", "")
+	_app.request_retry()
+	var next: Node = await _replacement(level)
+	assert_not_null(next, "Control: Retry desde una victoria real crea otro intento")
+	if next == null:
+		return
+	var next_session: CommanderSession = next.get("commander_session")
+	assert_not_null(next_session, "Control: el intento nuevo instala su propia sesión real")
+	if next_session == null:
+		return
+	var memory: Dictionary = next_session.get("_memory")
+	assert_eq(memory.get("generation", 0), 1,
+		"Una victoria real con al menos una muestra aprendida debe guardar y subir la generación del " +
+		"almacén compartido ANTES del siguiente intento (contrato §4/§6, FR-008-011); hoy nadie llama " +
+		"`finish()`/`save()` en el flujo real, así que la memoria del intento nuevo sigue neutral " +
+		"(generación 0)")
+	var cell: Dictionary = memory.get("cells", {}).get(context, {})
+	assert_false(cell.is_empty(),
+		"El contexto real de esa baja (" + context + ") debe quedar con al menos una visita aprendida " +
+		"en la memoria que recibe el siguiente intento; hoy la memoria sigue neutral y sin celdas")
+	if not cell.is_empty():
+		assert_eq(cell.get("n", 0.0), 1.0,
+			"La única muestra real cerrada por la victoria anterior debe contar como una visita " +
+			"(`n` == 1) en el contexto real observado, no como una celda inventada o repetida")
+
+
 func test_real_play_click_burst_starts_once_and_does_not_reach_gameplay_input() -> void:
 	var observer := GestureObserver.new()
 	_viewport.add_child(observer)
