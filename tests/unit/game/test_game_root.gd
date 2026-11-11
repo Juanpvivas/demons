@@ -1345,3 +1345,77 @@ func test_terminal_transient_save_is_shown_as_a_menu_warning_after_returning_qui
 	assert_true(texts.has("Lo aprendido se conservará sólo mientras esta sesión esté abierta"),
 		"Un guardado TRANSIENT real también debe avisar al volver rápido al menú (contrato §6); " +
 		"hoy no existe ningún camino observable para ese aviso")
+
+
+## 017/I2 T044 (hallazgo real de QA sobre T042): regresión de arrastre de
+## feedback entre intentos. `_pending_commander_feedback` sólo se limpiaba al
+## volver al menú tras un terminal, nunca en la rama de Retry
+## (`game_root.gd::_request_terminal_destination()`/`_finish_attempt()`), así
+## que un intento 1 con fallo de guardado real, seguido de un Retry directo y
+## un intento 2 que termina sin ninguna observación cerrada que guardar
+## (`CommanderSession.finish()` devuelve `changed == false` porque ningún
+## registro quedó `DEFEATED`/`BREACHED`; ver `core/commander_session.gd::finish()`),
+## mostraba al salir rápido al menú el aviso de fallo del intento 1 ya
+## descartado, mal atribuido en el tiempo. La corrección es la línea
+## `_pending_commander_feedback = ""` al inicio de `_start_match()` (T044 sobre
+## T042): único punto de entrada de cualquier intento nuevo (primera partida,
+## Retry directo o Retry tras intro).
+func test_retry_after_a_terminal_save_failure_does_not_leak_its_warning_into_a_second_attempt_with_nothing_to_save() -> void:
+	await _mount(ROOT_SCENE, RETRY_LEVEL)
+	var io := SaveFailingIO.new()
+	var store := CommanderMemoryStore.new()
+	store.storage_base_path = "/virtual-017-t044-retry-leak-%d" % Time.get_ticks_usec()
+	store.io_backend = io
+	_app.commander_store = store
+	_app.request_start()
+	var first: Node = await _new_level()
+	assert_not_null(first, "Control: el primer intento real se monta")
+	if first == null:
+		return
+	var feedback_1: Array[String] = []
+	first.connect("commander_save_feedback", func(message: String): feedback_1.append(message))
+	if not await _real_result(first, "won"):
+		return
+	assert_eq(feedback_1, ["No se pudo guardar lo aprendido. Puedes seguir jugando"],
+		"Control: el intento 1 real cierra una observación y su guardado falla de verdad " +
+		"(`SaveFailingIO`), así que emite el aviso de fallo del contrato §6")
+	# Retry directo desde el terminal, sin pasar por el menú entre intentos
+	# (la rama que T044 corrigió).
+	_app.request_retry()
+	var second: Node = await _replacement(first)
+	assert_not_null(second, "Control: Retry desde un terminal real crea un segundo intento")
+	if second == null:
+		return
+	var feedback_2: Array[String] = []
+	second.connect("commander_save_feedback", func(message: String): feedback_2.append(message))
+	# Derrota muy temprana: la baja forzada del defensor del carril 0 deja un
+	# cruce físico ("lost" de `_real_result()`) que nunca pasó por
+	# `register_spawn()` (es un `Enemigo` instanciado por la propia prueba,
+	# no una aparición WAVE elegida por el comandante), así que no abre ni
+	# cierra ningún registro propio. Si la única aparición WAVE real del
+	# fixture ya estaba abierta y sin resolver, `finish()` la censura sin
+	# contarla (contrato §3): ninguna observación queda cerrada.
+	if not await _real_result(second, "lost"):
+		return
+	assert_true(feedback_2.is_empty(),
+		"Control: el intento 2 (derrota temprana sin ninguna aparición WAVE propia derrotada o " +
+		"cruzada) no cierra ninguna observación nueva — `CommanderSession.finish()` debe devolver " +
+		"`changed == false` y `_consolidate_commander_result()` nunca emite `commander_save_feedback` " +
+		"para este intento")
+	_app.request_menu()
+	var arrived := await _wait_menu()
+	assert_true(arrived, "Control: el regreso al menú real ocurre tras el segundo resultado")
+	if not arrived:
+		return
+	var texts := _visible_texts_in_app()
+	assert_false(texts.has("No se pudo guardar lo aprendido. Puedes seguir jugando"),
+		"El aviso de fallo del intento 1, ya descartado por el Retry, no debe reaparecer mal " +
+		"atribuido al salir rápido al menú tras el intento 2 sin observaciones propias que guardar " +
+		"(hallazgo real de QA sobre T042); sin la corrección de T044, `_pending_commander_feedback` " +
+		"sobrevive al Retry y se muestra aquí como si fuera del intento 2")
+	var any_commander_feedback_text := texts.has("No se pudo guardar lo aprendido. Puedes seguir jugando") \
+		or texts.has("Lo aprendido se conservará sólo mientras esta sesión esté abierta") \
+		or texts.has("El comandante aprendió de esta partida y guardó su memoria.")
+	assert_false(any_commander_feedback_text,
+		"El intento 2 no generó ningún `commander_save_feedback` propio (control de arriba); no debe " +
+		"mostrarse ningún texto de feedback del comandante al salir rápido al menú")
