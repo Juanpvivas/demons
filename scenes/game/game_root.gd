@@ -10,14 +10,23 @@ extends Node
 @export var commander_config: CommanderConfig = preload("res://resources/director/monte_calvo_commander.tres")
 
 var intro_progress: RefCounted
-## 017/I2 (prerrequisito T027): instancia compartida entre partidas, pensada
-## para inyectarse en el nivel antes de `add_child`. Permanece sin crear/usar
-## hasta T032; no hay I/O ni lectura de disco desde esta propiedad todavía.
+## 017/I2 T032: instancia compartida entre partidas, inyectada en el nivel
+## antes de `add_child` (contrato §4, "`_start_match()` inyecta almacén/seed
+## antes de add_child"). Si nadie la asignó externamente (ej. pruebas que
+## inyectan su propio `CommanderMemoryStore` antes de `request_start()`),
+## `_ready()` prepara la suya — independiente de `intro_progress` — sin leer
+## disco todavía más allá de lo que haga falta cuando el nivel la use.
 var commander_store: CommanderMemoryStore
 
 var _current_level: Node
 var _transition_pending: bool = false
 var _generation: int = 0
+## 017/I2 T032: contador local para una semilla determinista por partida,
+## independiente del RNG global cosmético/de efectos (contrato §2.6,
+## "producción usa semilla independiente del RNG global/cosmético"). No se
+## observa en ninguna prueba hoy; combinarlo con el reloj del motor evita
+## reutilizar la misma semilla entre partidas consecutivas de una sesión.
+var _commander_seed_counter: int = 0
 var _retry_callback: Callable
 var _menu_callback: Callable
 var _current_intro: Control
@@ -33,6 +42,10 @@ func _ready() -> void:
 	GameStateManager.enter_menu()
 	if intro_progress == null:
 		intro_progress = IntroProgress.new()
+	# Contrato §4, "preparar Store independiente de IntroProgress": propio y
+	# separado del perfil de la carta, nunca compartiendo esa instancia.
+	if commander_store == null:
+		commander_store = CommanderMemoryStore.new()
 	_menu.play_requested.connect(request_start)
 	_menu.intro_requested.connect(request_intro)
 
@@ -55,6 +68,13 @@ func _start_match() -> void:
 		return
 	_generation += 1
 	_current_level = level_scene.instantiate()
+	# Contrato §4, "`_start_match()` inyecta almacén/seed antes de
+	# add_child": el nivel recibe el mismo `CommanderMemoryStore`/
+	# `CommanderConfig` compartidos de esta raíz, nunca los suyos propios por
+	# defecto, antes de que `_ready()` corra en `add_child()` más abajo.
+	_current_level.commander_store = commander_store
+	_current_level.commander_config = commander_config
+	_current_level.commander_seed = _next_commander_seed()
 	_retry_callback = _on_level_retry_requested.bind(_generation)
 	_menu_callback = _on_level_menu_requested.bind(_generation)
 	_current_level.connect("retry_requested", _retry_callback)
@@ -62,6 +82,13 @@ func _start_match() -> void:
 	add_child(_current_level)
 	_menu.hide()
 	_transition_pending = false
+
+
+## Semilla determinista por partida (ver comentario de
+## `_commander_seed_counter`), sin tocar ningún RNG compartido del proyecto.
+func _next_commander_seed() -> int:
+	_commander_seed_counter += 1
+	return int(Time.get_ticks_usec()) ^ _commander_seed_counter
 
 
 func request_retry() -> void:

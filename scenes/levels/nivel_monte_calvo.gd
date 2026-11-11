@@ -38,16 +38,17 @@ signal commander_save_feedback(message: String)
 
 const _ENEMY_POOL_INITIAL_SIZE := 10
 
-## 017/I2 (prerrequisito T027): propiedades de inyección que `game_root.gd`
-## asignará antes de `add_child(_current_level)` (T032), siguiendo el mismo
-## patrón que `soldier.stats`/`soldier.board_config` en `_create_soldier()`.
-## Sin valor por defecto productivo todavía: `commander_store` permanece nulo
-## y `commander_seed` en 0 hasta esa integración.
+## 017/I2 T032: propiedades de inyección que `game_root.gd::_start_match()`
+## asigna antes de `add_child(_current_level)`, siguiendo el mismo patrón que
+## `soldier.stats`/`soldier.board_config` en `_create_soldier()`. En una
+## escena directa de desarrollo sin raíz (`commander_store` sigue `null` al
+## llegar a `_ready()`), el nivel crea su propio almacén TRANSIENT — contrato
+## §4, "usar almacén TRANSIENT sin rutas reales; esa ejecución no acredita
+## persistencia".
 var commander_store: CommanderMemoryStore
 var commander_seed: int = 0
-## 017/I2 (prerrequisito T027): referencia a la sesión del comandante, creada
-## sólo en T032 "tras crear defensores y antes del primer WAVE" (contrato §4).
-## `_ready()` no la instancia todavía.
+## 017/I2 T032: sesión real del comandante, instanciada en `_ready()` tras
+## crear los defensores y antes de `WaveManager.start_waves()` (contrato §4).
 var commander_session: CommanderSession
 
 var _board_manager := BoardManager.new()
@@ -129,6 +130,8 @@ func _ready() -> void:
 	for home: Vector2i in board_config.home_cells:
 		_create_soldier(home)
 
+	_setup_commander_session()
+
 	var defended_body := RectangleShape2D.new()
 	defended_body.size = board_config.defended_rect.size
 	_defended_shape.shape = defended_body
@@ -137,9 +140,31 @@ func _ready() -> void:
 
 	add_child(_wave_spawner)
 	_wave_spawner.setup(enemy_scene, _ENEMY_POOL_INITIAL_SIZE, wave_spawn_position,
-		_combat_visual_effects, board_config, _combat_audio)
+		_combat_visual_effects, board_config, _combat_audio, commander_session, _board_manager)
 	_wave_spawner.spawn_initial_enemy(initial_enemy_stats)
 	WaveManager.start_waves(waves)
+
+
+## 017/I2 T032 (contrato §4, "Nivel `_ready()`: ... Configurar Session tras
+## crear defensores y antes del primer WAVE"): escena directa sin raíz
+## (`commander_store` sigue `null` porque nadie la inyectó) usa un almacén
+## TRANSIENT propio, sin rutas reales; producción recibe siempre el
+## `CommanderMemoryStore` compartido de `game_root.gd::_start_match()`
+## (contrato §4, "El nivel de producción siempre instala el comandante").
+func _setup_commander_session() -> void:
+	if commander_store == null:
+		commander_store = CommanderMemoryStore.new()
+		commander_store.transient = true
+	var load_result: Dictionary = commander_store.load_compatible(commander_config)
+	commander_session = CommanderSession.new()
+	commander_session.begin_match(_commander_match_id(), commander_seed, commander_config,
+		load_result.get("memory", {}))
+
+
+## Identidad de partida sin rutas de archivo: suficiente para diagnóstico
+## (`get_decision_snapshot()`) sin acreditar persistencia por sí sola.
+func _commander_match_id() -> String:
+	return "monte_calvo:%d:%d" % [commander_seed, Time.get_ticks_usec()]
 
 
 func _on_retry_requested() -> void:
@@ -169,6 +194,13 @@ func close_match() -> void:
 	if _closing:
 		return
 	_closing = true
+	# Contrato §4, "`close_match()`/`_exit_tree()`: abandonar sólo si aún
+	# ACTIVE; nunca consolidar": MENU (vía `_on_retry_requested`/
+	# `_on_menu_requested`) nunca es un resultado WON/LOST, así que este
+	# cierre nunca intenta reconstruir uno. Si la sesión ya quedó FINALIZED
+	# (T037) o nunca llegó a activarse, no hay nada que hacer aquí.
+	if commander_session != null and commander_session.get_decision_snapshot().get("state") == "ACTIVE":
+		commander_session.abandon()
 	_combat_audio.close_match()
 	_combat_visual_effects.close_match()
 	set_process_unhandled_input(false)
