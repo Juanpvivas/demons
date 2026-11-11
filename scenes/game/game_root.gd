@@ -36,6 +36,13 @@ var _intro_waiting_start: bool = false
 var _intro_completed: bool = false
 var _intro_finished_callback: Callable
 var _intro_start_callback: Callable
+## 017/I2 T042: último aviso de guardado terminal (contrato §6, último
+## párrafo) pendiente de mostrarse como aviso de menú si el jugador sale
+## enseguida, antes de verlo en el resultado. Vacío mientras no hay aviso
+## pendiente.
+var _pending_commander_feedback: String = ""
+var _commander_feedback_callback: Callable
+var _commander_feedback_label: Label
 
 @onready var _menu = $MenuLayer/MainMenu
 
@@ -48,8 +55,21 @@ func _ready() -> void:
 	# separado del perfil de la carta, nunca compartiendo esa instancia.
 	if commander_store == null:
 		commander_store = CommanderMemoryStore.new()
+	# 017/I2 T042 (hallazgo QA de T041): cargar el Store ya en `_ready()`, antes
+	# de que el jugador pueda pulsar "Borrar memoria del comandante" sin haber
+	# jugado todavía; sin esta carga, `clear()` devolvería INVALID aunque
+	# exista memoria persistente real en disco (contrato §5, "sin esa carga
+	# previa ambas operaciones devuelven INVALID").
+	commander_store.load_compatible(commander_config)
+	_commander_feedback_label = Label.new()
+	_commander_feedback_label.name = "CommanderFeedbackLabel"
+	_commander_feedback_label.visible = false
+	_commander_feedback_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_commander_feedback_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	$MenuLayer.add_child(_commander_feedback_label)
 	_menu.play_requested.connect(request_start)
 	_menu.intro_requested.connect(request_intro)
+	_menu.commander_reset_requested.connect(_on_commander_reset_requested)
 
 
 func request_start() -> void:
@@ -79,10 +99,13 @@ func _start_match() -> void:
 	_current_level.commander_seed = _next_commander_seed()
 	_retry_callback = _on_level_retry_requested.bind(_generation)
 	_menu_callback = _on_level_menu_requested.bind(_generation)
+	_commander_feedback_callback = _on_level_commander_save_feedback.bind(_generation)
 	_current_level.connect("retry_requested", _retry_callback)
 	_current_level.connect("menu_requested", _menu_callback)
+	_current_level.connect("commander_save_feedback", _commander_feedback_callback)
 	add_child(_current_level)
 	_menu.hide()
+	_commander_feedback_label.hide()
 	_transition_pending = false
 
 
@@ -116,6 +139,7 @@ func _request_terminal_destination(restart: bool) -> void:
 	var previous := _current_level
 	previous.disconnect("retry_requested", _retry_callback)
 	previous.disconnect("menu_requested", _menu_callback)
+	previous.disconnect("commander_save_feedback", _commander_feedback_callback)
 	GameStateManager.enter_menu()
 	WaveManager.cancel_waves()
 	previous.close_match()
@@ -139,6 +163,12 @@ func _finish_attempt(previous: Node, restart: bool) -> void:
 		_start_match()
 	else:
 		_menu.show_menu()
+		# Contrato §6, último párrafo: "si se sale enseguida" muestra como
+		# aviso de menú el último `commander_save_feedback` real de ese
+		# intento, antes de que el jugador lo viera en el resultado.
+		if not _pending_commander_feedback.is_empty():
+			_show_commander_feedback(_pending_commander_feedback)
+			_pending_commander_feedback = ""
 		_transition_pending = false
 
 
@@ -156,12 +186,43 @@ func get_current_level() -> Node:
 	return _current_level if is_instance_valid(_current_level) else null
 
 
-## 017/I2 (prerrequisito T027): firma neutral para la futura intención de
-## borrado del menú (`commander_reset_requested`, contrato §6). No está
-## conectada a ninguna señal todavía; T042 cableará la confirmación, el
-## borrado real vía `commander_store` y el feedback correspondiente.
+## 017/I2 T042 (contrato §6): borra la memoria real del comandante y muestra
+## el feedback textual exacto del contrato. Reutiliza el mismo guard de
+## `request_start()`/`request_intro()` — fuera de MENU, con transición
+## pendiente o con nivel/intro vivos, no hace nada (ni `clear()` ni
+## feedback).
 func _on_commander_reset_requested() -> void:
-	pass
+	if _transition_pending or is_instance_valid(_current_level) or is_instance_valid(_current_intro) \
+			or GameStateManager._current_state != GameStateManager.GameState.MENU:
+		return
+	var result: Dictionary = commander_store.clear()
+	var status: String = result.get("status", "")
+	if status == "OK":
+		if commander_store.transient:
+			_show_commander_feedback("Memoria de esta sesión borrada")
+		else:
+			_show_commander_feedback("Memoria del comandante borrada")
+	else:
+		# Ambigüedad reportada (hallazgo QA de T041): el Store sólo distingue
+		# OK/IO_ERROR/INVALID/etc. para `clear()`; el contrato describe además
+		# un texto de "almacenamiento bloqueado en este navegador" que no está
+		# amarrado a ningún `status` concreto (parece depender de detectar
+		# plataforma Web, no cubierto aquí). Se usa el mensaje de fallo
+		# genérico del contrato para cualquier `status` de error.
+		_show_commander_feedback("No se pudo borrar la memoria. Puedes seguir jugando e intentarlo de nuevo")
+
+
+## Reutilizado por el borrado de memoria y por el aviso de guardado terminal
+## (contrato §6); un único Label discreto dentro de `MenuLayer`, sin
+## rediseñar HUD ni resultado.
+func _show_commander_feedback(message: String) -> void:
+	_commander_feedback_label.text = message
+	_commander_feedback_label.show()
+
+
+func _on_level_commander_save_feedback(message: String, generation: int) -> void:
+	if generation == _generation:
+		_pending_commander_feedback = message
 
 
 func request_intro() -> void:
@@ -198,6 +259,7 @@ func _open_intro(_from_start: bool) -> void:
 	_current_intro.connect("start_requested", _intro_start_callback)
 	$MenuLayer.add_child(_current_intro)
 	_menu.hide()
+	_commander_feedback_label.hide()
 	_transition_pending = false
 	_current_intro.play(intro_sequence)
 

@@ -107,7 +107,7 @@ autowrap_mode = 3
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(0, 64)
-focus_neighbor_top = NodePath("../IntroButton")
+focus_neighbor_top = NodePath("../DeleteMemoryButton")
 focus_neighbor_bottom = NodePath("../IntroButton")
 text = "Jugar"
 
@@ -116,5 +116,21 @@ unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(0, 64)
 focus_neighbor_top = NodePath("../PlayButton")
-focus_neighbor_bottom = NodePath("../PlayButton")
+focus_neighbor_bottom = NodePath("../DeleteMemoryButton")
 text = "Ver introducción"
+
+[node name="DeleteMemoryButton" type="Button" parent="SafeArea/CenterContainer/Panel/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 64)
+focus_neighbor_top = NodePath("../IntroButton")
+focus_neighbor_bottom = NodePath("../PlayButton")
+text = "Borrar memoria del comandante"
+
+[node name="DeleteMemoryConfirmDialog" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+title = "Borrar memoria del comandante"
+visible = false
+dialog_text = "¿Borrar lo aprendido por el comandante? La próxima partida empezará sin memoria. Tu progreso no cambia"
+ok_button_text = "Borrar"
+cancel_button_text = "Cancelar"

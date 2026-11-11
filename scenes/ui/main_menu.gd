@@ -3,22 +3,31 @@ extends Control
 
 signal play_requested
 signal intro_requested
-## 017/I2 (prerrequisito T027): intención de borrado de memoria del
-## comandante (contrato §6). Declarada para permitir RED semántico sobre su
-## emisión/guardas; todavía no la emite ningún botón ni existe UI de
-## confirmación — eso corresponde a T042 junto con `MainMenu.tscn`.
+## 017/I2 T042: intención de borrado de memoria del comandante (contrato §6).
+## Sólo la emite la confirmación local del botón "Borrar memoria del
+## comandante", una vez por confirmación aceptada.
 signal commander_reset_requested
 
 @onready var _play_button: Button = %PlayButton
 @onready var _intro_button: Button = %IntroButton
+@onready var _delete_button: Button = %DeleteMemoryButton
+@onready var _delete_confirm_dialog: ConfirmationDialog = %DeleteMemoryConfirmDialog
 @onready var _safe_area: MarginContainer = $SafeArea
 @onready var _panel: PanelContainer = $SafeArea/CenterContainer/Panel
 @onready var _title: Label = %TitleLabel
+
+## Bloquea reentrada de la confirmación: ignora una segunda emisión de
+## `confirmed` mientras la primera todavía no cerró el modal (contrato §6,
+## "confirmar sólo se acepta una vez").
+var _confirm_resolved: bool = false
 
 
 func _ready() -> void:
 	_play_button.pressed.connect(_on_play_pressed)
 	_intro_button.pressed.connect(_on_intro_pressed)
+	_delete_button.pressed.connect(_on_delete_memory_pressed)
+	_delete_confirm_dialog.confirmed.connect(_on_delete_memory_confirmed)
+	_delete_confirm_dialog.canceled.connect(_on_delete_memory_canceled)
 	get_viewport().size_changed.connect(_apply_layout)
 	_apply_layout()
 	_play_button.grab_focus()
@@ -27,6 +36,11 @@ func _ready() -> void:
 func set_start_enabled(enabled: bool) -> void:
 	_play_button.disabled = not enabled
 	_intro_button.disabled = not enabled
+	_delete_button.disabled = not enabled
+	# Contrato §6: "`set_start_enabled(false)` también bloquea el borrado y
+	# la confirmación" — cierra el modal abierto sin confirmar ni emitir nada.
+	if not enabled and _delete_confirm_dialog.visible:
+		_delete_confirm_dialog.hide()
 
 
 func show_menu() -> void:
@@ -44,6 +58,30 @@ func _on_play_pressed() -> void:
 func _on_intro_pressed() -> void:
 	get_viewport().set_input_as_handled()
 	intro_requested.emit()
+
+
+## Abre la confirmación local; nunca emite `commander_reset_requested` por sí
+## solo (contrato §6, "un solo clic abre la confirmación local; no borra sin
+## confirmar").
+func _on_delete_memory_pressed() -> void:
+	get_viewport().set_input_as_handled()
+	if _delete_button.disabled:
+		return
+	_confirm_resolved = false
+	_delete_confirm_dialog.popup_centered()
+
+
+func _on_delete_memory_confirmed() -> void:
+	if _confirm_resolved:
+		return
+	_confirm_resolved = true
+	commander_reset_requested.emit()
+	_delete_button.grab_focus()
+
+
+func _on_delete_memory_canceled() -> void:
+	_confirm_resolved = true
+	_delete_button.grab_focus()
 
 
 func _apply_layout() -> void:

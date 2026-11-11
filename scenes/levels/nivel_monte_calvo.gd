@@ -212,8 +212,10 @@ func _on_commander_game_lost() -> void:
 ## (contrato §3, "cambiar=false conserva exactamente la memoria anterior, sin
 ## guardar"). El resultado de `commander_store.save()` (contrato §6, errores
 ## de save) se reporta por `commander_save_feedback` para que US3 (T042) lo
-## muestre; el contenido textual exacto no es parte de este contrato, sólo que
-## la señal se emita y distinga guardado real de fallo.
+## muestre; los textos exactos son los del contrato §6, último párrafo
+## ("No se pudo guardar lo aprendido..."/"Lo aprendido se conservará sólo
+## mientras esta sesión esté abierta"), consumidos por `game_root.gd` al
+## volver al menú tras un resultado real.
 func _consolidate_commander_result(result: int) -> void:
 	if commander_session == null or commander_session.get_decision_snapshot().get("state") != "ACTIVE":
 		return
@@ -224,13 +226,11 @@ func _consolidate_commander_result(result: int) -> void:
 	var status: String = save_result.get("status", "")
 	if status == "OK":
 		if commander_store.transient:
-			commander_save_feedback.emit(
-				"El comandante aprendió de esta partida (memoria temporal, sin guardar en disco).")
+			commander_save_feedback.emit("Lo aprendido se conservará sólo mientras esta sesión esté abierta")
 		else:
 			commander_save_feedback.emit("El comandante aprendió de esta partida y guardó su memoria.")
 	else:
-		commander_save_feedback.emit(
-			"El comandante no pudo guardar lo aprendido de esta partida (%s)." % status)
+		commander_save_feedback.emit("No se pudo guardar lo aprendido. Puedes seguir jugando")
 
 
 ## El cierre es local: la raíz cancela los Managers antes de retirar el nivel.
