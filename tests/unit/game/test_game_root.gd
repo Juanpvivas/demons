@@ -230,6 +230,26 @@ func test_repeated_start_requests_create_one_real_match_with_initial_conditions(
 	assert_eq(_wave_events, [1])
 
 
+## 017/I2 T030: RED — contrato §4, "`GameRoot._ready()`: ... `_start_match()`
+## inyecta almacén/seed antes de add_child". Hoy `_start_match()` instancia
+## el nivel y lo añade al árbol (`scenes/game/game_root.gd::_start_match()`)
+## sin tocar `commander_store` del nivel en ningún punto: la propiedad
+## neutral de T027 permanece en null en el nivel montado.
+func test_start_match_injects_game_roots_commander_store_into_the_level_before_add_child() -> void:
+	await _mount()
+	var store := CommanderMemoryStore.new()
+	store.transient = true
+	_app.commander_store = store
+	_app.request_start()
+	var level: Node = await _new_level()
+	assert_not_null(level, "Control: un intento real se monta")
+	if level == null:
+		return
+	assert_same(level.commander_store, store,
+		"`_start_match()` debe inyectar el mismo CommanderMemoryStore de la raíz en el nivel antes " +
+		"de add_child; hoy `commander_store` del nivel permanece null")
+
+
 func test_real_play_click_burst_starts_once_and_does_not_reach_gameplay_input() -> void:
 	var observer := GestureObserver.new()
 	_viewport.add_child(observer)

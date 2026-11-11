@@ -7,6 +7,36 @@ const ENEMY_SCENE := preload("res://scenes/enemies/EnemigoBase.tscn")
 const BOARD := preload("res://resources/levels/monte_calvo_board.tres")
 const BASE_STATS := preload("res://resources/enemies/enemigo_infanteria_base.tres")
 const WAVE_PATH := "res://resources/waves/nivel_montecalvo_oleada_%02d.tres"
+const COMMANDER_CONFIG := preload("res://resources/director/monte_calvo_commander.tres")
+
+## 017/I2 T030: espía de `CommanderSession` (sobre la API real aprobada en
+## I1, sin duplicar su algoritmo de selección) para comprobar si
+## `WaveSpawner` la consulta de verdad al decidir el carril de un WAVE, en
+## vez de seguir usando el cursor legado `_next_lane`.
+class _CommanderSessionSpy:
+	extends CommanderSession
+	var choose_calls: Array[Dictionary] = []
+	var register_calls: Array[Dictionary] = []
+	var cancel_calls: Array[Dictionary] = []
+
+	func choose_lane(snapshot: Dictionary) -> Dictionary:
+		choose_calls.append(snapshot.duplicate(true))
+		return super.choose_lane(snapshot)
+
+	func register_spawn(decision: Dictionary, actor_id: int, generation: int,
+			spawn_x: float, defended_right: float) -> bool:
+		var applied := super.register_spawn(decision, actor_id, generation, spawn_x, defended_right)
+		register_calls.append({
+			"decision": decision.duplicate(true), "actor_id": actor_id, "generation": generation,
+			"spawn_x": spawn_x, "defended_right": defended_right, "applied": applied,
+		})
+		return applied
+
+	func cancel_proposal(token: Variant) -> bool:
+		var applied := super.cancel_proposal(token)
+		cancel_calls.append({"token": token, "applied": applied})
+		return applied
+
 
 var _spawner: WaveSpawner
 var _effects: CombatVisualEffects
@@ -41,6 +71,32 @@ func _new_spawner() -> WaveSpawner:
 	spawner.setup(ENEMY_SCENE, 1, Vector2(576, 50), _effects, BOARD)
 	# No se mide desplazamiento aquí: conservar la posición exacta de aparición
 	# permite comprobar la asignación, sin sustituir al enemigo ni su colisión.
+	for child: Node in spawner._enemy_pool.get_children():
+		if child is Enemigo:
+			child.set_physics_process(false)
+	spawner._enemy_pool.instance_created.connect(func(node: Node): node.set_physics_process(false))
+	return spawner
+
+
+func _neutral_memory() -> Dictionary:
+	return {"schema_version": 1, "policy_version": 1,
+		"compatibility_id": "a".repeat(64), "generation": 0,
+		"last_match_id": "", "cells": {}}
+
+
+func _session_spy(seed_value: int = 7) -> _CommanderSessionSpy:
+	var session := _CommanderSessionSpy.new()
+	session.begin_match("integration-test-%d" % seed_value, seed_value, COMMANDER_CONFIG, _neutral_memory())
+	return session
+
+
+## Mismo `_new_spawner()` de arriba, pero con una sesión real inyectada
+## (séptimo parámetro de `setup()`, T027), para comprobar si la selección de
+## carril la consulta de verdad.
+func _new_spawner_with_session(session: CommanderSession) -> WaveSpawner:
+	var spawner := WaveSpawner.new()
+	add_child_autofree(spawner)
+	spawner.setup(ENEMY_SCENE, 1, Vector2(576, 50), _effects, BOARD, null, session)
 	for child: Node in spawner._enemy_pool.get_children():
 		if child is Enemigo:
 			child.set_physics_process(false)
@@ -339,3 +395,80 @@ func test_defeat_keeps_original_drop_context_during_synchronous_pool_reactivatio
 	assert_eq(initial.global_position, Vector2(1008, 528))
 	assert_true(initial.visible)
 	assert_eq(initial._current_health, next_stats.max_health)
+
+
+## 017/I2 T030: RED — hoy `_on_spawn_timer_timeout()` sigue usando el cursor
+## legado `_next_lane` y nunca toca la sesión inyectada (contrato §4,
+## "Sustituir sólo la selección de lane"), aunque `setup()` ya la reciba y
+## la guarde en `_commander_session` (T027).
+func test_wave_timeout_consults_injected_commander_session_for_lane_instead_of_legacy_cursor() -> void:
+	var session := _session_spy()
+	var spawner := _new_spawner_with_session(session)
+	WaveManager.start_waves([_wave(1, [_entry(1)])])
+	_expire_spawn_timer(spawner)
+	assert_eq(session.choose_calls.size(), 1,
+		"El spawner debe pedir el carril a la sesión inyectada, no decidir con el cursor legado _next_lane")
+	assert_eq(session.register_calls.size(), 1,
+		"Toda aparición WAVE confirmada con sesión inyectada debe registrarse en esa sesión real")
+	if session.register_calls.is_empty():
+		return
+	assert_true(session.register_calls[0].applied)
+	var active := _active(spawner)
+	assert_eq(active.size(), 1)
+	if active.size() != 1:
+		return
+	var chosen_lane: int = session.register_calls[0].decision.lane
+	assert_eq(active[0].lane_id, chosen_lane,
+		"El carril del enemigo activado debe ser el decidido por la sesión, no el cursor round-robin")
+	assert_almost_eq(session.register_calls[0].spawn_x, float(BOARD.spawn_positions[chosen_lane].x), 0.01)
+	var defended_right := float(BOARD.defended_rect.position.x + BOARD.defended_rect.size.x)
+	assert_almost_eq(session.register_calls[0].defended_right, defended_right, 0.01)
+
+
+## 017/I2 T030: RED — SC-002/FR-004: el bloque global de cinco carriles no
+## debe reiniciarse al cambiar de oleada. Con la sesión real inyectada (ya
+## aprobada en I1) y spawns reales a través del `Timer`, las primeras cinco
+## confirmaciones deben agotar exactamente los cinco carriles, también
+## cruzando el límite de la oleada 1→2. Hoy falla porque el spawner nunca
+## consulta la sesión (0 `choose_calls`), no por un defecto del propio bloque.
+func test_commander_block_of_five_lanes_persists_across_wave_boundary_with_real_session() -> void:
+	var session := _session_spy(11)
+	var spawner := _new_spawner_with_session(session)
+	var first := _wave(1, [_entry(3)])
+	var second := _wave(2, [_entry(4)])
+	WaveManager.start_waves([first, second])
+	var lanes_used: Array[int] = []
+	for index in 7:
+		_expire_spawn_timer(spawner)
+		assert_eq(session.register_calls.size(), index + 1,
+			"Cada timeout real con sesión inyectada debe confirmar exactamente una aparición en la sesión")
+		if session.register_calls.size() != index + 1:
+			return
+		var active := _active(spawner)
+		assert_eq(active.size(), 1)
+		if active.size() != 1:
+			return
+		lanes_used.append(active[0].lane_id)
+		active[0].take_damage(active[0].stats.max_health)
+	var first_block := lanes_used.slice(0, 5)
+	first_block.sort()
+	assert_eq(first_block, [0, 1, 2, 3, 4],
+		"Las primeras cinco confirmaciones agotan el bloque global aunque cambien de oleada 1→2 a mitad")
+	assert_eq(session.choose_calls.size(), 7, "Cada aparición WAVE pide exactamente una propuesta a la sesión")
+
+
+## 017/I2 T030: regresión/invariante (ya satisfecha hoy, se conserva como
+## candado): el inicial sigue siendo independiente del comandante (FR-001,
+## "El inicial ... no participa del aprendizaje") también cuando hay una
+## sesión real inyectada — no debe proponerle ni consumirle carril/bloque.
+func test_initial_enemy_activation_does_not_consult_or_consume_the_injected_commander_session() -> void:
+	var session := _session_spy(3)
+	var spawner := _new_spawner_with_session(session)
+	var initial := spawner.spawn_initial_enemy(BASE_STATS)
+	assert_not_null(initial)
+	if initial == null:
+		return
+	assert_eq(initial.lane_id, 2)
+	assert_eq(session.choose_calls.size(), 0,
+		"El inicial no participa de la selección/aprendizaje del comandante")
+	assert_eq(session.register_calls.size(), 0)
