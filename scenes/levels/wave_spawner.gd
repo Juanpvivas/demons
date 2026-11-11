@@ -343,10 +343,22 @@ func _on_enemy_pool_instance_created(instance: Node) -> void:
 ## `docs/ARCHITECTURE.md` §4.1) y recicla la instancia al pool en vez de
 ## dejar que se autodestruya — ver conflicto documentado en la cabecera de
 ## esta clase y en `enemigo.gd`.
+##
+## 017/I2 T037 (contrato §4, "registrar `record_defeat` antes de notificar"):
+## sólo una baja WAVE real con sesión inyectada cierra su propio registro del
+## comandante (si existe, por `token`/`actor_id`+`generation`) ANTES de
+## `WaveManager.notify_enemy_defeated()` — esa notificación puede disparar de
+## forma síncrona el `game_won` que consolida la sesión, así que el registro
+## debe quedar `DEFEATED` primero. El INITIAL nunca pasa por aquí con
+## `record_defeat` (nunca se registró con `register_spawn`, FR-001). `_position`
+## es la posición real de muerte (`drop_position` de `Enemigo._die()`); su `.x`
+## es el `death_x` que exige el contrato.
 func _on_enemy_defeated(_ammo_dropped: int, _position: Vector2, enemy: Enemigo) -> void:
 	if _closing:
 		return
 	var origin := enemy.get_defeat_origin()
 	if origin == Enemigo.SpawnOrigin.WAVE:
+		if _commander_session != null:
+			_commander_session.record_defeat(enemy.get_instance_id(), enemy.activation_generation, _position.x)
 		WaveManager.notify_enemy_defeated()
 	_enemy_pool.release(enemy)

@@ -50,6 +50,13 @@ var commander_seed: int = 0
 ## 017/I2 T032: sesión real del comandante, instanciada en `_ready()` tras
 ## crear los defensores y antes de `WaveManager.start_waves()` (contrato §4).
 var commander_session: CommanderSession
+## 017/I2 T037: generación de memoria que `commander_store.load_compatible()`
+## reportó al instanciar `commander_session` (contrato §4, "guardar sólo con
+## Store verificado"). `CommanderMemoryStore.save()` exige exactamente esa
+## generación de origen (igual a `candidate.memory.generation`, intacta desde
+## `finish()`) para aceptar el guardado; capturada aquí porque es el único
+## punto donde el nivel conoce el resultado real de `load_compatible()`.
+var _commander_expected_generation: int = 0
 
 var _board_manager := BoardManager.new()
 var _wave_spawner := WaveSpawner.new()
@@ -131,6 +138,11 @@ func _ready() -> void:
 		_create_soldier(home)
 
 	_setup_commander_session()
+	# 017/I2 T037 (contrato §4, "conectar una vez por nivel y desconectar al
+	# cerrar"): única consolidación real de la sesión, en el mismo momento
+	# en que el resultado terminal se vuelve público para el resto del juego.
+	GameStateManager.game_won.connect(_on_commander_game_won)
+	GameStateManager.game_lost.connect(_on_commander_game_lost)
 
 	var defended_body := RectangleShape2D.new()
 	defended_body.size = board_config.defended_rect.size
@@ -156,9 +168,10 @@ func _setup_commander_session() -> void:
 		commander_store = CommanderMemoryStore.new()
 		commander_store.transient = true
 	var load_result: Dictionary = commander_store.load_compatible(commander_config)
+	var loaded_memory: Dictionary = load_result.get("memory", {})
+	_commander_expected_generation = int(loaded_memory.get("generation", 0))
 	commander_session = CommanderSession.new()
-	commander_session.begin_match(_commander_match_id(), commander_seed, commander_config,
-		load_result.get("memory", {}))
+	commander_session.begin_match(_commander_match_id(), commander_seed, commander_config, loaded_memory)
 
 
 ## Identidad de partida sin rutas de archivo: suficiente para diagnóstico
@@ -177,16 +190,47 @@ func _on_menu_requested() -> void:
 		menu_requested.emit()
 
 
-## 017/I2 (prerrequisito T027): firmas neutrales para los futuros handlers de
-## `GameStateManager.game_won`/`game_lost` (contrato §4, "conectar una vez por
-## nivel y desconectar al cerrar"). No están conectadas en `_ready()` ni en
-## ningún otro punto todavía; T037 las cableará junto al guard de sesión.
+## 017/I2 T037 (contrato §4, "conectar una vez por nivel y desconectar al
+## cerrar"; requisito 6, "única consolidación por terminal real"): conectadas
+## en `_ready()` y desconectadas en `close_match()`. Cada handler delega en
+## `_consolidate_commander_result()`, que guarda el mismo comportamiento para
+## WON/LOST salvo el resultado pasado a `CommanderSession.finish()`.
 func _on_commander_game_won() -> void:
-	pass
+	_consolidate_commander_result(GameStateManager.GameState.WON)
 
 
 func _on_commander_game_lost() -> void:
-	pass
+	_consolidate_commander_result(GameStateManager.GameState.LOST)
+
+
+## Guard (contrato §4): nada que consolidar sin sesión activa — cubre tanto
+## una sesión nunca activada (config inválida) como una ya `FINALIZED`/
+## `ABANDONED` (evita una doble consolidación si este handler se disparara
+## más de una vez, aunque `GameStateManager` no emita el resultado dos veces
+## hoy). `commander_session.finish()` deja el estado en `FINALIZED` y
+## devuelve si la experiencia cambió; sólo con `changed == true` se guarda
+## (contrato §3, "cambiar=false conserva exactamente la memoria anterior, sin
+## guardar"). El resultado de `commander_store.save()` (contrato §6, errores
+## de save) se reporta por `commander_save_feedback` para que US3 (T042) lo
+## muestre; el contenido textual exacto no es parte de este contrato, sólo que
+## la señal se emita y distinga guardado real de fallo.
+func _consolidate_commander_result(result: int) -> void:
+	if commander_session == null or commander_session.get_decision_snapshot().get("state") != "ACTIVE":
+		return
+	var candidate: Dictionary = commander_session.finish(result)
+	if not candidate.get("changed", false):
+		return
+	var save_result: Dictionary = commander_store.save(candidate, _commander_expected_generation)
+	var status: String = save_result.get("status", "")
+	if status == "OK":
+		if commander_store.transient:
+			commander_save_feedback.emit(
+				"El comandante aprendió de esta partida (memoria temporal, sin guardar en disco).")
+		else:
+			commander_save_feedback.emit("El comandante aprendió de esta partida y guardó su memoria.")
+	else:
+		commander_save_feedback.emit(
+			"El comandante no pudo guardar lo aprendido de esta partida (%s)." % status)
 
 
 ## El cierre es local: la raíz cancela los Managers antes de retirar el nivel.
@@ -201,6 +245,10 @@ func close_match() -> void:
 	# (T037) o nunca llegó a activarse, no hay nada que hacer aquí.
 	if commander_session != null and commander_session.get_decision_snapshot().get("state") == "ACTIVE":
 		commander_session.abandon()
+	if GameStateManager.game_won.is_connected(_on_commander_game_won):
+		GameStateManager.game_won.disconnect(_on_commander_game_won)
+	if GameStateManager.game_lost.is_connected(_on_commander_game_lost):
+		GameStateManager.game_lost.disconnect(_on_commander_game_lost)
 	_combat_audio.close_match()
 	_combat_visual_effects.close_match()
 	set_process_unhandled_input(false)
@@ -294,12 +342,21 @@ func _create_soldier(cell: Vector2i) -> void:
 	_hud.register_trench_reload(cell, soldier, _tablero.to_global(_tablero.map_to_local(cell)), pieces)
 
 
+## 017/I2 T037 (contrato §4, "registrar `record_breach` antes de notificar"):
+## sólo un cruce WAVE real con sesión inyectada cierra su propio registro del
+## comandante ANTES de `GameStateManager.report_reached_defended_position()`
+## — esa notificación puede disparar de forma síncrona el `game_lost` que
+## consolida la sesión, así que el registro debe quedar `BREACHED` primero.
+## El INITIAL nunca pasa por `register_spawn()` (FR-001): nunca llama
+## `record_breach` para no abrir/cerrar un registro que jamás existió.
 func _on_posicion_defendida_body_entered(body: Node2D) -> void:
 	if _closing or GameStateManager._current_state != GameStateManager.GameState.PLAYING:
 		return
 	var enemy := body as Enemigo
 	if enemy == null or not enemy.is_targetable():
 		return
+	if enemy.spawn_origin == Enemigo.SpawnOrigin.WAVE and commander_session != null:
+		commander_session.record_breach(enemy.get_instance_id(), enemy.activation_generation)
 	enemy.notify_reached_defended_position()
 	GameStateManager.report_reached_defended_position()
 
