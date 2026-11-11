@@ -21,11 +21,13 @@ var commander_store: CommanderMemoryStore
 var _current_level: Node
 var _transition_pending: bool = false
 var _generation: int = 0
-## 017/I2 T032: contador local para una semilla determinista por partida,
-## independiente del RNG global cosmético/de efectos (contrato §2.6,
-## "producción usa semilla independiente del RNG global/cosmético"). No se
-## observa en ninguna prueba hoy; combinarlo con el reloj del motor evita
-## reutilizar la misma semilla entre partidas consecutivas de una sesión.
+## 017/I2 T032 (corregido en T033 por defecto no determinista): contador
+## local para una semilla determinista por partida, independiente del RNG
+## global cosmético/de efectos (contrato §2.6, "producción usa semilla
+## independiente del RNG global/cosmético"). Arranca en un valor fijo
+## conocido e incrementa en cada partida, sin leer el reloj real ni ninguna
+## otra fuente de entropía: la primera partida de cualquier ejecución del
+## proceso usa siempre la misma secuencia reproducible.
 var _commander_seed_counter: int = 0
 var _retry_callback: Callable
 var _menu_callback: Callable
@@ -85,10 +87,11 @@ func _start_match() -> void:
 
 
 ## Semilla determinista por partida (ver comentario de
-## `_commander_seed_counter`), sin tocar ningún RNG compartido del proyecto.
+## `_commander_seed_counter`), sin tocar ningún RNG compartido del proyecto
+## ni ninguna fuente de entropía real (reloj, etc.).
 func _next_commander_seed() -> int:
 	_commander_seed_counter += 1
-	return int(Time.get_ticks_usec()) ^ _commander_seed_counter
+	return _commander_seed_counter
 
 
 func request_retry() -> void:
